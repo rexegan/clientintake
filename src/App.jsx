@@ -52,21 +52,21 @@ function DatePicker({ value, onChange, label }) {
     <>
       {label && <Lbl t={label} />}
       <div style={{ display: "flex", gap: 8 }}>
-        <select value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={sel}>
+        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={sel}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={sel}>
+        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={sel}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{i + 1}</option>;
           })}
         </select>
-        <select value={yyyy} onChange={e => set(mm, dd, e.target.value)} style={{ ...sel, flex: 1.4 }}>
+        <select data-lpignore="true" value={yyyy} onChange={e => set(mm, dd, e.target.value)} style={{ ...sel, flex: 1.4 }}>
           <option value="">Year</option>
           {Array.from({ length: 101 }, (_, i) => {
             const y = String(new Date().getFullYear() - i);
@@ -390,7 +390,7 @@ export default function App() {
           </Row>
 
           <Lbl t="PO Box?" />
-          <select value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
+          <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
             <option value="">— Select —</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
@@ -415,7 +415,7 @@ export default function App() {
           <Row cols={2}>
             <F>
               <Lbl t="Married?" />
-              <select value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={IS}>
+              <select data-lpignore="true" value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={IS}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -423,7 +423,7 @@ export default function App() {
             </F>
             <F>
               <Lbl t="Children?" />
-              <select value={hasChildren || ""} onChange={e => {
+              <select data-lpignore="true" value={hasChildren || ""} onChange={e => {
                 setHasChildren(e.target.value || null);
                 if (e.target.value === "yes" && children.length === 0) setChildren([{ ...emptyChild, id: Date.now() }]);
                 if (e.target.value === "no") setChildren([]);
@@ -502,7 +502,7 @@ export default function App() {
                 <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} /></F>
                 <F>
                   <Lbl t="Relationship" />
-                  <select value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
@@ -531,7 +531,7 @@ export default function App() {
             <F><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
             <F>
               <Lbl t="Pay Frequency" />
-              <select value={clientEmp.payFrequency || ""} onChange={e => setClientEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
+              <select data-lpignore="true" value={clientEmp.payFrequency || ""} onChange={e => setClientEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
                 <option value="">— Select —</option>
                 <option value="weekly">Weekly</option>
                 <option value="biweekly">Bi-Weekly</option>
@@ -547,7 +547,7 @@ export default function App() {
             <Row cols={2}>
               <F>
                 <Lbl t="Has Retirement Plan?" />
-                <select value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
+                <select data-lpignore="true" value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
                   <option value="">— Select —</option>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
@@ -556,7 +556,7 @@ export default function App() {
               {clientEmp.hasRetirement === "yes" && (
                 <F>
                   <Lbl t="Type of Plan" />
-                  <select value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
+                  <select data-lpignore="true" value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
                     <option value="">— Select —</option>
                     <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
                     <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
@@ -571,7 +571,7 @@ export default function App() {
                 <Row cols={2}>
                   <F>
                     <Lbl t="Employer Match?" />
-                    <select value={clientEmp.hasMatch || ""} onChange={e => setClientEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                    <select data-lpignore="true" value={clientEmp.hasMatch || ""} onChange={e => setClientEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
                       <option value="">— Select —</option>
                       <option value="yes">Yes</option><option value="no">No</option>
                     </select>
@@ -584,7 +584,7 @@ export default function App() {
                   <F><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
                   <F>
                     <Lbl t="Custodian / Plan Sponsor" />
-                    <select value={clientEmp.retirementCustodian || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
+                    <select data-lpignore="true" value={clientEmp.retirementCustodian || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
                       <option value="">— Select —</option>
                       <option>Fidelity</option><option>Empower</option><option>Vanguard</option><option>Schwab</option>
                       <option>T. Rowe Price</option><option>Principal</option><option>Prudential</option><option>Transamerica</option>
@@ -614,7 +614,7 @@ export default function App() {
                 <F><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Pay Frequency" />
-                  <select value={spouseEmp.payFrequency || ""} onChange={e => setSpouseEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
+                  <select data-lpignore="true" value={spouseEmp.payFrequency || ""} onChange={e => setSpouseEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
                     <option value="">— Select —</option>
                     <option value="weekly">Weekly</option>
                     <option value="biweekly">Bi-Weekly</option>
@@ -629,7 +629,7 @@ export default function App() {
                 <Row cols={2}>
                   <F>
                     <Lbl t="Has Retirement Plan?" />
-                    <select value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
+                    <select data-lpignore="true" value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
                       <option value="">— Select —</option>
                       <option value="yes">Yes</option><option value="no">No</option>
                     </select>
@@ -637,7 +637,7 @@ export default function App() {
                   {spouseEmp.hasRetirement === "yes" && (
                     <F>
                       <Lbl t="Type of Plan" />
-                      <select value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
+                      <select data-lpignore="true" value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
                         <option value="">— Select —</option>
                         <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
                     <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
@@ -652,7 +652,7 @@ export default function App() {
                     <Row cols={2}>
                       <F>
                         <Lbl t="Employer Match?" />
-                        <select value={spouseEmp.hasMatch || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                        <select data-lpignore="true" value={spouseEmp.hasMatch || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
                           <option value="">— Select —</option>
                           <option value="yes">Yes</option><option value="no">No</option>
                         </select>
@@ -665,7 +665,7 @@ export default function App() {
                       <F><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
                       <F>
                         <Lbl t="Custodian / Plan Sponsor" />
-                        <select value={spouseEmp.retirementCustodian || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
+                        <select data-lpignore="true" value={spouseEmp.retirementCustodian || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
                           <option value="">— Select —</option>
                           <option>Fidelity</option><option>Empower</option><option>Vanguard</option><option>Schwab</option>
                           <option>T. Rowe Price</option><option>Principal</option><option>Prudential</option><option>Transamerica</option>
@@ -697,14 +697,14 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Income Type" />
-                  <select value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </F>
                 <F>
                   <Lbl t="Frequency" />
-                  <select value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     <option value="annual">Annual</option>
                     <option value="monthly">Monthly</option>
@@ -788,7 +788,7 @@ export default function App() {
                 )}
               </div>
               <Lbl t="Property Description" />
-              <select value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={IS}>
+              <select data-lpignore="true" value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={IS}>
                 <option value="">— Select —</option>
                 <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
               </select>
@@ -844,14 +844,14 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Account Type" />
-                  <select value={a.type} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={a.type} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </F>
                 <F>
                   <Lbl t="Institution / Held At" />
-                  <select value={a.institution} onChange={e => updAcct(a.id, "institution", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={a.institution} onChange={e => updAcct(a.id, "institution", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     <option>Jackson Nat'l</option><option>American Funds</option><option>Franklin Templeton</option>
                     <option>Voya</option><option>F&amp;G</option><option>Nationwide</option><option>Athene</option><option>Other</option>
@@ -865,7 +865,7 @@ export default function App() {
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Owner" />
-                  <select value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     <option value="Client">Client</option>
                     {hasSpouse === "yes" && <option value="Spouse">Spouse</option>}
@@ -891,7 +891,7 @@ export default function App() {
         {/* ── WILLS & TRUST ── */}
         <Panel title="Wills & Trust">
           <Lbl t="Do you have a Will or Trust?" />
-          <select value={willsTrust.hasWill || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWill: e.target.value || null }))} style={IS}>
+          <select data-lpignore="true" value={willsTrust.hasWill || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWill: e.target.value || null }))} style={IS}>
             <option value="">— Select —</option>
             <option value="will">Yes — Will</option>
             <option value="trust">Yes — Trust</option>
@@ -915,7 +915,7 @@ export default function App() {
                   <Row cols={2}>
                     <F>
                       <Lbl t="Has the Will Been Updated?" />
-                      <select value={willsTrust.willUpdated || ""} onChange={e => setWillsTrust(p => ({ ...p, willUpdated: e.target.value || null }))} style={IS}>
+                      <select data-lpignore="true" value={willsTrust.willUpdated || ""} onChange={e => setWillsTrust(p => ({ ...p, willUpdated: e.target.value || null }))} style={IS}>
                         <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option>
                       </select>
                     </F>
@@ -924,7 +924,7 @@ export default function App() {
                     )}
                   </Row>
                   <Lbl t="Notes / Additional Details" />
-                  <textarea value={willsTrust.willNotes} onChange={e => setWillsTrust(p => ({ ...p, willNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
+                  <textarea data-lpignore="true" value={willsTrust.willNotes} onChange={e => setWillsTrust(p => ({ ...p, willNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
                 </>
               )}
               {(willsTrust.hasWill === "trust" || willsTrust.hasWill === "both") && (
@@ -934,7 +934,7 @@ export default function App() {
                     <F><Lbl t="Name of Trust" /><input value={willsTrust.trustName} onChange={e => setWillsTrust(p => ({ ...p, trustName: e.target.value }))} style={IS} autoComplete="off" data-lpignore="true" /></F>
                     <F>
                       <Lbl t="Type of Trust" />
-                      <select value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value || null }))} style={IS}>
+                      <select data-lpignore="true" value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value || null }))} style={IS}>
                         <option value="">— Select —</option>
                         <option>Revocable Living Trust</option><option>Irrevocable Trust</option><option>Testamentary Trust</option>
                         <option>Special Needs Trust</option><option>Charitable Trust</option><option>Spendthrift Trust</option><option>Other</option>
@@ -952,14 +952,14 @@ export default function App() {
                   <Row cols={2}>
                     <F>
                       <Lbl t="Assets Titled in Trust?" />
-                      <select value={willsTrust.assetsTitled || ""} onChange={e => setWillsTrust(p => ({ ...p, assetsTitled: e.target.value || null }))} style={IS}>
+                      <select data-lpignore="true" value={willsTrust.assetsTitled || ""} onChange={e => setWillsTrust(p => ({ ...p, assetsTitled: e.target.value || null }))} style={IS}>
                         <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option><option value="partial">Partially</option>
                       </select>
                     </F>
                     <F><Lbl t="Location of Trust Documents" /><input value={willsTrust.trustLocation} onChange={e => setWillsTrust(p => ({ ...p, trustLocation: e.target.value }))} style={IS} autoComplete="off" data-lpignore="true" /></F>
                   </Row>
                   <Lbl t="Notes / Additional Details" />
-                  <textarea value={willsTrust.trustNotes} onChange={e => setWillsTrust(p => ({ ...p, trustNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
+                  <textarea data-lpignore="true" value={willsTrust.trustNotes} onChange={e => setWillsTrust(p => ({ ...p, trustNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
                 </div>
               )}
             </div>
@@ -969,13 +969,13 @@ export default function App() {
         {/* ── POWER OF ATTORNEY ── */}
         <Panel title="Power of Attorney">
           <Lbl t="Do you have a Power of Attorney?" />
-          <select value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
+          <select data-lpignore="true" value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
             <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option>
           </select>
           {poa.hasPOA === "yes" && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
               <Lbl t="Type of POA" />
-              <select value={poa.poaType || ""} onChange={e => setPoa(p => ({ ...p, poaType: e.target.value || null }))} style={IS}>
+              <select data-lpignore="true" value={poa.poaType || ""} onChange={e => setPoa(p => ({ ...p, poaType: e.target.value || null }))} style={IS}>
                 <option value="">— Select —</option>
                 <option>Durable Power of Attorney</option><option>Financial Power of Attorney</option>
                 <option>Healthcare / Medical POA</option><option>Limited Power of Attorney</option><option>Springing Power of Attorney</option>
@@ -984,7 +984,7 @@ export default function App() {
                 <F><Lbl t="Agent (Attorney-in-Fact)" /><input value={poa.agentName} onChange={e => setPoa(p => ({ ...p, agentName: e.target.value }))} style={IS} autoComplete="off" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Agent's Relationship" />
-                  <select value={poa.agentRelationship || ""} onChange={e => setPoa(p => ({ ...p, agentRelationship: e.target.value || null }))} style={IS}>
+                  <select data-lpignore="true" value={poa.agentRelationship || ""} onChange={e => setPoa(p => ({ ...p, agentRelationship: e.target.value || null }))} style={IS}>
                     <option value="">— Select —</option>
                     {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
@@ -1000,7 +1000,7 @@ export default function App() {
               </Row>
               <Lbl t="Location of POA Documents" /><input value={poa.poaLocation} onChange={e => setPoa(p => ({ ...p, poaLocation: e.target.value }))} style={IS} autoComplete="off" data-lpignore="true" />
               <Lbl t="Notes / Additional Details" />
-              <textarea value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
+              <textarea data-lpignore="true" value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
             </div>
           )}
         </Panel>
@@ -1043,6 +1043,7 @@ export default function App() {
         input::placeholder, textarea::placeholder { color: #a8c8f0 !important; opacity: 1; }
         select option { background: #1a2f5e; color: #ffffff; }
         @media (max-width: 600px) { .rg { grid-template-columns: 1fr !important; } }
+        [data-lastpass-icon-root], [data-lastpass-root], [id^="lastpass"], .lastpass-icon, div[data-lpignore-ext] { display: none !important; }
       `}</style>
     </div>
   );
