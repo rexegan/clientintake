@@ -526,25 +526,25 @@ export default function App() {
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="off" data-lpignore="true" /></F>
             <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="off" data-lpignore="true" /></F>
           </Row>
-          <Row cols={2}>
+          <Row cols={3}>
             <F><Lbl t="Years Employed" /><input value={clientEmp.yearsEmployed} onChange={setCE("yearsEmployed")} style={IS} autoComplete="off" data-lpignore="true" /></F>
             <F><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="Pay Frequency" />
+              <select value={clientEmp.payFrequency || ""} onChange={e => setClientEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-Weekly</option>
+                <option value="bimonthly">Bi-Monthly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </F>
           </Row>
           <Lbl t="Work Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="off" data-lpignore="true" />
 
           <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
             <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
             <Row cols={2}>
-              <F>
-                <Lbl t="Pay Frequency" />
-                <select value={clientEmp.payFrequency || ""} onChange={e => setClientEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
-                  <option value="">— Select —</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="biweekly">Bi-Weekly</option>
-                  <option value="bimonthly">Bi-Monthly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
-              </F>
               <F>
                 <Lbl t="Has Retirement Plan?" />
                 <select value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
@@ -609,24 +609,24 @@ export default function App() {
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="off" data-lpignore="true" /></F>
                 <F><Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="off" data-lpignore="true" /></F>
               </Row>
-              <Row cols={2}>
+              <Row cols={3}>
                 <F><Lbl t="Years Employed" /><input value={spouseEmp.yearsEmployed} onChange={setSE("yearsEmployed")} style={IS} autoComplete="off" data-lpignore="true" /></F>
                 <F><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Pay Frequency" />
+                  <select value={spouseEmp.payFrequency || ""} onChange={e => setSpouseEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Bi-Weekly</option>
+                    <option value="bimonthly">Bi-Monthly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </F>
               </Row>
               <Lbl t="Work Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="off" data-lpignore="true" />
               <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
                 <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
                 <Row cols={2}>
-                  <F>
-                    <Lbl t="Pay Frequency" />
-                    <select value={spouseEmp.payFrequency || ""} onChange={e => setSpouseEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
-                      <option value="">— Select —</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="biweekly">Bi-Weekly</option>
-                      <option value="bimonthly">Bi-Monthly</option>
-                      <option value="monthly">Monthly</option>
-                    </select>
-                  </F>
                   <F>
                     <Lbl t="Has Retirement Plan?" />
                     <select value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
