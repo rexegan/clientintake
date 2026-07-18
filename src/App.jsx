@@ -29,6 +29,55 @@ const Row = ({ children, cols = 2 }) => (
 
 const F = ({ children }) => <div>{children}</div>;
 
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function DatePicker({ value, onChange, label }) {
+  const parts = (value || "").split("/");
+  const mm = parts[0] || "";
+  const dd = parts[1] || "";
+  const yyyy = parts[2] || "";
+
+  const daysInMonth = mm && yyyy
+    ? new Date(parseInt(yyyy), parseInt(mm), 0).getDate()
+    : 31;
+
+  const set = (newMm, newDd, newYyyy) => {
+    if (!newMm && !newDd && !newYyyy) { onChange(""); return; }
+    onChange(`${newMm}/${newDd}/${newYyyy}`);
+  };
+
+  const sel = { ...IS, width: "auto", flex: 1 };
+
+  return (
+    <>
+      {label && <Lbl t={label} />}
+      <div style={{ display: "flex", gap: 8 }}>
+        <select value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={sel}>
+          <option value="">Mo</option>
+          {MONTHS.map((m, i) => {
+            const v = String(i + 1).padStart(2, "0");
+            return <option key={v} value={v}>{m}</option>;
+          })}
+        </select>
+        <select value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={sel}>
+          <option value="">Day</option>
+          {Array.from({ length: daysInMonth }, (_, i) => {
+            const v = String(i + 1).padStart(2, "0");
+            return <option key={v} value={v}>{i + 1}</option>;
+          })}
+        </select>
+        <select value={yyyy} onChange={e => set(mm, dd, e.target.value)} style={{ ...sel, flex: 1.4 }}>
+          <option value="">Year</option>
+          {Array.from({ length: 101 }, (_, i) => {
+            const y = String(new Date().getFullYear() - i);
+            return <option key={y} value={y}>{y}</option>;
+          })}
+        </select>
+      </div>
+    </>
+  );
+}
+
 const fmtPhone = (r) => {
   const d = r.replace(/\D/g, "").slice(0, 10);
   if (!d.length) return "";
@@ -237,7 +286,7 @@ export default function App() {
             <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="off" /></F>
           </Row>
           <Row cols={3}>
-            <F><Lbl t="Date of Birth" /><input value={client.dob} onChange={e => setClient(p => ({ ...p, dob: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+            <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
             <F><Lbl t="Social Security #" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
             <F><Lbl t="Email" /><input value={client.email} onChange={setC("email")} type="email" style={IS} autoComplete="off" /></F>
           </Row>
@@ -310,7 +359,7 @@ export default function App() {
                 <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setS("lastName")} style={IS} autoComplete="off" /></F>
               </Row>
               <Row cols={3}>
-                <F><Lbl t="Date of Birth" /><input value={spouse.dob} onChange={e => setSpouse(p => ({ ...p, dob: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} /></F>
                 <F><Lbl t="Social Security #" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
                 <F><Lbl t="Email" /><input value={spouse.email} onChange={setS("email")} type="email" style={IS} autoComplete="off" /></F>
               </Row>
@@ -337,7 +386,7 @@ export default function App() {
                     <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: e.target.value } : x))} style={IS} autoComplete="off" /></F>
                   </Row>
                   <Row cols={2}>
-                    <F><Lbl t="Date of Birth" /><input value={ch.dob} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: fmtDOB(e.target.value) } : x))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} /></F>
                     <F />
                   </Row>
                 </div>
@@ -365,7 +414,7 @@ export default function App() {
                 <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", e.target.value)} style={IS} autoComplete="off" /></F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="Date of Birth" /><input value={b.dob} onChange={e => updBene(b.id, "dob", fmtDOB(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} /></F>
                 <F>
                   <Lbl t="Relationship" />
                   <select value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
@@ -609,7 +658,7 @@ export default function App() {
               </select>
               <Lbl t="Property Address" /><input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="off" />
               <Row cols={3}>
-                <F><Lbl t="Purchase Date" /><input value={r.purchaseDate} onChange={e => updRE(r.id, "purchaseDate", fmtDOB(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><DatePicker label="Purchase Date" value={r.purchaseDate} onChange={v => updRE(r.id, "purchaseDate", v)} /></F>
                 <F><Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
                 <F><Lbl t="Market Value" /><input value={r.marketValue} onChange={e => updRE(r.id, "marketValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
               </Row>
@@ -706,7 +755,7 @@ export default function App() {
                 <>
                   <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Will Details</div>
                   <Row cols={2}>
-                    <F><Lbl t="Date Will Was Executed" /><input value={willsTrust.willDate} onChange={e => setWillsTrust(p => ({ ...p, willDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    <F><DatePicker label="Date Will Was Executed" value={willsTrust.willDate} onChange={v => setWillsTrust(p => ({ ...p, willDate: v }))} /></F>
                     <F><Lbl t="Attorney / Firm" /><input value={willsTrust.willAttorney} onChange={e => setWillsTrust(p => ({ ...p, willAttorney: e.target.value }))} style={IS} autoComplete="off" /></F>
                   </Row>
                   <Row cols={2}>
@@ -722,7 +771,7 @@ export default function App() {
                       </select>
                     </F>
                     {willsTrust.willUpdated === "yes" && (
-                      <F><Lbl t="Date of Most Recent Update" /><input value={willsTrust.willUpdateDate} onChange={e => setWillsTrust(p => ({ ...p, willUpdateDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                      <F><DatePicker label="Date of Most Recent Update" value={willsTrust.willUpdateDate} onChange={v => setWillsTrust(p => ({ ...p, willUpdateDate: v }))} /></F>
                     )}
                   </Row>
                   <Lbl t="Notes / Additional Details" />
@@ -744,7 +793,7 @@ export default function App() {
                     </F>
                   </Row>
                   <Row cols={2}>
-                    <F><Lbl t="Date Established" /><input value={willsTrust.trustDate} onChange={e => setWillsTrust(p => ({ ...p, trustDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    <F><DatePicker label="Date Established" value={willsTrust.trustDate} onChange={v => setWillsTrust(p => ({ ...p, trustDate: v }))} /></F>
                     <F><Lbl t="Attorney / Firm" /><input value={willsTrust.trustAttorney} onChange={e => setWillsTrust(p => ({ ...p, trustAttorney: e.target.value }))} style={IS} autoComplete="off" /></F>
                   </Row>
                   <Row cols={2}>
@@ -797,7 +846,7 @@ export default function App() {
                 <F><Lbl t="Alternate Agent" /><input value={poa.altAgent} onChange={e => setPoa(p => ({ ...p, altAgent: e.target.value }))} style={IS} autoComplete="off" /></F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="Date POA Was Executed" /><input value={poa.poaDate} onChange={e => setPoa(p => ({ ...p, poaDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><DatePicker label="Date POA Was Executed" value={poa.poaDate} onChange={v => setPoa(p => ({ ...p, poaDate: v }))} /></F>
                 <F><Lbl t="Attorney / Firm" /><input value={poa.poaAttorney} onChange={e => setPoa(p => ({ ...p, poaAttorney: e.target.value }))} style={IS} autoComplete="off" /></F>
               </Row>
               <Lbl t="Location of POA Documents" /><input value={poa.poaLocation} onChange={e => setPoa(p => ({ ...p, poaLocation: e.target.value }))} style={IS} autoComplete="off" />
