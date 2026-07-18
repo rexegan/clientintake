@@ -136,7 +136,7 @@ const RELATIONSHIP_TYPES = [
   "Friend","Trust","Estate","Charity / Organization","Other",
 ];
 
-function ClientRoster({ clients, onDelete, onBack }) {
+function ClientRoster({ clients, onDelete, onOpen, onBack }) {
   return (
     <div style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE }}>
       <div style={{ background: NAV, padding: "24px 24px 20px" }}>
@@ -175,7 +175,10 @@ function ClientRoster({ clients, onDelete, onBack }) {
                 </div>
                 <div style={{ fontSize: 11, color: LIGHT_BLUE, marginTop: 4, fontStyle: "italic" }}>Saved {new Date(c.savedAt).toLocaleDateString()}</div>
               </div>
-              <button onClick={() => onDelete(c.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Delete</button>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Open</button>
+                <button onClick={() => onDelete(c.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Delete</button>
+              </div>
             </div>
           );
         })}
@@ -297,6 +300,25 @@ export default function App() {
     return (
       <ClientRoster
         clients={savedClients}
+        onOpen={(record) => {
+          setClient(record.client || { ...emptyClient });
+          setSpouse(record.spouse || { ...emptySpouse });
+          setHasSpouse(record.hasSpouse || null);
+          setHasChildren(record.hasChildren || null);
+          setChildren(record.children || []);
+          setClientEmp(record.clientEmp || { ...emptyEmployer });
+          setSpouseEmp(record.spouseEmp || { ...emptyEmployer });
+          setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
+          setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
+          setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
+          setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
+          setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
+          setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
+          setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+          setSubmitted(false);
+          setView("form");
+          window.scrollTo(0, 0);
+        }}
         onDelete={(id) => {
           const updated = savedClients.filter(c => c.id !== id);
           localStorage.setItem("rwg_clients", JSON.stringify(updated));
