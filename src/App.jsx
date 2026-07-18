@@ -108,8 +108,9 @@ const emptyClient = {
   dob:"", ssn:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"",
+  dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"",
 };
-const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"" };
+const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"" };
 const emptyEmployer = { employer:"", occupation:"", yearsEmployed:"", workPhone:"", workAddress:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
@@ -402,6 +403,16 @@ export default function App() {
             <F><Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
 
+          <Sec t="Driver's License" />
+          <Row cols={2}>
+            <F><Lbl t="License Number" /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Issuing State" /><input value={client.dlState} onChange={setC("dlState")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={2}>
+            <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
+            <F><DatePicker label="Expiration Date" value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
+          </Row>
+
           <Sec t="Home Address" />
           <Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" />
           <Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" />
@@ -473,6 +484,15 @@ export default function App() {
               <Row cols={2}>
                 <F><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F />
+              </Row>
+              <Sec t="Driver's License" />
+              <Row cols={2}>
+                <F><Lbl t="License Number" /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Issuing State" /><input value={spouse.dlState} onChange={setS("dlState")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
+                <F><DatePicker label="Expiration Date" value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
             </div>
           )}
