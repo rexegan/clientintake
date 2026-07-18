@@ -112,7 +112,7 @@ const emptyClient = {
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"" };
 const emptyEmployer = { employer:"", occupation:"", yearsEmployed:"", workPhone:"", workAddress:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
-const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"" };
+const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
 const emptyAccount = { type:"", institution:"", balance:"", owner:"" };
 
 const ACCOUNT_TYPES = [
@@ -810,6 +810,19 @@ export default function App() {
                     })()}
                   </div>
                 </F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Mortgage Company" /><input value={r.mortgageCompany} onChange={e => updRE(r.id, "mortgageCompany", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" /></F>
+                <F><DatePicker label="Origination Date" value={r.originationDate} onChange={v => updRE(r.id, "originationDate", v)} /></F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="Interest Rate (%)" /><input value={r.interestRate} onChange={e => updRE(r.id, "interestRate", e.target.value.replace(/[^0-9.]/g, ""))} style={IS} inputMode="decimal" autoComplete="off" data-lpignore="true" /></F>
+                <F><Lbl t="Monthly Payment" /><input value={r.monthlyPmt} onChange={e => updRE(r.id, "monthlyPmt", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
+                <F><Lbl t="Property Taxes (Annual)" /><input value={r.propertyTaxes} onChange={e => updRE(r.id, "propertyTaxes", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Insurance (Annual)" /><input value={r.insurance} onChange={e => updRE(r.id, "insurance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" data-lpignore="true" /></F>
+                <F />
               </Row>
             </div>
           ))}
