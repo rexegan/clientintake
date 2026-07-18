@@ -21,6 +21,14 @@ const Sec = ({ t }) => (
   <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", borderBottom: "2px solid " + ACCENT, paddingBottom: 5, marginTop: 20, marginBottom: 6 }}>{t}</div>
 );
 
+const Row = ({ children, cols = 2 }) => (
+  <div className="rg" style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: "0 16px" }}>
+    {children}
+  </div>
+);
+
+const F = ({ children }) => <div>{children}</div>;
+
 const fmtPhone = (r) => {
   const d = r.replace(/\D/g, "").slice(0, 10);
   if (!d.length) return "";
@@ -221,21 +229,32 @@ export default function App() {
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: 24 }}>
 
+        {/* ── CLIENT PROFILE ── */}
         <Panel title="Client Profile">
-          <Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="off" />
-          <Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="off" />
-          <Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="off" />
-          <Lbl t="Date of Birth" /><input value={client.dob} onChange={e => setClient(p => ({ ...p, dob: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-          <Lbl t="Social Security Number" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-          <Lbl t="Cell Phone" /><input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-          <Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-          <Lbl t="Email" /><input value={client.email} onChange={setC("email")} type="email" style={IS} autoComplete="off" />
+          <Row cols={3}>
+            <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="off" /></F>
+            <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="off" /></F>
+            <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="off" /></F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="Date of Birth" /><input value={client.dob} onChange={e => setClient(p => ({ ...p, dob: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+            <F><Lbl t="Social Security #" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+            <F><Lbl t="Email" /><input value={client.email} onChange={setC("email")} type="email" style={IS} autoComplete="off" /></F>
+          </Row>
+          <Row cols={2}>
+            <F><Lbl t="Cell Phone" /><input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+            <F><Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+          </Row>
+
           <Sec t="Home Address" />
           <Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="off" />
           <Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="off" />
-          <Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="off" />
-          <Lbl t="State" /><input value={client.state} onChange={setC("state")} maxLength={2} style={IS} autoComplete="off" />
-          <Lbl t="ZIP" /><input value={client.zip} onChange={setC("zip")} maxLength={10} style={IS} autoComplete="off" />
+          <Row cols={3}>
+            <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="off" /></F>
+            <F><Lbl t="State" /><input value={client.state} onChange={setC("state")} maxLength={2} style={IS} autoComplete="off" /></F>
+            <F><Lbl t="ZIP" /><input value={client.zip} onChange={setC("zip")} maxLength={10} style={IS} autoComplete="off" /></F>
+          </Row>
+
           <Lbl t="PO Box?" />
           <select value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
             <option value="">— Select —</option>
@@ -245,68 +264,92 @@ export default function App() {
           {client.hasPOBox === "yes" && (
             <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
               <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
-              <Lbl t="PO Box Number" /><input value={client.poBox} onChange={setC("poBox")} style={IS} autoComplete="off" />
-              <Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="off" />
-              <Lbl t="State" /><input value={client.poBoxState} onChange={setC("poBoxState")} maxLength={2} style={IS} autoComplete="off" />
-              <Lbl t="ZIP" /><input value={client.poBoxZip} onChange={setC("poBoxZip")} maxLength={10} style={IS} autoComplete="off" />
+              <Row cols={2}>
+                <F><Lbl t="PO Box Number" /><input value={client.poBox} onChange={setC("poBox")} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="off" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="State" /><input value={client.poBoxState} onChange={setC("poBoxState")} maxLength={2} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="ZIP" /><input value={client.poBoxZip} onChange={setC("poBoxZip")} maxLength={10} style={IS} autoComplete="off" /></F>
+              </Row>
             </div>
           )}
         </Panel>
 
+        {/* ── FAMILY ── */}
         <Panel title="Family">
-          <Lbl t="Married?" />
-          <select value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={IS}>
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+          <Row cols={2}>
+            <F>
+              <Lbl t="Married?" />
+              <select value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Children?" />
+              <select value={hasChildren || ""} onChange={e => {
+                setHasChildren(e.target.value || null);
+                if (e.target.value === "yes" && children.length === 0) setChildren([{ ...emptyChild, id: Date.now() }]);
+                if (e.target.value === "no") setChildren([]);
+              }} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+          </Row>
+
           {hasSpouse === "yes" && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
               <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Spouse Details</div>
-              <Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="off" />
-              <Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="off" />
-              <Lbl t="Last Name" /><input value={spouse.lastName} onChange={setS("lastName")} style={IS} autoComplete="off" />
-              <Lbl t="Date of Birth" /><input value={spouse.dob} onChange={e => setSpouse(p => ({ ...p, dob: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Social Security Number" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Email" /><input value={spouse.email} onChange={setS("email")} type="email" style={IS} autoComplete="off" />
+              <Row cols={3}>
+                <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setS("lastName")} style={IS} autoComplete="off" /></F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="Date of Birth" /><input value={spouse.dob} onChange={e => setSpouse(p => ({ ...p, dob: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Social Security #" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Email" /><input value={spouse.email} onChange={setS("email")} type="email" style={IS} autoComplete="off" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F />
+              </Row>
             </div>
           )}
-          <div style={{ marginTop: 24, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
-            <Lbl t="Children?" />
-            <select value={hasChildren || ""} onChange={e => {
-              setHasChildren(e.target.value || null);
-              if (e.target.value === "yes" && children.length === 0) setChildren([{ ...emptyChild, id: Date.now() }]);
-              if (e.target.value === "no") setChildren([]);
-            }} style={IS}>
-              <option value="">— Select —</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-            {hasChildren === "yes" && (
-              <div style={{ marginTop: 14 }}>
-                {children.map((ch, i) => (
-                  <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                      <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
-                      {children.length > 1 && (
-                        <button onClick={() => setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
-                      )}
-                    </div>
-                    <Lbl t="First Name" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: e.target.value } : x))} style={IS} autoComplete="off" />
-                    <Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: e.target.value } : x))} style={IS} autoComplete="off" />
-                    <Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: e.target.value } : x))} style={IS} autoComplete="off" />
-                    <Lbl t="Date of Birth" /><input value={ch.dob} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: fmtDOB(e.target.value) } : x))} style={IS} inputMode="numeric" autoComplete="off" />
+
+          {hasChildren === "yes" && (
+            <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
+              {children.map((ch, i) => (
+                <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
+                    {children.length > 1 && (
+                      <button onClick={() => setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                    )}
                   </div>
-                ))}
-                <button onClick={() => setChildren(p => [...p, { ...emptyChild, id: Date.now() }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
-                  + Add Child
-                </button>
-              </div>
-            )}
-          </div>
+                  <Row cols={3}>
+                    <F><Lbl t="First Name" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: e.target.value } : x))} style={IS} autoComplete="off" /></F>
+                    <F><Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: e.target.value } : x))} style={IS} autoComplete="off" /></F>
+                    <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: e.target.value } : x))} style={IS} autoComplete="off" /></F>
+                  </Row>
+                  <Row cols={2}>
+                    <F><Lbl t="Date of Birth" /><input value={ch.dob} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: fmtDOB(e.target.value) } : x))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    <F />
+                  </Row>
+                </div>
+              ))}
+              <button onClick={() => setChildren(p => [...p, { ...emptyChild, id: Date.now() }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+                + Add Child
+              </button>
+            </div>
+          )}
         </Panel>
 
+        {/* ── BENEFICIARIES ── */}
         <Panel title="Beneficiaries">
           {beneficiaries.map((b, i) => (
             <div key={b.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
@@ -316,15 +359,21 @@ export default function App() {
                   <button onClick={() => delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", e.target.value)} style={IS} autoComplete="off" />
-              <Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", e.target.value)} style={IS} autoComplete="off" />
-              <Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", e.target.value)} style={IS} autoComplete="off" />
-              <Lbl t="Date of Birth" /><input value={b.dob} onChange={e => updBene(b.id, "dob", fmtDOB(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Relationship" />
-              <select value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
-              </select>
+              <Row cols={3}>
+                <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", e.target.value)} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", e.target.value)} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", e.target.value)} style={IS} autoComplete="off" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Date of Birth" /><input value={b.dob} onChange={e => updBene(b.id, "dob", fmtDOB(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F>
+                  <Lbl t="Relationship" />
+                  <select value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </F>
+              </Row>
             </div>
           ))}
           <button onClick={addBene} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
@@ -332,81 +381,116 @@ export default function App() {
           </button>
         </Panel>
 
+        {/* ── EMPLOYMENT ── */}
         <Panel title="Employment">
           <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
             {hasSpouse === "yes" ? "Client — " + (client.firstName || "Client") : "Employment"}
           </div>
-          <Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="off" />
-          <Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="off" />
-          <Lbl t="Years Employed" /><input value={clientEmp.yearsEmployed} onChange={setCE("yearsEmployed")} style={IS} autoComplete="off" />
-          <Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
+          <Row cols={2}>
+            <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="off" /></F>
+            <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="off" /></F>
+          </Row>
+          <Row cols={2}>
+            <F><Lbl t="Years Employed" /><input value={clientEmp.yearsEmployed} onChange={setCE("yearsEmployed")} style={IS} autoComplete="off" /></F>
+            <F><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+          </Row>
           <Lbl t="Work Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="off" />
+
           <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
             <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
-            <Lbl t="Employer Retirement Plan?" />
-            <select value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
-              <option value="">— Select —</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
+            <Row cols={2}>
+              <F>
+                <Lbl t="Has Retirement Plan?" />
+                <select value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
+                  <option value="">— Select —</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </F>
+              {clientEmp.hasRetirement === "yes" && (
+                <F>
+                  <Lbl t="Type of Plan" />
+                  <select value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
+                    <option value="">— Select —</option>
+                    <option>401(k)</option><option>ROTH 401(k)</option><option>Stock Option</option><option>Pension</option>
+                  </select>
+                </F>
+              )}
+            </Row>
             {clientEmp.hasRetirement === "yes" && (
               <>
-                <Lbl t="Type of Retirement Account" />
-                <select value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
-                  <option value="">— Select —</option>
-                  <option>401(k)</option><option>ROTH 401(k)</option><option>Stock Option</option><option>Pension</option>
-                </select>
-                <Lbl t="Employer Match?" />
-                <select value={clientEmp.hasMatch || ""} onChange={e => setClientEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
-                  <option value="">— Select —</option>
-                  <option value="yes">Yes</option><option value="no">No</option>
-                </select>
-                {clientEmp.hasMatch === "yes" && (
-                  <><Lbl t="Match Percentage" /><input value={clientEmp.matchPct} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="decimal" autoComplete="off" /></>
-                )}
-                <Lbl t="Current Balance" />
-                <input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-                <Lbl t="Custodian / Plan Sponsor" />
-                <input value={clientEmp.retirementCustodian} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value }))} style={IS} autoComplete="off" />
+                <Row cols={2}>
+                  <F>
+                    <Lbl t="Employer Match?" />
+                    <select value={clientEmp.hasMatch || ""} onChange={e => setClientEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="yes">Yes</option><option value="no">No</option>
+                    </select>
+                  </F>
+                  {clientEmp.hasMatch === "yes" && (
+                    <F><Lbl t="Match %" /><input value={clientEmp.matchPct} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="decimal" autoComplete="off" /></F>
+                  )}
+                </Row>
+                <Row cols={2}>
+                  <F><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                  <F><Lbl t="Custodian / Plan Sponsor" /><input value={clientEmp.retirementCustodian} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value }))} style={IS} autoComplete="off" /></F>
+                </Row>
               </>
             )}
           </div>
+
           {hasSpouse === "yes" && (
             <>
               <div style={{ borderTop: "2px solid " + ACCENT, marginTop: 18, paddingTop: 14 }}>
                 <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Spouse — {spouse.firstName || "Spouse"}</div>
               </div>
-              <Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="off" />
-              <Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="off" />
-              <Lbl t="Years Employed" /><input value={spouseEmp.yearsEmployed} onChange={setSE("yearsEmployed")} style={IS} autoComplete="off" />
-              <Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
+              <Row cols={2}>
+                <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="off" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Years Employed" /><input value={spouseEmp.yearsEmployed} onChange={setSE("yearsEmployed")} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+              </Row>
               <Lbl t="Work Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="off" />
               <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
                 <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
-                <Lbl t="Employer Retirement Plan?" />
-                <select value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
-                  <option value="">— Select —</option>
-                  <option value="yes">Yes</option><option value="no">No</option>
-                </select>
-                {spouseEmp.hasRetirement === "yes" && (
-                  <>
-                    <Lbl t="Type of Retirement Account" />
-                    <select value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
-                      <option value="">— Select —</option>
-                      <option>401(k)</option><option>ROTH 401(k)</option><option>Stock Option</option><option>Pension</option>
-                    </select>
-                    <Lbl t="Employer Match?" />
-                    <select value={spouseEmp.hasMatch || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                <Row cols={2}>
+                  <F>
+                    <Lbl t="Has Retirement Plan?" />
+                    <select value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
                       <option value="">— Select —</option>
                       <option value="yes">Yes</option><option value="no">No</option>
                     </select>
-                    {spouseEmp.hasMatch === "yes" && (
-                      <><Lbl t="Match Percentage" /><input value={spouseEmp.matchPct} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="decimal" autoComplete="off" /></>
-                    )}
-                    <Lbl t="Current Balance" />
-                    <input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-                    <Lbl t="Custodian / Plan Sponsor" />
-                    <input value={spouseEmp.retirementCustodian} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value }))} style={IS} autoComplete="off" />
+                  </F>
+                  {spouseEmp.hasRetirement === "yes" && (
+                    <F>
+                      <Lbl t="Type of Plan" />
+                      <select value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
+                        <option value="">— Select —</option>
+                        <option>401(k)</option><option>ROTH 401(k)</option><option>Stock Option</option><option>Pension</option>
+                      </select>
+                    </F>
+                  )}
+                </Row>
+                {spouseEmp.hasRetirement === "yes" && (
+                  <>
+                    <Row cols={2}>
+                      <F>
+                        <Lbl t="Employer Match?" />
+                        <select value={spouseEmp.hasMatch || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                          <option value="">— Select —</option>
+                          <option value="yes">Yes</option><option value="no">No</option>
+                        </select>
+                      </F>
+                      {spouseEmp.hasMatch === "yes" && (
+                        <F><Lbl t="Match %" /><input value={spouseEmp.matchPct} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="decimal" autoComplete="off" /></F>
+                      )}
+                    </Row>
+                    <Row cols={2}>
+                      <F><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                      <F><Lbl t="Custodian / Plan Sponsor" /><input value={spouseEmp.retirementCustodian} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value }))} style={IS} autoComplete="off" /></F>
+                    </Row>
                   </>
                 )}
               </div>
@@ -414,6 +498,7 @@ export default function App() {
           )}
         </Panel>
 
+        {/* ── ANNUAL INCOME ── */}
         <Panel title="Annual Income">
           {incomes.map((inc, i) => (
             <div key={inc.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
@@ -423,17 +508,23 @@ export default function App() {
                   <button onClick={() => delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Lbl t="Income Type" />
-              <select value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
-              <Lbl t="Annual / Monthly" />
-              <select value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                <option value="annual">Annual</option>
-                <option value="monthly">Monthly</option>
-              </select>
+              <Row cols={2}>
+                <F>
+                  <Lbl t="Income Type" />
+                  <select value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Annual / Monthly" />
+                  <select value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="annual">Annual</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </F>
+              </Row>
               {inc.frequency && (
                 <>
                   <Lbl t={inc.frequency === "annual" ? "Annual Amount" : "Monthly Amount"} />
@@ -501,6 +592,7 @@ export default function App() {
           })()}
         </Panel>
 
+        {/* ── REAL ESTATE ── */}
         <Panel title="Real Estate">
           {realEstate.map((r, i) => (
             <div key={r.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
@@ -516,18 +608,24 @@ export default function App() {
                 <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
               </select>
               <Lbl t="Property Address" /><input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="off" />
-              <Lbl t="Purchase Date" /><input value={r.purchaseDate} onChange={e => updRE(r.id, "purchaseDate", fmtDOB(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Current Market Value" /><input value={r.marketValue} onChange={e => updRE(r.id, "marketValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Outstanding Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Net Equity" />
-              <div style={{ ...IS, background: NAV, color: LIGHT_BLUE, display: "flex", alignItems: "center" }}>
-                {(() => {
-                  const mv = parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0);
-                  const mb = parseInt((r.mortgageBalance || "").replace(/[^0-9]/g, "") || 0);
-                  return mv > 0 ? "$" + (mv - mb).toLocaleString() : "—";
-                })()}
-              </div>
+              <Row cols={3}>
+                <F><Lbl t="Purchase Date" /><input value={r.purchaseDate} onChange={e => updRE(r.id, "purchaseDate", fmtDOB(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Market Value" /><input value={r.marketValue} onChange={e => updRE(r.id, "marketValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F>
+                  <Lbl t="Net Equity" />
+                  <div style={{ ...IS, background: NAV, color: LIGHT_BLUE, display: "flex", alignItems: "center" }}>
+                    {(() => {
+                      const mv = parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0);
+                      const mb = parseInt((r.mortgageBalance || "").replace(/[^0-9]/g, "") || 0);
+                      return mv > 0 ? "$" + (mv - mb).toLocaleString() : "—";
+                    })()}
+                  </div>
+                </F>
+              </Row>
             </div>
           ))}
           <button onClick={addRE} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
@@ -535,6 +633,7 @@ export default function App() {
           </button>
         </Panel>
 
+        {/* ── INVESTMENT & BANK ACCOUNTS ── */}
         <Panel title="Investment & Bank Accounts">
           {accounts.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
@@ -544,28 +643,38 @@ export default function App() {
                   <button onClick={() => delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Lbl t="Account Type" />
-              <select value={a.type} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
-              <Lbl t="Institution / Held At" />
-              <select value={a.institution} onChange={e => updAcct(a.id, "institution", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                <option>Jackson Nat'l</option><option>American Funds</option><option>Franklin Templeton</option>
-                <option>Voya</option><option>F&amp;G</option><option>Nationwide</option><option>Athene</option><option>Other</option>
-              </select>
+              <Row cols={2}>
+                <F>
+                  <Lbl t="Account Type" />
+                  <select value={a.type} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Institution / Held At" />
+                  <select value={a.institution} onChange={e => updAcct(a.id, "institution", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option>Jackson Nat'l</option><option>American Funds</option><option>Franklin Templeton</option>
+                    <option>Voya</option><option>F&amp;G</option><option>Nationwide</option><option>Athene</option><option>Other</option>
+                  </select>
+                </F>
+              </Row>
               {a.institution === "Other" && (
                 <><Lbl t="Specify Institution" /><input value={a.institutionOther || ""} onChange={e => updAcct(a.id, "institutionOther", e.target.value)} style={IS} autoComplete="off" /></>
               )}
-              <Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Owner" />
-              <select value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                <option value="Client">Client</option>
-                {hasSpouse === "yes" && <option value="Spouse">Spouse</option>}
-                <option value="Joint">Joint</option>
-              </select>
+              <Row cols={2}>
+                <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F>
+                  <Lbl t="Owner" />
+                  <select value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="Client">Client</option>
+                    {hasSpouse === "yes" && <option value="Spouse">Spouse</option>}
+                    <option value="Joint">Joint</option>
+                  </select>
+                </F>
+              </Row>
             </div>
           ))}
           {accounts.some(a => a.balance) && (
@@ -581,6 +690,7 @@ export default function App() {
           </button>
         </Panel>
 
+        {/* ── WILLS & TRUST ── */}
         <Panel title="Wills & Trust">
           <Lbl t="Do you have a Will or Trust?" />
           <select value={willsTrust.hasWill || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWill: e.target.value || null }))} style={IS}>
@@ -595,18 +705,26 @@ export default function App() {
               {(willsTrust.hasWill === "will" || willsTrust.hasWill === "both") && (
                 <>
                   <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Will Details</div>
-                  <Lbl t="Date Will Was Executed" /><input value={willsTrust.willDate} onChange={e => setWillsTrust(p => ({ ...p, willDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-                  <Lbl t="Attorney / Firm Who Prepared It" /><input value={willsTrust.willAttorney} onChange={e => setWillsTrust(p => ({ ...p, willAttorney: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Executor — First &amp; Last Name" /><input value={willsTrust.executor} onChange={e => setWillsTrust(p => ({ ...p, executor: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Alternate Executor" /><input value={willsTrust.altExecutor} onChange={e => setWillsTrust(p => ({ ...p, altExecutor: e.target.value }))} style={IS} autoComplete="off" />
+                  <Row cols={2}>
+                    <F><Lbl t="Date Will Was Executed" /><input value={willsTrust.willDate} onChange={e => setWillsTrust(p => ({ ...p, willDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    <F><Lbl t="Attorney / Firm" /><input value={willsTrust.willAttorney} onChange={e => setWillsTrust(p => ({ ...p, willAttorney: e.target.value }))} style={IS} autoComplete="off" /></F>
+                  </Row>
+                  <Row cols={2}>
+                    <F><Lbl t="Executor" /><input value={willsTrust.executor} onChange={e => setWillsTrust(p => ({ ...p, executor: e.target.value }))} style={IS} autoComplete="off" /></F>
+                    <F><Lbl t="Alternate Executor" /><input value={willsTrust.altExecutor} onChange={e => setWillsTrust(p => ({ ...p, altExecutor: e.target.value }))} style={IS} autoComplete="off" /></F>
+                  </Row>
                   <Lbl t="Location of Original Will" /><input value={willsTrust.willLocation} onChange={e => setWillsTrust(p => ({ ...p, willLocation: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Has the Will Been Updated Since Original?" />
-                  <select value={willsTrust.willUpdated || ""} onChange={e => setWillsTrust(p => ({ ...p, willUpdated: e.target.value || null }))} style={IS}>
-                    <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option>
-                  </select>
-                  {willsTrust.willUpdated === "yes" && (
-                    <><Lbl t="Date of Most Recent Update" /><input value={willsTrust.willUpdateDate} onChange={e => setWillsTrust(p => ({ ...p, willUpdateDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></>
-                  )}
+                  <Row cols={2}>
+                    <F>
+                      <Lbl t="Has the Will Been Updated?" />
+                      <select value={willsTrust.willUpdated || ""} onChange={e => setWillsTrust(p => ({ ...p, willUpdated: e.target.value || null }))} style={IS}>
+                        <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option>
+                      </select>
+                    </F>
+                    {willsTrust.willUpdated === "yes" && (
+                      <F><Lbl t="Date of Most Recent Update" /><input value={willsTrust.willUpdateDate} onChange={e => setWillsTrust(p => ({ ...p, willUpdateDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    )}
+                  </Row>
                   <Lbl t="Notes / Additional Details" />
                   <textarea value={willsTrust.willNotes} onChange={e => setWillsTrust(p => ({ ...p, willNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
                 </>
@@ -614,22 +732,34 @@ export default function App() {
               {(willsTrust.hasWill === "trust" || willsTrust.hasWill === "both") && (
                 <div style={{ marginTop: willsTrust.hasWill === "both" ? 20 : 0, borderTop: willsTrust.hasWill === "both" ? "2px solid " + ACCENT : "none", paddingTop: willsTrust.hasWill === "both" ? 16 : 0 }}>
                   <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Trust Details</div>
-                  <Lbl t="Name of Trust" /><input value={willsTrust.trustName} onChange={e => setWillsTrust(p => ({ ...p, trustName: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Type of Trust" />
-                  <select value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value || null }))} style={IS}>
-                    <option value="">— Select —</option>
-                    <option>Revocable Living Trust</option><option>Irrevocable Trust</option><option>Testamentary Trust</option>
-                    <option>Special Needs Trust</option><option>Charitable Trust</option><option>Spendthrift Trust</option><option>Other</option>
-                  </select>
-                  <Lbl t="Date Trust Was Established" /><input value={willsTrust.trustDate} onChange={e => setWillsTrust(p => ({ ...p, trustDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-                  <Lbl t="Trustee — Full Name" /><input value={willsTrust.trustee} onChange={e => setWillsTrust(p => ({ ...p, trustee: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Successor Trustee — Full Name" /><input value={willsTrust.successorTrustee} onChange={e => setWillsTrust(p => ({ ...p, successorTrustee: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Attorney / Firm Who Prepared It" /><input value={willsTrust.trustAttorney} onChange={e => setWillsTrust(p => ({ ...p, trustAttorney: e.target.value }))} style={IS} autoComplete="off" />
-                  <Lbl t="Assets Currently Titled in Trust?" />
-                  <select value={willsTrust.assetsTitled || ""} onChange={e => setWillsTrust(p => ({ ...p, assetsTitled: e.target.value || null }))} style={IS}>
-                    <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option><option value="partial">Partially</option>
-                  </select>
-                  <Lbl t="Location of Trust Documents" /><input value={willsTrust.trustLocation} onChange={e => setWillsTrust(p => ({ ...p, trustLocation: e.target.value }))} style={IS} autoComplete="off" />
+                  <Row cols={2}>
+                    <F><Lbl t="Name of Trust" /><input value={willsTrust.trustName} onChange={e => setWillsTrust(p => ({ ...p, trustName: e.target.value }))} style={IS} autoComplete="off" /></F>
+                    <F>
+                      <Lbl t="Type of Trust" />
+                      <select value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value || null }))} style={IS}>
+                        <option value="">— Select —</option>
+                        <option>Revocable Living Trust</option><option>Irrevocable Trust</option><option>Testamentary Trust</option>
+                        <option>Special Needs Trust</option><option>Charitable Trust</option><option>Spendthrift Trust</option><option>Other</option>
+                      </select>
+                    </F>
+                  </Row>
+                  <Row cols={2}>
+                    <F><Lbl t="Date Established" /><input value={willsTrust.trustDate} onChange={e => setWillsTrust(p => ({ ...p, trustDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                    <F><Lbl t="Attorney / Firm" /><input value={willsTrust.trustAttorney} onChange={e => setWillsTrust(p => ({ ...p, trustAttorney: e.target.value }))} style={IS} autoComplete="off" /></F>
+                  </Row>
+                  <Row cols={2}>
+                    <F><Lbl t="Trustee" /><input value={willsTrust.trustee} onChange={e => setWillsTrust(p => ({ ...p, trustee: e.target.value }))} style={IS} autoComplete="off" /></F>
+                    <F><Lbl t="Successor Trustee" /><input value={willsTrust.successorTrustee} onChange={e => setWillsTrust(p => ({ ...p, successorTrustee: e.target.value }))} style={IS} autoComplete="off" /></F>
+                  </Row>
+                  <Row cols={2}>
+                    <F>
+                      <Lbl t="Assets Titled in Trust?" />
+                      <select value={willsTrust.assetsTitled || ""} onChange={e => setWillsTrust(p => ({ ...p, assetsTitled: e.target.value || null }))} style={IS}>
+                        <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option><option value="partial">Partially</option>
+                      </select>
+                    </F>
+                    <F><Lbl t="Location of Trust Documents" /><input value={willsTrust.trustLocation} onChange={e => setWillsTrust(p => ({ ...p, trustLocation: e.target.value }))} style={IS} autoComplete="off" /></F>
+                  </Row>
                   <Lbl t="Notes / Additional Details" />
                   <textarea value={willsTrust.trustNotes} onChange={e => setWillsTrust(p => ({ ...p, trustNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
                 </div>
@@ -638,6 +768,7 @@ export default function App() {
           )}
         </Panel>
 
+        {/* ── POWER OF ATTORNEY ── */}
         <Panel title="Power of Attorney">
           <Lbl t="Do you have a Power of Attorney?" />
           <select value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
@@ -651,16 +782,24 @@ export default function App() {
                 <option>Durable Power of Attorney</option><option>Financial Power of Attorney</option>
                 <option>Healthcare / Medical POA</option><option>Limited Power of Attorney</option><option>Springing Power of Attorney</option>
               </select>
-              <Lbl t="Agent (Attorney-in-Fact) — Full Name" /><input value={poa.agentName} onChange={e => setPoa(p => ({ ...p, agentName: e.target.value }))} style={IS} autoComplete="off" />
-              <Lbl t="Agent's Relationship to Client" />
-              <select value={poa.agentRelationship || ""} onChange={e => setPoa(p => ({ ...p, agentRelationship: e.target.value || null }))} style={IS}>
-                <option value="">— Select —</option>
-                {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
-              </select>
-              <Lbl t="Agent's Phone Number" /><input value={poa.agentPhone} onChange={e => setPoa(p => ({ ...p, agentPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Alternate Agent — Full Name" /><input value={poa.altAgent} onChange={e => setPoa(p => ({ ...p, altAgent: e.target.value }))} style={IS} autoComplete="off" />
-              <Lbl t="Date POA Was Executed" /><input value={poa.poaDate} onChange={e => setPoa(p => ({ ...p, poaDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Attorney / Firm Who Prepared It" /><input value={poa.poaAttorney} onChange={e => setPoa(p => ({ ...p, poaAttorney: e.target.value }))} style={IS} autoComplete="off" />
+              <Row cols={2}>
+                <F><Lbl t="Agent (Attorney-in-Fact)" /><input value={poa.agentName} onChange={e => setPoa(p => ({ ...p, agentName: e.target.value }))} style={IS} autoComplete="off" /></F>
+                <F>
+                  <Lbl t="Agent's Relationship" />
+                  <select value={poa.agentRelationship || ""} onChange={e => setPoa(p => ({ ...p, agentRelationship: e.target.value || null }))} style={IS}>
+                    <option value="">— Select —</option>
+                    {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Agent's Phone" /><input value={poa.agentPhone} onChange={e => setPoa(p => ({ ...p, agentPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Alternate Agent" /><input value={poa.altAgent} onChange={e => setPoa(p => ({ ...p, altAgent: e.target.value }))} style={IS} autoComplete="off" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="Date POA Was Executed" /><input value={poa.poaDate} onChange={e => setPoa(p => ({ ...p, poaDate: fmtDOB(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Attorney / Firm" /><input value={poa.poaAttorney} onChange={e => setPoa(p => ({ ...p, poaAttorney: e.target.value }))} style={IS} autoComplete="off" /></F>
+              </Row>
               <Lbl t="Location of POA Documents" /><input value={poa.poaLocation} onChange={e => setPoa(p => ({ ...p, poaLocation: e.target.value }))} style={IS} autoComplete="off" />
               <Lbl t="Notes / Additional Details" />
               <textarea value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
@@ -668,6 +807,7 @@ export default function App() {
           )}
         </Panel>
 
+        {/* ── AUTOMOBILES ── */}
         <Panel title="Automobiles">
           {autos.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
@@ -677,10 +817,12 @@ export default function App() {
                   <button onClick={() => delAuto(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="off" />
-              <Lbl t="Make" /><input value={a.make} onChange={e => updAuto(a.id, "make", e.target.value)} style={IS} autoComplete="off" />
-              <Lbl t="Model" /><input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" />
-              <Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" />
+              <Row cols={4}>
+                <F><Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="off" /></F>
+                <F><Lbl t="Make" /><input value={a.make} onChange={e => updAuto(a.id, "make", e.target.value)} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Model" /><input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" /></F>
+                <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="off" /></F>
+              </Row>
             </div>
           ))}
           <button onClick={addAuto} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
@@ -702,6 +844,7 @@ export default function App() {
         input:focus, textarea:focus, select:focus { outline: 3px solid #ffffff; outline-offset: 1px; background: #2a4a80 !important; }
         input::placeholder, textarea::placeholder { color: #a8c8f0 !important; opacity: 1; }
         select option { background: #1a2f5e; color: #ffffff; }
+        @media (max-width: 600px) { .rg { grid-template-columns: 1fr !important; } }
       `}</style>
     </div>
   );
