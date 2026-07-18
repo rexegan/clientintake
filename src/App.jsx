@@ -432,9 +432,11 @@ export default function App() {
 
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment">
-          <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
-            {hasSpouse === "yes" ? "Client — " + (client.firstName || "Client") : "Employment"}
-          </div>
+          {hasSpouse === "yes" && (
+            <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+              {client.firstName || "Client"}
+            </div>
+          )}
           <Row cols={2}>
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="off" /></F>
             <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="off" /></F>
@@ -491,7 +493,7 @@ export default function App() {
           {hasSpouse === "yes" && (
             <>
               <div style={{ borderTop: "2px solid " + ACCENT, marginTop: 18, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Spouse — {spouse.firstName || "Spouse"}</div>
+                <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
               </div>
               <Row cols={2}>
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="off" /></F>
