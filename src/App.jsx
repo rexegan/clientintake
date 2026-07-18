@@ -463,7 +463,10 @@ export default function App() {
                   <Lbl t="Type of Plan" />
                   <select value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
                     <option value="">— Select —</option>
-                    <option>401(k)</option><option>ROTH 401(k)</option><option>Stock Option</option><option>Pension</option>
+                    <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
+                    <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
+                    <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
+                    <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
                   </select>
                 </F>
               )}
@@ -519,7 +522,10 @@ export default function App() {
                       <Lbl t="Type of Plan" />
                       <select value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
                         <option value="">— Select —</option>
-                        <option>401(k)</option><option>ROTH 401(k)</option><option>Stock Option</option><option>Pension</option>
+                        <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
+                    <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
+                    <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
+                    <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
                       </select>
                     </F>
                   )}
