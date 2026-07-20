@@ -242,6 +242,21 @@ export default function App() {
     setSavedClients(updated);
   };
 
+  const lookupZip = (zip, onResult) => {
+    if (zip.length === 5) {
+      fetch(`https://api.zippopotam.us/us/${zip}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+          if (d && d.places && d.places[0]) {
+            onResult(d.places[0]["place name"], d.places[0]["state abbreviation"]);
+          }
+        })
+        .catch(() => {});
+    } else {
+      onResult("", "");
+    }
+  };
+
   const showToast = (msg, color) => {
     setToast({ msg, color: color || ACCENT });
     setTimeout(() => setToast(null), 2800);
@@ -426,16 +441,7 @@ export default function App() {
                 onChange={e => {
                   const z = e.target.value.replace(/\D/g, "").slice(0, 10);
                   setClient(p => ({ ...p, zip: z }));
-                  if (z.length === 5) {
-                    fetch(`https://api.zippopotam.us/us/${z}`)
-                      .then(r => r.ok ? r.json() : null)
-                      .then(d => {
-                        if (d && d.places && d.places[0]) {
-                          setClient(p => ({ ...p, city: d.places[0]["place name"], state: d.places[0]["state abbreviation"] }));
-                        }
-                      })
-                      .catch(() => {});
-                  }
+                  lookupZip(z, (city, state) => setClient(p => ({ ...p, city, state })));
                 }}
                 maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
               />
@@ -457,7 +463,18 @@ export default function App() {
               </Row>
               <Row cols={2}>
                 <F><Lbl t="State" /><input value={client.poBoxState} onChange={setC("poBoxState")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="ZIP" /><input value={client.poBoxZip} onChange={setC("poBoxZip")} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="ZIP" />
+                  <input
+                    value={client.poBoxZip}
+                    onChange={e => {
+                      const z = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      setClient(p => ({ ...p, poBoxZip: z }));
+                      lookupZip(z, (city, state) => setClient(p => ({ ...p, poBoxCity: city, poBoxState: state })));
+                    }}
+                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
               </Row>
             </div>
           )}
