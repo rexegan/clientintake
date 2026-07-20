@@ -136,7 +136,7 @@ const INCOME_TYPES = [
 
 const emptyIncome      = { type:"", amount:"", owner:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"" };
-const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressLine1:"", city:"", state:"", zip:"" };
+const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
 const RELATIONSHIP_TYPES = [
   "Spouse","Child","Parent","Sibling","Grandchild","Grandparent",
@@ -641,23 +641,64 @@ export default function App() {
                   />
                 </F>
               </Row>
-              <Lbl t="Address" /><input value={b.addressLine1} onChange={e => updBene(b.id, "addressLine1", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" />
-              <Row cols={3}>
-                <F><Lbl t="City" /><input value={b.city} onChange={e => updBene(b.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="State" /><input value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
-                  <Lbl t="ZIP" />
-                  <input
-                    value={b.zip}
-                    onChange={e => {
-                      const z = fmtZip(e.target.value);
-                      updBene(b.id, "zip", z);
-                      lookupZip(z, (city, state) => { updBene(b.id, "city", city); updBene(b.id, "state", state); });
-                    }}
-                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
-                  />
-                </F>
-              </Row>
+              <Lbl t="Address" />
+              <select data-lpignore="true" value={b.addressSource || "manual"} onChange={e => {
+                const src = e.target.value;
+                if (src === "client") {
+                  updBene(b.id, "addressSource", "client");
+                  updBene(b.id, "addressLine1", client.addressLine1);
+                  updBene(b.id, "city", client.city);
+                  updBene(b.id, "state", client.state);
+                  updBene(b.id, "zip", client.zip);
+                } else if (src === "spouse") {
+                  updBene(b.id, "addressSource", "spouse");
+                  updBene(b.id, "addressLine1", client.addressLine1);
+                  updBene(b.id, "city", client.city);
+                  updBene(b.id, "state", client.state);
+                  updBene(b.id, "zip", client.zip); // spouse shares home address
+                } else {
+                  updBene(b.id, "addressSource", "manual");
+                }
+              }} style={IS}>
+                <option value="manual">Enter Manually</option>
+                <option value="client">Same as {client.firstName || "Client"}</option>
+                {hasSpouse === "yes" && <option value="spouse">Same as {spouse.firstName || "Spouse"}</option>}
+              </select>
+              {(() => {
+                const src = b.addressSource || "manual";
+                const addrLine = src !== "manual" ? client.addressLine1 : b.addressLine1;
+                const addrCity = src !== "manual" ? client.city : b.city;
+                const addrState = src !== "manual" ? client.state : b.state;
+                const addrZip = src !== "manual" ? client.zip : b.zip;
+                const readOnly = b.addressSource !== "manual";
+                const roStyle = { ...IS, background: NAV, color: LIGHT_BLUE };
+                return readOnly ? (
+                  <div style={{ marginTop: 6, background: NAV, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 13px", color: LIGHT_BLUE, fontSize: 14 }}>
+                    {addrLine}{addrLine && (addrCity || addrState || addrZip) ? ", " : ""}{addrCity}{addrState ? ", " + addrState : ""}{addrZip ? " " + addrZip : ""}
+                    {!addrLine && !addrCity && <span style={{ fontStyle: "italic", opacity: 0.6 }}>No address on file yet</span>}
+                  </div>
+                ) : (
+                  <>
+                    <input value={b.addressLine1} onChange={e => updBene(b.id, "addressLine1", e.target.value)} style={{ ...IS, marginTop: 6 }} autoComplete="new-password" data-lpignore="true" />
+                    <Row cols={3}>
+                      <F><Lbl t="City" /><input value={b.city} onChange={e => updBene(b.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                      <F><Lbl t="State" /><input value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                      <F>
+                        <Lbl t="ZIP" />
+                        <input
+                          value={b.zip}
+                          onChange={e => {
+                            const z = fmtZip(e.target.value);
+                            updBene(b.id, "zip", z);
+                            lookupZip(z, (city, state) => { updBene(b.id, "city", city); updBene(b.id, "state", state); });
+                          }}
+                          maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+                        />
+                      </F>
+                    </Row>
+                  </>
+                );
+              })()}
             </div>
           ))}
           {(() => {
