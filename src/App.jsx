@@ -97,6 +97,12 @@ const fmtDOB = (r) => {
   if (d.length <= 4) return d.slice(0,2) + "/" + d.slice(2);
   return d.slice(0,2) + "/" + d.slice(2,4) + "/" + d.slice(4);
 };
+const fmtPOBox = (r) => {
+  const stripped = r.replace(/^[Pp]\.?[Oo]\.?\s*[Bb][Oo][Xx]\.?\s*/i, "").trim();
+  if (!stripped) return r;
+  return "P.O. Box " + stripped;
+};
+
 const fmtDollar = (r) => {
   const d = r.replace(/[^0-9]/g, "");
   if (!d) return "";
@@ -472,7 +478,15 @@ export default function App() {
             <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
               <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
               <Row cols={2}>
-                <F><Lbl t="PO Box Number" /><input value={client.poBox} onChange={setC("poBox")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="PO Box Number" />
+                  <input
+                    value={client.poBox}
+                    onChange={setC("poBox")}
+                    onBlur={e => setClient(p => ({ ...p, poBox: fmtPOBox(e.target.value) }))}
+                    style={IS} autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
                 <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
