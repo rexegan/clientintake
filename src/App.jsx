@@ -107,7 +107,7 @@ const emptyClient = {
   firstName:"", middleName:"", lastName:"",
   dob:"", ssn:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
-  hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"",
+  hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
   dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"" };
@@ -429,8 +429,10 @@ export default function App() {
           </Row>
 
           <Sec t="Home Address" />
-          <Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" />
-          <Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" />
+          <Row cols={2}>
+            <F><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
           <Row cols={3}>
             <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="State" /><input value={client.state} onChange={setC("state")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -448,12 +450,24 @@ export default function App() {
             </F>
           </Row>
 
-          <Lbl t="PO Box?" />
-          <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+          <div className="rg" style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "0 16px" }}>
+            <F>
+              <Lbl t="PO Box?" />
+              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Preferred Mailing Address" />
+              <select data-lpignore="true" value={client.preferredMailing || ""} onChange={e => setClient(p => ({ ...p, preferredMailing: e.target.value || "" }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="physical">Physical Address</option>
+                <option value="pobox">P.O. Box</option>
+              </select>
+            </F>
+          </div>
           {client.hasPOBox === "yes" && (
             <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
               <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
