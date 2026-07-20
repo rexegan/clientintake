@@ -419,7 +419,27 @@ export default function App() {
           <Row cols={3}>
             <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="State" /><input value={client.state} onChange={setC("state")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="ZIP" /><input value={client.zip} onChange={setC("zip")} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="ZIP" />
+              <input
+                value={client.zip}
+                onChange={e => {
+                  const z = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  setClient(p => ({ ...p, zip: z }));
+                  if (z.length === 5) {
+                    fetch(`https://api.zippopotam.us/us/${z}`)
+                      .then(r => r.ok ? r.json() : null)
+                      .then(d => {
+                        if (d && d.places && d.places[0]) {
+                          setClient(p => ({ ...p, city: d.places[0]["place name"], state: d.places[0]["state abbreviation"] }));
+                        }
+                      })
+                      .catch(() => {});
+                  }
+                }}
+                maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+              />
+            </F>
           </Row>
 
           <Lbl t="PO Box?" />
