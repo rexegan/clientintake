@@ -136,7 +136,7 @@ const INCOME_TYPES = [
 
 const emptyIncome      = { type:"", amount:"", owner:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"" };
-const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", relationship:"" };
+const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressLine1:"", city:"", state:"", zip:"" };
 
 const RELATIONSHIP_TYPES = [
   "Spouse","Child","Parent","Sibling","Grandchild","Grandparent",
@@ -612,8 +612,9 @@ export default function App() {
                 <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={2}>
+              <Row cols={3}>
                 <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} /></F>
+                <F><Lbl t="Social Security #" /><input value={b.ssn} onChange={e => updBene(b.id, "ssn", fmtSSN(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Relationship" />
                   <select data-lpignore="true" value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
@@ -622,8 +623,57 @@ export default function App() {
                   </select>
                 </F>
               </Row>
+              <Row cols={2}>
+                <F><Lbl t="Email Address" /><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="% to Inherit" />
+                  <input
+                    value={b.percentage}
+                    onChange={e => {
+                      const v = e.target.value.replace(/[^0-9.]/g, "");
+                      updBene(b.id, "percentage", v);
+                    }}
+                    onBlur={e => {
+                      const n = parseFloat(e.target.value);
+                      if (!isNaN(n)) updBene(b.id, "percentage", Math.min(100, Math.max(0, n)) + "%");
+                    }}
+                    style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
+              </Row>
+              <Lbl t="Address" /><input value={b.addressLine1} onChange={e => updBene(b.id, "addressLine1", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" />
+              <Row cols={3}>
+                <F><Lbl t="City" /><input value={b.city} onChange={e => updBene(b.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="State" /><input value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="ZIP" />
+                  <input
+                    value={b.zip}
+                    onChange={e => {
+                      const z = fmtZip(e.target.value);
+                      updBene(b.id, "zip", z);
+                      lookupZip(z, (city, state) => { updBene(b.id, "city", city); updBene(b.id, "state", state); });
+                    }}
+                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
+              </Row>
             </div>
           ))}
+          {(() => {
+            const total = beneficiaries.reduce((sum, b) => {
+              const n = parseFloat((b.percentage || "").replace("%", "") || 0);
+              return sum + (isNaN(n) ? 0 : n);
+            }, 0);
+            if (!total) return null;
+            const over = total > 100;
+            return (
+              <div style={{ background: NAV, border: "2px solid " + (over ? "#c0392b" : ACCENT), borderRadius: 8, padding: "10px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Allocated</span>
+                <span style={{ fontSize: 17, fontWeight: "bold", color: over ? "#e74c3c" : (total === 100 ? "#2ecc71" : WHITE) }}>{total}%{over ? " — exceeds 100%" : total === 100 ? " ✓" : ""}</span>
+              </div>
+            );
+          })()}
           <button onClick={addBene} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
             + Add Beneficiary
           </button>
