@@ -248,9 +248,16 @@ export default function App() {
     setSavedClients(updated);
   };
 
+  const fmtZip = (raw) => {
+    const d = raw.replace(/\D/g, "").slice(0, 9);
+    if (d.length > 5) return d.slice(0, 5) + "-" + d.slice(5);
+    return d;
+  };
+
   const lookupZip = (zip, onResult) => {
-    if (zip.length === 5) {
-      fetch(`https://api.zippopotam.us/us/${zip}`)
+    const base = zip.replace(/\D/g, "");
+    if (base.length >= 5) {
+      fetch(`https://api.zippopotam.us/us/${base.slice(0, 5)}`)
         .then(r => r.ok ? r.json() : null)
         .then(d => {
           if (d && d.places && d.places[0]) {
@@ -447,7 +454,7 @@ export default function App() {
               <input
                 value={client.zip}
                 onChange={e => {
-                  const z = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  const z = fmtZip(e.target.value);
                   setClient(p => ({ ...p, zip: z }));
                   lookupZip(z, (city, state) => setClient(p => ({ ...p, city, state })));
                 }}
@@ -496,7 +503,7 @@ export default function App() {
                   <input
                     value={client.poBoxZip}
                     onChange={e => {
-                      const z = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      const z = fmtZip(e.target.value);
                       setClient(p => ({ ...p, poBoxZip: z }));
                       lookupZip(z, (city, state) => setClient(p => ({ ...p, poBoxCity: city, poBoxState: state })));
                     }}
