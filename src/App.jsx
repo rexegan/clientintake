@@ -141,7 +141,7 @@ const INCOME_TYPES = [
   "Rental Income","Investment / Dividends","Alimony / Child Support","Other",
 ];
 
-const emptyIncome      = { type:"", amount:"", owner:"" };
+const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
@@ -1078,7 +1078,7 @@ export default function App() {
                   <button onClick={() => delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Row cols={2}>
+              <Row cols={3}>
                 <F>
                   <Lbl t="Income Type" />
                   <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
@@ -1092,6 +1092,13 @@ export default function App() {
                     <option value="">— Select —</option>
                     <option value="annual">Annual</option>
                     <option value="monthly">Monthly</option>
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Belongs To" />
+                  <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)} style={IS}>
+                    <option value="client">Client — {client.firstName || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && <option value="spouse">Spouse — {spouse.firstName || "Spouse"}</option>}
                   </select>
                 </F>
               </Row>
@@ -1119,11 +1126,10 @@ export default function App() {
             + Add Income Source
           </button>
           {(() => {
-            const totalAnnual = incomes.reduce((sum, inc) => {
-              const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0);
-              if (!raw || !inc.frequency) return sum;
-              return sum + (inc.frequency === "annual" ? raw : raw * 12);
-            }, 0);
+            const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; return inc.frequency === "annual" ? raw : raw * 12; };
+            const clientAnnual = incomes.filter(i => (i.owner || "client") === "client").reduce((s, i) => s + toAnnual(i), 0);
+            const spouseAnnual = incomes.filter(i => i.owner === "spouse").reduce((s, i) => s + toAnnual(i), 0);
+            const totalAnnual = clientAnnual + spouseAnnual;
             if (!totalAnnual) return null;
             const married = ["married","domestic_partner"].includes(hasSpouse);
             const brackets = married ? [
@@ -1145,7 +1151,19 @@ export default function App() {
                 <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>
                   Estimated Tax Summary — Filing {married ? "Married Filing Jointly" : "Single"}
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                {clientAnnual > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Client Income ({client.firstName || "Client"})</span>
+                    <span style={{ fontSize: 14, color: WHITE }}>${clientAnnual.toLocaleString()}</span>
+                  </div>
+                )}
+                {spouseAnnual > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Spouse Income ({spouse.firstName || "Spouse"})</span>
+                    <span style={{ fontSize: 14, color: WHITE }}>${spouseAnnual.toLocaleString()}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, borderTop: "1px solid " + ACCENT, paddingTop: 8 }}>
                   <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Total Gross Income</span>
                   <span style={{ fontSize: 15, fontWeight: "bold", color: WHITE }}>${totalAnnual.toLocaleString()}</span>
                 </div>
