@@ -138,6 +138,29 @@ const emptyIncome      = { type:"", amount:"", owner:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
+const US_STATES = [
+  ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
+  ["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["FL","Florida"],["GA","Georgia"],
+  ["HI","Hawaii"],["ID","Idaho"],["IL","Illinois"],["IN","Indiana"],["IA","Iowa"],
+  ["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],["MD","Maryland"],
+  ["MA","Massachusetts"],["MI","Michigan"],["MN","Minnesota"],["MS","Mississippi"],["MO","Missouri"],
+  ["MT","Montana"],["NE","Nebraska"],["NV","Nevada"],["NH","New Hampshire"],["NJ","New Jersey"],
+  ["NM","New Mexico"],["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],["OH","Ohio"],
+  ["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],["SC","South Carolina"],
+  ["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],["UT","Utah"],["VT","Vermont"],
+  ["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"],
+  ["DC","District of Columbia"],
+];
+
+const StateSelect = ({ value, onChange }) => (
+  <select data-lpignore="true" value={value || ""} onChange={onChange} style={IS}>
+    <option value="">— Select —</option>
+    {US_STATES.map(([abbr, name]) => (
+      <option key={abbr} value={abbr}>{abbr} — {name}</option>
+    ))}
+  </select>
+);
+
 const RELATIONSHIP_TYPES = [
   "Spouse","Child","Parent","Sibling","Grandchild","Grandparent",
   "Friend","Trust","Estate","Charity / Organization","Other",
@@ -434,7 +457,7 @@ export default function App() {
           <Sec t="Driver's License" />
           <Row cols={2}>
             <F><Lbl t="License Number" /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Issuing State" /><input value={client.dlState} onChange={setC("dlState")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Issuing State" /><StateSelect value={client.dlState} onChange={setC("dlState")} /></F>
           </Row>
           <Row cols={2}>
             <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
@@ -448,7 +471,7 @@ export default function App() {
           </Row>
           <Row cols={3}>
             <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="State" /><input value={client.state} onChange={setC("state")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="State" /><StateSelect value={client.state} onChange={setC("state")} /></F>
             <F>
               <Lbl t="ZIP" />
               <input
@@ -497,7 +520,7 @@ export default function App() {
                 <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="State" /><input value={client.poBoxState} onChange={setC("poBoxState")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
                 <F>
                   <Lbl t="ZIP" />
                   <input
@@ -560,7 +583,7 @@ export default function App() {
               <Sec t="Driver's License" />
               <Row cols={2}>
                 <F><Lbl t="License Number" /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Issuing State" /><input value={spouse.dlState} onChange={setS("dlState")} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} /></F>
               </Row>
               <Row cols={2}>
                 <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
@@ -682,7 +705,7 @@ export default function App() {
                     <input value={b.addressLine1} onChange={e => updBene(b.id, "addressLine1", e.target.value)} style={{ ...IS, marginTop: 6 }} autoComplete="new-password" data-lpignore="true" />
                     <Row cols={3}>
                       <F><Lbl t="City" /><input value={b.city} onChange={e => updBene(b.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                      <F><Lbl t="State" /><input value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} maxLength={2} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                      <F><Lbl t="State" /><StateSelect value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} /></F>
                       <F>
                         <Lbl t="ZIP" />
                         <input
