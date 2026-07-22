@@ -142,7 +142,7 @@ const INCOME_TYPES = [
 ];
 
 const emptyIncome      = { type:"", amount:"", owner:"" };
-const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"" };
+const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
 const US_STATES = [
@@ -696,8 +696,42 @@ export default function App() {
                   </Row>
                   <Row cols={2}>
                     <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} /></F>
-                    <F />
+                    <F>
+                      <Lbl t="Beneficiary?" />
+                      <button
+                        onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: !x.isBeneficiary } : x))}
+                        style={{ background: ch.isBeneficiary ? ACCENT : "transparent", border: "2px solid " + ACCENT, color: WHITE, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", marginTop: 2 }}
+                      >
+                        {ch.isBeneficiary ? "✓ Yes — Beneficiary" : "Designate as Beneficiary"}
+                      </button>
+                    </F>
                   </Row>
+                  {ch.isBeneficiary && (
+                    <div style={{ marginTop: 12, borderTop: "1px solid " + ACCENT, paddingTop: 12 }}>
+                      <div style={{ fontSize: 11, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Beneficiary Details</div>
+                      <Row cols={3}>
+                        <F><Lbl t="SSN" /><input value={ch.ssn} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, ssn: fmtSSN(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
+                        <F><Lbl t="Relationship" /><input value={ch.relationship} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, relationship: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        <F><Lbl t="% to Inherit" /><input value={ch.percentage} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: e.target.value.replace(/[^0-9.]/g,"") } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 25" /></F>
+                      </Row>
+                      <Row cols={2}>
+                        <F><Lbl t="Email" /><input value={ch.email} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, email: e.target.value } : x))} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        <F><Lbl t="Phone" /><input value={ch.phone} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, phone: fmtPhone(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="(555) 555-5555" /></F>
+                      </Row>
+                      <Row cols={2}>
+                        <F><Lbl t="Street Address" /><input value={ch.addressLine1} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, addressLine1: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        <F><Lbl t="Apt / Suite" /><input value={ch.addressLine2} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, addressLine2: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                      </Row>
+                      <Row cols={3}>
+                        <F>
+                          <Lbl t="ZIP" />
+                          <input value={ch.zip} onChange={e => { const z = fmtZip(e.target.value); setChildren(p => p.map(x => x.id === ch.id ? { ...x, zip: z } : x)); }} onBlur={e => lookupZip(e.target.value, (city, state) => setChildren(p => p.map(x => x.id === ch.id ? { ...x, city: city || x.city, state: state || x.state } : x)))} style={IS} autoComplete="new-password" data-lpignore="true" />
+                        </F>
+                        <F><Lbl t="City" /><input value={ch.city} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, city: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        <F><Lbl t="State" /><StateSelect value={ch.state} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, state: e.target.value } : x))} /></F>
+                      </Row>
+                    </div>
+                  )}
                 </div>
               ))}
               <button onClick={() => setChildren(p => [...p, { ...emptyChild, id: Date.now() }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
