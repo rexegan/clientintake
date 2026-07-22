@@ -1101,6 +1101,9 @@ export default function App() {
                     <option value="">— Select —</option>
                     <option value="annual">Annual</option>
                     <option value="monthly">Monthly</option>
+                    <option value="bimonthly">Bi-Monthly (twice/month)</option>
+                    <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
+                    <option value="weekly">Weekly</option>
                   </select>
                 </F>
                 <F>
@@ -1114,16 +1117,17 @@ export default function App() {
               {inc.frequency && (
                 <Row cols={2}>
                   <F>
-                    <Lbl t={inc.frequency === "annual" ? "Annual Amount" : "Monthly Amount"} />
+                    <Lbl t={{ annual:"Annual Amount", monthly:"Monthly Amount", bimonthly:"Bi-Monthly Amount", biweekly:"Bi-Weekly Amount", weekly:"Weekly Amount" }[inc.frequency] || "Amount"} />
                     <input value={inc.amount} onChange={e => updIncome(inc.id, "amount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
                   </F>
                   <F>
-                    <Lbl t={inc.frequency === "annual" ? "Monthly Equivalent" : "Annual Equivalent"} />
+                    <Lbl t="Annual Equivalent" />
                     <div style={{ ...IS, background: NAV, color: LIGHT_BLUE, display: "flex", alignItems: "center" }}>
                       {(() => {
                         const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0);
                         if (!raw) return "—";
-                        return "$" + (inc.frequency === "annual" ? Math.round(raw / 12) : raw * 12).toLocaleString();
+                        const mult = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52 }[inc.frequency] || 1;
+                        return "$" + (inc.frequency === "annual" ? raw : raw * mult).toLocaleString();
                       })()}
                     </div>
                   </F>
@@ -1135,7 +1139,7 @@ export default function App() {
             + Add Income Source
           </button>
           {(() => {
-            const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; return inc.frequency === "annual" ? raw : raw * 12; };
+            const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; const mult = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52 }[inc.frequency] || 1; return raw * mult; };
             const clientAnnual = incomes.filter(i => (i.owner || "client") === "client").reduce((s, i) => s + toAnnual(i), 0);
             const spouseAnnual = incomes.filter(i => i.owner === "spouse").reduce((s, i) => s + toAnnual(i), 0);
             const totalAnnual = clientAnnual + spouseAnnual;
