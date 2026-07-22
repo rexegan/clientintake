@@ -31,7 +31,7 @@ const F = ({ children }) => <div>{children}</div>;
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-function DatePicker({ value, onChange, label }) {
+function DatePicker({ value, onChange, label, futureYears = 0 }) {
   const parts = (value || "").split("/");
   const mm = parts[0] || "";
   const dd = parts[1] || "";
@@ -68,8 +68,8 @@ function DatePicker({ value, onChange, label }) {
         </select>
         <select data-lpignore="true" value={yyyy} onChange={e => set(mm, dd, e.target.value)} style={{ ...sel, flex: 1.4 }}>
           <option value="">Year</option>
-          {Array.from({ length: 101 }, (_, i) => {
-            const y = String(new Date().getFullYear() - i);
+          {Array.from({ length: futureYears + 101 }, (_, i) => {
+            const y = String(new Date().getFullYear() + futureYears - i);
             return <option key={y} value={y}>{y}</option>;
           })}
         </select>
@@ -461,7 +461,7 @@ export default function App() {
           </Row>
           <Row cols={2}>
             <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
-            <F><DatePicker label="Expiration Date" value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
+            <F><DatePicker label="Expiration Date" futureYears={10} value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
           </Row>
 
           <Sec t="Home Address" />
@@ -587,7 +587,7 @@ export default function App() {
               </Row>
               <Row cols={2}>
                 <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
-                <F><DatePicker label="Expiration Date" value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
+                <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
             </div>
           )}
