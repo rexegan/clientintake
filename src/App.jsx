@@ -697,21 +697,28 @@ export default function App() {
                   <Row cols={2}>
                     <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} /></F>
                     <F>
-                      <Lbl t="Beneficiary?" />
-                      <button
-                        onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: !x.isBeneficiary } : x))}
-                        style={{ background: ch.isBeneficiary ? ACCENT : "transparent", border: "2px solid " + ACCENT, color: WHITE, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", marginTop: 2 }}
-                      >
-                        {ch.isBeneficiary ? "✓ Yes — Beneficiary" : "Designate as Beneficiary"}
-                      </button>
+                      <Lbl t="Is this child a beneficiary?" />
+                      <select data-lpignore="true" value={ch.isBeneficiary ? "yes" : "no"} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: e.target.value === "yes" } : x))} style={IS}>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
                     </F>
                   </Row>
                   {ch.isBeneficiary && (
-                    <div style={{ marginTop: 12, borderTop: "1px solid " + ACCENT, paddingTop: 12 }}>
-                      <div style={{ fontSize: 11, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Beneficiary Details</div>
+                    <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
+                      <div style={{ fontSize: 11, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Beneficiary Information</div>
                       <Row cols={3}>
                         <F><Lbl t="SSN" /><input value={ch.ssn} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, ssn: fmtSSN(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
-                        <F><Lbl t="Relationship" /><input value={ch.relationship} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, relationship: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        <F>
+                          <Lbl t="Relationship" />
+                          <select data-lpignore="true" value={ch.relationship} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, relationship: e.target.value } : x))} style={IS}>
+                            <option value="Child">Child</option>
+                            <option value="Stepchild">Stepchild</option>
+                            <option value="Adopted Child">Adopted Child</option>
+                            <option value="Grandchild">Grandchild</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </F>
                         <F><Lbl t="% to Inherit" /><input value={ch.percentage} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: e.target.value.replace(/[^0-9.]/g,"") } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 25" /></F>
                       </Row>
                       <Row cols={2}>
@@ -725,7 +732,7 @@ export default function App() {
                       <Row cols={3}>
                         <F>
                           <Lbl t="ZIP" />
-                          <input value={ch.zip} onChange={e => { const z = fmtZip(e.target.value); setChildren(p => p.map(x => x.id === ch.id ? { ...x, zip: z } : x)); }} onBlur={e => lookupZip(e.target.value, (city, state) => setChildren(p => p.map(x => x.id === ch.id ? { ...x, city: city || x.city, state: state || x.state } : x)))} style={IS} autoComplete="new-password" data-lpignore="true" />
+                          <input value={ch.zip} onChange={e => { const z = fmtZip(e.target.value); setChildren(p => p.map(x => x.id === ch.id ? { ...x, zip: z } : x)); lookupZip(z, (city, state) => { if (city) setChildren(p => p.map(x => x.id === ch.id ? { ...x, city, state } : x)); }); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
                         </F>
                         <F><Lbl t="City" /><input value={ch.city} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, city: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                         <F><Lbl t="State" /><StateSelect value={ch.state} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, state: e.target.value } : x))} /></F>
