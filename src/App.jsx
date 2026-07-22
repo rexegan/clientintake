@@ -908,7 +908,7 @@ export default function App() {
             <F><Lbl t="Work Street Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F>
               <Lbl t="ZIP" />
-              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city || p.workCity, workState: state || p.workState }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
+              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
             </F>
           </Row>
           <Row cols={2}>
@@ -1001,7 +1001,7 @@ export default function App() {
                 <F><Lbl t="Work Street Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="ZIP" />
-                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city || p.workCity, workState: state || p.workState }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
+                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
                 </F>
               </Row>
               <Row cols={2}>
