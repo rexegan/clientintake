@@ -944,18 +944,13 @@ export default function App() {
               <>
                 <Row cols={2}>
                   <F>
-                    <Lbl t="Employer Match?" />
-                    <select data-lpignore="true" value={clientEmp.hasMatch || ""} onChange={e => setClientEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                    <Lbl t="Employer Match" />
+                    <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
                       <option value="">— Select —</option>
-                      <option value="yes">Yes</option><option value="no">No</option>
+                      <option value="No Match">No Match</option>
+                      {[1,2,3,4,5,6].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                     </select>
                   </F>
-                  {clientEmp.hasMatch === "yes" && (
-                    <F>
-                      <Lbl t="Match %" />
-                      <input value={clientEmp.matchPct} onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g,""); setClientEmp(p => ({ ...p, matchPct: raw ? raw + "%" : "" })); }} onBlur={e => { const n = parseFloat((e.target.value||"").replace("%","")); if (!isNaN(n)) setClientEmp(p => ({ ...p, matchPct: Math.min(100,Math.max(0,n)) + "%" })); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0%" />
-                    </F>
-                  )}
                 </Row>
                 <Row cols={2}>
                   <F><Lbl t="Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
@@ -1039,18 +1034,13 @@ export default function App() {
                   <>
                     <Row cols={2}>
                       <F>
-                        <Lbl t="Employer Match?" />
-                        <select data-lpignore="true" value={spouseEmp.hasMatch || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasMatch: e.target.value || null }))} style={IS}>
+                        <Lbl t="Employer Match" />
+                        <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
                           <option value="">— Select —</option>
-                          <option value="yes">Yes</option><option value="no">No</option>
+                          <option value="No Match">No Match</option>
+                          {[1,2,3,4,5,6].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                         </select>
                       </F>
-                      {spouseEmp.hasMatch === "yes" && (
-                        <F>
-                          <Lbl t="Match %" />
-                          <input value={spouseEmp.matchPct} onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g,""); setSpouseEmp(p => ({ ...p, matchPct: raw ? raw + "%" : "" })); }} onBlur={e => { const n = parseFloat((e.target.value||"").replace("%","")); if (!isNaN(n)) setSpouseEmp(p => ({ ...p, matchPct: Math.min(100,Math.max(0,n)) + "%" })); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0%" />
-                        </F>
-                      )}
                     </Row>
                     <Row cols={2}>
                       <F><Lbl t="Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
