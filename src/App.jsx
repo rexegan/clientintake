@@ -118,7 +118,7 @@ const fmtDollar = (r) => {
 
 const emptyClient = {
   firstName:"", middleName:"", lastName:"",
-  dob:"", ssn:"", cell:"", homePhone:"", email:"",
+  dob:"", ssn:"", filingStatus:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
@@ -499,9 +499,20 @@ export default function App() {
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={2}>
+          <Row cols={3}>
             <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
             <F><Lbl t="Social Security #" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="Filing Status" />
+              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="Single">Single</option>
+                <option value="Married Filing Jointly">Married Filing Jointly</option>
+                <option value="Married Filing Separately">Married Filing Separately</option>
+                <option value="Head of Household">Head of Household</option>
+                <option value="Qualifying Surviving Spouse">Qualifying Surviving Spouse</option>
+              </select>
+            </F>
           </Row>
           <Lbl t="Email Addresses" />
           {clientEmails.map((em, i) => (
