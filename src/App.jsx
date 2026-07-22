@@ -1282,8 +1282,8 @@ export default function App() {
                   <Lbl t="Owner" />
                   <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
-                    <option value="Client">Client</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && <option value="Spouse">Spouse</option>}
+                    <option value="Client">{client.firstName || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && <option value="Spouse">{spouse.firstName || "Spouse"}</option>}
                     <option value="Joint">Joint</option>
                   </select>
                 </F>
