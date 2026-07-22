@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const NAV        = "#1a2f5e";
 const CARD       = "#1a2f5e";
@@ -259,6 +259,9 @@ export default function App() {
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
+  const [lastSaved, setLastSaved] = useState(null);
+
+  const stateSnapshotRef = useRef({});
 
   const setC = f => e => setClient(p => ({ ...p, [f]: e.target.value }));
   const setS = f => e => setSpouse(p => ({ ...p, [f]: e.target.value }));
@@ -292,6 +295,23 @@ export default function App() {
       onResult("", "");
     }
   };
+
+  const buildSnapshot = useCallback(() => ({
+    client, spouse, hasSpouse, hasChildren, children,
+    clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
+    beneficiaries, willsTrust, poa,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa]);
+
+  const autoSave = useCallback(() => {
+    const snap = buildSnapshot();
+    localStorage.setItem("rwg_draft", JSON.stringify({ ...snap, savedAt: new Date().toISOString() }));
+    setLastSaved(new Date());
+  }, [buildSnapshot]);
+
+  useEffect(() => {
+    const id = setInterval(autoSave, 2 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [autoSave]);
 
   const showToast = (msg, color) => {
     setToast({ msg, color: color || ACCENT });
@@ -420,6 +440,20 @@ export default function App() {
           {toast.msg}
         </div>
       )}
+
+      <div style={{ position: "fixed", top: 90, right: 20, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+        <button
+          onClick={() => { autoSave(); showToast("Draft saved", ACCENT); }}
+          style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
+        >
+          💾 Save Draft
+        </button>
+        {lastSaved && (
+          <div style={{ fontSize: 10, color: LIGHT_BLUE, textAlign: "right", background: "rgba(26,47,94,0.85)", borderRadius: 5, padding: "2px 8px" }}>
+            Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </div>
+        )}
+      </div>
 
       <div style={{ background: NAV, padding: "24px 24px 20px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
