@@ -124,7 +124,7 @@ const emptyClient = {
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"" };
-const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", retirementBalance:"", retirementCustodian:"" };
+const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
 const emptyAccount = { type:"", institution:"", balance:"", owner:"" };
@@ -951,10 +951,14 @@ export default function App() {
                     </select>
                   </F>
                   {clientEmp.hasMatch === "yes" && (
-                    <F><Lbl t="Match %" /><input value={clientEmp.matchPct} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" /></F>
+                    <F>
+                      <Lbl t="Match %" />
+                      <input value={clientEmp.matchPct} onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g,""); setClientEmp(p => ({ ...p, matchPct: raw ? raw + "%" : "" })); }} onBlur={e => { const n = parseFloat((e.target.value||"").replace("%","")); if (!isNaN(n)) setClientEmp(p => ({ ...p, matchPct: Math.min(100,Math.max(0,n)) + "%" })); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0%" />
+                    </F>
                   )}
                 </Row>
                 <Row cols={2}>
+                  <F><Lbl t="Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                   <F><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                   <F>
                     <Lbl t="Custodian / Plan Sponsor" />
@@ -1042,10 +1046,14 @@ export default function App() {
                         </select>
                       </F>
                       {spouseEmp.hasMatch === "yes" && (
-                        <F><Lbl t="Match %" /><input value={spouseEmp.matchPct} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" /></F>
+                        <F>
+                          <Lbl t="Match %" />
+                          <input value={spouseEmp.matchPct} onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g,""); setSpouseEmp(p => ({ ...p, matchPct: raw ? raw + "%" : "" })); }} onBlur={e => { const n = parseFloat((e.target.value||"").replace("%","")); if (!isNaN(n)) setSpouseEmp(p => ({ ...p, matchPct: Math.min(100,Math.max(0,n)) + "%" })); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0%" />
+                        </F>
                       )}
                     </Row>
                     <Row cols={2}>
+                      <F><Lbl t="Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                       <F><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                       <F>
                         <Lbl t="Custodian / Plan Sponsor" />
