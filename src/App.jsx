@@ -66,13 +66,20 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
             return <option key={v} value={v}>{i + 1}</option>;
           })}
         </select>
-        <select data-lpignore="true" value={yyyy} onChange={e => set(mm, dd, e.target.value)} style={{ ...sel, flex: 1.4 }}>
-          <option value="">Year</option>
-          {Array.from({ length: futureYears + 101 }, (_, i) => {
-            const y = String(new Date().getFullYear() + futureYears - i);
-            return <option key={y} value={y}>{y}</option>;
-          })}
-        </select>
+        <input
+          data-lpignore="true"
+          autoComplete="new-password"
+          type="text"
+          inputMode="numeric"
+          maxLength={4}
+          placeholder="Year"
+          value={yyyy}
+          onChange={e => {
+            const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+            set(mm, dd, v);
+          }}
+          style={{ ...sel, flex: 1.4 }}
+        />
       </div>
     </>
   );
@@ -196,7 +203,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
             <div key={c.id} style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
                 <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client.firstName} {c.client.lastName}</div>
-                {c.hasSpouse === "yes" && c.spouse?.firstName && (
+                {["married","domestic_partner"].includes(c.hasSpouse) && c.spouse?.firstName && (
                   <div style={{ fontSize: 13, color: LIGHT_BLUE, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
                 )}
                 <div style={{ fontSize: 12, color: LIGHT_BLUE, marginTop: 4 }}>
@@ -251,6 +258,8 @@ export default function App() {
     hasPOA: null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"",
   });
 
+  const [clientEmails, setClientEmails] = useState([{ id: 1, tag: "personal", address: "" }]);
+  const [spouseEmails, setSpouseEmails] = useState([{ id: 1, tag: "personal", address: "" }]);
   const [clientEmp, setClientEmp] = useState({ ...emptyEmployer });
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
@@ -298,9 +307,10 @@ export default function App() {
 
   const buildSnapshot = useCallback(() => ({
     client, spouse, hasSpouse, hasChildren, children,
+    clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
     beneficiaries, willsTrust, poa,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa]);
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -347,6 +357,7 @@ export default function App() {
       id: Date.now(),
       savedAt: new Date().toISOString(),
       client, spouse, hasSpouse, hasChildren, children,
+      clientEmails, spouseEmails,
       clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
       beneficiaries, willsTrust, poa,
     };
@@ -356,6 +367,8 @@ export default function App() {
 
   const handleReset = () => {
     setClient({ ...emptyClient }); setSpouse({ ...emptySpouse });
+    setClientEmails([{ id: 1, tag: "personal", address: "" }]);
+    setSpouseEmails([{ id: 1, tag: "personal", address: "" }]);
     setClientEmp({ ...emptyEmployer }); setSpouseEmp({ ...emptyEmployer });
     setIncomes([{ ...emptyIncome, id: 1 }]);
     setAutos([{ ...emptyAuto, id: 1 }]);
@@ -375,6 +388,8 @@ export default function App() {
         onOpen={(record) => {
           setClient(record.client || { ...emptyClient });
           setSpouse(record.spouse || { ...emptySpouse });
+          setClientEmails(record.clientEmails || [{ id: 1, tag: "personal", address: "" }]);
+          setSpouseEmails(record.spouseEmails || [{ id: 1, tag: "personal", address: "" }]);
           setHasSpouse(record.hasSpouse || null);
           setHasChildren(record.hasChildren || null);
           setChildren(record.children || []);
@@ -414,7 +429,7 @@ export default function App() {
           <div style={{ fontSize: 15, color: LIGHT_BLUE, marginBottom: 4 }}>
             <span style={{ color: WHITE, fontWeight: "bold" }}>{client.firstName} {client.lastName}</span>'s profile has been recorded.
           </div>
-          {hasSpouse === "yes" && (
+          {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ fontSize: 15, color: LIGHT_BLUE, marginBottom: 4 }}>
               Spouse <span style={{ color: WHITE, fontWeight: "bold" }}>{spouse.firstName} {spouse.lastName}</span> also recorded.
             </div>
@@ -478,11 +493,28 @@ export default function App() {
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={3}>
+          <Row cols={2}>
             <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
             <F><Lbl t="Social Security #" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Email" /><input value={client.email} onChange={setC("email")} type="email" style={IS} autoComplete="new-password" data-lpignore="true" data-lpignore="true" /></F>
           </Row>
+          <Lbl t="Email Addresses" />
+          {clientEmails.map((em, i) => (
+            <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
+              <select data-lpignore="true" value={em.tag} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, tag: e.target.value } : x))} style={{ ...IS, width: 130, flex: "none" }}>
+                <option value="personal">Personal</option>
+                <option value="home">Home</option>
+                <option value="work">Work</option>
+                <option value="spouse">Spouse</option>
+              </select>
+              <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
+              {clientEmails.length > 1 && (
+                <button onClick={() => setClientEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
+              )}
+            </div>
+          ))}
+          <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            + Add Email
+          </button>
           <Row cols={2}>
             <F><Lbl t="Cell Phone" /><input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
@@ -576,11 +608,15 @@ export default function App() {
         <Panel title="Family">
           <Row cols={2}>
             <F>
-              <Lbl t="Married?" />
+              <Lbl t="Marital Status" />
               <select data-lpignore="true" value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={IS}>
                 <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="married">Married</option>
+                <option value="single">Single</option>
+                <option value="divorced">Divorced</option>
+                <option value="widowed">Widowed</option>
+                <option value="separated">Separated</option>
+                <option value="domestic_partner">Domestic Partner</option>
               </select>
             </F>
             <F>
@@ -597,7 +633,7 @@ export default function App() {
             </F>
           </Row>
 
-          {hasSpouse === "yes" && (
+          {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
               <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Spouse Details</div>
               <Row cols={3}>
@@ -605,11 +641,28 @@ export default function App() {
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setS("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={3}>
+              <Row cols={2}>
                 <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} /></F>
                 <F><Lbl t="Social Security #" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Email" /><input value={spouse.email} onChange={setS("email")} type="email" style={IS} autoComplete="new-password" data-lpignore="true" data-lpignore="true" /></F>
               </Row>
+              <Lbl t="Email Addresses" />
+              {spouseEmails.map((em) => (
+                <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
+                  <select data-lpignore="true" value={em.tag} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, tag: e.target.value } : x))} style={{ ...IS, width: 130, flex: "none" }}>
+                    <option value="personal">Personal</option>
+                    <option value="home">Home</option>
+                    <option value="work">Work</option>
+                    <option value="spouse">Spouse</option>
+                  </select>
+                  <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
+                  {spouseEmails.length > 1 && (
+                    <button onClick={() => setSpouseEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
+                  )}
+                </div>
+              ))}
+              <button onClick={() => setSpouseEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer", fontFamily: "Georgia, serif" }}>
+                + Add Email
+              </button>
               <Row cols={2}>
                 <F><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F />
@@ -719,7 +772,7 @@ export default function App() {
               }} style={IS}>
                 <option value="manual">Enter Manually</option>
                 <option value="client">Same as {client.firstName || "Client"}</option>
-                {hasSpouse === "yes" && <option value="spouse">Same as {spouse.firstName || "Spouse"}</option>}
+                {["married","domestic_partner"].includes(hasSpouse) && <option value="spouse">Same as {spouse.firstName || "Spouse"}</option>}
               </select>
               {(() => {
                 const src = b.addressSource || "manual";
@@ -779,7 +832,7 @@ export default function App() {
 
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment">
-          {hasSpouse === "yes" && (
+          {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
               {client.firstName || "Client"}
             </div>
@@ -862,7 +915,7 @@ export default function App() {
             )}
           </div>
 
-          {hasSpouse === "yes" && (
+          {["married","domestic_partner"].includes(hasSpouse) && (
             <>
               <div style={{ borderTop: "2px solid " + ACCENT, marginTop: 18, paddingTop: 14 }}>
                 <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
@@ -1003,7 +1056,7 @@ export default function App() {
               return sum + (inc.frequency === "annual" ? raw : raw * 12);
             }, 0);
             if (!totalAnnual) return null;
-            const married = hasSpouse === "yes";
+            const married = ["married","domestic_partner"].includes(hasSpouse);
             const brackets = married ? [
               { min: 0, max: 23200, rate: 10 },{ min: 23200, max: 94300, rate: 12 },
               { min: 94300, max: 201050, rate: 22 },{ min: 201050, max: 383900, rate: 24 },
@@ -1130,7 +1183,7 @@ export default function App() {
                   <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     <option value="Client">Client</option>
-                    {hasSpouse === "yes" && <option value="Spouse">Spouse</option>}
+                    {["married","domestic_partner"].includes(hasSpouse) && <option value="Spouse">Spouse</option>}
                     <option value="Joint">Joint</option>
                   </select>
                 </F>
