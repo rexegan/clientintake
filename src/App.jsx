@@ -124,7 +124,7 @@ const emptyClient = {
   dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"" };
-const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", retirementBalance:"", retirementCustodian:"" };
+const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
 const emptyAccount = { type:"", institution:"", balance:"", owner:"" };
@@ -889,7 +889,17 @@ export default function App() {
               </select>
             </F>
           </Row>
-          <Lbl t="Work Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" />
+          <Row cols={2}>
+            <F><Lbl t="Work Street Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="ZIP" />
+              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city || p.workCity, workState: state || p.workState }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
+            </F>
+          </Row>
+          <Row cols={2}>
+            <F><Lbl t="City" /><input value={clientEmp.workCity} onChange={setCE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="State" /><StateSelect value={clientEmp.workState} onChange={setCE("workState")} /></F>
+          </Row>
 
           <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
             <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
@@ -972,7 +982,17 @@ export default function App() {
                   </select>
                 </F>
               </Row>
-              <Lbl t="Work Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" />
+              <Row cols={2}>
+                <F><Lbl t="Work Street Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="ZIP" />
+                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city || p.workCity, workState: state || p.workState }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
+                </F>
+              </Row>
+              <Row cols={2}>
+                <F><Lbl t="City" /><input value={spouseEmp.workCity} onChange={setSE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="State" /><StateSelect value={spouseEmp.workState} onChange={setSE("workState")} /></F>
+              </Row>
               <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
                 <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
                 <Row cols={2}>
