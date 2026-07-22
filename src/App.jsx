@@ -121,9 +121,9 @@ const emptyClient = {
   dob:"", ssn:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
-  dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"",
+  dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
 };
-const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssueDate:"", dlExpDate:"" };
+const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
@@ -521,9 +521,10 @@ export default function App() {
           </Row>
 
           <Sec t="Driver's License" />
-          <Row cols={2}>
+          <Row cols={3}>
             <F><Lbl t="License Number" /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Issuing State" /><StateSelect value={client.dlState} onChange={setC("dlState")} /></F>
+            <F><Lbl t="Issuer Name" /><input value={client.dlIssuerName} onChange={setC("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={2}>
             <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
@@ -668,9 +669,10 @@ export default function App() {
                 <F />
               </Row>
               <Sec t="Driver's License" />
-              <Row cols={2}>
+              <Row cols={3}>
                 <F><Lbl t="License Number" /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} /></F>
+                <F><Lbl t="Issuer Name" /><input value={spouse.dlIssuerName} onChange={setS("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
                 <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
