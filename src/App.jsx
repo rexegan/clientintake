@@ -169,8 +169,14 @@ const StateSelect = ({ value, onChange }) => (
 );
 
 const RELATIONSHIP_TYPES = [
-  "Spouse","Child","Parent","Sibling","Grandchild","Grandparent",
-  "Friend","Trust","Estate","Charity / Organization","Other",
+  "Spouse","Domestic Partner",
+  "Child","Stepchild","Adopted Child",
+  "Grandchild","Great-Grandchild",
+  "Parent","Stepparent","Grandparent",
+  "Sibling","Half-Sibling","Step-Sibling",
+  "Aunt / Uncle","Niece / Nephew","Cousin",
+  "In-Law","Friend","Business Partner",
+  "Trust","Estate","Charity / Organization","Other",
 ];
 
 function ClientRoster({ clients, onDelete, onOpen, onBack }) {
@@ -721,7 +727,7 @@ export default function App() {
                             <option value="Other">Other</option>
                           </select>
                         </F>
-                        <F><Lbl t="% to Inherit" /><input value={ch.percentage} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: e.target.value.replace(/[^0-9.]/g,"") } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 25" /></F>
+                        <F><Lbl t="% to Inherit" /><input value={ch.percentage} onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g,""); setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: raw ? raw + "%" : "" } : x)); }} onBlur={e => { const n = parseFloat((e.target.value||"").replace("%","")); if (!isNaN(n)) setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: Math.min(100,Math.max(0,n)) + "%" } : x)); }} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="0%" /></F>
                       </Row>
                       <Row cols={2}>
                         <F><Lbl t="Email" /><input value={ch.email} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, email: e.target.value } : x))} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -783,14 +789,14 @@ export default function App() {
                   <input
                     value={b.percentage}
                     onChange={e => {
-                      const v = e.target.value.replace(/[^0-9.]/g, "");
-                      updBene(b.id, "percentage", v);
+                      const raw = e.target.value.replace(/[^0-9.]/g, "");
+                      updBene(b.id, "percentage", raw ? raw + "%" : "");
                     }}
                     onBlur={e => {
-                      const n = parseFloat(e.target.value);
+                      const n = parseFloat((e.target.value || "").replace("%", ""));
                       if (!isNaN(n)) updBene(b.id, "percentage", Math.min(100, Math.max(0, n)) + "%");
                     }}
-                    style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true"
+                    style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0%"
                   />
                 </F>
               </Row>
