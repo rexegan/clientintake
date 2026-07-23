@@ -579,7 +579,7 @@ export default function App() {
           </Row>
           <Row cols={4}>
             <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
-            <F><Lbl t="Social Security #" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="SSN" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F>
               <Lbl t="Gender" />
               <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={IS}>
@@ -747,7 +747,7 @@ export default function App() {
               </Row>
               <Row cols={3}>
                 <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} /></F>
-                <F><Lbl t="Social Security #" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="SSN" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Gender" />
                   <select data-lpignore="true" value={spouse.gender || ""} onChange={setS("gender")} style={IS}>
