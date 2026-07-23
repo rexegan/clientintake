@@ -154,7 +154,7 @@ const INCOME_TYPES = [
   "Rental Income",
   "Self-Employment / 1099",
   "Social Security",
-  "Teacher Retirement",
+  "TRS (Teacher Retirement)",
 ];
 
 const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client" };
