@@ -123,7 +123,7 @@ const emptyClient = {
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
 };
-const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", cell:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"" };
+const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
@@ -738,9 +738,17 @@ export default function App() {
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setS("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={2}>
+              <Row cols={3}>
                 <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} /></F>
                 <F><Lbl t="Social Security #" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Gender" />
+                  <select data-lpignore="true" value={spouse.gender || ""} onChange={setS("gender")} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </F>
               </Row>
               <Lbl t="Email Addresses" />
               {spouseEmails.map((em) => (
@@ -762,8 +770,9 @@ export default function App() {
               </button>
               <Row cols={2}>
                 <F><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F />
+                <F><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
+
               <Sec t="Driver's License" />
               <Row cols={3}>
                 <F><Lbl t="License Number" /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -774,6 +783,79 @@ export default function App() {
                 <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
                 <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
+
+              <Sec t="Home Address" />
+              <Row cols={2}>
+                <F><Lbl t="Street Address" /><input value={spouse.addressLine1 || ""} onChange={setS("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Apt / Suite (optional)" /><input value={spouse.addressLine2 || ""} onChange={setS("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="City" /><input value={spouse.city || ""} onChange={setS("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="State" /><StateSelect value={spouse.state || ""} onChange={setS("state")} /></F>
+                <F>
+                  <Lbl t="ZIP" />
+                  <input
+                    value={spouse.zip || ""}
+                    onChange={e => {
+                      const z = fmtZip(e.target.value);
+                      setSpouse(p => ({ ...p, zip: z }));
+                      lookupZip(z, (city, state) => setSpouse(p => ({ ...p, city, state })));
+                    }}
+                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
+              </Row>
+
+              <div className="rg" style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "0 16px" }}>
+                <F>
+                  <Lbl t="PO Box?" />
+                  <select data-lpignore="true" value={spouse.hasPOBox || ""} onChange={e => setSpouse(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Preferred Mailing Address" />
+                  <select data-lpignore="true" value={spouse.preferredMailing || ""} onChange={e => setSpouse(p => ({ ...p, preferredMailing: e.target.value || "" }))} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="physical">Physical Address</option>
+                    <option value="pobox">P.O. Box</option>
+                  </select>
+                </F>
+              </div>
+              {spouse.hasPOBox === "yes" && (
+                <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
+                  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
+                  <Row cols={2}>
+                    <F>
+                      <Lbl t="PO Box Number" />
+                      <input
+                        value={spouse.poBox || ""}
+                        onChange={setS("poBox")}
+                        onBlur={e => setSpouse(p => ({ ...p, poBox: fmtPOBox(e.target.value) }))}
+                        style={IS} autoComplete="new-password" data-lpignore="true"
+                      />
+                    </F>
+                    <F><Lbl t="City" /><input value={spouse.poBoxCity || ""} onChange={setS("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  </Row>
+                  <Row cols={2}>
+                    <F><Lbl t="State" /><StateSelect value={spouse.poBoxState || ""} onChange={setS("poBoxState")} /></F>
+                    <F>
+                      <Lbl t="ZIP" />
+                      <input
+                        value={spouse.poBoxZip || ""}
+                        onChange={e => {
+                          const z = fmtZip(e.target.value);
+                          setSpouse(p => ({ ...p, poBoxZip: z }));
+                          lookupZip(z, (city, state) => setSpouse(p => ({ ...p, poBoxCity: city, poBoxState: state })));
+                        }}
+                        maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+                      />
+                    </F>
+                  </Row>
+                </div>
+              )}
             </div>
           )}
 
