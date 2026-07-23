@@ -127,7 +127,7 @@ const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", 
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
-const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"" };
+const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null };
 
 const ACCOUNT_TYPES = [
   "401(k)","403(b)","457(b)",
@@ -374,6 +374,30 @@ export default function App() {
   const addAcct = () => setAccounts(p => [...p, { ...emptyAccount, id: Date.now() }]);
   const delAcct = id => setAccounts(p => p.filter(x => x.id !== id));
   const updAcct = (id, f, v) => setAccounts(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
+
+  const toggleAcctRmd = (acct, yesNo) => {
+    if (yesNo === "yes") {
+      const incId = Date.now();
+      setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: "yes", linkedIncomeId: incId } : x));
+      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: acct.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends", amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id }]);
+    } else {
+      const prev = accounts.find(x => x.id === acct.id);
+      if (prev?.linkedIncomeId) setIncomes(p => p.filter(x => x.id !== prev.linkedIncomeId));
+      setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: "no", linkedIncomeId: null } : x));
+    }
+  };
+
+  const syncAcctIncome = (acct, field, value) => {
+    updAcct(acct.id, field, value);
+    if (!acct.linkedIncomeId) return;
+    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : field === "rmdOrContrib" ? "type" : null;
+    if (incomeField === "type") {
+      const incType = value === "RMD" ? "Pension" : "Investment / Dividends";
+      setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, type: incType } : x));
+    } else if (incomeField) {
+      setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, [incomeField]: value } : x));
+    }
+  };
 
   const addBene = () => setBeneficiaries(p => [...p, { ...emptyBeneficiary, id: Date.now() }]);
   const delBene = id => setBeneficiaries(p => p.filter(x => x.id !== id));
@@ -1548,6 +1572,50 @@ export default function App() {
                   </select>
                 </F>
               </Row>
+              <Row cols={2}>
+                <F>
+                  <Lbl t="Taking RMDs or Making Contributions?" />
+                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => { const v = e.target.value; if (v === "yes" || v === "no") { toggleAcctRmd(a, v); } else { updAcct(a.id, "hasRmdOrContrib", null); } }} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                {a.hasRmdOrContrib === "yes" && (
+                  <F>
+                    <Lbl t="RMD or Contribution?" />
+                    <select data-lpignore="true" value={a.rmdOrContrib || ""} onChange={e => syncAcctIncome(a, "rmdOrContrib", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="RMD">RMD (Required Minimum Distribution)</option>
+                      <option value="Contribution">Contribution</option>
+                    </select>
+                  </F>
+                )}
+              </Row>
+              {a.hasRmdOrContrib === "yes" && (
+                <Row cols={2}>
+                  <F>
+                    <Lbl t="Amount" />
+                    <input value={a.rmdContribAmount || ""} onChange={e => syncAcctIncome(a, "rmdContribAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
+                  </F>
+                  <F>
+                    <Lbl t="Frequency" />
+                    <select data-lpignore="true" value={a.rmdContribFrequency || ""} onChange={e => syncAcctIncome(a, "rmdContribFrequency", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="annual">Annual</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="bimonthly">Bi-Monthly (twice/month)</option>
+                      <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
+                      <option value="weekly">Weekly</option>
+                    </select>
+                  </F>
+                </Row>
+              )}
+              {a.hasRmdOrContrib === "yes" && a.rmdContribAmount && (
+                <div style={{ fontSize: 12, color: "#2ecc71", fontStyle: "italic", marginTop: 4, marginBottom: 2 }}>
+                  ✓ Auto-added to Income section as {a.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends"}
+                </div>
+              )}
             </div>
           ))}
           {accounts.some(a => a.balance) && (
