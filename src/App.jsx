@@ -127,7 +127,7 @@ const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", 
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
-const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null };
+const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
 const ACCOUNT_TYPES = [
   "401(k)","403(b)","457(b)",
@@ -1615,6 +1615,35 @@ export default function App() {
                 <div style={{ fontSize: 12, color: "#2ecc71", fontStyle: "italic", marginTop: 4, marginBottom: 2 }}>
                   ✓ Auto-added to Income section as {a.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends"} ({a.rmdOrContrib})
                 </div>
+              )}
+              <Row cols={1}>
+                <F>
+                  <Lbl t="Making Contributions to this account?" />
+                  <select data-lpignore="true" value={a.hasContributions || ""} onChange={e => updAcct(a.id, "hasContributions", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+              </Row>
+              {a.hasContributions === "yes" && (
+                <Row cols={2}>
+                  <F>
+                    <Lbl t="Contribution Amount" />
+                    <input value={a.contribAmount || ""} onChange={e => updAcct(a.id, "contribAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
+                  </F>
+                  <F>
+                    <Lbl t="Contribution Frequency" />
+                    <select data-lpignore="true" value={a.contribFrequency || ""} onChange={e => updAcct(a.id, "contribFrequency", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="annual">Annual</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="bimonthly">Bi-Monthly (twice/month)</option>
+                      <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
+                      <option value="weekly">Weekly</option>
+                    </select>
+                  </F>
+                </Row>
               )}
             </div>
           ))}
