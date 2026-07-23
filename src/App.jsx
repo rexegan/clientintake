@@ -146,8 +146,15 @@ const ACCOUNT_TYPES = [
 ];
 
 const INCOME_TYPES = [
-  "Employment — W2","Self-Employment / 1099","Social Security","Pension",
-  "Rental Income","Investment / Dividends","Alimony / Child Support","Other",
+  "Alimony / Child Support",
+  "Employment — W2",
+  "Investment / Dividends",
+  "Other",
+  "Pension",
+  "Rental Income",
+  "Self-Employment / 1099",
+  "Social Security",
+  "Teacher Retirement",
 ];
 
 const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client" };
