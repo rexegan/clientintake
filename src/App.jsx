@@ -118,7 +118,7 @@ const fmtDollar = (r) => {
 
 const emptyClient = {
   firstName:"", middleName:"", lastName:"",
-  dob:"", ssn:"", filingStatus:"", cell:"", homePhone:"", email:"",
+  dob:"", ssn:"", gender:"", filingStatus:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
@@ -142,8 +142,8 @@ const INCOME_TYPES = [
 ];
 
 const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client" };
-const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
-const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
+const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
+const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
 const US_STATES = [
   ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
@@ -549,9 +549,17 @@ export default function App() {
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={3}>
+          <Row cols={4}>
             <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
             <F><Lbl t="Social Security #" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="Gender" />
+              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </F>
             <F>
               <Lbl t="Filing Status" />
               <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={IS}>
@@ -763,8 +771,16 @@ export default function App() {
                     <F><Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                     <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
-                  <Row cols={2}>
+                  <Row cols={3}>
                     <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} /></F>
+                    <F>
+                      <Lbl t="Gender" />
+                      <select data-lpignore="true" value={ch.gender || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, gender: e.target.value } : x))} style={IS}>
+                        <option value="">— Select —</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
+                    </F>
                     <F>
                       <Lbl t="Is this child a beneficiary?" />
                       <select data-lpignore="true" value={ch.isBeneficiary ? "yes" : "no"} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: e.target.value === "yes" } : x))} style={IS}>
@@ -832,8 +848,16 @@ export default function App() {
                 <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={3}>
+              <Row cols={4}>
                 <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} /></F>
+                <F>
+                  <Lbl t="Gender" />
+                  <select data-lpignore="true" value={b.gender || ""} onChange={e => updBene(b.id, "gender", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </F>
                 <F><Lbl t="Social Security #" /><input value={b.ssn} onChange={e => updBene(b.id, "ssn", fmtSSN(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Relationship" />
