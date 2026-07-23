@@ -220,7 +220,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Open</button>
-                <button onClick={() => onDelete(c.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Delete</button>
+                <button onClick={() => window.confirm("Delete this client? This cannot be undone.") && onDelete(c.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Delete</button>
               </div>
             </div>
           );
@@ -525,7 +525,7 @@ export default function App() {
               </select>
               <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
               {clientEmails.length > 1 && (
-                <button onClick={() => setClientEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
+                <button onClick={() => window.confirm("Remove this email?") && setClientEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
               )}
             </div>
           ))}
@@ -674,7 +674,7 @@ export default function App() {
                   </select>
                   <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
                   {spouseEmails.length > 1 && (
-                    <button onClick={() => setSpouseEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
+                    <button onClick={() => window.confirm("Remove this email?") && setSpouseEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
                   )}
                 </div>
               ))}
@@ -705,7 +705,7 @@ export default function App() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
                     {children.length > 1 && (
-                      <button onClick={() => setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                      <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                     )}
                   </div>
                   <Row cols={3}>
@@ -774,7 +774,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Beneficiary {i + 1}</div>
                 {beneficiaries.length > 1 && (
-                  <button onClick={() => delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
               <Row cols={3}>
@@ -1084,7 +1084,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Income Source {i + 1}</div>
                 {incomes.length > 1 && (
-                  <button onClick={() => delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
               <Row cols={3}>
@@ -1199,7 +1199,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Property {i + 1}</div>
                 {realEstate.length > 1 && (
-                  <button onClick={() => delRE(r.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
               <Lbl t="Property Description" />
@@ -1253,7 +1253,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
                 {accounts.length > 1 && (
-                  <button onClick={() => delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
               <Row cols={2}>
@@ -1427,7 +1427,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Vehicle {i + 1}</div>
                 {autos.length > 1 && (
-                  <button onClick={() => delAuto(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this vehicle?") && delAuto(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
               <Row cols={4}>
