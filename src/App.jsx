@@ -856,6 +856,32 @@ export default function App() {
 
         {/* ── BENEFICIARIES ── */}
         <Panel title="Beneficiaries" id="section-bene">
+          {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
+            <div key={ch.id} style={{ background: "#0f2a0f", border: "2px solid #2ecc71", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, color: "#2ecc71", textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
+                  Child Beneficiary — {ch.firstName} {ch.lastName}
+                </div>
+                <div style={{ fontSize: 11, color: LIGHT_BLUE, fontStyle: "italic" }}>Edit in Family section</div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: WHITE }}>
+                {ch.firstName && <div><span style={{ color: LIGHT_BLUE }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
+                {ch.dob && <div><span style={{ color: LIGHT_BLUE }}>DOB: </span>{ch.dob}</div>}
+                {ch.gender && <div><span style={{ color: LIGHT_BLUE }}>Gender: </span>{ch.gender}</div>}
+                {ch.ssn && <div><span style={{ color: LIGHT_BLUE }}>SSN: </span>{ch.ssn}</div>}
+                {ch.relationship && <div><span style={{ color: LIGHT_BLUE }}>Relationship: </span>{ch.relationship}</div>}
+                {ch.percentage && <div><span style={{ color: LIGHT_BLUE }}>% to Inherit: </span>{ch.percentage}</div>}
+                {ch.email && <div><span style={{ color: LIGHT_BLUE }}>Email: </span>{ch.email}</div>}
+                {ch.phone && <div><span style={{ color: LIGHT_BLUE }}>Phone: </span>{ch.phone}</div>}
+                {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: LIGHT_BLUE }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
+              </div>
+            </div>
+          ))}
+          {children.filter(ch => ch.isBeneficiary).length > 0 && (
+            <div style={{ fontSize: 11, color: LIGHT_BLUE, fontStyle: "italic", marginBottom: 14, textAlign: "center" }}>
+              ↑ Child beneficiaries added in Family section &nbsp;·&nbsp; Additional beneficiaries below
+            </div>
+          )}
           {beneficiaries.map((b, i) => (
             <div key={b.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
