@@ -127,7 +127,7 @@ const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", 
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"" };
-const emptyAccount = { type:"", institution:"", balance:"", owner:"" };
+const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"" };
 
 const ACCOUNT_TYPES = [
   "Traditional IRA","Roth IRA","SEP IRA","SIMPLE IRA","401(k)","Roth 401(k)",
@@ -1335,7 +1335,8 @@ export default function App() {
               {a.institution === "Other" && (
                 <><Lbl t="Specify Institution" /><input value={a.institutionOther || ""} onChange={e => updAcct(a.id, "institutionOther", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></>
               )}
-              <Row cols={2}>
+              <Row cols={3}>
+                <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Owner" />
