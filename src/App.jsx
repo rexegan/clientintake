@@ -1130,8 +1130,10 @@ export default function App() {
                 <F>
                   <Lbl t="Belongs To" />
                   <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)} style={IS}>
-                    <option value="client">Client — {client.firstName || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && <option value="spouse">Spouse — {spouse.firstName || "Spouse"}</option>}
+                    <option value="">— Select —</option>
+                    <option value="client">{client.firstName || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && <option value="spouse">{spouse.firstName || "Spouse"}</option>}
+                    <option value="joint">Joint</option>
                   </select>
                 </F>
               </Row>
@@ -1163,7 +1165,8 @@ export default function App() {
             const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; const mult = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52 }[inc.frequency] || 1; return raw * mult; };
             const clientAnnual = incomes.filter(i => (i.owner || "client") === "client").reduce((s, i) => s + toAnnual(i), 0);
             const spouseAnnual = incomes.filter(i => i.owner === "spouse").reduce((s, i) => s + toAnnual(i), 0);
-            const totalAnnual = clientAnnual + spouseAnnual;
+            const jointAnnual = incomes.filter(i => i.owner === "joint").reduce((s, i) => s + toAnnual(i), 0);
+            const totalAnnual = clientAnnual + spouseAnnual + jointAnnual;
             if (!totalAnnual) return null;
             const married = ["married","domestic_partner"].includes(hasSpouse);
             const brackets = married ? [
@@ -1195,6 +1198,12 @@ export default function App() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Spouse Income ({spouse.firstName || "Spouse"})</span>
                     <span style={{ fontSize: 14, color: WHITE }}>${spouseAnnual.toLocaleString()}</span>
+                  </div>
+                )}
+                {jointAnnual > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Joint Income</span>
+                    <span style={{ fontSize: 14, color: WHITE }}>${jointAnnual.toLocaleString()}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, borderTop: "1px solid " + ACCENT, paddingTop: 8 }}>
