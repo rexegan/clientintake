@@ -392,7 +392,7 @@ export default function App() {
     if (!acct.linkedIncomeId) return;
     const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : field === "rmdOrContrib" ? "type" : null;
     if (incomeField === "type") {
-      const incType = value === "RMD" ? "Pension" : "Investment / Dividends";
+      const incType = value === "RMD" ? "Pension" : value === "Withdrawal" ? "Investment / Dividends" : "Investment / Dividends";
       setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, type: incType } : x));
     } else if (incomeField) {
       setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, [incomeField]: value } : x));
@@ -1583,11 +1583,11 @@ export default function App() {
                 </F>
                 {a.hasRmdOrContrib === "yes" && (
                   <F>
-                    <Lbl t="RMD or Contribution?" />
+                    <Lbl t="RMD or Withdrawal?" />
                     <select data-lpignore="true" value={a.rmdOrContrib || ""} onChange={e => syncAcctIncome(a, "rmdOrContrib", e.target.value)} style={IS}>
                       <option value="">— Select —</option>
                       <option value="RMD">RMD (Required Minimum Distribution)</option>
-                      <option value="Contribution">Contribution</option>
+                      <option value="Withdrawal">Withdrawal</option>
                     </select>
                   </F>
                 )}
@@ -1613,7 +1613,7 @@ export default function App() {
               )}
               {a.hasRmdOrContrib === "yes" && a.rmdContribAmount && (
                 <div style={{ fontSize: 12, color: "#2ecc71", fontStyle: "italic", marginTop: 4, marginBottom: 2 }}>
-                  ✓ Auto-added to Income section as {a.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends"}
+                  ✓ Auto-added to Income section as {a.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends"} ({a.rmdOrContrib})
                 </div>
               )}
             </div>
