@@ -275,6 +275,7 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
+  const [activeClientId, setActiveClientId] = useState(null);
 
   const stateSnapshotRef = useRef({});
 
@@ -320,9 +321,17 @@ export default function App() {
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
-    localStorage.setItem("rwg_draft", JSON.stringify({ ...snap, savedAt: new Date().toISOString() }));
+    const now = new Date().toISOString();
+    localStorage.setItem("rwg_draft", JSON.stringify({ ...snap, savedAt: now }));
+    if (activeClientId) {
+      setSavedClients(prev => {
+        const updated = prev.map(r => r.id === activeClientId ? { ...r, ...snap, savedAt: now } : r);
+        localStorage.setItem("rwg_clients", JSON.stringify(updated));
+        return updated;
+      });
+    }
     setLastSaved(new Date());
-  }, [buildSnapshot]);
+  }, [buildSnapshot, activeClientId]);
 
   useEffect(() => {
     const id = setInterval(autoSave, 2 * 60 * 1000);
@@ -389,6 +398,7 @@ export default function App() {
       beneficiaries, willsTrust, poa,
     };
     saveClient(record);
+    setActiveClientId(record.id);
     setSubmitted(true);
   };
 
@@ -405,6 +415,7 @@ export default function App() {
     setBeneficiaries([{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust({ hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+    setActiveClientId(null);
     setSubmitted(false);
   };
 
@@ -429,6 +440,7 @@ export default function App() {
           setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
           setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
           setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+          setActiveClientId(record.id);
           setSubmitted(false);
           setView("form");
           window.scrollTo(0, 0);
@@ -485,10 +497,10 @@ export default function App() {
 
       <div style={{ position: "fixed", top: 90, right: 20, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
         <button
-          onClick={() => { autoSave(); showToast("Draft saved", ACCENT); }}
+          onClick={() => { autoSave(); showToast(activeClientId ? "Client record updated" : "Draft saved", ACCENT); }}
           style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
         >
-          💾 Save Draft
+          💾 {activeClientId ? "Update Client" : "Save Draft"}
         </button>
         {lastSaved && (
           <div style={{ fontSize: 10, color: LIGHT_BLUE, textAlign: "right", background: "rgba(26,47,94,0.85)", borderRadius: 5, padding: "2px 8px" }}>
