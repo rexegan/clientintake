@@ -230,10 +230,10 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
   );
 }
 
-function Panel({ title, children, defaultOpen = true }) {
+function Panel({ title, children, defaultOpen = true, id }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, marginBottom: 20, overflow: "hidden" }}>
+    <div id={id} style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, marginBottom: 20, overflow: "hidden" }}>
       <div onClick={() => setOpen(o => !o)}
         style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 22px", cursor: "pointer", userSelect: "none" }}>
         <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em" }}>{title}</div>
@@ -511,10 +511,39 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: 24 }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: 24, display: "flex", gap: 24, alignItems: "flex-start" }}>
+
+        {/* ── SIDEBAR NAV ── */}
+        <div style={{ width: 170, flexShrink: 0, position: "sticky", top: 24 }}>
+          {[
+            ["section-profile",   "Client Profile"],
+            ["section-family",    "Family"],
+            ["section-bene",      "Beneficiaries"],
+            ["section-employment","Employment"],
+            ["section-income",    "Income"],
+            ["section-realestate","Real Estate"],
+            ["section-accounts",  "Investment & Bank"],
+            ["section-autos",     "Automobiles"],
+            ["section-wills",     "Wills & Trust"],
+            ["section-poa",       "Power of Attorney"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => {
+                const el = document.getElementById(id);
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              style={{ display: "block", width: "100%", textAlign: "left", background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 8, padding: "10px 14px", marginBottom: 8, fontSize: 12, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", letterSpacing: "0.04em", lineHeight: 1.3 }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
 
         {/* ── CLIENT PROFILE ── */}
-        <Panel title="Client Profile">
+        <Panel title="Client Profile" id="section-profile">
           <Row cols={3}>
             <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -644,7 +673,7 @@ export default function App() {
         </Panel>
 
         {/* ── FAMILY ── */}
-        <Panel title="Family">
+        <Panel title="Family" id="section-family">
           <Row cols={2}>
             <F>
               <Lbl t="Marital Status" />
@@ -789,7 +818,7 @@ export default function App() {
         </Panel>
 
         {/* ── BENEFICIARIES ── */}
-        <Panel title="Beneficiaries">
+        <Panel title="Beneficiaries" id="section-bene">
           {beneficiaries.map((b, i) => (
             <div key={b.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -912,7 +941,7 @@ export default function App() {
         </Panel>
 
         {/* ── EMPLOYMENT ── */}
-        <Panel title="Employment">
+        <Panel title="Employment" id="section-employment">
           {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
               {client.firstName || "Client"}
@@ -1099,7 +1128,7 @@ export default function App() {
         </Panel>
 
         {/* ── ANNUAL INCOME ── */}
-        <Panel title="Income">
+        <Panel title="Income" id="section-income">
           {incomes.map((inc, i) => (
             <div key={inc.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -1223,7 +1252,7 @@ export default function App() {
         </Panel>
 
         {/* ── REAL ESTATE ── */}
-        <Panel title="Real Estate">
+        <Panel title="Real Estate" id="section-realestate">
           {realEstate.map((r, i) => (
             <div key={r.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -1277,7 +1306,7 @@ export default function App() {
         </Panel>
 
         {/* ── INVESTMENT & BANK ACCOUNTS ── */}
-        <Panel title="Investment & Bank Accounts">
+        <Panel title="Investment & Bank Accounts" id="section-accounts">
           {accounts.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -1334,7 +1363,7 @@ export default function App() {
         </Panel>
 
         {/* ── WILLS & TRUST ── */}
-        <Panel title="Wills & Trust">
+        <Panel title="Wills & Trust" id="section-wills">
           <Lbl t="Do you have a Will or Trust?" />
           <select data-lpignore="true" value={willsTrust.hasWill || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWill: e.target.value || null }))} style={IS}>
             <option value="">— Select —</option>
@@ -1412,7 +1441,7 @@ export default function App() {
         </Panel>
 
         {/* ── POWER OF ATTORNEY ── */}
-        <Panel title="Power of Attorney">
+        <Panel title="Power of Attorney" id="section-poa">
           <Lbl t="Do you have a Power of Attorney?" />
           <select data-lpignore="true" value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
             <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option>
@@ -1451,7 +1480,7 @@ export default function App() {
         </Panel>
 
         {/* ── AUTOMOBILES ── */}
-        <Panel title="Automobiles">
+        <Panel title="Automobiles" id="section-autos">
           {autos.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -1479,7 +1508,8 @@ export default function App() {
         <div style={{ textAlign: "center", fontSize: 12, color: LIGHT_BLUE, paddingBottom: 32, letterSpacing: "0.06em" }}>
           RUSSELL WEALTH GROUP · CONFIDENTIAL CLIENT DATA
         </div>
-      </div>
+        </div>{/* end flex content */}
+      </div>{/* end flex row */}
 
       <style>{`
         * { box-sizing: border-box; }
