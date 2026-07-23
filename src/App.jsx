@@ -359,6 +359,27 @@ export default function App() {
       showToast("Client first and last name are required.", "#c0392b");
       return;
     }
+
+    const fullName = `${client.firstName.trim()} ${client.lastName.trim()}`.toLowerCase();
+    const ssnLast4 = (client.ssn || "").replace(/\D/g, "").slice(-4);
+
+    const duplicate = savedClients.find(r => {
+      const existingName = `${r.client?.firstName?.trim() || ""} ${r.client?.lastName?.trim() || ""}`.toLowerCase();
+      const existingLast4 = (r.client?.ssn || "").replace(/\D/g, "").slice(-4);
+      if (existingName === fullName) return true;
+      if (ssnLast4.length === 4 && existingLast4.length === 4 && ssnLast4 === existingLast4) return true;
+      return false;
+    });
+
+    if (duplicate) {
+      const existingName = `${duplicate.client?.firstName || ""} ${duplicate.client?.lastName || ""}`;
+      const savedDate = new Date(duplicate.savedAt).toLocaleDateString();
+      const proceed = window.confirm(
+        `A client named "${existingName}" already exists (saved ${savedDate}).\n\nSave anyway as a new record?`
+      );
+      if (!proceed) return;
+    }
+
     const record = {
       id: Date.now(),
       savedAt: new Date().toISOString(),
