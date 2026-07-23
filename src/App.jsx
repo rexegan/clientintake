@@ -130,10 +130,19 @@ const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", mar
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"" };
 
 const ACCOUNT_TYPES = [
-  "Traditional IRA","Roth IRA","SEP IRA","SIMPLE IRA","401(k)","Roth 401(k)",
-  "403(b)","457(b)","Pension / Defined Benefit","Non-Qualified Brokerage",
-  "Annuity (Variable)","Annuity (Fixed)","Annuity (Indexed)","Life Insurance (Cash Value)",
-  "HSA","529 / Education","Trust Account","Checking / Savings","Money Market","CD","Other",
+  "401(k)","403(b)","457(b)",
+  "Annuity (Fixed)","Annuity (Indexed)","Annuity (Variable)",
+  "CD","Checking / Savings",
+  "HSA",
+  "Life Insurance (Cash Value)",
+  "Money Market",
+  "Non-Qualified Brokerage",
+  "Pension / Defined Benefit",
+  "Roth 401(k)","Roth IRA",
+  "SEP IRA","SIMPLE IRA",
+  "529 / Education",
+  "Traditional IRA","Trust Account",
+  "Other",
 ];
 
 const INCOME_TYPES = [
