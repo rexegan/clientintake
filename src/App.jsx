@@ -1372,8 +1372,48 @@ export default function App() {
                   <Lbl t="Institution / Held At" />
                   <select data-lpignore="true" value={a.institution} onChange={e => updAcct(a.id, "institution", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
-                    <option>Jackson Nat'l</option><option>American Funds</option><option>Franklin Templeton</option>
-                    <option>Voya</option><option>F&amp;G</option><option>Nationwide</option><option>Athene</option><option>Other</option>
+                    <option>Allianz</option>
+                    <option>American Equity</option>
+                    <option>American Funds</option>
+                    <option>Ameritas</option>
+                    <option>Athene</option>
+                    <option>Bank of America</option>
+                    <option>Chase / JPMorgan</option>
+                    <option>Edward Jones</option>
+                    <option>Empower</option>
+                    <option>Equitable</option>
+                    <option>F&G</option>
+                    <option>Fidelity</option>
+                    <option>Franklin Templeton</option>
+                    <option>Global Atlantic</option>
+                    <option>Jackson Nat'l</option>
+                    <option>John Hancock</option>
+                    <option>Lincoln Financial</option>
+                    <option>MassMutual</option>
+                    <option>Merrill Lynch</option>
+                    <option>Midland National</option>
+                    <option>Minnesota Life</option>
+                    <option>Morgan Stanley</option>
+                    <option>Mutual of Omaha</option>
+                    <option>Nationwide</option>
+                    <option>North American</option>
+                    <option>Northwestern Mutual</option>
+                    <option>Pacific Life</option>
+                    <option>Principal</option>
+                    <option>Protective Life</option>
+                    <option>Prudential</option>
+                    <option>Raymond James</option>
+                    <option>Sammons / Midland</option>
+                    <option>Schwab</option>
+                    <option>Security Benefit</option>
+                    <option>Symetra</option>
+                    <option>T. Rowe Price</option>
+                    <option>TIAA</option>
+                    <option>Transamerica</option>
+                    <option>Vanguard</option>
+                    <option>Voya</option>
+                    <option>Wells Fargo</option>
+                    <option>Other</option>
                   </select>
                 </F>
               </Row>
