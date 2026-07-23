@@ -497,10 +497,10 @@ export default function App() {
 
       <div style={{ position: "fixed", top: 90, right: 20, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
         <button
-          onClick={() => { autoSave(); showToast(activeClientId ? "Client record updated" : "Draft saved", ACCENT); }}
+          onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
           style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
         >
-          💾 {activeClientId ? "Update Client" : "Save Draft"}
+          💾 {activeClientId ? "Update File" : "Save Draft"}
         </button>
         {lastSaved && (
           <div style={{ fontSize: 10, color: LIGHT_BLUE, textAlign: "right", background: "rgba(26,47,94,0.85)", borderRadius: 5, padding: "2px 8px" }}>
