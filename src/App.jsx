@@ -1185,7 +1185,7 @@ export default function App() {
                   <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     <option value="client">{client.firstName || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && <option value="spouse">{spouse.firstName || "Spouse"}</option>}
+                    <option value="spouse">{spouse.firstName || "Spouse"}</option>
                     <option value="joint">Joint</option>
                   </select>
                 </F>
