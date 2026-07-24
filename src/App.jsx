@@ -1672,17 +1672,35 @@ export default function App() {
 
         {/* ── WILLS & TRUST ── */}
         <Panel title="Wills & Trust" id="section-wills">
-          <Lbl t="Do you have a Will or Trust?" />
-          <select data-lpignore="true" value={willsTrust.hasWill || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWill: e.target.value || null }))} style={IS}>
-            <option value="">— Select —</option>
-            <option value="will">Yes — Will</option>
-            <option value="trust">Yes — Trust</option>
-            <option value="both">Yes — Both Will &amp; Trust</option>
-            <option value="no">No</option>
-          </select>
-          {(willsTrust.hasWill && willsTrust.hasWill !== "no") && (
+          <Row cols={3}>
+            <F>
+              <Lbl t="Will?" />
+              <select data-lpignore="true" value={willsTrust.hasWillDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWillDoc: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="POA?" />
+              <select data-lpignore="true" value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Trust?" />
+              <select data-lpignore="true" value={willsTrust.hasTrustDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasTrustDoc: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+          </Row>
+          {(willsTrust.hasWillDoc === "yes" || willsTrust.hasTrustDoc === "yes") && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
-              {(willsTrust.hasWill === "will" || willsTrust.hasWill === "both") && (
+              {willsTrust.hasWillDoc === "yes" && (
                 <>
                   <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Will Details</div>
                   <Row cols={2}>
@@ -1709,8 +1727,8 @@ export default function App() {
                   <textarea data-lpignore="true" value={willsTrust.willNotes} onChange={e => setWillsTrust(p => ({ ...p, willNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
                 </>
               )}
-              {(willsTrust.hasWill === "trust" || willsTrust.hasWill === "both") && (
-                <div style={{ marginTop: willsTrust.hasWill === "both" ? 20 : 0, borderTop: willsTrust.hasWill === "both" ? "2px solid " + ACCENT : "none", paddingTop: willsTrust.hasWill === "both" ? 16 : 0 }}>
+              {willsTrust.hasTrustDoc === "yes" && (
+                <div style={{ marginTop: willsTrust.hasWillDoc === "yes" ? 20 : 0, borderTop: willsTrust.hasWillDoc === "yes" ? "2px solid " + ACCENT : "none", paddingTop: willsTrust.hasWillDoc === "yes" ? 16 : 0 }}>
                   <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Trust Details</div>
                   <Row cols={2}>
                     <F><Lbl t="Name of Trust" /><input value={willsTrust.trustName} onChange={e => setWillsTrust(p => ({ ...p, trustName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1750,10 +1768,6 @@ export default function App() {
 
         {/* ── POWER OF ATTORNEY ── */}
         <Panel title="Power of Attorney" id="section-poa">
-          <Lbl t="Do you have a Power of Attorney?" />
-          <select data-lpignore="true" value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
-            <option value="">— Select —</option><option value="yes">Yes</option><option value="no">No</option>
-          </select>
           {poa.hasPOA === "yes" && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
               <Lbl t="Type of POA" />
