@@ -291,9 +291,18 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
-  const [activeClientId, setActiveClientId] = useState(null);
+  const [activeClientId, setActiveClientId] = useState(() => {
+    const sid = sessionStorage.getItem("rwg_activeClientId");
+    return sid ? Number(sid) : null;
+  });
 
   const stateSnapshotRef = useRef({});
+
+  const setActiveClient = (id) => {
+    if (id == null) { sessionStorage.removeItem("rwg_activeClientId"); }
+    else { sessionStorage.setItem("rwg_activeClientId", String(id)); }
+    setActiveClient(id);
+  };
 
   const setC = f => e => setClient(p => ({ ...p, [f]: e.target.value }));
   const setS = f => e => setSpouse(p => ({ ...p, [f]: e.target.value }));
@@ -353,6 +362,30 @@ export default function App() {
     const id = setInterval(autoSave, 2 * 60 * 1000);
     return () => clearInterval(id);
   }, [autoSave]);
+
+  useEffect(() => {
+    if (!activeClientId) return;
+    const all = JSON.parse(localStorage.getItem("rwg_clients") || "[]");
+    const record = all.find(r => r.id === activeClientId);
+    if (!record) return;
+    setClient(record.client || { ...emptyClient });
+    setSpouse(record.spouse || { ...emptySpouse });
+    setClientEmails(record.clientEmails || [{ id: 1, tag: "personal", address: "" }]);
+    setSpouseEmails(record.spouseEmails || [{ id: 1, tag: "personal", address: "" }]);
+    setHasSpouse(record.hasSpouse || null);
+    setHasChildren(record.hasChildren || null);
+    setChildren(record.children || []);
+    setClientEmp(record.clientEmp || { ...emptyEmployer });
+    setSpouseEmp(record.spouseEmp || { ...emptyEmployer });
+    setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
+    setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
+    setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
+    setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
+    setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
+    setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
+    setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const showToast = (msg, color) => {
     setToast({ msg, color: color || ACCENT });
@@ -438,7 +471,7 @@ export default function App() {
       beneficiaries, willsTrust, poa,
     };
     saveClient(record);
-    setActiveClientId(record.id);
+    setActiveClient(record.id);
     setSubmitted(true);
   };
 
@@ -455,7 +488,7 @@ export default function App() {
     setBeneficiaries([{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust({ hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
-    setActiveClientId(null);
+    setActiveClient(null);
     setSubmitted(false);
   };
 
@@ -480,7 +513,7 @@ export default function App() {
           setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
           setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
           setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
-          setActiveClientId(record.id);
+          setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
           window.scrollTo(0, 0);
