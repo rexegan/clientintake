@@ -1607,7 +1607,7 @@ export default function App() {
               </Row>
               <Row cols={2}>
                 <F>
-                  <Lbl t="Taking RMDs or Withdrawals?" />
+                  <Lbl t="Making Contributions?" />
                   <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => { const v = e.target.value; if (v === "yes" || v === "no") { toggleAcctRmd(a, v); } else { updAcct(a.id, "hasRmdOrContrib", null); } }} style={IS}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
