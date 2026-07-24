@@ -694,7 +694,7 @@ export default function App() {
               </select>
             </F>
             <F>
-              <Lbl t="Filing Status" />
+              <Lbl t="Tax Filing Status" />
               <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={IS}>
                 <option value="">— Select —</option>
                 <option value="Single">Single</option>
