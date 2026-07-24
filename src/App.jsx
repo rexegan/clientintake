@@ -1443,7 +1443,7 @@ export default function App() {
                   </F>
                   <F>
                     <Lbl t="Annual Equivalent" />
-                    <div style={{ ...IS, background: NAV, color: LIGHT_BLUE, display: "flex", alignItems: "center" }}>
+                    <div style={{ ...IS, background: NAV, color: WHITE, display: "flex", alignItems: "center" }}>
                       {(() => {
                         const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0);
                         if (!raw) return "—";
