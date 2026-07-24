@@ -1614,8 +1614,7 @@ export default function App() {
                     <option value="no">No</option>
                   </select>
                 </F>
-                {a.hasRmdOrContrib === "yes" && (
-                  <F>
+                <F>
                     <Lbl t="RMD or Withdrawal?" />
                     <select data-lpignore="true" value={a.rmdOrContrib || ""} onChange={e => syncAcctIncome(a, "rmdOrContrib", e.target.value)} style={IS}>
                       <option value="">— Select —</option>
@@ -1623,7 +1622,6 @@ export default function App() {
                       <option value="Withdrawal">Withdrawal</option>
                     </select>
                   </F>
-                )}
               </Row>
               {a.hasRmdOrContrib === "yes" && (
                 <Row cols={2}>
