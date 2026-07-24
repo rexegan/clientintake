@@ -1645,33 +1645,21 @@ export default function App() {
                   ✓ Auto-added to Income section as {a.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends"} ({a.rmdOrContrib})
                 </div>
               )}
-              <Row cols={1}>
+              <Row cols={2}>
                 <F>
-                  <Lbl t="Making Contributions to this account?" />
-                  <select data-lpignore="true" value={a.hasContributions || ""} onChange={e => updAcct(a.id, "hasContributions", e.target.value || null)} style={IS}>
+                  <Lbl t="Making Contributions — How Much?" />
+                  <input value={a.contribAmount || ""} onChange={e => updAcct(a.id, "contribAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
+                </F>
+                <F>
+                  <Lbl t="Contribution Frequency" />
+                  <select data-lpignore="true" value={a.contribFrequency || ""} onChange={e => updAcct(a.id, "contribFrequency", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="annual">Annual</option>
                   </select>
                 </F>
               </Row>
-              {a.hasContributions === "yes" && (
-                <Row cols={2}>
-                  <F>
-                    <Lbl t="Contribution Amount" />
-                    <input value={a.contribAmount || ""} onChange={e => updAcct(a.id, "contribAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
-                  </F>
-                  <F>
-                    <Lbl t="Contribution Frequency" />
-                    <select data-lpignore="true" value={a.contribFrequency || ""} onChange={e => updAcct(a.id, "contribFrequency", e.target.value)} style={IS}>
-                      <option value="">— Select —</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="quarterly">Quarterly</option>
-                      <option value="annual">Annual</option>
-                    </select>
-                  </F>
-                </Row>
-              )}
             </div>
           ))}
           {accounts.some(a => a.balance) && (
