@@ -1640,11 +1640,6 @@ export default function App() {
                   </F>
                 </Row>
               )}
-              {a.hasRmdOrContrib === "yes" && a.rmdContribAmount && (
-                <div style={{ fontSize: 12, color: "#2ecc71", fontStyle: "italic", marginTop: 4, marginBottom: 2 }}>
-                  ✓ Auto-added to Income section as {a.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends"} ({a.rmdOrContrib})
-                </div>
-              )}
               <Row cols={2}>
                 <F>
                   <Lbl t="Making Contributions — How Much?" />
