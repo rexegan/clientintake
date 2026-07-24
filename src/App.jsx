@@ -14,7 +14,7 @@ const IS = {
 };
 
 const Lbl = ({ t }) => (
-  <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4, marginTop: 10 }}>{t}</div>
+  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4, marginTop: 10 }}>{t}</div>
 );
 
 const Sec = ({ t }) => (
@@ -202,7 +202,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 28, fontWeight: "bold", color: WHITE }}>Russell Wealth Group</h1>
-            <p style={{ margin: 0, fontSize: 13, color: LIGHT_BLUE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            <p style={{ margin: 0, fontSize: 13, color: WHITE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
               Saved Clients · {clients.length} Record{clients.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -214,7 +214,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
       <div style={{ maxWidth: 860, margin: "0 auto", padding: 24 }}>
         {clients.length === 0 ? (
           <div style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: 36, textAlign: "center" }}>
-            <div style={{ fontSize: 15, color: LIGHT_BLUE }}>No saved clients yet.</div>
+            <div style={{ fontSize: 15, color: WHITE }}>No saved clients yet.</div>
           </div>
         ) : clients.map(c => {
           const totalAssets = [
@@ -226,13 +226,13 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
               <div>
                 <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client.firstName} {c.client.lastName}</div>
                 {["married","domestic_partner"].includes(c.hasSpouse) && c.spouse?.firstName && (
-                  <div style={{ fontSize: 13, color: LIGHT_BLUE, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
+                  <div style={{ fontSize: 13, color: WHITE, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
                 )}
-                <div style={{ fontSize: 12, color: LIGHT_BLUE, marginTop: 4 }}>
+                <div style={{ fontSize: 12, color: WHITE, marginTop: 4 }}>
                   {c.client.dob && <span style={{ marginRight: 12 }}>DOB: {c.client.dob}</span>}
                   {totalAssets > 0 && <span>Assets: ${totalAssets.toLocaleString()}</span>}
                 </div>
-                <div style={{ fontSize: 11, color: LIGHT_BLUE, marginTop: 4, fontStyle: "italic" }}>Saved {new Date(c.savedAt).toLocaleDateString()}</div>
+                <div style={{ fontSize: 11, color: WHITE, marginTop: 4, fontStyle: "italic" }}>Saved {new Date(c.savedAt).toLocaleDateString()}</div>
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Open</button>
@@ -268,13 +268,13 @@ function FileUpload({ section, files = [], onChange }) {
   };
   return (
     <div style={{ marginTop: 16, borderTop: "1px solid " + ACCENT, paddingTop: 14 }}>
-      <div style={{ fontSize: 11, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Uploaded Files</div>
+      <div style={{ fontSize: 11, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Uploaded Files</div>
       {files.length > 0 && (
         <div style={{ marginBottom: 10 }}>
           {files.map(f => (
             <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, background: INPUT_BG, borderRadius: 6, padding: "6px 10px" }}>
-              <a href={f.data} download={f.name} style={{ color: LIGHT_BLUE, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
-              <span style={{ fontSize: 11, color: LIGHT_BLUE, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
+              <a href={f.data} download={f.name} style={{ color: WHITE, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
+              <span style={{ fontSize: 11, color: WHITE, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
               <button onClick={() => window.confirm(`Remove "${f.name}"?`) && onChange(section, files.filter(x => x.id !== f.id))} style={{ background: "#5a1a1a", border: "none", color: WHITE, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif", flexShrink: 0 }}>✕</button>
             </div>
           ))}
@@ -586,17 +586,17 @@ export default function App() {
         <div style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 16, padding: 36, maxWidth: 500, width: "100%", textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 14 }}>✓</div>
           <div style={{ fontSize: 22, fontWeight: "bold", marginBottom: 8 }}>Intake Complete</div>
-          <div style={{ fontSize: 15, color: LIGHT_BLUE, marginBottom: 4 }}>
+          <div style={{ fontSize: 15, color: WHITE, marginBottom: 4 }}>
             <span style={{ color: WHITE, fontWeight: "bold" }}>{client.firstName} {client.lastName}</span>'s profile has been recorded.
           </div>
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ fontSize: 15, color: LIGHT_BLUE, marginBottom: 4 }}>
+            <div style={{ fontSize: 15, color: WHITE, marginBottom: 4 }}>
               Spouse <span style={{ color: WHITE, fontWeight: "bold" }}>{spouse.firstName} {spouse.lastName}</span> also recorded.
             </div>
           )}
           {totalAssets > 0 && (
             <div style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 8, padding: "12px 18px", marginTop: 16, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Total Assets Captured</div>
+              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Total Assets Captured</div>
               <div style={{ fontSize: 22, fontWeight: "bold", color: WHITE }}>${totalAssets.toLocaleString()}</div>
             </div>
           )}
@@ -624,7 +624,7 @@ export default function App() {
           💾 {activeClientId ? "Update File" : "Save Draft"}
         </button>
         {lastSaved && (
-          <div style={{ fontSize: 10, color: LIGHT_BLUE, textAlign: "right", background: "rgba(26,47,94,0.85)", borderRadius: 5, padding: "2px 8px" }}>
+          <div style={{ fontSize: 10, color: WHITE, textAlign: "right", background: "rgba(26,47,94,0.85)", borderRadius: 5, padding: "2px 8px" }}>
             Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
         )}
@@ -634,7 +634,7 @@ export default function App() {
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 28, fontWeight: "bold", color: WHITE }}>Russell Wealth Group</h1>
-            <p style={{ margin: 0, fontSize: 13, color: LIGHT_BLUE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            <p style={{ margin: 0, fontSize: 13, color: WHITE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
               New Client Intake · Confidential
             </p>
           </div>
@@ -977,7 +977,7 @@ export default function App() {
               {children.map((ch, i) => (
                 <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
+                    <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
                     {children.length > 1 && (
                       <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                     )}
@@ -1007,7 +1007,7 @@ export default function App() {
                   </Row>
                   {ch.isBeneficiary && (
                     <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
-                      <div style={{ fontSize: 11, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Beneficiary Information</div>
+                      <div style={{ fontSize: 11, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Beneficiary Information</div>
                       <Row cols={3}>
                         <F><Lbl t="SSN" /><input value={ch.ssn} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, ssn: fmtSSN(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
                         <F>
@@ -1055,33 +1055,33 @@ export default function App() {
           {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
             <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
                   Child Beneficiary — {ch.firstName} {ch.lastName}
                 </div>
-                <div style={{ fontSize: 11, color: LIGHT_BLUE, fontStyle: "italic" }}>Edit in Family section</div>
+                <div style={{ fontSize: 11, color: WHITE, fontStyle: "italic" }}>Edit in Family section</div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: WHITE }}>
-                {ch.firstName && <div><span style={{ color: LIGHT_BLUE }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
-                {ch.dob && <div><span style={{ color: LIGHT_BLUE }}>DOB: </span>{ch.dob}</div>}
-                {ch.gender && <div><span style={{ color: LIGHT_BLUE }}>Gender: </span>{ch.gender}</div>}
-                {ch.ssn && <div><span style={{ color: LIGHT_BLUE }}>SSN: </span>{ch.ssn}</div>}
-                {ch.relationship && <div><span style={{ color: LIGHT_BLUE }}>Relationship: </span>{ch.relationship}</div>}
-                {ch.percentage && <div><span style={{ color: LIGHT_BLUE }}>% to Inherit: </span>{ch.percentage}</div>}
-                {ch.email && <div><span style={{ color: LIGHT_BLUE }}>Email: </span>{ch.email}</div>}
-                {ch.phone && <div><span style={{ color: LIGHT_BLUE }}>Phone: </span>{ch.phone}</div>}
-                {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: LIGHT_BLUE }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
+                {ch.firstName && <div><span style={{ color: WHITE }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
+                {ch.dob && <div><span style={{ color: WHITE }}>DOB: </span>{ch.dob}</div>}
+                {ch.gender && <div><span style={{ color: WHITE }}>Gender: </span>{ch.gender}</div>}
+                {ch.ssn && <div><span style={{ color: WHITE }}>SSN: </span>{ch.ssn}</div>}
+                {ch.relationship && <div><span style={{ color: WHITE }}>Relationship: </span>{ch.relationship}</div>}
+                {ch.percentage && <div><span style={{ color: WHITE }}>% to Inherit: </span>{ch.percentage}</div>}
+                {ch.email && <div><span style={{ color: WHITE }}>Email: </span>{ch.email}</div>}
+                {ch.phone && <div><span style={{ color: WHITE }}>Phone: </span>{ch.phone}</div>}
+                {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: WHITE }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
               </div>
             </div>
           ))}
           {children.filter(ch => ch.isBeneficiary).length > 0 && (
-            <div style={{ fontSize: 11, color: LIGHT_BLUE, fontStyle: "italic", marginBottom: 14, textAlign: "center" }}>
+            <div style={{ fontSize: 11, color: WHITE, fontStyle: "italic", marginBottom: 14, textAlign: "center" }}>
               ↑ Child beneficiaries added in Family section &nbsp;·&nbsp; Additional beneficiaries below
             </div>
           )}
           {beneficiaries.map((b, i) => (
             <div key={b.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Beneficiary {i + 1}</div>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Beneficiary {i + 1}</div>
                 {beneficiaries.length > 1 && (
                   <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
@@ -1158,9 +1158,9 @@ export default function App() {
                 const addrState = src !== "manual" ? client.state : b.state;
                 const addrZip = src !== "manual" ? client.zip : b.zip;
                 const readOnly = b.addressSource !== "manual";
-                const roStyle = { ...IS, background: NAV, color: LIGHT_BLUE };
+                const roStyle = { ...IS, background: NAV, color: WHITE };
                 return readOnly ? (
-                  <div style={{ marginTop: 6, background: NAV, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 13px", color: LIGHT_BLUE, fontSize: 14 }}>
+                  <div style={{ marginTop: 6, background: NAV, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 13px", color: WHITE, fontSize: 14 }}>
                     {addrLine}{addrLine && (addrCity || addrState || addrZip) ? ", " : ""}{addrCity}{addrState ? ", " + addrState : ""}{addrZip ? " " + addrZip : ""}
                     {!addrLine && !addrCity && <span style={{ fontStyle: "italic", opacity: 0.6 }}>No address on file yet</span>}
                   </div>
@@ -1197,7 +1197,7 @@ export default function App() {
             const over = total > 100;
             return (
               <div style={{ background: NAV, border: "2px solid " + (over ? "#c0392b" : ACCENT), borderRadius: 8, padding: "10px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Allocated</span>
+                <span style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Allocated</span>
                 <span style={{ fontSize: 17, fontWeight: "bold", color: over ? "#e74c3c" : (total === 100 ? "#2ecc71" : WHITE) }}>{total}%{over ? " — exceeds 100%" : total === 100 ? " ✓" : ""}</span>
               </div>
             );
@@ -1211,7 +1211,7 @@ export default function App() {
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment" id="section-employment">
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+            <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
               {client.firstName || "Client"}
             </div>
           )}
@@ -1305,7 +1305,7 @@ export default function App() {
           {["married","domestic_partner"].includes(hasSpouse) && (
             <>
               <div style={{ borderTop: "2px solid " + ACCENT, marginTop: 18, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
+                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
               </div>
               <Row cols={2}>
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1401,7 +1401,7 @@ export default function App() {
           {incomes.map((inc, i) => (
             <div key={inc.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Income Source {i + 1}</div>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Income Source {i + 1}</div>
                 {incomes.length > 1 && (
                   <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
@@ -1483,36 +1483,36 @@ export default function App() {
             const rateColor = bracket.rate <= 12 ? "#1a6a3a" : bracket.rate <= 22 ? "#7a6a00" : bracket.rate <= 24 ? "#8a4a2a" : "#8a1a1a";
             return (
               <div style={{ marginTop: 14, background: NAV, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 18px" }}>
-                <div style={{ fontSize: 12, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>
+                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>
                   Estimated Tax Summary — Filing {married ? "Married Filing Jointly" : "Single"}
                 </div>
                 {clientAnnual > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Client Income ({client.firstName || "Client"})</span>
+                    <span style={{ fontSize: 13, color: WHITE }}>Client Income ({client.firstName || "Client"})</span>
                     <span style={{ fontSize: 14, color: WHITE }}>${clientAnnual.toLocaleString()}</span>
                   </div>
                 )}
                 {spouseAnnual > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Spouse Income ({spouse.firstName || "Spouse"})</span>
+                    <span style={{ fontSize: 13, color: WHITE }}>Spouse Income ({spouse.firstName || "Spouse"})</span>
                     <span style={{ fontSize: 14, color: WHITE }}>${spouseAnnual.toLocaleString()}</span>
                   </div>
                 )}
                 {jointAnnual > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Joint Income</span>
+                    <span style={{ fontSize: 13, color: WHITE }}>Joint Income</span>
                     <span style={{ fontSize: 14, color: WHITE }}>${jointAnnual.toLocaleString()}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, borderTop: "1px solid " + ACCENT, paddingTop: 8 }}>
-                  <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Total Gross Income</span>
+                  <span style={{ fontSize: 13, color: WHITE }}>Total Gross Income</span>
                   <span style={{ fontSize: 15, fontWeight: "bold", color: WHITE }}>${totalAnnual.toLocaleString()}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: 13, color: LIGHT_BLUE }}>Marginal Tax Bracket</span>
+                  <span style={{ fontSize: 13, color: WHITE }}>Marginal Tax Bracket</span>
                   <span style={{ fontSize: 20, fontWeight: "bold", background: rateColor, color: WHITE, borderRadius: 7, padding: "3px 16px" }}>{bracket.rate}%</span>
                 </div>
-                <div style={{ fontSize: 11, color: LIGHT_BLUE, marginTop: 10, fontStyle: "italic" }}>
+                <div style={{ fontSize: 11, color: WHITE, marginTop: 10, fontStyle: "italic" }}>
                   Based on 2024 IRS brackets · Does not account for deductions, credits, or other adjustments
                 </div>
               </div>
@@ -1526,7 +1526,7 @@ export default function App() {
           {realEstate.map((r, i) => (
             <div key={r.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Property {i + 1}</div>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Property {i + 1}</div>
                 {realEstate.length > 1 && (
                   <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
@@ -1546,7 +1546,7 @@ export default function App() {
                 <F><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Net Equity" />
-                  <div style={{ ...IS, background: NAV, color: LIGHT_BLUE, display: "flex", alignItems: "center" }}>
+                  <div style={{ ...IS, background: NAV, color: WHITE, display: "flex", alignItems: "center" }}>
                     {(() => {
                       const mv = parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0);
                       const mb = parseInt((r.mortgageBalance || "").replace(/[^0-9]/g, "") || 0);
@@ -1581,7 +1581,7 @@ export default function App() {
           {accounts.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
                 {accounts.length > 1 && (
                   <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
@@ -1713,7 +1713,7 @@ export default function App() {
           ))}
           {accounts.some(a => a.balance) && (
             <div style={{ background: NAV, border: "2px solid " + ACCENT, borderRadius: 8, padding: "12px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Investment Assets</span>
+              <span style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Investment Assets</span>
               <span style={{ fontSize: 18, fontWeight: "bold", color: WHITE }}>
                 ${accounts.reduce((sum, a) => sum + parseInt((a.balance || "").replace(/[^0-9]/g, "") || 0), 0).toLocaleString()}
               </span>
@@ -1863,7 +1863,7 @@ export default function App() {
           {autos.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Vehicle {i + 1}</div>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Vehicle {i + 1}</div>
                 {autos.length > 1 && (
                   <button onClick={() => window.confirm("Remove this vehicle?") && delAuto(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
@@ -1885,7 +1885,7 @@ export default function App() {
         <button onClick={handleSubmit} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", width: "100%", marginBottom: 10 }}>
           Save Client Record
         </button>
-        <div style={{ textAlign: "center", fontSize: 12, color: LIGHT_BLUE, paddingBottom: 32, letterSpacing: "0.06em" }}>
+        <div style={{ textAlign: "center", fontSize: 12, color: WHITE, paddingBottom: 32, letterSpacing: "0.06em" }}>
           RUSSELL WEALTH GROUP · CONFIDENTIAL CLIENT DATA
         </div>
         </div>{/* end flex content */}
