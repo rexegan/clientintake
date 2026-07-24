@@ -246,6 +246,48 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
   );
 }
 
+function FileUpload({ section, files = [], onChange }) {
+  const inputRef = useRef(null);
+  const handleFiles = (e) => {
+    const chosen = Array.from(e.target.files);
+    chosen.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        onChange(section, [...files, {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          data: ev.target.result,
+          uploadedAt: new Date().toISOString(),
+        }]);
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = "";
+  };
+  return (
+    <div style={{ marginTop: 16, borderTop: "1px solid " + ACCENT, paddingTop: 14 }}>
+      <div style={{ fontSize: 11, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Uploaded Files</div>
+      {files.length > 0 && (
+        <div style={{ marginBottom: 10 }}>
+          {files.map(f => (
+            <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, background: INPUT_BG, borderRadius: 6, padding: "6px 10px" }}>
+              <a href={f.data} download={f.name} style={{ color: LIGHT_BLUE, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
+              <span style={{ fontSize: 11, color: LIGHT_BLUE, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
+              <button onClick={() => window.confirm(`Remove "${f.name}"?`) && onChange(section, files.filter(x => x.id !== f.id))} style={{ background: "#5a1a1a", border: "none", color: WHITE, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif", flexShrink: 0 }}>✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <input ref={inputRef} type="file" multiple style={{ display: "none" }} onChange={handleFiles} />
+      <button onClick={() => inputRef.current.click()} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "7px 18px", fontSize: 13, cursor: "pointer", fontFamily: "Georgia, serif" }}>
+        + Upload File
+      </button>
+    </div>
+  );
+}
+
 function Panel({ title, children, defaultOpen = true, id }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -288,6 +330,7 @@ export default function App() {
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
+  const [uploads, setUploads] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
@@ -337,12 +380,14 @@ export default function App() {
     }
   };
 
+  const handleUploadChange = (section, files) => setUploads(p => ({ ...p, [section]: files }));
+
   const buildSnapshot = useCallback(() => ({
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa]);
+    beneficiaries, willsTrust, poa, uploads,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -384,6 +429,7 @@ export default function App() {
     setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+    setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -488,6 +534,7 @@ export default function App() {
     setBeneficiaries([{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust({ hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+    setUploads({});
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -513,6 +560,7 @@ export default function App() {
           setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
           setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
           setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+          setUploads(record.uploads || {});
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -763,6 +811,7 @@ export default function App() {
               </Row>
             </div>
           )}
+          <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── FAMILY ── */}
@@ -998,6 +1047,7 @@ export default function App() {
               </button>
             </div>
           )}
+          <FileUpload section="family" files={uploads.family || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── BENEFICIARIES ── */}
@@ -1155,6 +1205,7 @@ export default function App() {
           <button onClick={addBene} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
             + Add Beneficiary
           </button>
+          <FileUpload section="beneficiaries" files={uploads.beneficiaries || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── EMPLOYMENT ── */}
@@ -1221,6 +1272,7 @@ export default function App() {
             {clientEmp.hasRetirement === "yes" && (
               <>
                 <Row cols={2}>
+                  <F><Lbl t="Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                   <F>
                     <Lbl t="Employer Match" />
                     <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
@@ -1231,7 +1283,6 @@ export default function App() {
                   </F>
                 </Row>
                 <Row cols={2}>
-                  <F><Lbl t="Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                   <F><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                   <F>
                     <Lbl t="Custodian / Plan Sponsor" />
@@ -1311,6 +1362,7 @@ export default function App() {
                 {spouseEmp.hasRetirement === "yes" && (
                   <>
                     <Row cols={2}>
+                      <F><Lbl t="Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                       <F>
                         <Lbl t="Employer Match" />
                         <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
@@ -1321,7 +1373,6 @@ export default function App() {
                       </F>
                     </Row>
                     <Row cols={2}>
-                      <F><Lbl t="Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                       <F><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                       <F>
                         <Lbl t="Custodian / Plan Sponsor" />
@@ -1342,6 +1393,7 @@ export default function App() {
               </div>
             </>
           )}
+          <FileUpload section="employment" files={uploads.employment || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── ANNUAL INCOME ── */}
@@ -1466,6 +1518,7 @@ export default function App() {
               </div>
             );
           })()}
+          <FileUpload section="income" files={uploads.income || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── REAL ESTATE ── */}
@@ -1520,6 +1573,7 @@ export default function App() {
           <button onClick={addRE} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
             + Add Property
           </button>
+          <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── INVESTMENT & BANK ACCOUNTS ── */}
@@ -1668,6 +1722,7 @@ export default function App() {
           <button onClick={addAcct} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
             + Add Account
           </button>
+          <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── WILLS & TRUST ── */}
@@ -1764,6 +1819,7 @@ export default function App() {
               )}
             </div>
           )}
+          <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── POWER OF ATTORNEY ── */}
@@ -1799,6 +1855,7 @@ export default function App() {
               <textarea data-lpignore="true" value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
             </div>
           )}
+          <FileUpload section="poa" files={uploads.poa || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── AUTOMOBILES ── */}
@@ -1822,6 +1879,7 @@ export default function App() {
           <button onClick={addAuto} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
             + Add Vehicle
           </button>
+          <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange} />
         </Panel>
 
         <button onClick={handleSubmit} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", width: "100%", marginBottom: 10 }}>
