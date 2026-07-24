@@ -970,9 +970,9 @@ export default function App() {
         {/* ── BENEFICIARIES ── */}
         <Panel title="Beneficiaries" id="section-bene">
           {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
-            <div key={ch.id} style={{ background: "#0f2a0f", border: "2px solid #2ecc71", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: "#2ecc71", textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
+                <div style={{ fontSize: 13, color: LIGHT_BLUE, textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
                   Child Beneficiary — {ch.firstName} {ch.lastName}
                 </div>
                 <div style={{ fontSize: 11, color: LIGHT_BLUE, fontStyle: "italic" }}>Edit in Family section</div>
