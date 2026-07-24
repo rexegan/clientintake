@@ -1635,11 +1635,9 @@ export default function App() {
                     <Lbl t="Frequency" />
                     <select data-lpignore="true" value={a.rmdContribFrequency || ""} onChange={e => syncAcctIncome(a, "rmdContribFrequency", e.target.value)} style={IS}>
                       <option value="">— Select —</option>
-                      <option value="annual">Annual</option>
                       <option value="monthly">Monthly</option>
-                      <option value="bimonthly">Bi-Monthly (twice/month)</option>
-                      <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
-                      <option value="weekly">Weekly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="annual">Annual</option>
                     </select>
                   </F>
                 </Row>
@@ -1669,11 +1667,9 @@ export default function App() {
                     <Lbl t="Contribution Frequency" />
                     <select data-lpignore="true" value={a.contribFrequency || ""} onChange={e => updAcct(a.id, "contribFrequency", e.target.value)} style={IS}>
                       <option value="">— Select —</option>
-                      <option value="annual">Annual</option>
                       <option value="monthly">Monthly</option>
-                      <option value="bimonthly">Bi-Monthly (twice/month)</option>
-                      <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
-                      <option value="weekly">Weekly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="annual">Annual</option>
                     </select>
                   </F>
                 </Row>
