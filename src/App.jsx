@@ -399,6 +399,15 @@ export default function App() {
         localStorage.setItem("rwg_clients", JSON.stringify(updated));
         return updated;
       });
+    } else {
+      const newId = Date.now();
+      const record = { ...snap, id: newId, savedAt: now };
+      setSavedClients(prev => {
+        const updated = [record, ...prev];
+        localStorage.setItem("rwg_clients", JSON.stringify(updated));
+        return updated;
+      });
+      setActiveClient(newId);
     }
     setLastSaved(new Date());
   }, [buildSnapshot, activeClientId]);
@@ -845,7 +854,12 @@ export default function App() {
 
           {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
-              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Spouse Details</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em" }}>Spouse Details</div>
+                <button onClick={() => setSpouse(p => ({ ...p, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip, hasPOBox: client.hasPOBox, poBox: client.poBox, poBoxCity: client.poBoxCity, poBoxState: client.poBoxState, poBoxZip: client.poBoxZip, preferredMailing: client.preferredMailing }))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>
+                  Copy Client Info
+                </button>
+              </div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -978,9 +992,12 @@ export default function App() {
                 <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
-                    {children.length > 1 && (
-                      <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
-                    )}
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip } : x))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>Copy Client Info</button>
+                      {children.length > 1 && (
+                        <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                      )}
+                    </div>
                   </div>
                   <Row cols={3}>
                     <F><Lbl t="First Name" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
