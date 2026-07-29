@@ -216,7 +216,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
           <div style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: 36, textAlign: "center" }}>
             <div style={{ fontSize: 15, color: WHITE }}>No saved clients yet.</div>
           </div>
-        ) : clients.map(c => {
+        ) : clients.filter(c => c && c.client).map(c => {
           const totalAssets = [
             ...(c.accounts || []).map(a => parseInt((a.balance || "").replace(/[^0-9]/g, "") || 0)),
             ...(c.realEstate || []).map(r => parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0)),
@@ -224,12 +224,12 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
           return (
             <div key={c.id} style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client.firstName} {c.client.lastName}</div>
+                <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client?.firstName} {c.client?.lastName}</div>
                 {["married","domestic_partner"].includes(c.hasSpouse) && c.spouse?.firstName && (
                   <div style={{ fontSize: 13, color: WHITE, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
                 )}
                 <div style={{ fontSize: 12, color: WHITE, marginTop: 4 }}>
-                  {c.client.dob && <span style={{ marginRight: 12 }}>DOB: {c.client.dob}</span>}
+                  {c.client?.dob && <span style={{ marginRight: 12 }}>DOB: {c.client.dob}</span>}
                   {totalAssets > 0 && <span>Assets: ${totalAssets.toLocaleString()}</span>}
                 </div>
                 <div style={{ fontSize: 11, color: WHITE, marginTop: 4, fontStyle: "italic" }}>Saved {new Date(c.savedAt).toLocaleDateString()}</div>
