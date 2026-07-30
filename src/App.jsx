@@ -470,8 +470,8 @@ function ClientReport({ data, onClose }) {
     kpiRow: { display: "flex", gap: 16, marginTop: 20, marginBottom: 8, flexWrap: "wrap" },
     kpi: { flex: 1, minWidth: 140, background: LGRAY, border: BDR, borderRadius: 8, padding: "14px 18px" },
     kpiLbl: { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6a7a9a", marginBottom: 4 },
-    kpiVal: { fontSize: 22, fontWeight: "bold", color: NAVY },
-    kpiSub: { fontSize: 11, color: "#6a7a9a", marginTop: 2 },
+    kpiVal: { fontSize: 22, fontWeight: "bold", color: NAVY, textAlign: "right" },
+    kpiSub: { fontSize: 11, color: "#6a7a9a", marginTop: 2, textAlign: "right" },
     table: { width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 8 },
     th: { textAlign: "left", padding: "7px 10px", background: DGRAY, color: "#fff", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" },
     td: { padding: "7px 10px", borderBottom: BDR, verticalAlign: "top" },
@@ -507,7 +507,7 @@ function ClientReport({ data, onClose }) {
         {/* ── HEADER ── */}
         <div style={s.header}>
           <div style={s.firmName}>Russell Wealth Group · Confidential</div>
-          <div style={s.clientName}>{clientName}{hasSpouseRecord ? <span style={{ fontWeight: 400, fontSize: 24 }}> &amp; {spouseName}</span> : ""}</div>
+          <div style={s.clientName}>{clientName}{hasSpouseRecord ? ` & ${spouseName}` : ""}</div>
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
         </div>
 
@@ -670,8 +670,8 @@ function ClientReport({ data, onClose }) {
             </div>
           ))}
           {accounts.length === 0 && <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No accounts recorded.</p>}
-          <div style={{ textAlign: "right", fontSize: 13, fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, paddingTop: 8 }}>
-            Total Account Holdings: {fmt(acctTotal)}
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, paddingTop: 8 }}>
+            <span>Total Account Holdings</span><span>{fmt(acctTotal)}</span>
           </div>
 
           {/* ── REAL ESTATE ── */}
