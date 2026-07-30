@@ -1641,8 +1641,18 @@ export default function App() {
         <Panel title="Investment & Bank Accounts" id="section-accounts">
           {accounts.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap" }}>Account {i + 1}</div>
+                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 160 }}>
+                    <option value="">— Owner —</option>
+                    <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                    <option value="Joint">Joint (JNT)</option>
+                  </select>
+                </div>
                 {accounts.length > 1 && (
                   <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
@@ -1707,20 +1717,9 @@ export default function App() {
               {a.institution === "Other" && (
                 <><Lbl t="Specify Institution" /><input value={a.institutionOther || ""} onChange={e => updAcct(a.id, "institutionOther", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></>
               )}
-              <Row cols={3}>
+              <Row cols={2}>
                 <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
-                  <Lbl t="Owner" />
-                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && (
-                      <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    )}
-                    <option value="Joint">Joint (JNT)</option>
-                  </select>
-                </F>
               </Row>
               <Row cols={2}>
                 <F>
