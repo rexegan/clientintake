@@ -2398,7 +2398,7 @@ export default function App() {
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
                 </select>
-                {a.hasOpt === "yes" && (<>
+                {a.hasOpt === "yes" && (
                   <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
                     <option value="">— Event? —</option>
                     <option value="Retire">Retire</option>
@@ -2410,9 +2410,16 @@ export default function App() {
                     <option value="Death of Spouse">Death of Spouse</option>
                     <option value="Other">Other</option>
                   </select>
-                  <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 10px", fontSize: 13, width: "auto", minWidth: 170 }} autoComplete="new-password" data-lpignore="true" placeholder="Expected Date / Time Frame…" />
-                </>)}
+                )}
               </div>
+              {a.hasOpt === "yes" && (
+                <Row cols={2}>
+                  <F>
+                    <Lbl t="Expected Date of Event" />
+                    <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Jan 2027, 6 months…" />
+                  </F>
+                </Row>
+              )}
               <Row cols={2}>
                 <F>
                   <Lbl t="Account Type" />
