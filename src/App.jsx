@@ -662,7 +662,7 @@ function ClientReport({ data, onClose }) {
                 <tbody>
                   {accts.map((a, i) => (
                     <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
-                      <td style={s.td}>{a.type || <em style={{ color: "#9aa" }}>—</em>}{a.hasOpt === "yes" && <span style={s.tag}>OPT{a.optEvent ? ": " + a.optEvent : ""}</span>}</td>
+                      <td style={s.td}>{a.type || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.owner || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : <em style={{ color: "#9aa" }}>—</em>}</td>
@@ -708,7 +708,6 @@ function ClientReport({ data, onClose }) {
                       <td style={s.td}>
                         <strong>{r.descriptionNote || r.description || `Property ${i+1}`}</strong>
                         {r.description && <div style={{ fontSize: 11, color: "#6a7a9a" }}>{r.description}</div>}
-                        {r.hasOpt === "yes" && <span style={s.tag}>OPT{r.optEvent ? ": " + r.optEvent : ""}</span>}
                       </td>
                       <td style={s.td}>{[r.address, r.city, r.state, r.zip].filter(Boolean).join(", ") || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{r.purchaseDate || <em style={{ color: "#9aa" }}>—</em>}</td>
