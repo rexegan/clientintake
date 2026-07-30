@@ -141,8 +141,8 @@ const AUTO_MODELS = {
   "Tesla": ["Cybertruck","Model 3","Model 3 Long Range","Model 3 Performance","Model S","Model S Long Range","Model S Plaid","Model X","Model X Long Range","Model X Plaid","Model Y","Model Y Long Range","Model Y Performance","Roadster"],
   "Cadillac": ["CT4","CT4-V","CT4-V Blackwing","CT5","CT5-V","CT5-V Blackwing","Escalade","Escalade ESV","Escalade IQ","Escalade Platinum","Escalade Sport","Escalade V","Lyriq","XT4","XT4 Premium Luxury","XT4 Sport","XT5","XT5 Platinum","XT5 Premium Luxury","XT5 Sport","XT6","XT6 Platinum","XT6 Premium Luxury","XT6 Sport"],
 };
-const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
-const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
+const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null, hasOpt:null, optEvent:"" };
+const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasOpt:null, optEvent:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
 const DEFAULT_INSTITUTIONS = ["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"];
 
@@ -1656,6 +1656,28 @@ export default function App() {
                   </select>
                 </F>
               </Row>
+              <Row cols={2}>
+                <F>
+                  <Lbl t="OPT?" />
+                  <select data-lpignore="true" value={r.hasOpt || ""} onChange={e => updRE(r.id, "hasOpt", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                {r.hasOpt === "yes" && (
+                  <F>
+                    <Lbl t="Event?" />
+                    <select data-lpignore="true" value={r.optEvent || ""} onChange={e => updRE(r.id, "optEvent", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="Retire">Retire</option>
+                      <option value="Sell Business">Sell Business</option>
+                      <option value="Inheritance">Inheritance</option>
+                      <option value="Settlement">Settlement</option>
+                    </select>
+                  </F>
+                )}
+              </Row>
             </div>
           ))}
           <button onClick={addRE} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
@@ -1748,6 +1770,28 @@ export default function App() {
                   </F>
                 </Row>
               )}
+              <Row cols={2}>
+                <F>
+                  <Lbl t="OPT?" />
+                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                {a.hasOpt === "yes" && (
+                  <F>
+                    <Lbl t="Event?" />
+                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="Retire">Retire</option>
+                      <option value="Sell Business">Sell Business</option>
+                      <option value="Inheritance">Inheritance</option>
+                      <option value="Settlement">Settlement</option>
+                    </select>
+                  </F>
+                )}
+              </Row>
             </div>
           ))}
           {accounts.some(a => a.balance) && (
