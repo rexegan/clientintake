@@ -1730,8 +1730,12 @@ export default function App() {
                       <option value="">— Select —</option>
                       <option value="Retire">Retire</option>
                       <option value="Sell Business">Sell Business</option>
+                      <option value="Sell Land">Sell Land</option>
                       <option value="Inheritance">Inheritance</option>
                       <option value="Settlement">Settlement</option>
+                      <option value="Divorce">Divorce</option>
+                      <option value="Death of Spouse">Death of Spouse</option>
+                      <option value="Other">Other</option>
                     </select>
                   </F>
                 )}
@@ -1770,6 +1774,25 @@ export default function App() {
                     <option value="Non-Qualified">Non-Qualified</option>
                     <option value="Qualified">Qualified</option>
                   </select>
+                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 110 }}>
+                    <option value="">— OPT? —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                  {a.hasOpt === "yes" && (<>
+                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 150 }}>
+                      <option value="">— Event? —</option>
+                      <option value="Retire">Retire</option>
+                      <option value="Sell Business">Sell Business</option>
+                      <option value="Sell Land">Sell Land</option>
+                      <option value="Inheritance">Inheritance</option>
+                      <option value="Settlement">Settlement</option>
+                      <option value="Divorce">Divorce</option>
+                      <option value="Death of Spouse">Death of Spouse</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 150 }} autoComplete="new-password" data-lpignore="true" placeholder="Time Frame / Date…" />
+                  </>)}
                 </div>
                 {accounts.length > 1 && (
                   <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
@@ -1833,34 +1856,6 @@ export default function App() {
                     </select>
                   </F>
                 </Row>
-              )}
-              <Row cols={2}>
-                <F>
-                  <Lbl t="OPT?" />
-                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </F>
-                {a.hasOpt === "yes" && (
-                  <F>
-                    <Lbl t="Event?" />
-                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={IS}>
-                      <option value="">— Select —</option>
-                      <option value="Retire">Retire</option>
-                      <option value="Sell Business">Sell Business</option>
-                      <option value="Inheritance">Inheritance</option>
-                      <option value="Settlement">Settlement</option>
-                    </select>
-                  </F>
-                )}
-              </Row>
-              {a.hasOpt === "yes" && (
-                <F>
-                  <Lbl t="Time Frame / Date" />
-                  <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6 months, Jan 2026…" />
-                </F>
               )}
             </div>
           ))}
