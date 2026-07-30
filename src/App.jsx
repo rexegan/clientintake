@@ -853,17 +853,17 @@ function ClientReport({ data, onClose }) {
       <style>{`
         @media print {
           * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-          body * { visibility: hidden !important; }
-          #rwg-report-wrap, #rwg-report-wrap * { visibility: visible !important; }
-          #rwg-report-wrap {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
+          /* Remove the main app from flow entirely so it doesn't pad pages */
+          #rwg-main-app { display: none !important; }
+          /* Strip the screen overlay — make report flow naturally */
+          #rwg-report-wrap { display: block !important; }
+          #rwg-report-wrap > div {
+            position: static !important;
             background: white !important;
             overflow: visible !important;
             padding: 0 !important;
-            z-index: 9999 !important;
+            inset: auto !important;
+            z-index: auto !important;
           }
           #rwg-print-toolbar { display: none !important; }
           #rwg-report {
@@ -876,9 +876,8 @@ function ClientReport({ data, onClose }) {
           }
           table { page-break-inside: avoid; }
           tr { page-break-inside: avoid; }
-          h2, h3, .section-head { page-break-after: avoid; }
         }
-        @page { margin: 0.6in 0.5in; }
+        @page { margin: 0.6in 0.5in; size: letter portrait; }
       `}</style>
     </div>
   );
@@ -1218,7 +1217,7 @@ export default function App() {
 
   return (
     <>
-    <div style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE }}>
+    <div id="rwg-main-app" style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE }}>
       {toast && (
         <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, background: toast.color, color: WHITE, padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
           {toast.msg}
