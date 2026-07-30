@@ -475,14 +475,14 @@ function ClientReport({ data, onClose }) {
     sub: { fontSize: 14, color: "#c0d8f0", marginTop: 2 },
     reportTitle: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#a8c8f0", marginTop: 10 },
     body: { padding: "0 40px" },
-    sectionHead: { fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 6, marginTop: 32, marginBottom: 12, fontWeight: "bold" },
+    sectionHead: { fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 6, marginTop: 32, marginBottom: 12, fontWeight: "bold", textAlign: "center" },
     kpiRow: { display: "flex", gap: 16, marginTop: 20, marginBottom: 8, flexWrap: "wrap" },
     kpi: { flex: 1, minWidth: 140, background: LGRAY, border: BDR, borderRadius: 8, padding: "14px 18px" },
     kpiLbl: { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6a7a9a", marginBottom: 4 },
     kpiVal: { fontSize: 22, fontWeight: "bold", color: NAVY, textAlign: "right" },
     kpiSub: { fontSize: 11, color: "#6a7a9a", marginTop: 2, textAlign: "right" },
     table: { width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 8 },
-    th: { textAlign: "left", padding: "7px 10px", background: DGRAY, color: "#fff", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" },
+    th: { textAlign: "center", padding: "7px 10px", background: DGRAY, color: "#fff", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" },
     td: { padding: "7px 10px", borderBottom: BDR, verticalAlign: "top" },
     tdr: { padding: "7px 10px", borderBottom: BDR, textAlign: "right", verticalAlign: "top" },
     tdTotal: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY },
@@ -1090,7 +1090,7 @@ export default function App() {
   };
 
   const addBene = () => setBeneficiaries(p => [...p, { ...emptyBeneficiary, id: Date.now() }]);
-  const delBene = id => setBeneficiaries(p => p.filter(x => x.id !== id));
+  const delBene = id => setBeneficiaries(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyBeneficiary, id: Date.now() }]; });
   const updBene = (id, f, v) => setBeneficiaries(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
   const handleSubmit = () => {
@@ -1736,9 +1736,7 @@ export default function App() {
             <div key={b.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Beneficiary {i + 1}</div>
-                {beneficiaries.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
-                )}
+                <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
               </div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
