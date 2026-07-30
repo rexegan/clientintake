@@ -127,7 +127,7 @@ const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", 
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
-const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
+const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
 const DEFAULT_INSTITUTIONS = ["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"];
 
@@ -1663,6 +1663,11 @@ export default function App() {
                       <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
                     )}
                     <option value="Joint">Joint (JNT)</option>
+                  </select>
+                  <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 140 }}>
+                    <option value="">— NQ or Q? —</option>
+                    <option value="Non-Qualified">Non-Qualified</option>
+                    <option value="Qualified">Qualified</option>
                   </select>
                 </div>
                 {accounts.length > 1 && (
