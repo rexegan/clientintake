@@ -854,12 +854,7 @@ export default function App() {
 
           {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em" }}>Spouse Details</div>
-                <button onClick={() => setSpouse(p => ({ ...p, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip, hasPOBox: client.hasPOBox, poBox: client.poBox, poBoxCity: client.poBoxCity, poBoxState: client.poBoxState, poBoxZip: client.poBoxZip, preferredMailing: client.preferredMailing }))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>
-                  Copy Client Info
-                </button>
-              </div>
+              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Spouse Details</div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -911,7 +906,12 @@ export default function App() {
                 <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
 
-              <Sec t="Home Address" />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, marginBottom: 10, borderTop: "1px solid " + ACCENT, paddingTop: 12 }}>
+                <Sec t="Home Address" />
+                <button onClick={() => setSpouse(p => ({ ...p, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip, hasPOBox: client.hasPOBox, poBox: client.poBox, poBoxCity: client.poBoxCity, poBoxState: client.poBoxState, poBoxZip: client.poBoxZip, preferredMailing: client.preferredMailing }))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif", marginBottom: 10 }}>
+                  Copy Client Address?
+                </button>
+              </div>
               <Row cols={2}>
                 <F><Lbl t="Street Address" /><input value={spouse.addressLine1 || ""} onChange={setS("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Apt / Suite (optional)" /><input value={spouse.addressLine2 || ""} onChange={setS("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
