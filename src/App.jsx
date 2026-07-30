@@ -126,7 +126,7 @@ const emptyClient = {
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
-const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
+const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
 const ACCOUNT_TYPES = [
@@ -1572,12 +1572,23 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, marginBottom: 4 }}>
                 <Lbl t="Property Address" />
                 {r.description === "Personal Residence" && (
-                  <button onClick={() => updRE(r.id, "address", [client.addressLine1, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", "))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>
+                  <button onClick={() => { updRE(r.id, "address", client.addressLine1); updRE(r.id, "addressLine2", client.addressLine2); updRE(r.id, "city", client.city); updRE(r.id, "state", client.state); updRE(r.id, "zip", client.zip); }} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>
                     Copy Client Address?
                   </button>
                 )}
               </div>
-              <input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" />
+              <Row cols={2}>
+                <F><Lbl t="Street Address" /><input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Apt / Suite (optional)" /><input value={r.addressLine2 || ""} onChange={e => updRE(r.id, "addressLine2", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={3}>
+                <F>
+                  <Lbl t="ZIP" />
+                  <input value={r.zip || ""} onChange={e => { const z = fmtZip(e.target.value); updRE(r.id, "zip", z); lookupZip(z, (city, state) => { updRE(r.id, "city", city); updRE(r.id, "state", state); }); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
+                </F>
+                <F><Lbl t="City" /><input value={r.city || ""} onChange={e => updRE(r.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="State" /><StateSelect value={r.state || ""} onChange={e => updRE(r.id, "state", e.target.value)} /></F>
+              </Row>
               <Row cols={3}>
                 <F><DatePicker label="Purchase Date" value={r.purchaseDate} onChange={v => updRE(r.id, "purchaseDate", v)} /></F>
                 <F><Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
