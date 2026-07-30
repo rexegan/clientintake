@@ -260,7 +260,9 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
                   {c.client?.dob && <span style={{ marginRight: 12 }}>DOB: {c.client.dob}</span>}
                   {totalAssets > 0 && <span>Assets: ${totalAssets.toLocaleString()}</span>}
                 </div>
-                <div style={{ fontSize: 11, color: WHITE, marginTop: 4, fontStyle: "italic" }}>Saved {new Date(c.savedAt).toLocaleDateString()}</div>
+                <div style={{ fontSize: 11, color: WHITE, marginTop: 4, fontStyle: "italic" }}>
+                  Last saved: {c.savedAt ? new Date(c.savedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " at " + new Date(c.savedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }) : "—"}
+                </div>
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Open</button>
