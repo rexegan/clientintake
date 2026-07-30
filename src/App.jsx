@@ -1714,9 +1714,11 @@ export default function App() {
                   <Lbl t="Owner" />
                   <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
-                    <option value="Client">{client.firstName || "Client"}</option>
-                    <option value="Spouse">{spouse.firstName || "Spouse"}</option>
-                    <option value="Joint">Joint</option>
+                    <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                    <option value="Joint">Joint (JNT)</option>
                   </select>
                 </F>
               </Row>
