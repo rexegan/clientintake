@@ -129,6 +129,8 @@ const emptyAuto = { year:"", make:"", model:"", value:"" };
 const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
+const DEFAULT_INSTITUTIONS = ["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"];
+
 const ACCOUNT_TYPES = [
   "401(k)","403(b)","457(b)",
   "Annuity (Fixed)","Annuity (Indexed)","Annuity (Variable)",
@@ -331,6 +333,15 @@ export default function App() {
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
+  const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
+  const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
+  const addCustomInstitution = (val) => {
+    const trimmed = val.trim();
+    if (!trimmed || DEFAULT_INSTITUTIONS.includes(trimmed) || customInstitutions.includes(trimmed)) return;
+    const updated = [...customInstitutions, trimmed].sort((a, b) => a.localeCompare(b));
+    setCustomInstitutions(updated);
+    localStorage.setItem("rwg_institutions", JSON.stringify(updated));
+  };
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
@@ -1672,13 +1683,14 @@ export default function App() {
                     list={`inst-list-${a.id}`}
                     value={a.institution}
                     onChange={e => updAcct(a.id, "institution", e.target.value)}
+                    onBlur={e => addCustomInstitution(e.target.value)}
                     style={IS}
                     autoComplete="off"
                     data-lpignore="true"
                     placeholder="Type or select…"
                   />
                   <datalist id={`inst-list-${a.id}`}>
-                    {["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"].map(n => <option key={n} value={n} />)}
+                    {allInstitutions.map(n => <option key={n} value={n} />)}
                   </datalist>
                 </F>
               </Row>
