@@ -1721,25 +1721,20 @@ export default function App() {
                 <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={2}>
+              <Row cols={1}>
                 <F>
-                  <Lbl t="Making Contributions?" />
-                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => { const v = e.target.value; if (v === "yes" || v === "no") { toggleAcctRmd(a, v); } else { updAcct(a.id, "hasRmdOrContrib", null); } }} style={IS}>
+                  <Lbl t="Transactions?" />
+                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => { const v = e.target.value; if (v) { toggleAcctRmd(a, "yes"); updAcct(a.id, "hasRmdOrContrib", v); } else { toggleAcctRmd(a, "no"); } }} style={IS}>
                     <option value="">— Select —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="Contributions">Contributions</option>
+                    <option value="Withdrawals">Withdrawals</option>
+                    <option value="RMDs">RMDs</option>
+                    <option value="Loans">Loans</option>
+                    <option value="Other">Other</option>
                   </select>
                 </F>
-                <F>
-                    <Lbl t="RMD or Withdrawal?" />
-                    <select data-lpignore="true" value={a.rmdOrContrib || ""} onChange={e => syncAcctIncome(a, "rmdOrContrib", e.target.value)} style={IS}>
-                      <option value="">— Select —</option>
-                      <option value="RMD">RMD (Required Minimum Distribution)</option>
-                      <option value="Withdrawal">Withdrawal</option>
-                    </select>
-                  </F>
               </Row>
-              {a.hasRmdOrContrib === "yes" && (
+              {a.hasRmdOrContrib && (
                 <Row cols={2}>
                   <F>
                     <Lbl t="Amount" />
