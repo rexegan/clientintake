@@ -361,6 +361,7 @@ function ClientReport({ data, onClose }) {
 
   const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
   const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
+  const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
   // Header display: "Bob & Melody Carson" — client first, spouse first, shared last
   const headerName = (() => {
     if (!hasSpouseRecord) return clientName;
@@ -370,7 +371,6 @@ function ClientReport({ data, onClose }) {
     if (last && (spouse.lastName || "") === last) return `${cf} & ${sf} ${last}`;
     return `${cf} & ${sf}`;
   })();
-  const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
   const reportDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
   // ── ASSET CALCULATIONS ──
