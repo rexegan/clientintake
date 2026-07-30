@@ -1561,7 +1561,15 @@ export default function App() {
                 <option value="">— Select —</option>
                 <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
               </select>
-              <Lbl t="Property Address" /><input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, marginBottom: 4 }}>
+                <Lbl t="Property Address" />
+                {r.description === "Personal Residence" && (
+                  <button onClick={() => updRE(r.id, "address", [client.addressLine1, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", "))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>
+                    Copy Client Address?
+                  </button>
+                )}
+              </div>
+              <input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" />
               <Row cols={3}>
                 <F><DatePicker label="Purchase Date" value={r.purchaseDate} onChange={v => updRE(r.id, "purchaseDate", v)} /></F>
                 <F><Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
