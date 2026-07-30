@@ -2372,45 +2372,47 @@ export default function App() {
         <Panel title="Investment & Bank Accounts" id="section-accounts">
           {accounts.map((a, i) => (
             <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap" }}>Account {i + 1}</div>
-                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 160 }}>
-                    <option value="">— Owner —</option>
-                    <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && (
-                      <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    )}
-                    <option value="Joint">Joint (JNT)</option>
-                  </select>
-                  <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 140 }}>
-                    <option value="">— NQ or Q? —</option>
-                    <option value="Non-Qualified">Non-Qualified</option>
-                    <option value="Qualified">Qualified</option>
-                  </select>
-                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 110 }}>
-                    <option value="">— OPT? —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                  {a.hasOpt === "yes" && (<>
-                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 150 }}>
-                      <option value="">— Event? —</option>
-                      <option value="Retire">Retire</option>
-                      <option value="Sell Business">Sell Business</option>
-                      <option value="Sell Land">Sell Land</option>
-                      <option value="Inheritance">Inheritance</option>
-                      <option value="Settlement">Settlement</option>
-                      <option value="Divorce">Divorce</option>
-                      <option value="Death of Spouse">Death of Spouse</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={{ ...IS, margin: 0, padding: "4px 10px", fontSize: 12, width: "auto", minWidth: 150 }} autoComplete="new-password" data-lpignore="true" placeholder="Time Frame / Date…" />
-                  </>)}
-                </div>
+              {/* Row 1: title + remove */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
                 {accounts.length > 1 && (
                   <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
+              </div>
+              {/* Row 2: owner / NQ-Q / OPT / event / timeframe */}
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid rgba(74,144,217,0.35)" }}>
+                <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
+                  <option value="">— Owner —</option>
+                  <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                  {["married","domestic_partner"].includes(hasSpouse) && (
+                    <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                  )}
+                  <option value="Joint">Joint (JNT)</option>
+                </select>
+                <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 150 }}>
+                  <option value="">— NQ or Q? —</option>
+                  <option value="Non-Qualified">Non-Qualified</option>
+                  <option value="Qualified">Qualified</option>
+                </select>
+                <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 115 }}>
+                  <option value="">— OPT? —</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+                {a.hasOpt === "yes" && (<>
+                  <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
+                    <option value="">— Event? —</option>
+                    <option value="Retire">Retire</option>
+                    <option value="Sell Business">Sell Business</option>
+                    <option value="Sell Land">Sell Land</option>
+                    <option value="Inheritance">Inheritance</option>
+                    <option value="Settlement">Settlement</option>
+                    <option value="Divorce">Divorce</option>
+                    <option value="Death of Spouse">Death of Spouse</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 10px", fontSize: 13, width: "auto", minWidth: 170 }} autoComplete="new-password" data-lpignore="true" placeholder="Expected Date / Time Frame…" />
+                </>)}
               </div>
               <Row cols={2}>
                 <F>
