@@ -162,16 +162,20 @@ const DEFAULT_INSTITUTIONS = ["Allianz","American Equity","American Funds","Amer
 
 const ACCOUNT_TYPES = [
   "401(k)","403(b)","457(b)",
-  "Annuity (Fixed)","Annuity (Indexed)","Annuity (Variable)",
+  "Alternative Investments (Illiquid)",
+  "Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)",
+  "Bonds (Individual)",
   "CD","Checking / Savings",
   "HSA",
   "Life Insurance (Cash Value)",
   "Money Market",
+  "Mutual Funds",
   "Non-Qualified Brokerage",
   "Pension / Defined Benefit",
   "Roth 401(k)","Roth IRA",
   "SEP IRA","SIMPLE IRA",
   "529 / Education",
+  "Stocks (Individual)",
   "Traditional IRA","Trust Account",
   "Other",
 ];
@@ -353,7 +357,7 @@ function fmt(n) {
 }
 
 function ClientReport({ data, onClose }) {
-  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {} } = data;
+  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {} } = data;
 
   const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
   const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
@@ -367,12 +371,76 @@ function ClientReport({ data, onClose }) {
 
   // liabilities
   const reMortgages = realEstate.reduce((s, r) => s + parseDollar(r.mortgageBalance), 0);
+  const homeMortgage = parseDollar(homeOwnership.mortgageBalance);
   const totalAssets = acctTotal + reTotal + autoTotal;
-  const totalLiabilities = reMortgages;
+  const totalLiabilities = reMortgages + homeMortgage;
   const netWorth = totalAssets - totalLiabilities;
+
+  // primary residence equity (for net worth ex-home)
+  const primaryResidences = realEstate.filter(r => r.description === "Personal Residence");
+  const primaryReValue = primaryResidences.reduce((s, r) => s + parseDollar(r.marketValue), 0);
+  const primaryReMortgage = primaryResidences.reduce((s, r) => s + parseDollar(r.mortgageBalance), 0);
+  const primaryReEquity = primaryReValue - primaryReMortgage;
+  const netWorthExHome = netWorth - primaryReEquity;
+
+  // liquid net worth — all accounts except illiquid alternatives and 529
+  const ILLIQUID_TYPES = new Set(["Alternative Investments (Illiquid)", "529 / Education"]);
+  const liquidAcctTotal = accounts.filter(a => !ILLIQUID_TYPES.has(a.type)).reduce((s, a) => s + parseDollar(a.balance), 0);
+
+  // asset allocation buckets
+  const CASH_TYPES    = new Set(["CD", "Checking / Savings", "Money Market"]);
+  const QUAL_TYPES    = new Set(["401(k)","403(b)","457(b)","Traditional IRA","Roth IRA","Roth 401(k)","SEP IRA","SIMPLE IRA","Pension / Defined Benefit","HSA"]);
+  const ANN_FIXED     = new Set(["Annuity (Fixed)"]);
+  const ANN_INDEXED   = new Set(["Annuity (Fixed Indexed)","Annuity (Indexed)"]);
+  const ANN_VAR       = new Set(["Annuity (Variable)"]);
+  const ANN_RILA      = new Set(["Annuity (RILA)"]);
+  const CVLI_TYPES    = new Set(["Life Insurance (Cash Value)"]);
+  const ILLIQ_TYPES   = new Set(["Alternative Investments (Illiquid)"]);
+  const MF_TYPES      = new Set(["Mutual Funds"]);
+  const STOCK_IND     = new Set(["Stocks (Individual)"]);
+  const BOND_IND      = new Set(["Bonds (Individual)"]);
+  const BROK_TYPES    = new Set(["Non-Qualified Brokerage","Trust Account"]);
+
+  const sumBy = (types) => accounts.filter(a => types.has(a.type)).reduce((s, a) => s + parseDollar(a.balance), 0);
+  const cashVal     = sumBy(CASH_TYPES);
+  const qualVal     = sumBy(QUAL_TYPES);
+  const annFixVal   = sumBy(ANN_FIXED);
+  const annIdxVal   = sumBy(ANN_INDEXED);
+  const annVarVal   = sumBy(ANN_VAR);
+  const annRilaVal  = sumBy(ANN_RILA);
+  const cvliVal     = sumBy(CVLI_TYPES);
+  const illiqVal    = sumBy(ILLIQ_TYPES);
+  const mfVal       = sumBy(MF_TYPES);
+  const stockIndVal = sumBy(STOCK_IND);
+  const bondIndVal  = sumBy(BOND_IND);
+  const brokVal     = sumBy(BROK_TYPES);
+  const otherAcctVal = accounts.filter(a => {
+    const allKnown = new Set([...CASH_TYPES,...QUAL_TYPES,...ANN_FIXED,...ANN_INDEXED,...ANN_VAR,...ANN_RILA,...CVLI_TYPES,...ILLIQ_TYPES,...MF_TYPES,...STOCK_IND,...BOND_IND,...BROK_TYPES]);
+    return !allKnown.has(a.type);
+  }).reduce((s, a) => s + parseDollar(a.balance), 0);
+
+  const allocationRows = [
+    { label: "Cash (Checking, Savings, Money Market, CDs)", val: cashVal },
+    { label: "Individually Traded Stocks", val: stockIndVal },
+    { label: "Individually Traded Bonds", val: bondIndVal },
+    { label: "Mutual Funds", val: mfVal },
+    { label: "Non-Qualified Brokerage / Trust", val: brokVal },
+    { label: "Qualified Retirement Plans (401k, IRA, etc.)", val: qualVal },
+    { label: "Annuities — Fixed", val: annFixVal },
+    { label: "Annuities — Fixed Indexed", val: annIdxVal },
+    { label: "Annuities — Variable", val: annVarVal },
+    { label: "Annuities — RILA", val: annRilaVal },
+    { label: "Cash Value Life Insurance", val: cvliVal },
+    { label: "Illiquid Alternative Investments", val: illiqVal },
+    { label: "Real Estate (all properties)", val: reTotal },
+    { label: "Automobiles", val: autoTotal },
+    { label: "Other / Unclassified", val: otherAcctVal },
+  ].filter(r => r.val > 0);
 
   // ── INCOME ──
   const annualIncome = incomes.reduce((s, inc) => s + toAnnual(inc.amount, inc.frequency), 0);
+  const annExpRaw = parseDollar(annualExpenses.amount) * ((annualExpenses.frequency === "monthly") ? 12 : 1);
+  const surplusDeficit = annualIncome - annExpRaw;
 
   // ── ACCOUNT GROUPINGS ──
   const qualGroups = {};
@@ -449,10 +517,10 @@ function ClientReport({ data, onClose }) {
 
           {/* ── NET WORTH SNAPSHOT ── */}
           <div style={s.kpiRow}>
-            <div style={s.kpi}><div style={s.kpiLbl}>Total Assets</div><div style={s.kpiVal}>{fmt(totalAssets)}</div></div>
-            <div style={s.kpi}><div style={s.kpiLbl}>Total Liabilities</div><div style={s.kpiVal}>{fmt(totalLiabilities)}</div></div>
-            <div style={{ ...s.kpi, background: "#1a2f5e", border: "none" }}><div style={{ ...s.kpiLbl, color: "#a8c8f0" }}>Est. Net Worth</div><div style={{ ...s.kpiVal, color: "#fff" }}>{fmt(netWorth)}</div></div>
-            <div style={s.kpi}><div style={s.kpiLbl}>Annual Income</div><div style={s.kpiVal}>{fmt(annualIncome)}</div></div>
+            <div style={{ ...s.kpi, background: "#1a2f5e", border: "none" }}><div style={{ ...s.kpiLbl, color: "#a8c8f0" }}>Total Net Worth</div><div style={{ ...s.kpiVal, color: "#fff", fontSize: 20 }}>{fmt(netWorth)}</div><div style={{ fontSize: 10, color: "#a8c8f0", marginTop: 2 }}>All assets minus liabilities</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Net Worth (ex-Home)</div><div style={s.kpiVal}>{fmt(netWorthExHome)}</div><div style={s.kpiSub}>Excl. primary residence equity</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Liquid Net Worth</div><div style={s.kpiVal}>{fmt(liquidAcctTotal)}</div><div style={s.kpiSub}>Investment &amp; bank accounts</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Annual Income</div><div style={s.kpiVal}>{fmt(annualIncome)}</div>{annExpRaw > 0 && <div style={s.kpiSub}>Expenses: {fmt(annExpRaw)}</div>}</div>
           </div>
 
           {/* ── BALANCE SHEET ── */}
@@ -478,7 +546,8 @@ function ClientReport({ data, onClose }) {
                   {realEstate.filter(r => parseDollar(r.mortgageBalance) > 0).map((r, i) => (
                     <Row2 key={i} label={r.descriptionNote || r.description || `Property ${i+1}`} value={fmt(parseDollar(r.mortgageBalance))} />
                   ))}
-                  {reMortgages === 0 && <tr><td style={s.td} colSpan={2}><em style={{ color: "#8a9ab0" }}>No liabilities recorded</em></td></tr>}
+                  {homeMortgage > 0 && <Row2 label="Personal Residence Mortgage" value={fmt(homeMortgage)} />}
+                  {totalLiabilities === 0 && <tr><td style={s.td} colSpan={2}><em style={{ color: "#8a9ab0" }}>No liabilities recorded</em></td></tr>}
                   <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td></tr>
                 </tbody>
               </table>
@@ -488,6 +557,84 @@ function ClientReport({ data, onClose }) {
               </div>
             </div>
           </div>
+
+          {/* ── NET WORTH DETAIL ── */}
+          <div style={s.sectionHead}>Net Worth &amp; Income Summary</div>
+          <div style={s.twoCol}>
+            {/* NET WORTH BREAKDOWN */}
+            <div>
+              <table style={s.table}>
+                <thead><tr><th style={s.th} colSpan={2}>Net Worth Breakdown</th></tr></thead>
+                <tbody>
+                  <Row2 label="Total Assets" value={fmt(totalAssets)} />
+                  <Row2 label="Total Liabilities" value={fmt(totalLiabilities)} />
+                  <Row2 label="Total Net Worth" value={fmt(netWorth)} bold />
+                  <tr><td style={{ ...s.td, paddingTop: 16, color: "#4a5a7a" }} colSpan={2}><strong style={{ color: "#1a2f5e" }}>Net Worth — Alternative Views</strong></td></tr>
+                  <Row2 label="Net Worth (Ex-Primary Residence)" value={fmt(netWorthExHome)} />
+                  <Row2 label="Liquid Net Worth (Investable Assets)" value={fmt(liquidAcctTotal)} bold />
+                  {primaryReEquity > 0 && <Row2 label="  Primary Residence Equity" value={fmt(primaryReEquity)} />}
+                </tbody>
+              </table>
+            </div>
+            {/* INCOME & EXPENSES */}
+            <div>
+              <table style={s.table}>
+                <thead><tr><th style={s.th} colSpan={2}>Annual Income &amp; Expenses</th></tr></thead>
+                <tbody>
+                  {incomes.filter(i => i.type).map((inc, i) => (
+                    <Row2 key={i} label={inc.type + (inc.owner === "spouse" ? ` (${spouseName})` : inc.owner === "joint" ? " (Joint)" : "")} value={fmt(toAnnual(inc.amount, inc.frequency))} />
+                  ))}
+                  <tr><td style={s.tdTotal}>Total Annual Income</td><td style={s.tdTotalR}>{fmt(annualIncome)}</td></tr>
+                  {annExpRaw > 0 && (<>
+                    <tr><td style={s.td} colSpan={2}></td></tr>
+                    <Row2 label="Annual Household Expenses" value={fmt(annExpRaw)} />
+                    <tr>
+                      <td style={s.tdTotal}>Annual Surplus / (Deficit)</td>
+                      <td style={{ ...s.tdTotalR, color: surplusDeficit >= 0 ? "#1a5c2a" : "#8b0000" }}>{surplusDeficit >= 0 ? "+" : ""}{fmt(surplusDeficit)}</td>
+                    </tr>
+                  </>)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── ASSET ALLOCATION ── */}
+          {allocationRows.length > 0 && (<>
+            <div style={s.sectionHead}>Asset Allocation Breakdown</div>
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Asset Category</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Dollar Amount</th>
+                  <th style={{ ...s.th, textAlign: "right", width: 80 }}>% of Total</th>
+                  <th style={{ ...s.th, width: 200 }}>Allocation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allocationRows.map((row, i) => {
+                  const pct = totalAssets > 0 ? (row.val / totalAssets * 100) : 0;
+                  return (
+                    <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f4f6fa" }}>
+                      <td style={s.td}>{row.label}</td>
+                      <td style={s.tdr}><strong>{fmt(row.val)}</strong></td>
+                      <td style={s.tdr}>{pct.toFixed(1)}%</td>
+                      <td style={s.td}>
+                        <div style={{ background: "#e8f0fc", borderRadius: 4, height: 10, overflow: "hidden" }}>
+                          <div style={{ background: "#1a2f5e", height: "100%", width: pct.toFixed(1) + "%", borderRadius: 4 }} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                <tr>
+                  <td style={s.tdTotal}>Total Assets</td>
+                  <td style={s.tdTotalR}>{fmt(totalAssets)}</td>
+                  <td style={s.tdTotalR}>100%</td>
+                  <td style={s.tdTotal}></td>
+                </tr>
+              </tbody>
+            </table>
+          </>)}
 
           {/* ── INVESTMENT & BANK ACCOUNTS ── */}
           <div style={s.sectionHead}>Investment &amp; Bank Account Holdings</div>
@@ -709,8 +856,10 @@ function ClientReport({ data, onClose }) {
           body * { visibility: hidden !important; }
           #rwg-report-wrap, #rwg-report-wrap * { visibility: visible !important; }
           #rwg-report-wrap {
-            position: fixed !important;
-            inset: 0 !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
             background: white !important;
             overflow: visible !important;
             padding: 0 !important;
@@ -765,6 +914,7 @@ export default function App() {
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
+  const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
   const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
   const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
   const addCustomInstitution = (val) => {
@@ -830,8 +980,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -883,6 +1033,7 @@ export default function App() {
     setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
     setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
+    setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1017,6 +1168,7 @@ export default function App() {
           setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
           setUploads(record.uploads || {});
           setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
+          setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -2040,6 +2192,31 @@ export default function App() {
               </div>
             );
           })()}
+          {/* ── ANNUAL EXPENSES ── */}
+          <Sec t="Annual Household Expenses" />
+          <Row cols={3}>
+            <F>
+              <Lbl t="Expense Frequency" />
+              <select value={annualExpenses.frequency} onChange={e => setAnnualExpenses(p => ({ ...p, frequency: e.target.value }))} style={IS}>
+                <option value="monthly">Monthly</option>
+                <option value="annual">Annual</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t={{ monthly: "Monthly Expenses", annual: "Annual Expenses" }[annualExpenses.frequency] || "Expenses"} />
+              <input value={annualExpenses.amount} onChange={e => setAnnualExpenses(p => ({ ...p, amount: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
+            </F>
+            <F>
+              <Lbl t="Annual Equivalent" />
+              <div style={{ ...IS, background: NAV, color: WHITE, display: "flex", alignItems: "center" }}>
+                {(() => {
+                  const raw = parseInt((annualExpenses.amount || "").replace(/[^0-9]/g, "") || 0);
+                  if (!raw) return "—";
+                  return "$" + (annualExpenses.frequency === "monthly" ? raw * 12 : raw).toLocaleString();
+                })()}
+              </div>
+            </F>
+          </Row>
           <FileUpload section="income" files={uploads.income || []} onChange={handleUploadChange} />
         </Panel>
 
@@ -2565,7 +2742,7 @@ export default function App() {
     {showReport && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership }}
           onClose={() => setShowReport(false)}
         />
       </div>
