@@ -431,7 +431,7 @@ function ClientReport({ data, onClose }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,50,0.85)", zIndex: 1000, overflowY: "auto", padding: "20px 0" }}>
       {/* toolbar */}
       <div id="rwg-print-toolbar" style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
-        <button onClick={() => window.print()} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
+        <button onClick={(e) => { e.currentTarget.disabled = true; setTimeout(() => { window.print(); e.currentTarget.disabled = false; }, 50); }} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
         <button onClick={onClose} style={{ background: "#5a1a1a", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
       </div>
 
@@ -764,6 +764,7 @@ export default function App() {
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
+  const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
   const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
   const addCustomInstitution = (val) => {
@@ -829,8 +830,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -881,6 +882,7 @@ export default function App() {
     setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+    setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1014,6 +1016,7 @@ export default function App() {
           setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
           setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
           setUploads(record.uploads || {});
+          setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -1264,6 +1267,37 @@ export default function App() {
                 <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
               </Row>
             </div>
+          )}
+          {/* ── OWN OR RENT ── */}
+          <Sec t="Personal Property" />
+          <Row cols={2}>
+            <F>
+              <Lbl t="Own or Rent?" />
+              <select value={homeOwnership.ownOrRent || ""} onChange={e => setHomeOwnership(p => ({ ...p, ownOrRent: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="own">Own</option>
+                <option value="rent">Rent</option>
+              </select>
+            </F>
+          </Row>
+          {homeOwnership.ownOrRent === "own" && (<>
+            <Row cols={3}>
+              <F><Lbl t="Mortgage Company" /><input value={homeOwnership.mortgageCompany} onChange={e => setHomeOwnership(p => ({ ...p, mortgageCompany: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Mortgage Balance" /><input value={homeOwnership.mortgageBalance} onChange={e => setHomeOwnership(p => ({ ...p, mortgageBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Monthly Payment" /><input value={homeOwnership.monthlyPayment} onChange={e => setHomeOwnership(p => ({ ...p, monthlyPayment: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
+            <Row cols={3}>
+              <F><Lbl t="Interest Rate" /><input value={homeOwnership.interestRate} onChange={e => setHomeOwnership(p => ({ ...p, interestRate: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6.5%" /></F>
+              <F><DatePicker label="Loan Origination Date" value={homeOwnership.loanOriginationDate} onChange={v => setHomeOwnership(p => ({ ...p, loanOriginationDate: v }))} /></F>
+              <F><Lbl t="Loan Number" /><input value={homeOwnership.loanNumber} onChange={e => setHomeOwnership(p => ({ ...p, loanNumber: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
+          </>)}
+          {homeOwnership.ownOrRent === "rent" && (
+            <Row cols={3}>
+              <F><Lbl t="Monthly Rent" /><input value={homeOwnership.monthlyRent} onChange={e => setHomeOwnership(p => ({ ...p, monthlyRent: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Landlord Name" /><input value={homeOwnership.landlordName} onChange={e => setHomeOwnership(p => ({ ...p, landlordName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Landlord Phone" /><input value={homeOwnership.landlordPhone} onChange={e => setHomeOwnership(p => ({ ...p, landlordPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
           )}
           <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange} />
         </Panel>
