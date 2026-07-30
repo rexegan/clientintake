@@ -126,6 +126,21 @@ const emptyClient = {
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
+
+const AUTO_MODELS = {
+  "Ford": ["Bronco","Bronco Sport","Edge","Escape","Expedition","Expedition King Ranch","Expedition Limited","Expedition Platinum","Expedition XLT","Explorer","Explorer King Ranch","Explorer Platinum","Explorer ST","F-150","F-150 King Ranch","F-150 Lariat","F-150 Limited","F-150 Platinum","F-150 Raptor","F-150 Tremor","F-150 XL","F-150 XLT","F-250 King Ranch","F-250 Lariat","F-250 Platinum","F-250 XLT","F-350 King Ranch","F-350 Lariat","F-350 Platinum","Fusion","Maverick","Mustang","Mustang GT","Mustang Mach-E","Mustang Shelby GT500","Ranger","Ranger Lariat","Ranger XLT","Transit","Transit Connect"],
+  "Chevrolet": ["Blazer","Blazer EV","Colorado","Colorado LT","Colorado Z71","Corvette","Corvette Stingray","Corvette Z06","Equinox","Equinox EV","Express","Malibu","Silverado 1500","Silverado 1500 High Country","Silverado 1500 LT","Silverado 1500 LTZ","Silverado 1500 RST","Silverado 1500 Trail Boss","Silverado 1500 Work Truck","Silverado 2500 HD","Silverado 2500 HD High Country","Silverado 2500 HD LTZ","Silverado 3500 HD","Suburban","Suburban High Country","Suburban LT","Suburban Premier","Tahoe","Tahoe High Country","Tahoe LT","Tahoe Premier","Tahoe RST","Tahoe Z71","TrailBlazer","Traverse","Trax"],
+  "Chrysler": ["300","300C","300S","Pacifica","Pacifica Hybrid","Pacifica Limited","Pacifica Touring","Voyager"],
+  "Dodge": ["Challenger","Challenger R/T","Challenger Scat Pack","Challenger SRT Hellcat","Challenger SRT Demon","Charger","Charger R/T","Charger Scat Pack","Charger SRT Hellcat","Durango","Durango Citadel","Durango GT","Durango Pursuit","Durango R/T","Durango SRT Hellcat","Ram 1500","Ram 1500 Big Horn","Ram 1500 Classic","Ram 1500 Laramie","Ram 1500 Laramie Longhorn","Ram 1500 Limited","Ram 1500 Rebel","Ram 1500 TRX","Ram 2500","Ram 2500 Laramie","Ram 2500 Limited","Ram 2500 Power Wagon","Ram 3500","Ram 3500 Laramie","Ram 3500 Limited"],
+  "Toyota": ["4Runner","4Runner Limited","4Runner Nightshade","4Runner SR5","4Runner TRD Off-Road","4Runner TRD Pro","Avalon","Camry","Camry SE","Camry TRD","Camry XLE","Camry XSE","Corolla","GR86","GR Supra","Highlander","Highlander Hybrid","Highlander Limited","Highlander Platinum","Highlander XLE","Land Cruiser","Prius","RAV4","RAV4 Adventure","RAV4 Hybrid","RAV4 Limited","RAV4 Prime","RAV4 TRD Off-Road","RAV4 XLE","Sequoia","Sequoia Capstone","Sequoia Limited","Sequoia Platinum","Sequoia TRD Pro","Sienna","Tacoma","Tacoma Double Cab","Tacoma SR5","Tacoma TRD Off-Road","Tacoma TRD Pro","Tacoma TRD Sport","Tundra","Tundra 1794 Edition","Tundra Capstone","Tundra Limited","Tundra Platinum","Tundra SR5","Tundra TRD Pro","Venza"],
+  "Nissan": ["Altima","Altima SR","Altima SV","Armada","Armada Platinum","Armada SL","Frontier","Frontier Pro-4X","Frontier SV","Kicks","Leaf","Maxima","Murano","Murano Platinum","Murano SL","Pathfinder","Pathfinder Platinum","Pathfinder SL","Rogue","Rogue Platinum","Rogue SL","Rogue SV","Sentra","Titan","Titan Pro-4X","Titan SV","Titan XD","Versa","Z","Z Nismo","Z Proto Spec"],
+  "Infiniti": ["Q50","Q50 Red Sport","Q60","Q60 Red Sport","QX50","QX55","QX60","QX60 Autograph","QX80","QX80 Autograph"],
+  "Mercedes-Benz": ["A-Class","AMG GT","C-Class","C 300","C 43 AMG","C 63 AMG","CLA","CLE","E-Class","E 350","E 450","E 53 AMG","EQB","EQE","EQS","G-Class","G 550","G 63 AMG","GLA","GLB","GLC","GLC 300","GLC 43 AMG","GLE","GLE 350","GLE 450","GLE 53 AMG","GLS","GLS 450","GLS 580","Metris","S-Class","S 500","S 580","SL","Sprinter"],
+  "Lexus": ["ES 250","ES 300h","ES 350","GS","GX 460","GX 550","IS 300","IS 350","IS 500","LC 500","LS 500","LS 500h","LX 600","NX 250","NX 350","NX 350h","NX 450h+","RC 300","RC 350","RC F","RX 350","RX 350h","RX 450h+","RX 500h","TX 350","TX 500h","UX 200","UX 250h"],
+  "Volkswagen": ["Arteon","Atlas","Atlas Cross Sport","Golf","Golf GTI","Golf R","ID.4","ID.4 AWD Pro","ID.4 Pro","Jetta","Jetta GLI","Passat","Taos","Tiguan","Tiguan SE","Tiguan SEL"],
+  "Tesla": ["Cybertruck","Model 3","Model 3 Long Range","Model 3 Performance","Model S","Model S Long Range","Model S Plaid","Model X","Model X Long Range","Model X Plaid","Model Y","Model Y Long Range","Model Y Performance","Roadster"],
+  "Cadillac": ["CT4","CT4-V","CT4-V Blackwing","CT5","CT5-V","CT5-V Blackwing","Escalade","Escalade ESV","Escalade IQ","Escalade Platinum","Escalade Sport","Escalade V","Lyriq","XT4","XT4 Premium Luxury","XT4 Sport","XT5","XT5 Platinum","XT5 Premium Luxury","XT5 Sport","XT6","XT6 Platinum","XT6 Premium Luxury","XT6 Sport"],
+};
 const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
@@ -1894,8 +1909,20 @@ export default function App() {
               </div>
               <Row cols={4}>
                 <F><Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Make" /><input value={a.make} onChange={e => updAuto(a.id, "make", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Model" /><input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Make" />
+                  <input list={`make-list-${a.id}`} value={a.make} onChange={e => { updAuto(a.id, "make", e.target.value); updAuto(a.id, "model", ""); }} style={IS} autoComplete="off" data-lpignore="true" placeholder="Type or select…" />
+                  <datalist id={`make-list-${a.id}`}>
+                    {Object.keys(AUTO_MODELS).sort().map(m => <option key={m} value={m} />)}
+                  </datalist>
+                </F>
+                <F>
+                  <Lbl t="Model" />
+                  <input list={`model-list-${a.id}`} value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" placeholder="Type or select…" />
+                  <datalist id={`model-list-${a.id}`}>
+                    {(AUTO_MODELS[a.make] || []).map(m => <option key={m} value={m} />)}
+                  </datalist>
+                </F>
                 <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
             </div>
