@@ -1668,56 +1668,20 @@ export default function App() {
                 </F>
                 <F>
                   <Lbl t="Institution / Held At" />
-                  <select data-lpignore="true" value={a.institution} onChange={e => updAcct(a.id, "institution", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option>Allianz</option>
-                    <option>American Equity</option>
-                    <option>American Funds</option>
-                    <option>Ameritas</option>
-                    <option>Athene</option>
-                    <option>Bank of America</option>
-                    <option>Chase / JPMorgan</option>
-                    <option>Edward Jones</option>
-                    <option>Empower</option>
-                    <option>Equitable</option>
-                    <option>F&G</option>
-                    <option>Fidelity</option>
-                    <option>Franklin Templeton</option>
-                    <option>Global Atlantic</option>
-                    <option>Jackson Nat'l</option>
-                    <option>John Hancock</option>
-                    <option>Lincoln Financial</option>
-                    <option>MassMutual</option>
-                    <option>Merrill Lynch</option>
-                    <option>Midland National</option>
-                    <option>Minnesota Life</option>
-                    <option>Morgan Stanley</option>
-                    <option>Mutual of Omaha</option>
-                    <option>Nationwide</option>
-                    <option>North American</option>
-                    <option>Northwestern Mutual</option>
-                    <option>Pacific Life</option>
-                    <option>Principal</option>
-                    <option>Protective Life</option>
-                    <option>Prudential</option>
-                    <option>Raymond James</option>
-                    <option>Sammons / Midland</option>
-                    <option>Schwab</option>
-                    <option>Security Benefit</option>
-                    <option>Symetra</option>
-                    <option>T. Rowe Price</option>
-                    <option>TIAA</option>
-                    <option>Transamerica</option>
-                    <option>Vanguard</option>
-                    <option>Voya</option>
-                    <option>Wells Fargo</option>
-                    <option>Other</option>
-                  </select>
+                  <input
+                    list={`inst-list-${a.id}`}
+                    value={a.institution}
+                    onChange={e => updAcct(a.id, "institution", e.target.value)}
+                    style={IS}
+                    autoComplete="off"
+                    data-lpignore="true"
+                    placeholder="Type or select…"
+                  />
+                  <datalist id={`inst-list-${a.id}`}>
+                    {["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"].map(n => <option key={n} value={n} />)}
+                  </datalist>
                 </F>
               </Row>
-              {a.institution === "Other" && (
-                <><Lbl t="Specify Institution" /><input value={a.institutionOther || ""} onChange={e => updAcct(a.id, "institutionOther", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></>
-              )}
               <Row cols={2}>
                 <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
