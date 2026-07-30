@@ -1037,7 +1037,18 @@ export default function App() {
                             <option value="Other">Other</option>
                           </select>
                         </F>
-                        <F><Lbl t="% to Inherit" /><input value={ch.percentage} onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g,""); setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: raw ? raw + "%" : "" } : x)); }} onBlur={e => { const n = parseFloat((e.target.value||"").replace("%","")); if (!isNaN(n)) setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: Math.min(100,Math.max(0,n)) + "%" } : x)); }} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="0%" /></F>
+                        <F>
+                          <Lbl t="% to Inherit" />
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <input
+                              value={(ch.percentage || "").replace("%", "")}
+                              onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g, ""); setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: raw } : x)); }}
+                              onBlur={e => { const n = parseFloat(e.target.value); if (!isNaN(n)) setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: Math.min(100, Math.max(0, n)) + "%" } : x)); else if (!e.target.value) setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: "" } : x)); }}
+                              style={{ ...IS, width: "100%" }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0"
+                            />
+                            <span style={{ color: WHITE, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
+                          </div>
+                        </F>
                       </Row>
                       <Row cols={2}>
                         <F><Lbl t="Email" /><input value={ch.email} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, email: e.target.value } : x))} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1131,18 +1142,15 @@ export default function App() {
                 <F><Lbl t="Email Address" /><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="% to Inherit" />
-                  <input
-                    value={b.percentage}
-                    onChange={e => {
-                      const raw = e.target.value.replace(/[^0-9.]/g, "");
-                      updBene(b.id, "percentage", raw ? raw + "%" : "");
-                    }}
-                    onBlur={e => {
-                      const n = parseFloat((e.target.value || "").replace("%", ""));
-                      if (!isNaN(n)) updBene(b.id, "percentage", Math.min(100, Math.max(0, n)) + "%");
-                    }}
-                    style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0%"
-                  />
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <input
+                      value={(b.percentage || "").replace("%", "")}
+                      onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g, ""); updBene(b.id, "percentage", raw); }}
+                      onBlur={e => { const n = parseFloat(e.target.value); if (!isNaN(n)) updBene(b.id, "percentage", Math.min(100, Math.max(0, n)) + "%"); else if (!e.target.value) updBene(b.id, "percentage", ""); }}
+                      style={{ ...IS, width: "100%" }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0"
+                    />
+                    <span style={{ color: WHITE, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
+                  </div>
                 </F>
               </Row>
               <Lbl t="Address" />
