@@ -344,7 +344,7 @@ export default function App() {
   const setActiveClient = (id) => {
     if (id == null) { sessionStorage.removeItem("rwg_activeClientId"); }
     else { sessionStorage.setItem("rwg_activeClientId", String(id)); }
-    setActiveClient(id);
+    setActiveClientId(id);
   };
 
   const setC = f => e => setClient(p => ({ ...p, [f]: e.target.value }));
