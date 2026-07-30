@@ -53,14 +53,14 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
     <>
       {label && <Lbl t={label} />}
       <div style={{ display: "flex", gap: 8, width: "fit-content" }}>
-        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, minWidth: 82 }}>
+        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, minWidth: 74 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, minWidth: 72 }}>
+        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, minWidth: 64 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -79,7 +79,7 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
             const v = e.target.value.replace(/\D/g, "").slice(0, 4);
             set(mm, dd, v);
           }}
-          style={{ ...sel, width: 70 }}
+          style={{ ...sel, width: 58 }}
         />
       </div>
     </>
