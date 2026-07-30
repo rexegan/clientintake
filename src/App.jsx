@@ -508,8 +508,6 @@ function ClientReport({ data, onClose }) {
         <div style={s.header}>
           <div style={s.firmName}>Russell Wealth Group · Confidential</div>
           <div style={s.clientName}>{clientName}{hasSpouseRecord ? <span style={{ fontWeight: 400, fontSize: 24 }}> &amp; {spouseName}</span> : ""}</div>
-          {client.dob && <div style={s.sub}>Date of Birth: {client.dob}{hasSpouseRecord && spouse.dob ? <span style={{ marginLeft: 28 }}>Spouse DOB: {spouse.dob}</span> : ""}</div>}
-          {(client.city || client.state) && <div style={s.sub}>{[client.city, client.state].filter(Boolean).join(", ")}</div>}
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
         </div>
 
