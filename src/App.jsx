@@ -1751,21 +1751,6 @@ export default function App() {
                   </F>
                 </Row>
               )}
-              <Row cols={2}>
-                <F>
-                  <Lbl t="Making Contributions — How Much?" />
-                  <input value={a.contribAmount || ""} onChange={e => updAcct(a.id, "contribAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
-                </F>
-                <F>
-                  <Lbl t="Contribution Frequency" />
-                  <select data-lpignore="true" value={a.contribFrequency || ""} onChange={e => updAcct(a.id, "contribFrequency", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="annual">Annual</option>
-                  </select>
-                </F>
-              </Row>
             </div>
           ))}
           {accounts.some(a => a.balance) && (
