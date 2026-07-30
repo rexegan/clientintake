@@ -11,6 +11,7 @@ const IS = {
   background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 8,
   padding: "9px 13px", color: WHITE, fontSize: 15, fontFamily: "Georgia, serif",
   width: "100%", boxSizing: "border-box", caretColor: WHITE,
+  WebkitAppearance: "none", MozAppearance: "none", appearance: "none",
 };
 
 const Lbl = ({ t }) => (
@@ -2086,7 +2087,9 @@ export default function App() {
         input, select, textarea { font-family: Georgia, serif; caret-color: #ffffff; }
         input:focus, textarea:focus, select:focus { outline: 3px solid #ffffff; outline-offset: 1px; background: #2a4a80 !important; }
         input::placeholder, textarea::placeholder { color: #a8c8f0 !important; opacity: 1; }
-        select option { background: #1a2f5e; color: #ffffff; }
+        select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a8c8f0' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px !important; }
+        select option { background: #1a2f5e !important; color: #ffffff !important; font-family: Georgia, serif; font-size: 15px; }
+        select option:checked, select option:hover { background: #2a4a80 !important; color: #ffffff !important; }
         @media (max-width: 600px) { .rg { grid-template-columns: 1fr !important; } }
         [data-lastpass-icon-root], [data-lastpass-root], [id^="lastpass"], [id*="lastpass"],
         .lastpass-icon, .lp-icon, [class*="lastpass"], [data-lpignore-ext],
