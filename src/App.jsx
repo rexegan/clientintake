@@ -1559,7 +1559,7 @@ export default function App() {
               <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Type" />
-                  <select data-lpignore="true" value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={{ ...IS, width: 150 }}>
+                  <select data-lpignore="true" value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={{ ...IS, width: 200 }}>
                     <option value="">— Select —</option>
                     <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
                   </select>
