@@ -463,26 +463,27 @@ export default function App() {
   const delAcct = id => setAccounts(p => p.filter(x => x.id !== id));
   const updAcct = (id, f, v) => setAccounts(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
-  const toggleAcctRmd = (acct, yesNo) => {
-    if (yesNo === "yes") {
+  const INCOME_LINKED_TYPES = ["Withdrawals", "RMDs"];
+
+  const toggleAcctRmd = (acct, txType) => {
+    const needsIncome = INCOME_LINKED_TYPES.includes(txType);
+    const prev = accounts.find(x => x.id === acct.id);
+    if (prev?.linkedIncomeId) setIncomes(p => p.filter(x => x.id !== prev.linkedIncomeId));
+    if (needsIncome) {
       const incId = Date.now();
-      setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: "yes", linkedIncomeId: incId } : x));
-      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: acct.rmdOrContrib === "RMD" ? "Pension" : "Investment / Dividends", amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id }]);
+      const incType = txType === "RMDs" ? "Pension" : "Investment / Dividends";
+      setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: txType, linkedIncomeId: incId } : x));
+      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: incType, amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id }]);
     } else {
-      const prev = accounts.find(x => x.id === acct.id);
-      if (prev?.linkedIncomeId) setIncomes(p => p.filter(x => x.id !== prev.linkedIncomeId));
-      setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: "no", linkedIncomeId: null } : x));
+      setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: txType || null, linkedIncomeId: null } : x));
     }
   };
 
   const syncAcctIncome = (acct, field, value) => {
     updAcct(acct.id, field, value);
     if (!acct.linkedIncomeId) return;
-    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : field === "rmdOrContrib" ? "type" : null;
-    if (incomeField === "type") {
-      const incType = value === "RMD" ? "Pension" : value === "Withdrawal" ? "Investment / Dividends" : "Investment / Dividends";
-      setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, type: incType } : x));
-    } else if (incomeField) {
+    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : null;
+    if (incomeField) {
       setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, [incomeField]: value } : x));
     }
   };
@@ -1724,7 +1725,7 @@ export default function App() {
               <Row cols={1}>
                 <F>
                   <Lbl t="Transactions?" />
-                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => { const v = e.target.value; if (v) { toggleAcctRmd(a, "yes"); updAcct(a.id, "hasRmdOrContrib", v); } else { toggleAcctRmd(a, "no"); } }} style={IS}>
+                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => toggleAcctRmd(a, e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     <option value="Contributions">Contributions</option>
                     <option value="Withdrawals">Withdrawals</option>
@@ -1734,7 +1735,7 @@ export default function App() {
                   </select>
                 </F>
               </Row>
-              {a.hasRmdOrContrib && (
+              {INCOME_LINKED_TYPES.includes(a.hasRmdOrContrib) && (
                 <Row cols={2}>
                   <F>
                     <Lbl t="Amount" />
