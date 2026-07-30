@@ -335,6 +335,386 @@ function Panel({ title, children, defaultOpen = true, id }) {
   );
 }
 
+function parseDollar(s) {
+  if (!s) return 0;
+  return parseInt(String(s).replace(/[^0-9]/g, ""), 10) || 0;
+}
+
+function toAnnual(amount, freq) {
+  const n = parseDollar(amount);
+  if (!freq) return n;
+  const map = { annual: 1, monthly: 12, bimonthly: 24, biweekly: 26, weekly: 52, quarterly: 4 };
+  return n * (map[freq] || 1);
+}
+
+function fmt(n) {
+  if (!n) return "—";
+  return "$" + Math.round(n).toLocaleString();
+}
+
+function ClientReport({ data, onClose }) {
+  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {} } = data;
+
+  const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
+  const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
+  const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
+  const reportDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+  // ── ASSET CALCULATIONS ──
+  const acctTotal = accounts.reduce((s, a) => s + parseDollar(a.balance), 0);
+  const reTotal   = realEstate.reduce((s, r) => s + parseDollar(r.marketValue), 0);
+  const autoTotal = autos.reduce((s, a) => s + parseDollar(a.value), 0);
+
+  // liabilities
+  const reMortgages = realEstate.reduce((s, r) => s + parseDollar(r.mortgageBalance), 0);
+  const totalAssets = acctTotal + reTotal + autoTotal;
+  const totalLiabilities = reMortgages;
+  const netWorth = totalAssets - totalLiabilities;
+
+  // ── INCOME ──
+  const annualIncome = incomes.reduce((s, inc) => s + toAnnual(inc.amount, inc.frequency), 0);
+
+  // ── ACCOUNT GROUPINGS ──
+  const qualGroups = {};
+  accounts.forEach(a => {
+    const g = a.qualified || "Unspecified";
+    if (!qualGroups[g]) qualGroups[g] = [];
+    qualGroups[g].push(a);
+  });
+
+  // styles
+  const P = "Georgia, serif";
+  const NAVY = "#1a2f5e";
+  const BLUE = "#4a90d9";
+  const LGRAY = "#f4f6fa";
+  const DGRAY = "#2c3e60";
+  const BDR = "1px solid #d0d8e8";
+
+  const s = {
+    page: { fontFamily: P, color: "#1a1a2e", background: "#fff", maxWidth: 900, margin: "0 auto", padding: "0 0 60px" },
+    header: { background: NAVY, color: "#fff", padding: "32px 40px 24px", borderRadius: "10px 10px 0 0" },
+    firmName: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "#a8c8f0", marginBottom: 6 },
+    clientName: { fontSize: 32, fontWeight: "bold", margin: "0 0 4px" },
+    sub: { fontSize: 14, color: "#c0d8f0", marginTop: 2 },
+    reportTitle: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#a8c8f0", marginTop: 10 },
+    body: { padding: "0 40px" },
+    sectionHead: { fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 6, marginTop: 32, marginBottom: 12, fontWeight: "bold" },
+    kpiRow: { display: "flex", gap: 16, marginTop: 20, marginBottom: 8, flexWrap: "wrap" },
+    kpi: { flex: 1, minWidth: 140, background: LGRAY, border: BDR, borderRadius: 8, padding: "14px 18px" },
+    kpiLbl: { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6a7a9a", marginBottom: 4 },
+    kpiVal: { fontSize: 22, fontWeight: "bold", color: NAVY },
+    kpiSub: { fontSize: 11, color: "#6a7a9a", marginTop: 2 },
+    table: { width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 8 },
+    th: { textAlign: "left", padding: "7px 10px", background: DGRAY, color: "#fff", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" },
+    td: { padding: "7px 10px", borderBottom: BDR, verticalAlign: "top" },
+    tdr: { padding: "7px 10px", borderBottom: BDR, textAlign: "right", verticalAlign: "top" },
+    tdTotal: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY },
+    tdTotalR: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY, textAlign: "right" },
+    netWorthBox: { background: NAVY, color: "#fff", borderRadius: 10, padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 },
+    nwLabel: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#a8c8f0" },
+    nwValue: { fontSize: 36, fontWeight: "bold" },
+    twoCol: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 32px" },
+    tag: { display: "inline-block", background: "#e8f0fc", color: NAVY, fontSize: 10, borderRadius: 4, padding: "2px 7px", marginLeft: 6, verticalAlign: "middle", letterSpacing: "0.06em" },
+    tagGreen: { display: "inline-block", background: "#e6f4ea", color: "#1a5c2a", fontSize: 10, borderRadius: 4, padding: "2px 7px", marginLeft: 6, verticalAlign: "middle" },
+  };
+
+  const Row2 = ({ label, value, bold }) => (
+    <tr>
+      <td style={{ ...s.td, color: "#4a5a7a", width: "55%" }}>{label}</td>
+      <td style={{ ...s.tdr, fontWeight: bold ? "bold" : "normal", color: bold ? NAVY : "#1a1a2e" }}>{value}</td>
+    </tr>
+  );
+
+  const acctsByOwner = (owner) => accounts.filter(a => (a.owner || "").toLowerCase() === owner.toLowerCase() || (owner === "all"));
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,50,0.85)", zIndex: 1000, overflowY: "auto", padding: "20px 0" }}>
+      {/* toolbar */}
+      <div style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
+        <button onClick={() => window.print()} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
+        <button onClick={onClose} style={{ background: "#5a1a1a", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
+      </div>
+
+      <div id="rwg-report" style={s.page}>
+        {/* ── HEADER ── */}
+        <div style={s.header}>
+          <div style={s.firmName}>Russell Wealth Group · Confidential</div>
+          <div style={s.clientName}>{clientName}{hasSpouseRecord ? <span style={{ fontWeight: 400, fontSize: 24 }}> &amp; {spouseName}</span> : ""}</div>
+          {client.dob && <div style={s.sub}>Date of Birth: {client.dob}{hasSpouseRecord && spouse.dob ? <span style={{ marginLeft: 28 }}>Spouse DOB: {spouse.dob}</span> : ""}</div>}
+          {(client.city || client.state) && <div style={s.sub}>{[client.city, client.state].filter(Boolean).join(", ")}</div>}
+          <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
+        </div>
+
+        <div style={s.body}>
+
+          {/* ── NET WORTH SNAPSHOT ── */}
+          <div style={s.kpiRow}>
+            <div style={s.kpi}><div style={s.kpiLbl}>Total Assets</div><div style={s.kpiVal}>{fmt(totalAssets)}</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Total Liabilities</div><div style={s.kpiVal}>{fmt(totalLiabilities)}</div></div>
+            <div style={{ ...s.kpi, background: "#1a2f5e", border: "none" }}><div style={{ ...s.kpiLbl, color: "#a8c8f0" }}>Est. Net Worth</div><div style={{ ...s.kpiVal, color: "#fff" }}>{fmt(netWorth)}</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Annual Income</div><div style={s.kpiVal}>{fmt(annualIncome)}</div></div>
+          </div>
+
+          {/* ── BALANCE SHEET ── */}
+          <div style={s.sectionHead}>Balance Sheet</div>
+          <div style={s.twoCol}>
+            {/* ASSETS */}
+            <div>
+              <table style={s.table}>
+                <thead><tr><th style={s.th}>Assets</th><th style={{ ...s.th, textAlign: "right" }}>Value</th></tr></thead>
+                <tbody>
+                  {acctTotal > 0 && <Row2 label="Investment &amp; Bank Accounts" value={fmt(acctTotal)} />}
+                  {reTotal > 0   && <Row2 label="Real Estate Holdings" value={fmt(reTotal)} />}
+                  {autoTotal > 0 && <Row2 label="Automobiles" value={fmt(autoTotal)} />}
+                  <tr><td style={s.tdTotal}>Total Assets</td><td style={s.tdTotalR}>{fmt(totalAssets)}</td></tr>
+                </tbody>
+              </table>
+            </div>
+            {/* LIABILITIES */}
+            <div>
+              <table style={s.table}>
+                <thead><tr><th style={s.th}>Liabilities</th><th style={{ ...s.th, textAlign: "right" }}>Balance</th></tr></thead>
+                <tbody>
+                  {realEstate.filter(r => parseDollar(r.mortgageBalance) > 0).map((r, i) => (
+                    <Row2 key={i} label={r.descriptionNote || r.description || `Property ${i+1}`} value={fmt(parseDollar(r.mortgageBalance))} />
+                  ))}
+                  {reMortgages === 0 && <tr><td style={s.td} colSpan={2}><em style={{ color: "#8a9ab0" }}>No liabilities recorded</em></td></tr>}
+                  <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td></tr>
+                </tbody>
+              </table>
+              <div style={{ ...s.netWorthBox, marginTop: 0, padding: "16px 20px", borderRadius: 8 }}>
+                <div style={s.nwLabel}>Estimated Net Worth</div>
+                <div style={{ ...s.nwValue, fontSize: 26 }}>{fmt(netWorth)}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── INVESTMENT & BANK ACCOUNTS ── */}
+          <div style={s.sectionHead}>Investment &amp; Bank Account Holdings</div>
+          {Object.entries(qualGroups).map(([group, accts]) => (
+            <div key={group} style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 12, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", color: "#4a5a7a", marginBottom: 6 }}>{group}</div>
+              <table style={s.table}>
+                <thead>
+                  <tr>
+                    <th style={s.th}>Account Type</th>
+                    <th style={s.th}>Institution</th>
+                    <th style={s.th}>Owner</th>
+                    <th style={s.th}>Acct #</th>
+                    <th style={s.th}>Transactions</th>
+                    <th style={{ ...s.th, textAlign: "right" }}>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {accts.map((a, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                      <td style={s.td}>{a.type || <em style={{ color: "#9aa" }}>—</em>}{a.hasOpt === "yes" && <span style={s.tag}>OPT{a.optEvent ? ": " + a.optEvent : ""}</span>}</td>
+                      <td style={s.td}>{a.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={s.td}>{a.owner || <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={s.td}>{a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={s.td}>{a.hasRmdOrContrib || <em style={{ color: "#9aa" }}>—</em>}{a.rmdContribAmount ? <span style={{ color: "#4a5a7a" }}> · {a.rmdContribAmount}/{a.rmdContribFrequency || "—"}</span> : ""}</td>
+                      <td style={s.tdr}>{a.balance ? <strong>{a.balance}</strong> : <em style={{ color: "#9aa" }}>—</em>}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td style={s.tdTotal} colSpan={5}>{group} Subtotal</td>
+                    <td style={s.tdTotalR}>{fmt(accts.reduce((s, a) => s + parseDollar(a.balance), 0))}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ))}
+          {accounts.length === 0 && <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No accounts recorded.</p>}
+          <div style={{ textAlign: "right", fontSize: 13, fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, paddingTop: 8 }}>
+            Total Account Holdings: {fmt(acctTotal)}
+          </div>
+
+          {/* ── REAL ESTATE ── */}
+          <div style={s.sectionHead}>Real Estate Holdings</div>
+          {realEstate.length > 0 ? (
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Property</th>
+                  <th style={s.th}>Address</th>
+                  <th style={s.th}>Purchase Date</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Purchase Price</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Market Value</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Mortgage Bal.</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Equity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {realEstate.map((r, i) => {
+                  const mv = parseDollar(r.marketValue);
+                  const mb = parseDollar(r.mortgageBalance);
+                  const equity = mv - mb;
+                  return (
+                    <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                      <td style={s.td}>
+                        <strong>{r.descriptionNote || r.description || `Property ${i+1}`}</strong>
+                        {r.description && <div style={{ fontSize: 11, color: "#6a7a9a" }}>{r.description}</div>}
+                        {r.hasOpt === "yes" && <span style={s.tag}>OPT{r.optEvent ? ": " + r.optEvent : ""}</span>}
+                      </td>
+                      <td style={s.td}>{[r.address, r.city, r.state, r.zip].filter(Boolean).join(", ") || <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={s.td}>{r.purchaseDate || <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={s.tdr}>{r.purchasePrice || <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={s.tdr}><strong>{r.marketValue || "—"}</strong></td>
+                      <td style={s.tdr}>{r.mortgageBalance || "—"}</td>
+                      <td style={{ ...s.tdr, color: equity >= 0 ? "#1a5c2a" : "#8b0000", fontWeight: "bold" }}>{fmt(equity)}</td>
+                    </tr>
+                  );
+                })}
+                <tr>
+                  <td style={s.tdTotal} colSpan={4}>Totals</td>
+                  <td style={s.tdTotalR}>{fmt(reTotal)}</td>
+                  <td style={s.tdTotalR}>{fmt(reMortgages)}</td>
+                  <td style={{ ...s.tdTotalR, color: (reTotal - reMortgages) >= 0 ? "#1a5c2a" : "#8b0000" }}>{fmt(reTotal - reMortgages)}</td>
+                </tr>
+              </tbody>
+            </table>
+          ) : <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No real estate recorded.</p>}
+
+          {/* ── INCOME ── */}
+          <div style={s.sectionHead}>Income Summary</div>
+          {incomes.filter(i => i.type).length > 0 ? (
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Income Type</th>
+                  <th style={s.th}>Institution / Source</th>
+                  <th style={s.th}>Belongs To</th>
+                  <th style={s.th}>Frequency</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Amount</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Annual Equiv.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {incomes.filter(i => i.type).map((inc, i) => (
+                  <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                    <td style={s.td}>{inc.type}</td>
+                    <td style={s.td}>{inc.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
+                    <td style={s.td}>{inc.owner === "spouse" ? spouseName : inc.owner === "joint" ? "Joint" : clientName}</td>
+                    <td style={s.td}>{inc.frequency ? inc.frequency.charAt(0).toUpperCase() + inc.frequency.slice(1) : "—"}</td>
+                    <td style={s.tdr}>{inc.amount || "—"}</td>
+                    <td style={s.tdr}><strong>{fmt(toAnnual(inc.amount, inc.frequency))}</strong></td>
+                  </tr>
+                ))}
+                <tr>
+                  <td style={s.tdTotal} colSpan={5}>Total Annual Income</td>
+                  <td style={s.tdTotalR}>{fmt(annualIncome)}</td>
+                </tr>
+              </tbody>
+            </table>
+          ) : <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No income recorded.</p>}
+
+          {/* ── AUTOMOBILES ── */}
+          {autos.filter(a => a.make || a.model || a.value).length > 0 && (<>
+            <div style={s.sectionHead}>Automobiles</div>
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Year</th>
+                  <th style={s.th}>Make</th>
+                  <th style={s.th}>Model</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Est. Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {autos.filter(a => a.make || a.model || a.value).map((a, i) => (
+                  <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                    <td style={s.td}>{a.year || "—"}</td>
+                    <td style={s.td}>{a.make || "—"}</td>
+                    <td style={s.td}>{a.model || "—"}</td>
+                    <td style={s.tdr}>{a.value || "—"}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td style={s.tdTotal} colSpan={3}>Total Auto Value</td>
+                  <td style={s.tdTotalR}>{fmt(autoTotal)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </>)}
+
+          {/* ── BENEFICIARIES ── */}
+          {(beneficiaries.filter(b => b.firstName || b.lastName).length > 0 || children.filter(c => c.isBeneficiary).length > 0) && (<>
+            <div style={s.sectionHead}>Beneficiaries</div>
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Name</th>
+                  <th style={s.th}>Relationship</th>
+                  <th style={s.th}>Date of Birth</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>% to Inherit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {children.filter(c => c.isBeneficiary).map((c, i) => (
+                  <tr key={"ch-"+i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                    <td style={s.td}>{[c.firstName, c.lastName].filter(Boolean).join(" ")}</td>
+                    <td style={s.td}>{c.relationship || "Child"}</td>
+                    <td style={s.td}>{c.dob || "—"}</td>
+                    <td style={s.tdr}>{c.percentage || "—"}</td>
+                  </tr>
+                ))}
+                {beneficiaries.filter(b => b.firstName || b.lastName).map((b, i) => (
+                  <tr key={"b-"+i} style={{ background: (children.filter(c=>c.isBeneficiary).length + i) % 2 === 0 ? "#fff" : LGRAY }}>
+                    <td style={s.td}>{[b.firstName, b.lastName].filter(Boolean).join(" ")}</td>
+                    <td style={s.td}>{b.relationship || "—"}</td>
+                    <td style={s.td}>{b.dob || "—"}</td>
+                    <td style={s.tdr}>{b.percentage || "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>)}
+
+          {/* ── ESTATE PLANNING ── */}
+          {(willsTrust.hasWillDoc || willsTrust.hasTrustDoc || poa.hasPOA) && (<>
+            <div style={s.sectionHead}>Estate Planning Documents</div>
+            <div style={s.twoCol}>
+              <table style={s.table}>
+                <tbody>
+                  {willsTrust.hasWillDoc && <Row2 label="Will on File" value={willsTrust.hasWillDoc === "yes" ? "✓ Yes" : "No"} />}
+                  {willsTrust.willUpdated && <Row2 label="Will Last Updated" value={willsTrust.willUpdated} />}
+                  {willsTrust.hasTrustDoc && <Row2 label="Trust on File" value={willsTrust.hasTrustDoc === "yes" ? "✓ Yes" : "No"} />}
+                  {willsTrust.trustType && <Row2 label="Trust Type" value={willsTrust.trustType} />}
+                  {willsTrust.assetsTitled && <Row2 label="Assets Titled in Trust" value={willsTrust.assetsTitled} />}
+                </tbody>
+              </table>
+              <table style={s.table}>
+                <tbody>
+                  {poa.hasPOA && <Row2 label="Power of Attorney" value={poa.hasPOA === "yes" ? "✓ Yes" : "No"} />}
+                  {poa.poaType && <Row2 label="POA Type" value={poa.poaType} />}
+                  {poa.agentName && <Row2 label="Agent Name" value={poa.agentName} />}
+                  {poa.agentRelationship && <Row2 label="Agent Relationship" value={poa.agentRelationship} />}
+                </tbody>
+              </table>
+            </div>
+          </>)}
+
+          {/* ── FOOTER ── */}
+          <div style={{ marginTop: 48, paddingTop: 16, borderTop: "1px solid #d0d8e8", display: "flex", justifyContent: "space-between", fontSize: 11, color: "#8a9ab0" }}>
+            <span>Russell Wealth Group · Confidential · For Advisor Use Only</span>
+            <span>Prepared {reportDate}</span>
+          </div>
+
+        </div>{/* /body */}
+      </div>{/* /page */}
+
+      <style>{`
+        @media print {
+          body > *:not(#rwg-report-wrap) { display: none !important; }
+          #rwg-report-wrap { position: static !important; background: white !important; padding: 0 !important; }
+          #rwg-report { box-shadow: none !important; }
+          .no-print { display: none !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 export default function App() {
   const [view, setView] = useState("form");
   const [savedClients, setSavedClients] = useState(
@@ -376,6 +756,7 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
+  const [showReport, setShowReport] = useState(false);
   const [activeClientId, setActiveClientId] = useState(() => {
     const sid = sessionStorage.getItem("rwg_activeClientId");
     return sid ? Number(sid) : null;
@@ -661,6 +1042,7 @@ export default function App() {
   }
 
   return (
+    <>
     <div style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE }}>
       {toast && (
         <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, background: toast.color, color: WHITE, padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
@@ -1474,7 +1856,7 @@ export default function App() {
                   <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Row cols={4}>
+              <Row cols={inc.linkedAcctId ? 4 : 3}>
                 <F>
                   <Lbl t="Income Type" />
                   <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
@@ -1482,22 +1864,24 @@ export default function App() {
                     {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </F>
-                <F>
-                  <Lbl t="Sending Institution" />
-                  <input
-                    list={`inc-inst-list-${inc.id}`}
-                    value={inc.institution || ""}
-                    onChange={e => updIncome(inc.id, "institution", e.target.value)}
-                    onBlur={e => addCustomInstitution(e.target.value)}
-                    style={IS}
-                    autoComplete="off"
-                    data-lpignore="true"
-                    placeholder="e.g. Vanguard, Fidelity…"
-                  />
-                  <datalist id={`inc-inst-list-${inc.id}`}>
-                    {allInstitutions.map(n => <option key={n} value={n} />)}
-                  </datalist>
-                </F>
+                {inc.linkedAcctId && (
+                  <F>
+                    <Lbl t="Sending Institution" />
+                    <input
+                      list={`inc-inst-list-${inc.id}`}
+                      value={inc.institution || ""}
+                      onChange={e => updIncome(inc.id, "institution", e.target.value)}
+                      onBlur={e => addCustomInstitution(e.target.value)}
+                      style={IS}
+                      autoComplete="off"
+                      data-lpignore="true"
+                      placeholder="e.g. Vanguard, Fidelity…"
+                    />
+                    <datalist id={`inc-inst-list-${inc.id}`}>
+                      {allInstitutions.map(n => <option key={n} value={n} />)}
+                    </datalist>
+                  </F>
+                )}
                 <F>
                   <Lbl t="Frequency" />
                   <select data-lpignore="true" value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
@@ -2089,9 +2473,14 @@ export default function App() {
           <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange} />
         </Panel>
 
-        <button onClick={handleSubmit} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", width: "100%", marginBottom: 10 }}>
-          Save Client Record
-        </button>
+        <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+          <button onClick={handleSubmit} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", flex: 1 }}>
+            Save Client Record
+          </button>
+          <button onClick={() => setShowReport(true)} style={{ background: "#1a5c2a", color: WHITE, border: "none", borderRadius: 8, padding: "13px 24px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", flex: 1 }}>
+            📊 View Financial Summary
+          </button>
+        </div>
         <div style={{ textAlign: "center", fontSize: 12, color: WHITE, paddingBottom: 32, letterSpacing: "0.06em" }}>
           RUSSELL WEALTH GROUP · CONFIDENTIAL CLIENT DATA
         </div>
@@ -2112,5 +2501,15 @@ export default function App() {
         div[style*="z-index: 2147483647"]:not([class]):not([id]) { display: none !important; }
       `}</style>
     </div>
+
+    {showReport && (
+      <div id="rwg-report-wrap">
+        <ClientReport
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa }}
+          onClose={() => setShowReport(false)}
+        />
+      </div>
+    )}
+    </>
   );
 }
