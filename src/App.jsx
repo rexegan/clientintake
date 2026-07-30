@@ -1222,20 +1222,6 @@ export default function App() {
         </div>
       )}
 
-      <div style={{ position: "fixed", top: 90, right: 20, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-        <button
-          onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
-          style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
-        >
-          💾 {activeClientId ? "Update File" : "Save Draft"}
-        </button>
-        {lastSaved && (
-          <div style={{ fontSize: 10, color: WHITE, textAlign: "right", background: "rgba(26,47,94,0.85)", borderRadius: 5, padding: "2px 8px" }}>
-            Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-          </div>
-        )}
-      </div>
-
       <div style={{ background: NAV, padding: "24px 24px 20px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
@@ -1244,9 +1230,24 @@ export default function App() {
               New Client Intake · Confidential
             </p>
           </div>
-          <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: WHITE, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>
-            Saved Clients ({savedClients.length})
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+              <button
+                onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
+                style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+              >
+                💾 {activeClientId ? "Update File" : "Save Draft"}
+              </button>
+              {lastSaved && (
+                <div style={{ fontSize: 10, color: "#a8c8f0", textAlign: "right" }}>
+                  Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </div>
+              )}
+            </div>
+            <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: WHITE, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>
+              Saved Clients ({savedClients.length})
+            </button>
+          </div>
         </div>
       </div>
 
