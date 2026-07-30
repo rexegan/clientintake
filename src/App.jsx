@@ -1231,19 +1231,6 @@ export default function App() {
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
-              <button
-                onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
-                style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-              >
-                💾 {activeClientId ? "Update File" : "Save Draft"}
-              </button>
-              {lastSaved && (
-                <div style={{ fontSize: 10, color: "#a8c8f0", textAlign: "right" }}>
-                  Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                </div>
-              )}
-            </div>
             <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: WHITE, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>
               Saved Clients ({savedClients.length})
             </button>
@@ -2748,6 +2735,21 @@ export default function App() {
         </div>
         </div>{/* end flex content */}
       </div>{/* end flex row */}
+
+      {/* ── FLOATING SAVE BUTTON ── */}
+      <div style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+        <button
+          onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
+          style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 10, padding: "13px 22px", fontSize: 15, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", boxShadow: "0 4px 20px rgba(0,0,0,0.5)", whiteSpace: "nowrap" }}
+        >
+          💾 {activeClientId ? "Update File" : "Save Draft"}
+        </button>
+        {lastSaved && (
+          <div style={{ fontSize: 10, color: WHITE, textAlign: "right", background: "rgba(26,47,94,0.9)", borderRadius: 5, padding: "3px 8px" }}>
+            Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </div>
+        )}
+      </div>
 
       <style>{`
         * { box-sizing: border-box; }
