@@ -413,7 +413,7 @@ export default function App() {
   }, [buildSnapshot, activeClientId]);
 
   useEffect(() => {
-    const id = setInterval(autoSave, 2 * 60 * 1000);
+    const id = setInterval(autoSave, 15 * 1000);
     return () => clearInterval(id);
   }, [autoSave]);
 
