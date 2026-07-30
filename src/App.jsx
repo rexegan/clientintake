@@ -126,7 +126,7 @@ const emptyClient = {
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"" };
-const emptyRealEstate = { description:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
+const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null };
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
 const ACCOUNT_TYPES = [
@@ -1556,11 +1556,19 @@ export default function App() {
                   <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Lbl t="Property Description" />
-              <select data-lpignore="true" value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={IS}>
-                <option value="">— Select —</option>
-                <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
-              </select>
+              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Type" />
+                  <select data-lpignore="true" value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={{ ...IS, width: 150 }}>
+                    <option value="">— Select —</option>
+                    <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
+                  </select>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <Lbl t="Property Description" />
+                  <input value={r.descriptionNote || ""} onChange={e => updRE(r.id, "descriptionNote", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Enter description…" />
+                </div>
+              </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, marginBottom: 4 }}>
                 <Lbl t="Property Address" />
                 {r.description === "Personal Residence" && (
