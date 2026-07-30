@@ -1015,7 +1015,7 @@ export default function App() {
                       </select>
                     </F>
                     <F>
-                      <Lbl t="Is this child a beneficiary?" />
+                      <Lbl t="Beneficiary?" />
                       <select data-lpignore="true" value={ch.isBeneficiary ? "yes" : "no"} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: e.target.value === "yes" } : x))} style={IS}>
                         <option value="no">No</option>
                         <option value="yes">Yes</option>
