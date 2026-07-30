@@ -47,20 +47,20 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
     onChange(`${newMm}/${newDd}/${newYyyy}`);
   };
 
-  const sel = { ...IS, width: "auto", flex: 1 };
+  const sel = { ...IS, width: "auto", flex: "none" };
 
   return (
     <>
       {label && <Lbl t={label} />}
-      <div style={{ display: "flex", gap: 8 }}>
-        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={sel}>
+      <div style={{ display: "flex", gap: 8, width: "fit-content" }}>
+        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, minWidth: 82 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={sel}>
+        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, minWidth: 72 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -79,7 +79,7 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
             const v = e.target.value.replace(/\D/g, "").slice(0, 4);
             set(mm, dd, v);
           }}
-          style={{ ...sel, flex: 1.4 }}
+          style={{ ...sel, width: 70 }}
         />
       </div>
     </>
@@ -361,6 +361,15 @@ function ClientReport({ data, onClose }) {
 
   const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
   const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
+  // Header display: "Bob & Melody Carson" — client first, spouse first, shared last
+  const headerName = (() => {
+    if (!hasSpouseRecord) return clientName;
+    const last = client.lastName || "";
+    const cf = client.firstName || clientName;
+    const sf = spouse.firstName || spouseName;
+    if (last && (spouse.lastName || "") === last) return `${cf} & ${sf} ${last}`;
+    return `${cf} & ${sf}`;
+  })();
   const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
   const reportDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
@@ -507,7 +516,7 @@ function ClientReport({ data, onClose }) {
         {/* ── HEADER ── */}
         <div style={s.header}>
           <div style={s.firmName}>Russell Wealth Group · Confidential</div>
-          <div style={s.clientName}>{clientName}{hasSpouseRecord ? ` & ${spouseName}` : ""}</div>
+          <div style={s.clientName}>{headerName}</div>
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
         </div>
 
@@ -1288,14 +1297,16 @@ export default function App() {
               </select>
             </F>
             <F>
-              <Lbl t="Tax Filing Status" />
+              <Lbl t="Marital Status" />
               <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={IS}>
                 <option value="">— Select —</option>
                 <option value="Single">Single</option>
-                <option value="Married Filing Jointly">Married Filing Jointly</option>
-                <option value="Married Filing Separately">Married Filing Separately</option>
-                <option value="Head of Household">Head of Household</option>
-                <option value="Qualifying Surviving Spouse">Qualifying Surviving Spouse</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Separated">Separated</option>
+                <option value="Widowed">Widowed</option>
+                <option value="Widower">Widower</option>
+                <option value="Domestic Partner">Domestic Partner</option>
               </select>
             </F>
           </Row>
