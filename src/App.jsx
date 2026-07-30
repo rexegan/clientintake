@@ -188,7 +188,7 @@ const INCOME_TYPES = [
   "TRS (Teacher Retirement)",
 ];
 
-const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client" };
+const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
@@ -515,7 +515,7 @@ export default function App() {
       const incId = Date.now();
       const incType = txType === "RMDs" ? "Pension" : "Investment / Dividends";
       setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: txType, linkedIncomeId: incId } : x));
-      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: incType, amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id }]);
+      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: incType, amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id, institution: acct.institution || "" }]);
     } else {
       setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: txType || null, linkedIncomeId: null } : x));
     }
@@ -524,7 +524,7 @@ export default function App() {
   const syncAcctIncome = (acct, field, value) => {
     updAcct(acct.id, field, value);
     if (!acct.linkedIncomeId) return;
-    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : null;
+    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : field === "institution" ? "institution" : null;
     if (incomeField) {
       setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, [incomeField]: value } : x));
     }
@@ -1474,13 +1474,29 @@ export default function App() {
                   <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Row cols={3}>
+              <Row cols={4}>
                 <F>
                   <Lbl t="Income Type" />
                   <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
+                </F>
+                <F>
+                  <Lbl t="Sending Institution" />
+                  <input
+                    list={`inc-inst-list-${inc.id}`}
+                    value={inc.institution || ""}
+                    onChange={e => updIncome(inc.id, "institution", e.target.value)}
+                    onBlur={e => addCustomInstitution(e.target.value)}
+                    style={IS}
+                    autoComplete="off"
+                    data-lpignore="true"
+                    placeholder="e.g. Vanguard, Fidelity…"
+                  />
+                  <datalist id={`inc-inst-list-${inc.id}`}>
+                    {allInstitutions.map(n => <option key={n} value={n} />)}
+                  </datalist>
                 </F>
                 <F>
                   <Lbl t="Frequency" />
@@ -1772,7 +1788,7 @@ export default function App() {
                   <input
                     list={`inst-list-${a.id}`}
                     value={a.institution}
-                    onChange={e => updAcct(a.id, "institution", e.target.value)}
+                    onChange={e => syncAcctIncome(a, "institution", e.target.value)}
                     onBlur={e => addCustomInstitution(e.target.value)}
                     style={IS}
                     autoComplete="off"
