@@ -754,8 +754,6 @@ export default function App() {
             <F><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={3}>
-            <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="State" /><StateSelect value={client.state} onChange={setC("state")} /></F>
             <F>
               <Lbl t="ZIP" />
               <input
@@ -768,6 +766,8 @@ export default function App() {
                 maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
               />
             </F>
+            <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="State" /><StateSelect value={client.state} onChange={setC("state")} /></F>
           </Row>
 
           <div className="rg" style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "0 16px" }}>
@@ -804,7 +804,6 @@ export default function App() {
                 <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
                 <F>
                   <Lbl t="ZIP" />
                   <input
@@ -817,6 +816,7 @@ export default function App() {
                     maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
                   />
                 </F>
+                <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
               </Row>
             </div>
           )}
@@ -917,8 +917,6 @@ export default function App() {
                 <F><Lbl t="Apt / Suite (optional)" /><input value={spouse.addressLine2 || ""} onChange={setS("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={3}>
-                <F><Lbl t="City" /><input value={spouse.city || ""} onChange={setS("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="State" /><StateSelect value={spouse.state || ""} onChange={setS("state")} /></F>
                 <F>
                   <Lbl t="ZIP" />
                   <input
@@ -931,6 +929,8 @@ export default function App() {
                     maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
                   />
                 </F>
+                <F><Lbl t="City" /><input value={spouse.city || ""} onChange={setS("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="State" /><StateSelect value={spouse.state || ""} onChange={setS("state")} /></F>
               </Row>
 
               <div className="rg" style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "0 16px" }}>
@@ -967,7 +967,6 @@ export default function App() {
                     <F><Lbl t="City" /><input value={spouse.poBoxCity || ""} onChange={setS("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
                   <Row cols={2}>
-                    <F><Lbl t="State" /><StateSelect value={spouse.poBoxState || ""} onChange={setS("poBoxState")} /></F>
                     <F>
                       <Lbl t="ZIP" />
                       <input
@@ -980,6 +979,7 @@ export default function App() {
                         maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
                       />
                     </F>
+                    <F><Lbl t="State" /><StateSelect value={spouse.poBoxState || ""} onChange={setS("poBoxState")} /></F>
                   </Row>
                 </div>
               )}
@@ -1185,8 +1185,6 @@ export default function App() {
                   <>
                     <input value={b.addressLine1} onChange={e => updBene(b.id, "addressLine1", e.target.value)} style={{ ...IS, marginTop: 6 }} autoComplete="new-password" data-lpignore="true" />
                     <Row cols={3}>
-                      <F><Lbl t="City" /><input value={b.city} onChange={e => updBene(b.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                      <F><Lbl t="State" /><StateSelect value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} /></F>
                       <F>
                         <Lbl t="ZIP" />
                         <input
@@ -1199,6 +1197,8 @@ export default function App() {
                           maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
                         />
                       </F>
+                      <F><Lbl t="City" /><input value={b.city} onChange={e => updBene(b.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                      <F><Lbl t="State" /><StateSelect value={b.state} onChange={e => updBene(b.id, "state", e.target.value)} /></F>
                     </Row>
                   </>
                 );
@@ -1251,11 +1251,11 @@ export default function App() {
             </F>
           </Row>
           <Row cols={2}>
-            <F><Lbl t="Work Street Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F>
               <Lbl t="ZIP" />
               <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
             </F>
+            <F><Lbl t="Work Street Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={2}>
             <F><Lbl t="City" /><input value={clientEmp.workCity} onChange={setCE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1343,11 +1343,11 @@ export default function App() {
                 </F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="Work Street Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="ZIP" />
                   <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
                 </F>
+                <F><Lbl t="Work Street Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
                 <F><Lbl t="City" /><input value={spouseEmp.workCity} onChange={setSE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
