@@ -677,9 +677,9 @@ export default function App() {
             ["section-income",    "Income"],
             ["section-realestate","Real Estate"],
             ["section-accounts",  "Investment & Bank"],
-            ["section-autos",     "Automobiles"],
             ["section-wills",     "Wills & Trust"],
             ["section-poa",       "Power of Attorney"],
+            ["section-autos",     "Automobiles"],
           ].map(([id, label]) => (
             <button
               key={id}
