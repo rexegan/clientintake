@@ -259,7 +259,17 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
           return (
             <div key={c.id} style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client?.firstName} {c.client?.lastName}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client?.firstName} {c.client?.lastName}</div>
+                  <span style={{
+                    fontSize: 10, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em",
+                    color: c.recordType === "client" ? "#4caf50" : "#f0a500",
+                    border: `1px solid ${c.recordType === "client" ? "#4caf50" : "#f0a500"}`,
+                    borderRadius: 4, padding: "2px 7px",
+                  }}>
+                    {c.recordType === "client" ? "Client" : "Prospect"}
+                  </span>
+                </div>
                 {["married","domestic_partner"].includes(c.hasSpouse) && c.spouse?.firstName && (
                   <div style={{ fontSize: 13, color: WHITE, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
                 )}
@@ -357,7 +367,7 @@ function fmt(n) {
 }
 
 function ClientReport({ data, onClose }) {
-  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {} } = data;
+  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, recordType = "prospect" } = data;
 
   const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
   const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
@@ -515,7 +525,17 @@ function ClientReport({ data, onClose }) {
       <div id="rwg-report" style={s.page}>
         {/* ── HEADER ── */}
         <div style={s.header}>
-          <div style={s.firmName}>Russell Wealth Group · Confidential</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div style={s.firmName}>Russell Wealth Group · Confidential</div>
+            <span style={{
+              fontSize: 9, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em",
+              color: recordType === "client" ? "#1e6b3a" : "#8a6000",
+              border: `1px solid ${recordType === "client" ? "#1e6b3a" : "#8a6000"}`,
+              borderRadius: 3, padding: "2px 7px", marginTop: 2,
+            }}>
+              {recordType === "client" ? "Client" : "Prospect"}
+            </span>
+          </div>
           <div style={s.clientName}>{headerName}</div>
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
         </div>
@@ -920,6 +940,7 @@ export default function App() {
   const [uploads, setUploads] = useState({});
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
+  const [recordType, setRecordType] = useState("prospect"); // "prospect" | "client"
   const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
   const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
   const addCustomInstitution = (val) => {
@@ -985,8 +1006,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, recordType,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, recordType]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1039,6 +1060,7 @@ export default function App() {
     setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
     setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
+    setRecordType(record.recordType || "prospect");
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1146,6 +1168,7 @@ export default function App() {
     setWillsTrust({ hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
     setUploads({});
+    setRecordType("prospect");
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -1174,6 +1197,7 @@ export default function App() {
           setUploads(record.uploads || {});
           setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
+          setRecordType(record.recordType || "prospect");
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -1279,6 +1303,36 @@ export default function App() {
 
         {/* ── CLIENT PROFILE ── */}
         <Panel title="Client Profile" id="section-profile">
+          {/* Prospect / Client toggle */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+            <span style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "bold" }}>Record Type:</span>
+            <div style={{ display: "flex", background: "#0f1d38", border: "2px solid " + ACCENT, borderRadius: 8, overflow: "hidden" }}>
+              {["prospect", "client"].map(type => (
+                <button
+                  key={type}
+                  onClick={() => setRecordType(type)}
+                  style={{
+                    padding: "7px 22px", fontSize: 13, fontWeight: "bold", cursor: "pointer",
+                    fontFamily: "Georgia, serif", border: "none", textTransform: "capitalize",
+                    background: recordType === type ? (type === "client" ? "#1e6b3a" : ACCENT) : "transparent",
+                    color: WHITE,
+                    letterSpacing: "0.04em",
+                    transition: "background 0.15s",
+                  }}
+                >
+                  {type === "prospect" ? "Prospect" : "Client"}
+                </button>
+              ))}
+            </div>
+            <span style={{
+              fontSize: 11, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em",
+              color: recordType === "client" ? "#4caf50" : "#f0a500",
+              border: `1px solid ${recordType === "client" ? "#4caf50" : "#f0a500"}`,
+              borderRadius: 4, padding: "2px 8px",
+            }}>
+              {recordType === "client" ? "Active Client" : "Prospect"}
+            </span>
+          </div>
           <Row cols={3}>
             <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2777,7 +2831,7 @@ export default function App() {
     {showReport && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership, recordType }}
           onClose={() => setShowReport(false)}
         />
       </div>
