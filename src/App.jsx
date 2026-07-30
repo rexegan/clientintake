@@ -430,7 +430,7 @@ function ClientReport({ data, onClose }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,50,0.85)", zIndex: 1000, overflowY: "auto", padding: "20px 0" }}>
       {/* toolbar */}
-      <div style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
+      <div id="rwg-print-toolbar" style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
         <button onClick={() => window.print()} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
         <button onClick={onClose} style={{ background: "#5a1a1a", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
       </div>
@@ -705,11 +705,31 @@ function ClientReport({ data, onClose }) {
 
       <style>{`
         @media print {
-          body > *:not(#rwg-report-wrap) { display: none !important; }
-          #rwg-report-wrap { position: static !important; background: white !important; padding: 0 !important; }
-          #rwg-report { box-shadow: none !important; }
-          .no-print { display: none !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          body * { visibility: hidden !important; }
+          #rwg-report-wrap, #rwg-report-wrap * { visibility: visible !important; }
+          #rwg-report-wrap {
+            position: fixed !important;
+            inset: 0 !important;
+            background: white !important;
+            overflow: visible !important;
+            padding: 0 !important;
+            z-index: 9999 !important;
+          }
+          #rwg-print-toolbar { display: none !important; }
+          #rwg-report {
+            position: static !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            background: white !important;
+          }
+          table { page-break-inside: avoid; }
+          tr { page-break-inside: avoid; }
+          h2, h3, .section-head { page-break-after: avoid; }
         }
+        @page { margin: 0.6in 0.5in; }
       `}</style>
     </div>
   );
