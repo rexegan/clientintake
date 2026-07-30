@@ -2404,17 +2404,23 @@ export default function App() {
                 <F><Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Make" />
-                  <input list={`make-list-${a.id}`} value={a.make} onChange={e => { updAuto(a.id, "make", e.target.value); updAuto(a.id, "model", ""); }} style={IS} autoComplete="off" data-lpignore="true" placeholder="Type or select…" />
-                  <datalist id={`make-list-${a.id}`}>
-                    {Object.keys(AUTO_MODELS).sort().map(m => <option key={m} value={m} />)}
-                  </datalist>
+                  <select value={a.make} onChange={e => { updAuto(a.id, "make", e.target.value); updAuto(a.id, "model", ""); }} style={IS}>
+                    <option value="">— Select Make —</option>
+                    {Object.keys(AUTO_MODELS).sort().map(m => <option key={m} value={m}>{m}</option>)}
+                    <option value="Other">Other</option>
+                  </select>
                 </F>
                 <F>
                   <Lbl t="Model" />
-                  <input list={`model-list-${a.id}`} value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" placeholder="Type or select…" />
-                  <datalist id={`model-list-${a.id}`}>
-                    {(AUTO_MODELS[a.make] || []).map(m => <option key={m} value={m} />)}
-                  </datalist>
+                  {a.make && AUTO_MODELS[a.make] ? (
+                    <select value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS}>
+                      <option value="">— Select Model —</option>
+                      {AUTO_MODELS[a.make].map(m => <option key={m} value={m}>{m}</option>)}
+                      <option value="Other">Other</option>
+                    </select>
+                  ) : (
+                    <input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" placeholder={a.make ? "Type model…" : "Select make first"} />
+                  )}
                 </F>
                 <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
