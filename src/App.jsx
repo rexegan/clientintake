@@ -125,24 +125,34 @@ const emptyClient = {
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
-const emptyAuto = { year:"", make:"", model:"", value:"" };
+const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"" };
 
 const AUTO_MODELS = {
-  "Ford": ["Bronco","Bronco Sport","Edge","Escape","Expedition","Expedition King Ranch","Expedition Limited","Expedition Platinum","Expedition XLT","Explorer","Explorer King Ranch","Explorer Platinum","Explorer ST","F-150","F-150 King Ranch","F-150 Lariat","F-150 Limited","F-150 Platinum","F-150 Raptor","F-150 Tremor","F-150 XL","F-150 XLT","F-250 King Ranch","F-250 Lariat","F-250 Platinum","F-250 XLT","F-350 King Ranch","F-350 Lariat","F-350 Platinum","Fusion","Maverick","Mustang","Mustang GT","Mustang Mach-E","Mustang Shelby GT500","Ranger","Ranger Lariat","Ranger XLT","Transit","Transit Connect"],
-  "Chevrolet": ["Blazer","Blazer EV","Colorado","Colorado LT","Colorado Z71","Corvette","Corvette Stingray","Corvette Z06","Equinox","Equinox EV","Express","Malibu","Silverado 1500","Silverado 1500 High Country","Silverado 1500 LT","Silverado 1500 LTZ","Silverado 1500 RST","Silverado 1500 Trail Boss","Silverado 1500 Work Truck","Silverado 2500 HD","Silverado 2500 HD High Country","Silverado 2500 HD LTZ","Silverado 3500 HD","Suburban","Suburban High Country","Suburban LT","Suburban Premier","Tahoe","Tahoe High Country","Tahoe LT","Tahoe Premier","Tahoe RST","Tahoe Z71","TrailBlazer","Traverse","Trax"],
-  "Chrysler": ["300","300C","300S","Pacifica","Pacifica Hybrid","Pacifica Limited","Pacifica Touring","Voyager"],
-  "Dodge": ["Challenger","Challenger R/T","Challenger Scat Pack","Challenger SRT Hellcat","Challenger SRT Demon","Charger","Charger R/T","Charger Scat Pack","Charger SRT Hellcat","Durango","Durango Citadel","Durango GT","Durango Pursuit","Durango R/T","Durango SRT Hellcat","Ram 1500","Ram 1500 Big Horn","Ram 1500 Classic","Ram 1500 Laramie","Ram 1500 Laramie Longhorn","Ram 1500 Limited","Ram 1500 Rebel","Ram 1500 TRX","Ram 2500","Ram 2500 Laramie","Ram 2500 Limited","Ram 2500 Power Wagon","Ram 3500","Ram 3500 Laramie","Ram 3500 Limited"],
-  "Toyota": ["4Runner","4Runner Limited","4Runner Nightshade","4Runner SR5","4Runner TRD Off-Road","4Runner TRD Pro","Avalon","Camry","Camry SE","Camry TRD","Camry XLE","Camry XSE","Corolla","GR86","GR Supra","Highlander","Highlander Hybrid","Highlander Limited","Highlander Platinum","Highlander XLE","Land Cruiser","Prius","RAV4","RAV4 Adventure","RAV4 Hybrid","RAV4 Limited","RAV4 Prime","RAV4 TRD Off-Road","RAV4 XLE","Sequoia","Sequoia Capstone","Sequoia Limited","Sequoia Platinum","Sequoia TRD Pro","Sienna","Tacoma","Tacoma Double Cab","Tacoma SR5","Tacoma TRD Off-Road","Tacoma TRD Pro","Tacoma TRD Sport","Tundra","Tundra 1794 Edition","Tundra Capstone","Tundra Limited","Tundra Platinum","Tundra SR5","Tundra TRD Pro","Venza"],
-  "Nissan": ["Altima","Altima SR","Altima SV","Armada","Armada Platinum","Armada SL","Frontier","Frontier Pro-4X","Frontier SV","Kicks","Leaf","Maxima","Murano","Murano Platinum","Murano SL","Pathfinder","Pathfinder Platinum","Pathfinder SL","Rogue","Rogue Platinum","Rogue SL","Rogue SV","Sentra","Titan","Titan Pro-4X","Titan SV","Titan XD","Versa","Z","Z Nismo","Z Proto Spec"],
-  "Infiniti": ["Q50","Q50 Red Sport","Q60","Q60 Red Sport","QX50","QX55","QX60","QX60 Autograph","QX80","QX80 Autograph"],
-  "Mercedes-Benz": ["A-Class","AMG GT","C-Class","C 300","C 43 AMG","C 63 AMG","CLA","CLE","E-Class","E 350","E 450","E 53 AMG","EQB","EQE","EQS","G-Class","G 550","G 63 AMG","GLA","GLB","GLC","GLC 300","GLC 43 AMG","GLE","GLE 350","GLE 450","GLE 53 AMG","GLS","GLS 450","GLS 580","Metris","S-Class","S 500","S 580","SL","Sprinter"],
-  "Lexus": ["ES 250","ES 300h","ES 350","GS","GX 460","GX 550","IS 300","IS 350","IS 500","LC 500","LS 500","LS 500h","LX 600","NX 250","NX 350","NX 350h","NX 450h+","RC 300","RC 350","RC F","RX 350","RX 350h","RX 450h+","RX 500h","TX 350","TX 500h","UX 200","UX 250h"],
-  "Volkswagen": ["Arteon","Atlas","Atlas Cross Sport","Golf","Golf GTI","Golf R","ID.4","ID.4 AWD Pro","ID.4 Pro","Jetta","Jetta GLI","Passat","Taos","Tiguan","Tiguan SE","Tiguan SEL"],
-  "Tesla": ["Cybertruck","Model 3","Model 3 Long Range","Model 3 Performance","Model S","Model S Long Range","Model S Plaid","Model X","Model X Long Range","Model X Plaid","Model Y","Model Y Long Range","Model Y Performance","Roadster"],
-  "Cadillac": ["CT4","CT4-V","CT4-V Blackwing","CT5","CT5-V","CT5-V Blackwing","Escalade","Escalade ESV","Escalade IQ","Escalade Platinum","Escalade Sport","Escalade V","Lyriq","XT4","XT4 Premium Luxury","XT4 Sport","XT5","XT5 Platinum","XT5 Premium Luxury","XT5 Sport","XT6","XT6 Platinum","XT6 Premium Luxury","XT6 Sport"],
+  "Acura": ["ILX","MDX","MDX A-Spec","MDX Type S","NSX","RDX","RDX A-Spec","TLX","TLX A-Spec","TLX Type S"],
+  "Audi": ["A3","A4","A4 Allroad","A5","A6","A6 Allroad","A7","A8","e-tron","e-tron GT","e-tron S","e-tron Sportback","Q3","Q4 e-tron","Q5","Q5 e-tron","Q7","Q8","Q8 e-tron","RS 3","RS 5","RS 6 Avant","RS 7","RS e-tron GT","RS Q8","S3","S4","S5","S6","S7","S8","SQ5","SQ7","SQ8","TT","TTS"],
+  "BMW": ["2 Series","3 Series","3 Series Gran Turismo","4 Series","5 Series","7 Series","8 Series","i3","i4","i5","i7","iX","M2","M3","M4","M5","M8","X1","X2","X3","X3 M","X4","X4 M","X5","X5 M","X6","X6 M","X7","XM","Z4"],
+  "Cadillac": ["CT4","CT4-V","CT4-V Blackwing","CT5","CT5-V","CT5-V Blackwing","Escalade","Escalade ESV","Escalade ESV Platinum","Escalade ESV Sport","Escalade IQ","Escalade Platinum","Escalade Premium Luxury","Escalade Sport","Escalade V","Lyriq","XT4","XT4 Premium Luxury","XT4 Sport","XT5","XT5 Platinum","XT5 Premium Luxury","XT5 Sport","XT6","XT6 Platinum","XT6 Premium Luxury","XT6 Sport"],
+  "Chevrolet": ["Blazer","Blazer EV","Bolt EUV","Bolt EV","Camaro","Camaro LT1","Camaro SS","Camaro ZL1","Colorado","Colorado LT","Colorado Trail Boss","Colorado Work Truck","Colorado Z71","Colorado ZR2","Corvette","Corvette E-Ray","Corvette Stingray","Corvette Z06","Corvette ZR1","Equinox","Equinox EV","Express","Malibu","Silverado 1500","Silverado 1500 High Country","Silverado 1500 LT","Silverado 1500 LTZ","Silverado 1500 RST","Silverado 1500 Trail Boss","Silverado 1500 Work Truck","Silverado 1500 ZR2","Silverado 2500 HD","Silverado 2500 HD High Country","Silverado 2500 HD LTZ","Silverado 2500 HD Work Truck","Silverado 3500 HD","Silverado 3500 HD High Country","Silverado EV","Suburban","Suburban High Country","Suburban LT","Suburban Premier","Suburban RST","Suburban Z71","Tahoe","Tahoe High Country","Tahoe LT","Tahoe Premier","Tahoe RST","Tahoe Z71","TrailBlazer","Traverse","Traverse High Country","Traverse LT","Traverse Premier","Trax"],
+  "Chrysler": ["300","300C","300S","Pacifica","Pacifica Hybrid","Pacifica Hybrid Limited","Pacifica Hybrid Touring","Pacifica Limited","Pacifica Touring","Pacifica Touring L","Voyager"],
+  "Dodge": ["Challenger","Challenger GT","Challenger R/T","Challenger R/T Scat Pack","Challenger SRT 392","Challenger SRT Demon","Challenger SRT Hellcat","Challenger SRT Hellcat Redeye","Charger","Charger Daytona","Charger GT","Charger R/T","Charger Scat Pack","Charger SRT 392","Charger SRT Hellcat","Charger SRT Hellcat Redeye","Durango","Durango Citadel","Durango GT","Durango Pursuit","Durango R/T","Durango SRT 392","Durango SRT Hellcat"],
+  "Ford": ["Bronco","Bronco Black Diamond","Bronco Badlands","Bronco Big Bend","Bronco Heritage","Bronco Outer Banks","Bronco Raptor","Bronco Wildtrak","Bronco Sport","Bronco Sport Big Bend","Bronco Sport Badlands","Bronco Sport Outer Banks","E-Transit","EcoSport","Edge","Edge SEL","Edge ST","Edge Titanium","Escape","Escape Hybrid","Escape PHEV","Escape SEL","Escape Titanium","Expedition","Expedition King Ranch","Expedition Limited","Expedition Max","Expedition Max King Ranch","Expedition Max Limited","Expedition Max Platinum","Expedition Max Timberline","Expedition Platinum","Expedition Timberline","Expedition XLT","Explorer","Explorer King Ranch","Explorer Platinum","Explorer ST","Explorer ST-Line","Explorer Timberline","Explorer XLT","F-150","F-150 King Ranch","F-150 Lariat","F-150 Lightning","F-150 Lightning Flash","F-150 Lightning Lariat","F-150 Lightning Platinum","F-150 Limited","F-150 Platinum","F-150 PowerBoost","F-150 Raptor","F-150 Raptor R","F-150 Tremor","F-150 XL","F-150 XLT","F-250 King Ranch","F-250 Lariat","F-250 Platinum","F-250 Tremor","F-250 XL","F-250 XLT","F-350 King Ranch","F-350 Lariat","F-350 Platinum","F-350 XL","F-350 XLT","F-450 King Ranch","F-450 Lariat","F-450 Platinum","Maverick","Maverick Lariat","Maverick Tremor","Maverick XLT","Mustang","Mustang Dark Horse","Mustang EcoBoost","Mustang GT","Mustang GT500","Mustang Mach-E","Mustang Mach-E GT","Mustang Mach-E Premium","Mustang Mach-E Rally","Mustang Mach-E Select","Mustang Mach 1","Mustang Shelby GT350","Mustang Shelby GT500","Ranger","Ranger Lariat","Ranger Raptor","Ranger XLT","Transit","Transit Connect"],
+  "GMC": ["Acadia","Acadia AT4","Acadia Denali","Canyon","Canyon AT4","Canyon AT4X","Canyon Denali","Canyon Elevation","Envoy","Envoy Denali","Envoy SLT","Sierra 1500","Sierra 1500 AT4","Sierra 1500 AT4X","Sierra 1500 Base","Sierra 1500 Denali","Sierra 1500 Denali Ultimate","Sierra 1500 Elevation","Sierra 1500 Pro","Sierra 1500 SLE","Sierra 1500 SLT","Sierra 2500 HD","Sierra 2500 HD AT4","Sierra 2500 HD Denali","Sierra 2500 HD Pro","Sierra 2500 HD SLE","Sierra 2500 HD SLT","Sierra 3500 HD","Sierra 3500 HD AT4","Sierra 3500 HD Denali","Sierra EV","Terrain","Terrain AT4","Terrain Denali","Terrain SLE","Terrain SLT","Yukon","Yukon AT4","Yukon Denali","Yukon Denali Ultimate","Yukon SLE","Yukon SLT","Yukon XL","Yukon XL AT4","Yukon XL Denali"],
+  "Honda": ["Accord","Accord Hybrid","Accord Sport","Accord Touring","CR-V","CR-V Hybrid","CR-V Sport","CR-V Touring","Civic","Civic Hatchback","Civic Si","Civic Sport","Civic Type R","HR-V","Odyssey","Odyssey EX","Odyssey Elite","Odyssey Touring","Passport","Passport Elite","Passport Sport","Passport TrailSport","Pilot","Pilot Black Edition","Pilot Elite","Pilot Sport","Pilot TrailSport","Ridgeline","Ridgeline Black Edition","Ridgeline RTL","Ridgeline RTL-E","Prologue"],
+  "Hyundai": ["Elantra","Elantra N","Elantra N Line","Ioniq 5","Ioniq 5 N","Ioniq 6","Kona","Kona Electric","Kona N","Palisade","Palisade Calligraphy","Palisade Limited","Palisade SEL","Santa Cruz","Santa Fe","Santa Fe Calligraphy","Santa Fe Limited","Santa Fe SEL","Sonata","Sonata N Line","Tucson","Tucson Hybrid","Tucson PHEV","Tucson N Line","Venue"],
+  "Infiniti": ["Q50","Q50 Red Sport 400","Q50 Sensory","Q60","Q60 Red Sport 400","Q60 Sensory","QX50","QX55","QX60","QX60 Autograph","QX60 Luxe","QX60 Sensory","QX80","QX80 Autograph","QX80 Luxe"],
+  "Jeep": ["Cherokee","Cherokee Latitude","Cherokee Limited","Cherokee Trailhawk","Compass","Compass Latitude","Compass Limited","Compass Trailhawk","Gladiator","Gladiator Mojave","Gladiator Overland","Gladiator Rubicon","Grand Cherokee","Grand Cherokee 4xe","Grand Cherokee L","Grand Cherokee L Overland","Grand Cherokee L Summit","Grand Cherokee Limited","Grand Cherokee Overland","Grand Cherokee Summit","Grand Cherokee Trailhawk","Renegade","Wrangler","Wrangler 4xe","Wrangler Rubicon","Wrangler Sahara","Wrangler Sport","Wrangler Unlimited"],
+  "Lexus": ["ES 250","ES 300h","ES 350","ES 350 F Sport","GS 350","GX 460","GX 550","GX 550 Overtrail","GX 550 Premium Plus","IS 300","IS 350","IS 350 F Sport","IS 500 F Sport","LC 500","LC 500 Convertible","LC 500h","LS 500","LS 500 F Sport","LS 500h","LX 600","LX 600 F Sport","LX 600 Ultra Luxury","NX 250","NX 350","NX 350 F Sport","NX 350h","NX 450h+","RC 300","RC 350","RC 350 F Sport","RC F","RX 350","RX 350 F Sport","RX 350h","RX 450h+","RX 500h F Sport","TX 350","TX 350 F Sport","TX 500h","TX 550h+","UX 200","UX 200 F Sport","UX 250h","UX 300h"],
+  "Lincoln": ["Aviator","Aviator Black Label","Aviator Grand Touring","Aviator Reserve","Corsair","Corsair Grand Touring","Corsair Reserve","Nautilus","Nautilus Black Label","Nautilus Reserve","Navigator","Navigator Black Label","Navigator L","Navigator L Black Label","Navigator L Reserve","Navigator Reserve"],
+  "Mercedes-Benz": ["A-Class","AMG GT","AMG GT 4-Door","C 300","C 43 AMG","C 63 S AMG","CLA 250","CLA 45 AMG","CLE 300","CLE 53 AMG","E 350","E 450","E 53 AMG","E 63 S AMG","EQB","EQE 350","EQE 500","EQE 53 AMG","EQS 450+","EQS 580","EQS 53 AMG","G 550","G 63 AMG","G 580 EQ","GLA 250","GLA 45 AMG","GLB 250","GLC 300","GLC 300 Coupe","GLC 43 AMG","GLC 63 S AMG","GLE 350","GLE 450","GLE 53 AMG","GLE 580","GLE 63 S AMG","GLS 450","GLS 580","GLS 63 AMG","Metris","S 500","S 580","S 63 AMG","SL 43","SL 55 AMG","SL 63 AMG","Sprinter"],
+  "Nissan": ["Altima","Altima Platinum","Altima SR","Altima SV","Ariya","Armada","Armada Platinum","Armada SL","Frontier","Frontier Pro-4X","Frontier SV","Kicks","Kicks SR","Leaf","Leaf Plus","Maxima","Maxima Platinum","Murano","Murano Platinum","Murano SL","Pathfinder","Pathfinder Platinum","Pathfinder Rock Creek","Pathfinder SL","Rogue","Rogue Midnight Edition","Rogue Platinum","Rogue SL","Rogue SV","Sentra","Sentra SR","Titan","Titan Pro-4X","Titan SV","Titan XD","Titan XD Pro-4X","Versa","Z","Z Nismo","Z Performance"],
+  "Ram": ["1500","1500 Big Horn","1500 Classic","1500 Laramie","1500 Laramie Longhorn","1500 Limited","1500 Limited Longhorn","1500 Night Edition","1500 Rebel","1500 TRX","2500","2500 Big Horn","2500 Laramie","2500 Laramie Longhorn","2500 Limited","2500 Power Wagon","3500","3500 Big Horn","3500 Laramie","3500 Laramie Longhorn","3500 Limited","ProMaster","ProMaster City"],
+  "Subaru": ["Ascent","Ascent Onyx Edition","Ascent Touring","BRZ","BRZ Limited","BRZ Premium","Crosstrek","Crosstrek Limited","Crosstrek Sport","Forester","Forester Onyx Edition","Forester Sport","Forester Touring","Impreza","Legacy","Outback","Outback Onyx Edition","Outback Touring XT","Outback Wilderness","Solterra","WRX","WRX GT","WRX Premium","WRX TR"],
+  "Tesla": ["Cybertruck","Cybertruck AWD","Cybertruck Foundation Series","Model 3","Model 3 Long Range AWD","Model 3 Performance","Model 3 RWD","Model S","Model S Long Range","Model S Plaid","Model X","Model X Long Range","Model X Plaid","Model Y","Model Y Long Range AWD","Model Y Performance","Model Y RWD","Roadster"],
+  "Toyota": ["4Runner","4Runner Limited","4Runner Nightshade","4Runner SR5","4Runner TRD Off-Road","4Runner TRD Pro","Avalon","Avalon Hybrid","Avalon Limited","Avalon XSE","bZ4X","Camry","Camry Hybrid","Camry SE","Camry TRD","Camry XLE","Camry XSE","Corolla","Corolla Cross","Corolla Hybrid","Corolla SE","GR86","GR86 Premium","GR Corolla","GR Corolla Circuit Edition","GR Supra","GR Supra A91","Highlander","Highlander Hybrid","Highlander Limited","Highlander Platinum","Highlander XLE","Land Cruiser","Prius","Prius PHEV","Prius Prime","RAV4","RAV4 Adventure","RAV4 Hybrid","RAV4 Limited","RAV4 Prime","RAV4 TRD Off-Road","RAV4 XLE","Sequoia","Sequoia Capstone","Sequoia Limited","Sequoia Platinum","Sequoia TRD Pro","Sienna","Sienna Limited","Sienna Platinum","Sienna XLE","Tacoma","Tacoma Double Cab","Tacoma Limited","Tacoma PreRunner","Tacoma SR5","Tacoma TRD Off-Road","Tacoma TRD Pro","Tacoma TRD Sport","Tacoma Trailhunter","Tundra","Tundra 1794 Edition","Tundra Capstone","Tundra Limited","Tundra Platinum","Tundra SR5","Tundra TRD Pro","Venza","Venza Limited","Venza XLE"],
+  "Volkswagen": ["Arteon","Arteon SEL","Atlas","Atlas Cross Sport","Atlas Peak Edition","Atlas SE","Atlas SEL","Atlas SEL Premium","Golf","Golf GTI","Golf GTI Autobahn","Golf GTI S","Golf GTI SE","Golf R","ID.4","ID.4 AWD Pro","ID.4 AWD Pro S","ID.4 Pro","ID.4 Pro S","ID.4 S","Jetta","Jetta GLI","Jetta R-Line","Jetta SE","Jetta SEL","Passat","Taos","Taos S","Taos SE","Taos SEL","Tiguan","Tiguan S","Tiguan SE","Tiguan SE R-Line","Tiguan SEL","Tiguan SEL Premium"],
 };
-const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null, hasOpt:null, optEvent:"" };
-const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasOpt:null, optEvent:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
+const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null, hasOpt:null, optEvent:"", optTimeframe:"", hasZillow:null };
+const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasOpt:null, optEvent:"", optTimeframe:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
 const DEFAULT_INSTITUTIONS = ["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"];
 
@@ -1622,6 +1632,32 @@ export default function App() {
                 <F><Lbl t="Market Value" /><input value={r.marketValue} onChange={e => updRE(r.id, "marketValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
+                <F>
+                  <Lbl t="Zillow?" />
+                  <select value={r.hasZillow || ""} onChange={e => updRE(r.id, "hasZillow", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                {r.hasZillow === "yes" && (
+                  <F>
+                    <Lbl t="Look Up on Zillow" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const addr = [r.address, r.city, r.state, r.zip].filter(Boolean).join(" ");
+                        const q = encodeURIComponent(addr || "");
+                        window.open("https://www.zillow.com/homes/" + q + "_rb/", "_blank");
+                      }}
+                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#006aff", color: WHITE, fontWeight: "bold", border: "none", borderRadius: 6 }}
+                    >
+                      Open Zillow ↗
+                    </button>
+                  </F>
+                )}
+              </Row>
+              <Row cols={2}>
                 <F><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Net Equity" />
@@ -1678,6 +1714,12 @@ export default function App() {
                   </F>
                 )}
               </Row>
+              {r.hasOpt === "yes" && (
+                <F>
+                  <Lbl t="Time Frame / Date" />
+                  <input value={r.optTimeframe || ""} onChange={e => updRE(r.id, "optTimeframe", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6 months, Jan 2026…" />
+                </F>
+              )}
             </div>
           ))}
           <button onClick={addRE} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
@@ -1792,6 +1834,12 @@ export default function App() {
                   </F>
                 )}
               </Row>
+              {a.hasOpt === "yes" && (
+                <F>
+                  <Lbl t="Time Frame / Date" />
+                  <input value={a.optTimeframe || ""} onChange={e => updAcct(a.id, "optTimeframe", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6 months, Jan 2026…" />
+                </F>
+              )}
             </div>
           ))}
           {accounts.some(a => a.balance) && (
@@ -1968,6 +2016,53 @@ export default function App() {
                   </datalist>
                 </F>
                 <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={4}>
+                <F>
+                  <Lbl t="KBB?" />
+                  <select value={a.hasKbb || ""} onChange={e => updAuto(a.id, "hasKbb", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                {a.hasKbb === "yes" && (<>
+                  <F>
+                    <Lbl t="Mileage" />
+                    <input value={a.kbbMileage || ""} onChange={e => updAuto(a.id, "kbbMileage", e.target.value.replace(/\D/g, ""))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="e.g. 45000" />
+                  </F>
+                  <F>
+                    <Lbl t="Condition" />
+                    <select value={a.kbbCondition || ""} onChange={e => updAuto(a.id, "kbbCondition", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="Excellent">Excellent</option>
+                      <option value="Very Good">Very Good</option>
+                      <option value="Good">Good</option>
+                      <option value="Fair">Fair</option>
+                      <option value="Poor">Poor</option>
+                    </select>
+                  </F>
+                  <F>
+                    <Lbl t="Open KBB" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const make = (a.make || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                        const model = (a.model || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                        const year = a.year || "";
+                        const mileage = a.kbbMileage || "";
+                        const condition = (a.kbbCondition || "").toLowerCase().replace(/\s+/g, "-");
+                        let url = "https://www.kbb.com/" + make + "/" + model + "/" + year + "/";
+                        if (mileage) url += "?mileage=" + mileage;
+                        if (condition) url += (mileage ? "&" : "?") + "condition=" + condition;
+                        window.open(url, "_blank");
+                      }}
+                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: WHITE, fontWeight: "bold", border: "none", borderRadius: 6 }}
+                    >
+                      Open KBB ↗
+                    </button>
+                  </F>
+                </>)}
               </Row>
             </div>
           ))}
