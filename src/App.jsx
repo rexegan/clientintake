@@ -767,7 +767,7 @@ function ClientReport({ data, onClose }) {
                   <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                     <td style={s.td}>{inc.type}</td>
                     <td style={s.td}>{inc.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
-                    <td style={s.td}>{inc.owner === "spouse" ? spouseName : inc.owner === "joint" ? "Joint" : clientName}</td>
+                    <td style={s.td}>{inc.owner === "spouse" ? (spouse.firstName || spouseName) : inc.owner === "joint" ? "Joint" : (client.firstName || clientName)}</td>
                     <td style={s.td}>{inc.frequency ? inc.frequency.charAt(0).toUpperCase() + inc.frequency.slice(1) : "—"}</td>
                     <td style={s.tdr}>{inc.amount || "—"}</td>
                     <td style={s.tdr}><strong>{fmt(toAnnual(inc.amount, inc.frequency))}</strong></td>
