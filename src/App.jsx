@@ -2382,14 +2382,20 @@ export default function App() {
               <Row cols={2}>
                 <F><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
-                  <Lbl t="Net Equity (auto-calculated)" />
-                  <div style={{ ...IS, background: "#0f1d38", color: "#a8c8f0", display: "flex", alignItems: "center", fontStyle: "italic", cursor: "default", userSelect: "none", border: "2px solid rgba(74,144,217,0.3)" }}>
-                    {(() => {
+                  <Lbl t="Net Equity" />
+                  <input
+                    value={(() => {
                       const mv = parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0);
                       const mb = parseInt((r.mortgageBalance || "").replace(/[^0-9]/g, "") || 0);
-                      return mv > 0 ? "$" + (mv - mb).toLocaleString() : "Enter market value";
+                      return mv > 0 ? "$" + (mv - mb).toLocaleString() : r.netEquity || "";
                     })()}
-                  </div>
+                    onChange={e => updRE(r.id, "netEquity", fmtDollar(e.target.value))}
+                    style={IS}
+                    inputMode="numeric"
+                    autoComplete="new-password"
+                    data-lpignore="true"
+                    placeholder="Auto-fills from above"
+                  />
                 </F>
               </Row>
               <Row cols={2}>
