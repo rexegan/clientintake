@@ -57,7 +57,7 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
   return (
     <>
       {label && <Lbl t={label} />}
-      <div style={{ display: "flex", gap: 8, width: "fit-content" }}>
+      <div style={{ display: "flex", gap: 8, width: "fit-content", maxWidth: "100%", flexWrap: "wrap" }}>
         <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, minWidth: 90 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
@@ -257,7 +257,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
   return (
     <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>Russell Wealth Group</h1>
             <p style={{ margin: 0, marginTop: 2, fontSize: 12, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase" }}>
@@ -280,7 +280,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
             ...(c.realEstate || []).map(r => parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0)),
           ].reduce((a, b) => a + b, 0);
           return (
-            <div key={c.id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div key={c.id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ fontSize: 17, fontWeight: "bold", color: INK }}>{c.client?.firstName} {c.client?.lastName}</div>
@@ -512,7 +512,7 @@ function ClientReport({ data, onClose }) {
     tdr: { padding: "7px 10px", borderBottom: BDR, textAlign: "right", verticalAlign: "top" },
     tdTotal: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY },
     tdTotalR: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY, textAlign: "right" },
-    netWorthBox: { background: NAVY, color: "#fff", borderRadius: 10, padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 },
+    netWorthBox: { background: NAVY, color: "#fff", borderRadius: 10, padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginTop: 28 },
     nwLabel: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db" },
     nwValue: { fontSize: 36, fontWeight: "bold" },
     twoCol: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 32px" },
@@ -539,13 +539,13 @@ function ClientReport({ data, onClose }) {
 
       <div id="rwg-report" style={s.page}>
         {/* ── HEADER ── */}
-        <div style={s.header}>
+        <div className="rpt-pad" style={s.header}>
           <div style={s.firmName}>Russell Wealth Group · Confidential</div>
           <div style={s.clientName}>{headerName}</div>
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
         </div>
 
-        <div style={s.body}>
+        <div className="rpt-pad" style={s.body}>
 
           {/* ── NET WORTH SNAPSHOT ── */}
           <div style={s.kpiRow}>
@@ -557,7 +557,7 @@ function ClientReport({ data, onClose }) {
 
           {/* ── BALANCE SHEET ── */}
           <div style={s.sectionHead}>Balance Sheet</div>
-          <div style={s.twoCol}>
+          <div className="rpt-two" style={s.twoCol}>
             {/* ASSETS */}
             <div>
               <table style={s.table}>
@@ -592,7 +592,7 @@ function ClientReport({ data, onClose }) {
 
           {/* ── NET WORTH DETAIL ── */}
           <div style={s.sectionHead}>Net Worth &amp; Income Summary</div>
-          <div style={s.twoCol}>
+          <div className="rpt-two" style={s.twoCol}>
             {/* NET WORTH BREAKDOWN */}
             <div>
               <table style={s.table}>
@@ -893,7 +893,7 @@ function ClientReport({ data, onClose }) {
           {/* ── ESTATE PLANNING ── */}
           {(willsTrust.hasWillDoc || willsTrust.hasTrustDoc || poa.hasPOA) && (<>
             <div style={s.sectionHead}>Estate Planning Documents</div>
-            <div style={s.twoCol}>
+            <div className="rpt-two" style={s.twoCol}>
               <table style={s.table}>
                 <tbody>
                   {willsTrust.hasWillDoc && <Row2 label="Will on File" value={willsTrust.hasWillDoc === "yes" ? "✓ Yes" : "No"} />}
@@ -951,6 +951,12 @@ function ClientReport({ data, onClose }) {
           tr { page-break-inside: avoid; }
         }
         @page { margin: 0.6in 0.5in; size: letter portrait; }
+        @media screen and (max-width: 700px) {
+          .rpt-pad { padding-left: 16px !important; padding-right: 16px !important; }
+          .rpt-two { grid-template-columns: 1fr !important; }
+          #rwg-report table { display: block; overflow-x: auto; }
+          #rwg-report { margin: 0 8px !important; }
+        }
       `}</style>
     </div>
   );
@@ -1299,13 +1305,13 @@ export default function App() {
     <>
     <div id="rwg-main-app" style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       {toast && (
-        <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, background: toast.color, color: "#fff", padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 8px 24px rgba(15,23,42,0.16)" }}>
+        <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, maxWidth: "calc(100vw - 40px)", background: toast.color, color: "#fff", padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 8px 24px rgba(15,23,42,0.16)" }}>
           {toast.msg}
         </div>
       )}
 
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>Russell Wealth Group</h1>
             <p style={{ margin: 0, marginTop: 2, fontSize: 12, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase" }}>
@@ -1320,10 +1326,10 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: 24, display: "flex", gap: 24, alignItems: "flex-start" }}>
+      <div className="main-row" style={{ maxWidth: 1100, margin: "0 auto", padding: 24, display: "flex", gap: 24, alignItems: "flex-start" }}>
 
         {/* ── SIDEBAR NAV ── */}
-        <div style={{ width: 170, flexShrink: 0, position: "sticky", top: 24 }}>
+        <div className="side-rail" style={{ width: 180, flexShrink: 0, position: "sticky", top: 24 }}>
           {[
             ["section-profile",   "Client Profile"],
             ["section-family",    "Family"],
@@ -1789,7 +1795,7 @@ export default function App() {
                 </div>
                 <div style={{ fontSize: 11, color: INK, fontStyle: "italic" }}>Edit in Family section</div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: INK }}>
+              <div className="rg" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: INK }}>
                 {ch.firstName && <div><span style={{ color: INK }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
                 {ch.dob && <div><span style={{ color: INK }}>DOB: </span>{ch.dob}</div>}
                 {ch.gender && <div><span style={{ color: INK }}>Gender: </span>{ch.gender}</div>}
@@ -2480,7 +2486,7 @@ export default function App() {
                 )}
               </div>
               {/* Row 2: owner / NQ-Q / OPT / event / timeframe */}
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid rgba(74,144,217,0.35)" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid " + BORDER }}>
                 <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
                   <option value="">— Owner —</option>
                   <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
@@ -2910,7 +2916,7 @@ export default function App() {
           <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange} />
         </Panel>
 
-        <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+        <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
           <button onClick={handleSubmit} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", flex: 1 }}>
             Save Client Record
           </button>
@@ -2925,7 +2931,7 @@ export default function App() {
       </div>{/* end flex row */}
 
       {/* ── FLOATING SAVE BUTTON ── */}
-      <div style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+      <div className="float-save" style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
         <button
           onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
           style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 10, padding: "13px 22px", fontSize: 15, fontWeight: "bold", cursor: "pointer", boxShadow: "0 8px 24px rgba(15,23,42,0.16)", whiteSpace: "nowrap" }}
@@ -2951,7 +2957,15 @@ export default function App() {
         .side-nav:hover { background: #e9edf2 !important; color: #151b28 !important; }
         button { transition: filter 0.15s, background 0.15s; }
         button:hover { filter: brightness(0.97); }
-        @media (max-width: 600px) { .rg { grid-template-columns: 1fr !important; } }
+        @media (max-width: 900px) {
+          .side-rail { display: none; }
+          .rg { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 600px) {
+          .rg { grid-template-columns: 1fr !important; }
+          .main-row { padding: 12px !important; }
+          .float-save { bottom: 12px !important; right: 12px !important; }
+        }
         [data-lastpass-icon-root], [data-lastpass-root], [id^="lastpass"], [id*="lastpass"],
         .lastpass-icon, .lp-icon, [class*="lastpass"], [data-lpignore-ext],
         div[style*="z-index: 2147483647"]:not([class]):not([id]) { display: none !important; }
