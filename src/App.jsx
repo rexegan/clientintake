@@ -127,7 +127,24 @@ const emptyClient = {
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"" };
-const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", annualPremium:"", policyNumber:"", issueDate:"", surrender:"" };
+const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
+const LIFE_CARRIERS = [
+  "Aflac","AIG / American General","Allstate Life","American Equity","American Fidelity","American National (ANICO)",
+  "Ameritas Life","Amica Life","Assurity Life","AXA / Equitable Life",
+  "Banner Life (Legal & General)","Brighthouse Financial (MetLife)","Cincinnati Life",
+  "Corebridge Financial (AIG)","Foresters Financial","Gerber Life",
+  "Globe Life","Great-West Life / Empower","Guardian Life",
+  "John Hancock","Kansas City Life","Lafayette Life","Liberty Mutual Life",
+  "Lincoln Financial","MassMutual","Midland National","Minnesota Life (Securian)",
+  "Mutual of Omaha","National Life Group","National Western Life",
+  "New York Life","North American Company","Northwestern Mutual",
+  "Ohio National","OneAmerica","Pacific Life","Penn Mutual",
+  "Principal Financial","Protective Life","Primerica","Prudential",
+  "ReliaStar (Voya)","Sammons Financial / Midland","Security Benefit",
+  "Securian Financial","Sun Life Financial","Symetra","Transamerica",
+  "Unum","USAA Life","Voya Financial","Western & Southern Life",
+  "Other",
+];
 
 const AUTO_MODELS = {
   "Acura": ["ILX","MDX","MDX A-Spec","MDX Type S","NSX","RDX","RDX A-Spec","TLX","TLX A-Spec","TLX Type S","ZDX"],
@@ -823,11 +840,14 @@ function ClientReport({ data, onClose }) {
                   <th style={s.th}>Owner</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Death Benefit</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Cash Value</th>
-                  <th style={{ ...s.th, textAlign: "right" }}>Annual Premium</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Premium</th>
+                  <th style={s.th}>Frequency</th>
                 </tr>
               </thead>
               <tbody>
-                {lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit).map((p, i) => (
+                {lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit).map((p, i) => {
+                  const freqLabel = { monthly: "Monthly", quarterly: "Quarterly", semiannually: "Semi-Ann.", annually: "Annually" }[p.premiumFrequency] || "—";
+                  return (
                   <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                     <td style={s.td}>{p.carrier || "—"}</td>
                     <td style={s.td}>{p.policyType || "—"}</td>
@@ -835,14 +855,16 @@ function ClientReport({ data, onClose }) {
                     <td style={s.td}>{p.owner || "—"}</td>
                     <td style={s.tdr}>{p.deathBenefit || "—"}</td>
                     <td style={s.tdr}>{p.cashValue || "—"}</td>
-                    <td style={s.tdr}>{p.annualPremium || "—"}</td>
+                    <td style={s.tdr}>{p.premiumAmount || "—"}</td>
+                    <td style={s.td}>{p.premiumAmount ? freqLabel : "—"}</td>
                   </tr>
-                ))}
+                  );
+                })}
                 <tr>
                   <td style={s.tdTotal} colSpan={4}>Totals</td>
                   <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.deathBenefit), 0))}</td>
                   <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.cashValue), 0))}</td>
-                  <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.annualPremium), 0))}</td>
+                  <td style={s.tdTotalR} colSpan={2}></td>
                 </tr>
               </tbody>
             </table>
@@ -2832,7 +2854,13 @@ export default function App() {
                 <button onClick={() => window.confirm("Remove this policy?") && delLife(p.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
               </div>
               <Row cols={4}>
-                <F><Lbl t="Carrier" /><input value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Carrier" />
+                  <select value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={IS}>
+                    <option value="">— Select Carrier —</option>
+                    {LIFE_CARRIERS.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </F>
                 <F>
                   <Lbl t="Policy Type" />
                   <select value={p.policyType} onChange={e => updLife(p.id, "policyType", e.target.value)} style={IS}>
@@ -2855,8 +2883,19 @@ export default function App() {
               <Row cols={4}>
                 <F><Lbl t="Death Benefit" /><input value={p.deathBenefit} onChange={e => updLife(p.id, "deathBenefit", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Cash Value" /><input value={p.cashValue} onChange={e => updLife(p.id, "cashValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
-                <F><Lbl t="Annual Premium" /><input value={p.annualPremium} onChange={e => updLife(p.id, "annualPremium", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Surrender Value" /><input value={p.surrender} onChange={e => updLife(p.id, "surrender", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="Premium Amount" /><input value={p.premiumAmount} onChange={e => updLife(p.id, "premiumAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Premium Frequency" />
+                  <select value={p.premiumFrequency || "monthly"} onChange={e => updLife(p.id, "premiumFrequency", e.target.value)} style={IS}>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="semiannually">Semi-Annually</option>
+                    <option value="annually">Annually</option>
+                  </select>
+                </F>
               </Row>
               <Row cols={3}>
                 <F><Lbl t="Policy Number" /><input value={p.policyNumber} onChange={e => updLife(p.id, "policyNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
