@@ -2414,6 +2414,7 @@ export default function App() {
                     <select data-lpignore="true" value={r.optEvent || ""} onChange={e => updRE(r.id, "optEvent", e.target.value)} style={IS}>
                       <option value="">— Select —</option>
                       <option value="Retire">Retire</option>
+                      <option value="Sell Home">Sell Home</option>
                       <option value="Sell Business">Sell Business</option>
                       <option value="Sell Land">Sell Land</option>
                       <option value="Inheritance">Inheritance</option>
