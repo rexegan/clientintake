@@ -1937,7 +1937,7 @@ export default function App() {
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={3}>
+          <Row cols={5}>
             <F><DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} /></F>
             <F><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F>
@@ -1949,6 +1949,17 @@ export default function App() {
                 <option value="bimonthly">Bi-Monthly</option>
                 <option value="monthly">Monthly</option>
               </select>
+            </F>
+            <F><Lbl t="Compensation" /><input value={clientEmp.compensation || ""} onChange={e => setClientEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="Annual Equivalent" />
+              <div style={{ ...IS, background: "#0f1d38", color: "#a8c8f0", display: "flex", alignItems: "center" }}>
+                {(() => {
+                  const amt = parseInt((clientEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
+                  const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[clientEmp.payFrequency] || 0;
+                  return amt && mult ? "$" + (amt * mult).toLocaleString() : "—";
+                })()}
+              </div>
             </F>
           </Row>
           <Row cols={2}>
@@ -2029,7 +2040,7 @@ export default function App() {
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={3}>
+              <Row cols={5}>
                 <F><DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} /></F>
                 <F><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
@@ -2041,6 +2052,17 @@ export default function App() {
                     <option value="bimonthly">Bi-Monthly</option>
                     <option value="monthly">Monthly</option>
                   </select>
+                </F>
+                <F><Lbl t="Compensation" /><input value={spouseEmp.compensation || ""} onChange={e => setSpouseEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Annual Equivalent" />
+                  <div style={{ ...IS, background: "#0f1d38", color: "#a8c8f0", display: "flex", alignItems: "center" }}>
+                    {(() => {
+                      const amt = parseInt((spouseEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
+                      const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[spouseEmp.payFrequency] || 0;
+                      return amt && mult ? "$" + (amt * mult).toLocaleString() : "—";
+                    })()}
+                  </div>
                 </F>
               </Row>
               <Row cols={2}>
