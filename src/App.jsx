@@ -2877,6 +2877,20 @@ export default function App() {
                     <option value="Other">Other</option>
                   </select>
                 </F>
+                {p.policyType === "Term" && (
+                  <F>
+                    <Lbl t="Length of Term" />
+                    <select value={p.termLength || ""} onChange={e => updLife(p.id, "termLength", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="5">5 Years</option>
+                      <option value="10">10 Years</option>
+                      <option value="15">15 Years</option>
+                      <option value="20">20 Years</option>
+                      <option value="25">25 Years</option>
+                      <option value="30">30 Years</option>
+                    </select>
+                  </F>
+                )}
                 <F><Lbl t="Insured" /><input value={p.insured} onChange={e => updLife(p.id, "insured", e.target.value)} style={IS} placeholder="Name of insured" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Owner" /><input value={p.owner} onChange={e => updLife(p.id, "owner", e.target.value)} style={IS} placeholder="Policy owner" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
