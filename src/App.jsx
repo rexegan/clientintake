@@ -2124,7 +2124,7 @@ export default function App() {
                   <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
                 )}
               </div>
-              <Row cols={inc.linkedAcctId ? 4 : 3}>
+              <Row cols={3}>
                 <F>
                   <Lbl t="Income Type" />
                   <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
@@ -2132,24 +2132,6 @@ export default function App() {
                     {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </F>
-                {inc.linkedAcctId && (
-                  <F>
-                    <Lbl t="Sending Institution" />
-                    <input
-                      list={`inc-inst-list-${inc.id}`}
-                      value={inc.institution || ""}
-                      onChange={e => updIncome(inc.id, "institution", e.target.value)}
-                      onBlur={e => addCustomInstitution(e.target.value)}
-                      style={IS}
-                      autoComplete="off"
-                      data-lpignore="true"
-                      placeholder="e.g. Vanguard, Fidelity…"
-                    />
-                    <datalist id={`inc-inst-list-${inc.id}`}>
-                      {allInstitutions.map(n => <option key={n} value={n} />)}
-                    </datalist>
-                  </F>
-                )}
                 <F>
                   <Lbl t="Frequency" />
                   <select data-lpignore="true" value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
@@ -2171,6 +2153,26 @@ export default function App() {
                   </select>
                 </F>
               </Row>
+              {inc.linkedAcctId && (
+                <Row cols={3}>
+                  <F>
+                    <Lbl t="Sending Institution" />
+                    <input
+                      list={`inc-inst-list-${inc.id}`}
+                      value={inc.institution || ""}
+                      onChange={e => updIncome(inc.id, "institution", e.target.value)}
+                      onBlur={e => addCustomInstitution(e.target.value)}
+                      style={IS}
+                      autoComplete="off"
+                      data-lpignore="true"
+                      placeholder="e.g. Vanguard, Fidelity…"
+                    />
+                    <datalist id={`inc-inst-list-${inc.id}`}>
+                      {allInstitutions.map(n => <option key={n} value={n} />)}
+                    </datalist>
+                  </F>
+                </Row>
+              )}
               {inc.frequency && (
                 <Row cols={2}>
                   <F>
