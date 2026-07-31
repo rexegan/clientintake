@@ -19,6 +19,31 @@ const IS = {
   WebkitAppearance: "none", MozAppearance: "none", appearance: "none",
 };
 
+const BRAND_NAVY = "#2e3d66";
+const BRAND_SERIF = "Georgia, 'Times New Roman', serif";
+
+const AcornMark = ({ size = 40, color = BRAND_NAVY }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <path d="M20.5 22.5C14 23.5 8.5 21 5.5 15.5C8.8 14.9 10.2 13.2 9.8 10.6C12.8 11.4 15 10.6 16.2 8.2C18.4 10 20.6 10.2 22.8 8.8C23.2 11.4 24.6 13 27 13.4C25.2 16.6 24.6 19.6 25.2 22.4Z" fill={color} opacity="0.92" />
+    <path d="M20 23C16.5 26.5 14.5 30.5 14 35" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M25.5 21.5C25.8 16.8 29.6 13.6 34.4 13.9C39.2 14.2 42.6 17.8 42.3 22.5C42.25 23.4 41.6 23.9 40.7 23.85L27 23C26.1 22.95 25.45 22.4 25.5 21.5Z" fill={color} />
+    <path d="M34.8 13.8C35.4 11.6 36.6 10.2 38.5 9.4" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M26.5 25.3L41.6 26.2C41.2 32 37.8 37.4 33.6 39.5C29.6 36.9 26.6 31.2 26.5 25.3Z" fill={color} />
+  </svg>
+);
+
+const BrandLockup = ({ mark = 44 }) => (
+  <div style={{ textAlign: "center" }}>
+    <AcornMark size={mark} />
+    <div style={{ fontFamily: BRAND_SERIF, fontSize: 18, letterSpacing: "0.2em", marginLeft: "0.2em", color: BRAND_NAVY, marginTop: 2, lineHeight: 1.1 }}>RUSSELL</div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginTop: 4 }}>
+      <span style={{ flex: "0 0 20px", height: 1, background: BRAND_NAVY, opacity: 0.5 }} />
+      <span style={{ fontFamily: BRAND_SERIF, fontSize: 8.5, letterSpacing: "0.3em", marginLeft: "0.3em", color: BRAND_NAVY, whiteSpace: "nowrap" }}>WEALTH GROUP</span>
+      <span style={{ flex: "0 0 20px", height: 1, background: BRAND_NAVY, opacity: 0.5 }} />
+    </div>
+  </div>
+);
+
 const Lbl = ({ t }) => (
   <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, marginBottom: 5, marginTop: 12 }}>{t}</div>
 );
@@ -52,20 +77,20 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
     onChange(`${newMm}/${newDd}/${newYyyy}`);
   };
 
-  const sel = { ...IS, width: "auto", flex: "none" };
+  const sel = { ...IS, width: "auto" };
 
   return (
     <>
       {label && <Lbl t={label} />}
-      <div style={{ display: "flex", gap: 8, width: "fit-content", maxWidth: "100%", flexWrap: "wrap" }}>
-        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, minWidth: 90 }}>
+      <div style={{ display: "flex", gap: 6, width: "100%", flexWrap: "wrap" }}>
+        <select className="sel-compact" data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, flex: "1.25 1 0%", minWidth: 64 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, minWidth: 78 }}>
+        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: "1 1 0%", minWidth: 56 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -84,7 +109,7 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
             const v = e.target.value.replace(/\D/g, "").slice(0, 4);
             set(mm, dd, v);
           }}
-          style={{ ...sel, width: 80 }}
+          style={{ ...sel, flex: "1 1 0%", minWidth: 56 }}
         />
       </div>
     </>
@@ -567,10 +592,13 @@ function ClientReport({ data, onClose }) {
 
       <div id="rwg-report" style={s.page}>
         {/* ── HEADER ── */}
-        <div className="rpt-pad" style={s.header}>
+        <div className="rpt-pad" style={{ ...s.header, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+          <div>
           <div style={s.firmName}>Russell Wealth Group · Confidential</div>
           <div style={s.clientName}>{headerName}</div>
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
+          </div>
+          <AcornMark size={46} color="#c7d0db" />
         </div>
 
         <div className="rpt-pad" style={s.body}>
@@ -1342,12 +1370,9 @@ export default function App() {
 
         {/* ── SIDEBAR ── */}
         <aside className="side-rail" style={{ width: 250, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "2px 8px 16px" }}>
-            <span style={{ width: 34, height: 34, borderRadius: 10, background: ACCENT, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13 }}>RW</span>
-            <span>
-              <span style={{ display: "block", fontWeight: 700, fontSize: 13, color: INK, lineHeight: 1.25, whiteSpace: "nowrap" }}>Russell Wealth Group</span>
-              <span style={{ display: "block", fontSize: 11, color: MUTED }}>Client Intake</span>
-            </span>
+          <div style={{ padding: "8px 8px 16px" }}>
+            <BrandLockup mark={46} />
+            <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>Client Intake</div>
           </div>
           <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0 8px", marginBottom: 6 }}>Intake Sections</div>
           {[
@@ -1392,8 +1417,8 @@ export default function App() {
         {/* ── MOBILE TOP BAR ── */}
         <div className="mobile-top" style={{ display: "none", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 16px", background: NAV, borderBottom: "1px solid " + BORDER }}>
           <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 28, height: 28, borderRadius: 8, background: ACCENT, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 12 }}>RW</span>
-            <span style={{ fontWeight: 700, fontSize: 14, color: INK }}>Russell Wealth Group</span>
+            <AcornMark size={28} />
+            <span style={{ fontFamily: BRAND_SERIF, fontSize: 14, letterSpacing: "0.12em", color: BRAND_NAVY }}>RUSSELL <span style={{ fontSize: 10, letterSpacing: "0.2em" }}>WEALTH GROUP</span></span>
           </span>
           <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: INK, border: "1px solid " + BORDER, borderRadius: 10, padding: "7px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
             Saved ({savedClients.length})
@@ -3005,6 +3030,7 @@ export default function App() {
         input::placeholder, textarea::placeholder { color: #9aa3b0 !important; opacity: 1; }
         select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23697180' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px !important; }
         select option { background: #ffffff !important; color: #151b28 !important; font-size: 14px; }
+        select.sel-compact { padding-right: 24px !important; background-position: right 8px center !important; }
         select option:checked, select option:hover { background: #eef1f5 !important; color: #151b28 !important; }
         .side-nav:hover { background: #e9edf2 !important; color: #151b28 !important; }
         button { transition: filter 0.15s, background 0.15s; }
