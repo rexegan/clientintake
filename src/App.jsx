@@ -1,25 +1,55 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const NAV        = "#1a2f5e";
-const CARD       = "#1a2f5e";
-const INPUT_BG   = "#213870";
-const ACCENT     = "#4a90d9";
-const WHITE      = "#ffffff";
-const LIGHT_BLUE = "#a8c8f0";
+const PAGE_BG = "#f4f6f9";
+const NAV     = "#ffffff";
+const CARD    = "#ffffff";
+const INPUT_BG = "#ffffff";
+const ACCENT  = "#2f3a4a";
+const INK     = "#151b28";
+const MUTED   = "#697180";
+const BORDER  = "#e1e4ea";
+const DANGER  = "#d64545";
+const SUCCESS = "#2fa76f";
 
 const IS = {
-  background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 8,
-  padding: "9px 13px", color: WHITE, fontSize: 15, fontFamily: "Georgia, serif",
-  width: "100%", boxSizing: "border-box", caretColor: WHITE,
+  background: INPUT_BG, border: "1px solid #cfd5de", borderRadius: 10,
+  padding: "9px 12px", color: INK, fontSize: 14,
+  width: "100%", boxSizing: "border-box", caretColor: INK,
+  boxShadow: "0 1px 2px rgba(16,24,40,0.04)",
   WebkitAppearance: "none", MozAppearance: "none", appearance: "none",
 };
 
+const BRAND_NAVY = "#2e3d66";
+const BRAND_SERIF = "Georgia, 'Times New Roman', serif";
+
+const AcornMark = ({ size = 40, color = BRAND_NAVY }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <path d="M20.5 22.5C14 23.5 8.5 21 5.5 15.5C8.8 14.9 10.2 13.2 9.8 10.6C12.8 11.4 15 10.6 16.2 8.2C18.4 10 20.6 10.2 22.8 8.8C23.2 11.4 24.6 13 27 13.4C25.2 16.6 24.6 19.6 25.2 22.4Z" fill={color} opacity="0.92" />
+    <path d="M20 23C16.5 26.5 14.5 30.5 14 35" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M25.5 21.5C25.8 16.8 29.6 13.6 34.4 13.9C39.2 14.2 42.6 17.8 42.3 22.5C42.25 23.4 41.6 23.9 40.7 23.85L27 23C26.1 22.95 25.45 22.4 25.5 21.5Z" fill={color} />
+    <path d="M34.8 13.8C35.4 11.6 36.6 10.2 38.5 9.4" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M26.5 25.3L41.6 26.2C41.2 32 37.8 37.4 33.6 39.5C29.6 36.9 26.6 31.2 26.5 25.3Z" fill={color} />
+  </svg>
+);
+
+const BrandLockup = ({ mark = 44 }) => (
+  <div style={{ textAlign: "center" }}>
+    <AcornMark size={mark} />
+    <div style={{ fontFamily: BRAND_SERIF, fontSize: 18, letterSpacing: "0.2em", marginLeft: "0.2em", color: BRAND_NAVY, marginTop: 2, lineHeight: 1.1 }}>RUSSELL</div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginTop: 4 }}>
+      <span style={{ flex: "0 0 20px", height: 1, background: BRAND_NAVY, opacity: 0.5 }} />
+      <span style={{ fontFamily: BRAND_SERIF, fontSize: 8.5, letterSpacing: "0.3em", marginLeft: "0.3em", color: BRAND_NAVY, whiteSpace: "nowrap" }}>WEALTH GROUP</span>
+      <span style={{ flex: "0 0 20px", height: 1, background: BRAND_NAVY, opacity: 0.5 }} />
+    </div>
+  </div>
+);
+
 const Lbl = ({ t }) => (
-  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4, marginTop: 10 }}>{t}</div>
+  <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, marginBottom: 5, marginTop: 12 }}>{t}</div>
 );
 
 const Sec = ({ t }) => (
-  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", borderBottom: "2px solid " + ACCENT, paddingBottom: 5, marginTop: 20, marginBottom: 6 }}>{t}</div>
+  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK, borderBottom: "1px solid " + BORDER, paddingBottom: 7, marginTop: 24, marginBottom: 8 }}>{t}</div>
 );
 
 const Row = ({ children, cols = 2 }) => (
@@ -47,20 +77,20 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
     onChange(`${newMm}/${newDd}/${newYyyy}`);
   };
 
-  const sel = { ...IS, width: "auto", flex: "none" };
+  const sel = { ...IS, width: "auto" };
 
   return (
     <>
       {label && <Lbl t={label} />}
-      <div style={{ display: "flex", gap: 8, width: "fit-content" }}>
-        <select data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, minWidth: 90 }}>
+      <div style={{ display: "flex", gap: 6, width: "100%", flexWrap: "wrap" }}>
+        <select className="sel-compact" data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, flex: "1.25 1 0%", minWidth: 64 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, minWidth: 78 }}>
+        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: "1 1 0%", minWidth: 56 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -79,7 +109,7 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
             const v = e.target.value.replace(/\D/g, "").slice(0, 4);
             set(mm, dd, v);
           }}
-          style={{ ...sel, width: 80 }}
+          style={{ ...sel, flex: "1 1 0%", minWidth: 56 }}
         />
       </div>
     </>
@@ -250,24 +280,24 @@ const RELATIONSHIP_TYPES = [
 
 function ClientRoster({ clients, onDelete, onOpen, onBack }) {
   return (
-    <div style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE }}>
-      <div style={{ background: NAV, padding: "24px 24px 20px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
+      <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: "bold", color: WHITE }}>Russell Wealth Group</h1>
-            <p style={{ margin: 0, fontSize: 13, color: WHITE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              Saved Clients · {clients.length} Record{clients.length !== 1 ? "s" : ""}
+            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>Saved Clients</h1>
+            <p style={{ margin: 0, marginTop: 3, fontSize: 13, color: MUTED }}>
+              Russell Wealth Group · {clients.length} record{clients.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <button onClick={onBack} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          <button onClick={onBack} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>
             ← New Intake
           </button>
         </div>
       </div>
       <div style={{ maxWidth: 860, margin: "0 auto", padding: 24 }}>
         {clients.length === 0 ? (
-          <div style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: 36, textAlign: "center" }}>
-            <div style={{ fontSize: 15, color: WHITE }}>No saved clients yet.</div>
+          <div style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 14, padding: 36, textAlign: "center" }}>
+            <div style={{ fontSize: 15, color: INK }}>No saved clients yet.</div>
           </div>
         ) : clients.filter(c => c && c.client).map(c => {
           const totalAssets = [
@@ -275,25 +305,25 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
             ...(c.realEstate || []).map(r => parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0)),
           ].reduce((a, b) => a + b, 0);
           return (
-            <div key={c.id} style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div key={c.id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 14, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ fontSize: 17, fontWeight: "bold", color: WHITE }}>{c.client?.firstName} {c.client?.lastName}</div>
+                  <div style={{ fontSize: 17, fontWeight: "bold", color: INK }}>{c.client?.firstName} {c.client?.lastName}</div>
                 </div>
                 {["married","domestic_partner"].includes(c.hasSpouse) && c.spouse?.firstName && (
-                  <div style={{ fontSize: 13, color: WHITE, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
+                  <div style={{ fontSize: 13, color: INK, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
                 )}
-                <div style={{ fontSize: 12, color: WHITE, marginTop: 4 }}>
+                <div style={{ fontSize: 12, color: INK, marginTop: 4 }}>
                   {c.client?.dob && <span style={{ marginRight: 12 }}>DOB: {c.client.dob}</span>}
                   {totalAssets > 0 && <span>Assets: ${totalAssets.toLocaleString()}</span>}
                 </div>
-                <div style={{ fontSize: 11, color: WHITE, marginTop: 4, fontStyle: "italic" }}>
+                <div style={{ fontSize: 11, color: INK, marginTop: 4, fontStyle: "italic" }}>
                   Last saved: {c.savedAt ? new Date(c.savedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " at " + new Date(c.savedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }) : "—"}
                 </div>
               </div>
               <div style={{ display: "flex", gap: 10 }}>
-                <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Open</button>
-                <button onClick={() => window.confirm("Delete this client? This cannot be undone.") && onDelete(c.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Delete</button>
+                <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Open</button>
+                <button onClick={() => window.confirm("Delete this client? This cannot be undone.") && onDelete(c.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Delete</button>
               </div>
             </div>
           );
@@ -324,35 +354,63 @@ function FileUpload({ section, files = [], onChange }) {
     e.target.value = "";
   };
   return (
-    <div style={{ marginTop: 16, borderTop: "1px solid " + ACCENT, paddingTop: 14 }}>
-      <div style={{ fontSize: 11, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Uploaded Files</div>
+    <div style={{ marginTop: 16, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>Uploaded Files</div>
       {files.length > 0 && (
         <div style={{ marginBottom: 10 }}>
           {files.map(f => (
-            <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, background: INPUT_BG, borderRadius: 6, padding: "6px 10px" }}>
-              <a href={f.data} download={f.name} style={{ color: WHITE, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
-              <span style={{ fontSize: 11, color: WHITE, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
-              <button onClick={() => window.confirm(`Remove "${f.name}"?`) && onChange(section, files.filter(x => x.id !== f.id))} style={{ background: "#5a1a1a", border: "none", color: WHITE, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif", flexShrink: 0 }}>✕</button>
+            <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, background: "#f2f4f7", borderRadius: 6, padding: "6px 10px" }}>
+              <a href={f.data} download={f.name} style={{ color: INK, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
+              <span style={{ fontSize: 11, color: INK, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
+              <button onClick={() => window.confirm(`Remove "${f.name}"?`) && onChange(section, files.filter(x => x.id !== f.id))} style={{ background: "#faeaea", border: "none", color: DANGER, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, flexShrink: 0 }}>✕</button>
             </div>
           ))}
         </div>
       )}
       <input ref={inputRef} type="file" multiple style={{ display: "none" }} onChange={handleFiles} />
-      <button onClick={() => inputRef.current.click()} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "7px 18px", fontSize: 13, cursor: "pointer", fontFamily: "Georgia, serif" }}>
+      <button onClick={() => inputRef.current.click()} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 18px", fontSize: 13, cursor: "pointer" }}>
         + Upload File
       </button>
     </div>
   );
 }
 
+const IcSvg = ({ children }) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
+);
+
+const SECTION_META = {
+  "section-profile":    { color: "#3b82f6", bg: "#eef4ff", icon: <IcSvg><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></IcSvg> },
+  "section-family":     { color: "#8b5cf6", bg: "#f3efff", icon: <IcSvg><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6"/><path d="M17.8 14.6a6.5 6.5 0 0 1 3.7 5.4"/></IcSvg> },
+  "section-bene":       { color: "#ec4899", bg: "#fdeef6", icon: <IcSvg><path d="M12 20.5S4 15.5 3 10.5a4.8 4.8 0 0 1 9-2.4 4.8 4.8 0 0 1 9 2.4c-1 5-9 10-9 10z"/></IcSvg> },
+  "section-employment": { color: "#f59e0b", bg: "#fdf3e3", icon: <IcSvg><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></IcSvg> },
+  "section-income":     { color: "#10b981", bg: "#e7f7f1", icon: <IcSvg><path d="M12 2v20"/><path d="M16.5 5.5h-6a3 3 0 0 0 0 6h3a3 3 0 0 1 0 6h-6"/></IcSvg> },
+  "section-realestate": { color: "#14b8a6", bg: "#e6f7f5", icon: <IcSvg><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></IcSvg> },
+  "section-accounts":   { color: "#6366f1", bg: "#eeeffe", icon: <IcSvg><path d="M12 3L3 9h18z"/><path d="M5 12v6M10 12v6M14 12v6M19 12v6"/><path d="M3 21h18"/></IcSvg> },
+  "section-wills":      { color: "#a16207", bg: "#f8f1e2", icon: <IcSvg><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></IcSvg> },
+  "section-autos":      { color: "#ef4444", bg: "#fdeeee", icon: <IcSvg><path d="M5 16l1.6-4.8A2 2 0 0 1 8.5 10h7a2 2 0 0 1 1.9 1.2L19 16"/><rect x="3.5" y="16" width="17" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></IcSvg> },
+  "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
+};
+
+const IconChip = ({ id, size = 28 }) => {
+  const meta = SECTION_META[id];
+  if (!meta) return null;
+  return (
+    <span style={{ width: size, height: size, borderRadius: 8, background: meta.bg, color: meta.color, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      {meta.icon}
+    </span>
+  );
+};
+
 function Panel({ title, children, defaultOpen = true, id }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div id={id} style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 12, marginBottom: 20, overflow: "hidden" }}>
+    <div id={id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 14, marginBottom: 20, overflow: "hidden", boxShadow: "0 1px 2px rgba(16,24,40,0.05)" }}>
       <div onClick={() => setOpen(o => !o)}
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 22px", cursor: "pointer", userSelect: "none" }}>
-        <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em" }}>{title}</div>
-        <span style={{ color: ACCENT, fontSize: 18, lineHeight: 1 }}>{open ? "▲" : "▼"}</span>
+        style={{ display: "flex", alignItems: "center", gap: 11, padding: "15px 22px", cursor: "pointer", userSelect: "none" }}>
+        <IconChip id={id} />
+        <div style={{ fontSize: 15, fontWeight: 600, color: INK, flex: 1 }}>{title}</div>
+        <span style={{ color: MUTED, fontSize: 12, lineHeight: 1 }}>{open ? "▲" : "▼"}</span>
       </div>
       {open && <div style={{ padding: "0 22px 20px" }}>{children}</div>}
     </div>
@@ -480,71 +538,74 @@ function ClientReport({ data, onClose }) {
   });
 
   // styles
-  const P = "Georgia, serif";
-  const NAVY = "#1a2f5e";
-  const BLUE = "#4a90d9";
+  const P = "'DM Sans', 'Segoe UI', system-ui, sans-serif";
+  const NAVY = "#414f62";
+  const BLUE = "#5b6e85";
   const LGRAY = "#f4f6fa";
-  const DGRAY = "#2c3e60";
-  const BDR = "1px solid #d0d8e8";
+  const DGRAY = "#4a5a6e";
+  const BDR = "1px solid #e1e4ea";
 
   const s = {
-    page: { fontFamily: P, color: "#1a1a2e", background: "#fff", maxWidth: 900, margin: "0 auto", padding: "0 0 60px" },
+    page: { fontFamily: P, color: "#151b28", background: "#fff", maxWidth: 900, margin: "0 auto", padding: "0 0 60px" },
     header: { background: NAVY, color: "#fff", padding: "32px 40px 24px", borderRadius: "10px 10px 0 0" },
-    firmName: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "#a8c8f0", marginBottom: 6 },
+    firmName: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "#c7d0db", marginBottom: 6 },
     clientName: { fontSize: 32, fontWeight: "bold", margin: "0 0 4px" },
-    sub: { fontSize: 14, color: "#c0d8f0", marginTop: 2 },
-    reportTitle: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#a8c8f0", marginTop: 10 },
+    sub: { fontSize: 14, color: "#d5dce5", marginTop: 2 },
+    reportTitle: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db", marginTop: 10 },
     body: { padding: "0 40px" },
     sectionHead: { fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 6, marginTop: 32, marginBottom: 12, fontWeight: "bold", textAlign: "center" },
     kpiRow: { display: "flex", gap: 16, marginTop: 20, marginBottom: 8, flexWrap: "wrap" },
     kpi: { flex: 1, minWidth: 140, background: LGRAY, border: BDR, borderRadius: 8, padding: "14px 18px" },
-    kpiLbl: { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6a7a9a", marginBottom: 4 },
+    kpiLbl: { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#697180", marginBottom: 4 },
     kpiVal: { fontSize: 22, fontWeight: "bold", color: NAVY, textAlign: "right" },
-    kpiSub: { fontSize: 11, color: "#6a7a9a", marginTop: 2, textAlign: "right" },
+    kpiSub: { fontSize: 11, color: "#697180", marginTop: 2, textAlign: "right" },
     table: { width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 8 },
     th: { textAlign: "center", padding: "7px 10px", background: DGRAY, color: "#fff", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" },
     td: { padding: "7px 10px", borderBottom: BDR, verticalAlign: "top" },
     tdr: { padding: "7px 10px", borderBottom: BDR, textAlign: "right", verticalAlign: "top" },
     tdTotal: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY },
     tdTotalR: { padding: "8px 10px", fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, background: LGRAY, textAlign: "right" },
-    netWorthBox: { background: NAVY, color: "#fff", borderRadius: 10, padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 },
-    nwLabel: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#a8c8f0" },
+    netWorthBox: { background: NAVY, color: "#fff", borderRadius: 10, padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginTop: 28 },
+    nwLabel: { fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db" },
     nwValue: { fontSize: 36, fontWeight: "bold" },
     twoCol: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 32px" },
-    tag: { display: "inline-block", background: "#e8f0fc", color: NAVY, fontSize: 10, borderRadius: 4, padding: "2px 7px", marginLeft: 6, verticalAlign: "middle", letterSpacing: "0.06em" },
+    tag: { display: "inline-block", background: "#e9edf2", color: NAVY, fontSize: 10, borderRadius: 4, padding: "2px 7px", marginLeft: 6, verticalAlign: "middle", letterSpacing: "0.06em" },
     tagGreen: { display: "inline-block", background: "#e6f4ea", color: "#1a5c2a", fontSize: 10, borderRadius: 4, padding: "2px 7px", marginLeft: 6, verticalAlign: "middle" },
   };
 
   const Row2 = ({ label, value, bold }) => (
     <tr>
-      <td style={{ ...s.td, color: "#4a5a7a", width: "55%" }}>{label}</td>
-      <td style={{ ...s.tdr, fontWeight: bold ? "bold" : "normal", color: bold ? NAVY : "#1a1a2e" }}>{value}</td>
+      <td style={{ ...s.td, color: "#5a6575", width: "55%" }}>{label}</td>
+      <td style={{ ...s.tdr, fontWeight: bold ? "bold" : "normal", color: bold ? NAVY : "#151b28" }}>{value}</td>
     </tr>
   );
 
   const acctsByOwner = (owner) => accounts.filter(a => (a.owner || "").toLowerCase() === owner.toLowerCase() || (owner === "all"));
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(10,20,50,0.85)", zIndex: 1000, overflowY: "auto", padding: "20px 0" }}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1000, overflowY: "auto", padding: "20px 0" }}>
       {/* toolbar */}
       <div id="rwg-print-toolbar" style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
         <button onClick={(e) => { e.currentTarget.disabled = true; setTimeout(() => { window.print(); e.currentTarget.disabled = false; }, 50); }} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
-        <button onClick={onClose} style={{ background: "#5a1a1a", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
+        <button onClick={onClose} style={{ background: DANGER, color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
       </div>
 
       <div id="rwg-report" style={s.page}>
         {/* ── HEADER ── */}
-        <div style={s.header}>
+        <div className="rpt-pad" style={{ ...s.header, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+          <div>
           <div style={s.firmName}>Russell Wealth Group · Confidential</div>
           <div style={s.clientName}>{headerName}</div>
           <div style={s.reportTitle}>Financial Summary &amp; Net Worth Statement · Prepared {reportDate}</div>
+          </div>
+          <AcornMark size={46} color="#c7d0db" />
         </div>
 
-        <div style={s.body}>
+        <div className="rpt-pad" style={s.body}>
 
           {/* ── NET WORTH SNAPSHOT ── */}
           <div style={s.kpiRow}>
-            <div style={{ ...s.kpi, background: "#1a2f5e", border: "none" }}><div style={{ ...s.kpiLbl, color: "#a8c8f0" }}>Total Net Worth</div><div style={{ ...s.kpiVal, color: "#fff", fontSize: 20 }}>{fmt(netWorth)}</div><div style={{ fontSize: 10, color: "#a8c8f0", marginTop: 2 }}>All assets minus liabilities</div></div>
+            <div style={{ ...s.kpi, background: NAVY, border: "none" }}><div style={{ ...s.kpiLbl, color: "#c7d0db" }}>Total Net Worth</div><div style={{ ...s.kpiVal, color: "#fff", fontSize: 20 }}>{fmt(netWorth)}</div><div style={{ fontSize: 10, color: "#c7d0db", marginTop: 2 }}>All assets minus liabilities</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Net Worth (ex-Home)</div><div style={s.kpiVal}>{fmt(netWorthExHome)}</div><div style={s.kpiSub}>Excl. primary residence equity</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Liquid Net Worth</div><div style={s.kpiVal}>{fmt(liquidAcctTotal)}</div><div style={s.kpiSub}>Investment &amp; bank accounts</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Annual Income</div><div style={s.kpiVal}>{fmt(annualIncome)}</div>{annExpRaw > 0 && <div style={s.kpiSub}>Expenses: {fmt(annExpRaw)}</div>}</div>
@@ -552,7 +613,7 @@ function ClientReport({ data, onClose }) {
 
           {/* ── BALANCE SHEET ── */}
           <div style={s.sectionHead}>Balance Sheet</div>
-          <div style={s.twoCol}>
+          <div className="rpt-two" style={s.twoCol}>
             {/* ASSETS */}
             <div>
               <table style={s.table}>
@@ -574,7 +635,7 @@ function ClientReport({ data, onClose }) {
                     <Row2 key={i} label={r.descriptionNote || r.description || `Property ${i+1}`} value={fmt(parseDollar(r.mortgageBalance))} />
                   ))}
                   {homeMortgage > 0 && <Row2 label="Personal Residence Mortgage" value={fmt(homeMortgage)} />}
-                  {totalLiabilities === 0 && <tr><td style={s.td} colSpan={2}><em style={{ color: "#8a9ab0" }}>No liabilities recorded</em></td></tr>}
+                  {totalLiabilities === 0 && <tr><td style={s.td} colSpan={2}><em style={{ color: "#8a94a3" }}>No liabilities recorded</em></td></tr>}
                   <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td></tr>
                 </tbody>
               </table>
@@ -587,7 +648,7 @@ function ClientReport({ data, onClose }) {
 
           {/* ── NET WORTH DETAIL ── */}
           <div style={s.sectionHead}>Net Worth &amp; Income Summary</div>
-          <div style={s.twoCol}>
+          <div className="rpt-two" style={s.twoCol}>
             {/* NET WORTH BREAKDOWN */}
             <div>
               <table style={s.table}>
@@ -596,7 +657,7 @@ function ClientReport({ data, onClose }) {
                   <Row2 label="Total Assets" value={fmt(totalAssets)} />
                   <Row2 label="Total Liabilities" value={fmt(totalLiabilities)} />
                   <Row2 label="Total Net Worth" value={fmt(netWorth)} bold />
-                  <tr><td style={{ ...s.td, paddingTop: 16, color: "#4a5a7a" }} colSpan={2}><strong style={{ color: "#1a2f5e" }}>Net Worth — Alternative Views</strong></td></tr>
+                  <tr><td style={{ ...s.td, paddingTop: 16, color: "#5a6575" }} colSpan={2}><strong style={{ color: NAVY }}>Net Worth — Alternative Views</strong></td></tr>
                   <Row2 label="Net Worth (Ex-Primary Residence)" value={fmt(netWorthExHome)} />
                   <Row2 label="Liquid Net Worth (Investable Assets)" value={fmt(liquidAcctTotal)} bold />
                   {primaryReEquity > 0 && <Row2 label="  Primary Residence Equity" value={fmt(primaryReEquity)} />}
@@ -617,7 +678,7 @@ function ClientReport({ data, onClose }) {
                     <Row2 label="Annual Household Expenses" value={fmt(annExpRaw)} />
                     <tr>
                       <td style={s.tdTotal}>Annual Surplus / (Deficit)</td>
-                      <td style={{ ...s.tdTotalR, color: surplusDeficit >= 0 ? "#1a5c2a" : "#8b0000" }}>{surplusDeficit >= 0 ? "+" : ""}{fmt(surplusDeficit)}</td>
+                      <td style={{ ...s.tdTotalR, color: surplusDeficit >= 0 ? "#1a5c2a" : "#b03a3a" }}>{surplusDeficit >= 0 ? "+" : ""}{fmt(surplusDeficit)}</td>
                     </tr>
                   </>)}
                 </tbody>
@@ -646,8 +707,8 @@ function ClientReport({ data, onClose }) {
                       <td style={s.tdr}><strong>{fmt(row.val)}</strong></td>
                       <td style={s.tdr}>{pct.toFixed(1)}%</td>
                       <td style={s.td}>
-                        <div style={{ background: "#e8f0fc", borderRadius: 4, height: 10, overflow: "hidden" }}>
-                          <div style={{ background: "#1a2f5e", height: "100%", width: pct.toFixed(1) + "%", borderRadius: 4 }} />
+                        <div style={{ background: "#e9edf2", borderRadius: 4, height: 10, overflow: "hidden" }}>
+                          <div style={{ background: NAVY, height: "100%", width: pct.toFixed(1) + "%", borderRadius: 4 }} />
                         </div>
                       </td>
                     </tr>
@@ -667,7 +728,7 @@ function ClientReport({ data, onClose }) {
           <div style={s.sectionHead}>Investment &amp; Bank Account Holdings</div>
           {Object.entries(qualGroups).map(([group, accts]) => (
             <div key={group} style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 12, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", color: "#4a5a7a", marginBottom: 6 }}>{group}</div>
+              <div style={{ fontSize: 12, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", color: "#5a6575", marginBottom: 6 }}>{group}</div>
               <table style={s.table}>
                 <thead>
                   <tr>
@@ -686,7 +747,7 @@ function ClientReport({ data, onClose }) {
                       <td style={s.td}>{a.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.owner || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : <em style={{ color: "#9aa" }}>—</em>}</td>
-                      <td style={s.td}>{a.hasRmdOrContrib || <em style={{ color: "#9aa" }}>—</em>}{a.rmdContribAmount ? <span style={{ color: "#4a5a7a" }}> · {a.rmdContribAmount}/{a.rmdContribFrequency || "—"}</span> : ""}</td>
+                      <td style={s.td}>{a.hasRmdOrContrib || <em style={{ color: "#9aa" }}>—</em>}{a.rmdContribAmount ? <span style={{ color: "#5a6575" }}> · {a.rmdContribAmount}/{a.rmdContribFrequency || "—"}</span> : ""}</td>
                       <td style={s.tdr}>{a.balance ? <strong>{a.balance}</strong> : <em style={{ color: "#9aa" }}>—</em>}</td>
                     </tr>
                   ))}
@@ -698,7 +759,7 @@ function ClientReport({ data, onClose }) {
               </table>
             </div>
           ))}
-          {accounts.length === 0 && <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No accounts recorded.</p>}
+          {accounts.length === 0 && <p style={{ color: "#8a94a3", fontStyle: "italic" }}>No accounts recorded.</p>}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: "bold", color: NAVY, borderTop: "2px solid " + BLUE, paddingTop: 8 }}>
             <span>Total Account Holdings</span><span>{fmt(acctTotal)}</span>
           </div>
@@ -727,14 +788,14 @@ function ClientReport({ data, onClose }) {
                     <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                       <td style={s.td}>
                         <strong>{r.descriptionNote || r.description || `Property ${i+1}`}</strong>
-                        {r.description && <div style={{ fontSize: 11, color: "#6a7a9a" }}>{r.description}</div>}
+                        {r.description && <div style={{ fontSize: 11, color: "#697180" }}>{r.description}</div>}
                       </td>
                       <td style={s.td}>{[r.address, r.city, r.state, r.zip].filter(Boolean).join(", ") || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{r.purchaseDate || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.tdr}>{r.purchasePrice || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.tdr}><strong>{r.marketValue || "—"}</strong></td>
                       <td style={s.tdr}>{r.mortgageBalance || "—"}</td>
-                      <td style={{ ...s.tdr, color: equity >= 0 ? "#1a5c2a" : "#8b0000", fontWeight: "bold" }}>{fmt(equity)}</td>
+                      <td style={{ ...s.tdr, color: equity >= 0 ? "#1a5c2a" : "#b03a3a", fontWeight: "bold" }}>{fmt(equity)}</td>
                     </tr>
                   );
                 })}
@@ -742,11 +803,11 @@ function ClientReport({ data, onClose }) {
                   <td style={s.tdTotal} colSpan={4}>Totals</td>
                   <td style={s.tdTotalR}>{fmt(reTotal)}</td>
                   <td style={s.tdTotalR}>{fmt(reMortgages)}</td>
-                  <td style={{ ...s.tdTotalR, color: (reTotal - reMortgages) >= 0 ? "#1a5c2a" : "#8b0000" }}>{fmt(reTotal - reMortgages)}</td>
+                  <td style={{ ...s.tdTotalR, color: (reTotal - reMortgages) >= 0 ? "#1a5c2a" : "#b03a3a" }}>{fmt(reTotal - reMortgages)}</td>
                 </tr>
               </tbody>
             </table>
-          ) : <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No real estate recorded.</p>}
+          ) : <p style={{ color: "#8a94a3", fontStyle: "italic" }}>No real estate recorded.</p>}
 
           {/* ── INCOME ── */}
           <div style={s.sectionHead}>Income Summary</div>
@@ -779,7 +840,7 @@ function ClientReport({ data, onClose }) {
                 </tr>
               </tbody>
             </table>
-          ) : <p style={{ color: "#8a9ab0", fontStyle: "italic" }}>No income recorded.</p>}
+          ) : <p style={{ color: "#8a94a3", fontStyle: "italic" }}>No income recorded.</p>}
 
           {/* ── AUTOMOBILES ── */}
           {autos.filter(a => a.make || a.model || a.value).length > 0 && (<>
@@ -888,7 +949,7 @@ function ClientReport({ data, onClose }) {
           {/* ── ESTATE PLANNING ── */}
           {(willsTrust.hasWillDoc || willsTrust.hasTrustDoc || poa.hasPOA) && (<>
             <div style={s.sectionHead}>Estate Planning Documents</div>
-            <div style={s.twoCol}>
+            <div className="rpt-two" style={s.twoCol}>
               <table style={s.table}>
                 <tbody>
                   {willsTrust.hasWillDoc && <Row2 label="Will on File" value={willsTrust.hasWillDoc === "yes" ? "✓ Yes" : "No"} />}
@@ -910,7 +971,7 @@ function ClientReport({ data, onClose }) {
           </>)}
 
           {/* ── FOOTER ── */}
-          <div style={{ marginTop: 48, paddingTop: 16, borderTop: "1px solid #d0d8e8", display: "flex", justifyContent: "space-between", fontSize: 11, color: "#8a9ab0" }}>
+          <div style={{ marginTop: 48, paddingTop: 16, borderTop: "1px solid #e1e4ea", display: "flex", justifyContent: "space-between", fontSize: 11, color: "#8a94a3" }}>
             <span>Russell Wealth Group · Confidential · For Advisor Use Only</span>
             <span>Prepared {reportDate}</span>
           </div>
@@ -946,6 +1007,12 @@ function ClientReport({ data, onClose }) {
           tr { page-break-inside: avoid; }
         }
         @page { margin: 0.6in 0.5in; size: letter portrait; }
+        @media screen and (max-width: 700px) {
+          .rpt-pad { padding-left: 16px !important; padding-right: 16px !important; }
+          .rpt-two { grid-template-columns: 1fr !important; }
+          #rwg-report table { display: block; overflow-x: auto; }
+          #rwg-report { margin: 0 8px !important; }
+        }
       `}</style>
     </div>
   );
@@ -1162,7 +1229,7 @@ export default function App() {
 
   const handleSubmit = () => {
     if (!client.firstName.trim() || !client.lastName.trim()) {
-      showToast("Client first and last name are required.", "#c0392b");
+      showToast("Client first and last name are required.", DANGER);
       return;
     }
 
@@ -1264,25 +1331,25 @@ export default function App() {
       ...realEstate.map(r => parseInt((r.marketValue || "$0").replace(/[^0-9]/g, "") || 0)),
     ].reduce((a, b) => a + b, 0);
     return (
-      <div style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-        <div style={{ background: CARD, border: "2px solid " + ACCENT, borderRadius: 16, padding: 36, maxWidth: 500, width: "100%", textAlign: "center" }}>
-          <div style={{ fontSize: 48, marginBottom: 14 }}>✓</div>
+      <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+        <div style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 16, padding: 36, maxWidth: 500, width: "100%", textAlign: "center" }}>
+          <div style={{ fontSize: 48, marginBottom: 14, color: SUCCESS }}>✓</div>
           <div style={{ fontSize: 22, fontWeight: "bold", marginBottom: 8 }}>Intake Complete</div>
-          <div style={{ fontSize: 15, color: WHITE, marginBottom: 4 }}>
-            <span style={{ color: WHITE, fontWeight: "bold" }}>{client.firstName} {client.lastName}</span>'s profile has been recorded.
+          <div style={{ fontSize: 15, color: INK, marginBottom: 4 }}>
+            <span style={{ color: INK, fontWeight: "bold" }}>{client.firstName} {client.lastName}</span>'s profile has been recorded.
           </div>
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ fontSize: 15, color: WHITE, marginBottom: 4 }}>
-              Spouse <span style={{ color: WHITE, fontWeight: "bold" }}>{spouse.firstName} {spouse.lastName}</span> also recorded.
+            <div style={{ fontSize: 15, color: INK, marginBottom: 4 }}>
+              Spouse <span style={{ color: INK, fontWeight: "bold" }}>{spouse.firstName} {spouse.lastName}</span> also recorded.
             </div>
           )}
           {totalAssets > 0 && (
-            <div style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 8, padding: "12px 18px", marginTop: 16, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Total Assets Captured</div>
-              <div style={{ fontSize: 22, fontWeight: "bold", color: WHITE }}>${totalAssets.toLocaleString()}</div>
+            <div style={{ background: INPUT_BG, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginTop: 16, marginBottom: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, marginBottom: 4 }}>Total Assets Captured</div>
+              <div style={{ fontSize: 22, fontWeight: "bold", color: INK }}>${totalAssets.toLocaleString()}</div>
             </div>
           )}
-          <button onClick={handleReset} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "11px 28px", fontSize: 15, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", marginTop: 16 }}>
+          <button onClick={handleReset} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "11px 28px", fontSize: 15, fontWeight: "bold", cursor: "pointer", marginTop: 16 }}>
             Start New Intake
           </button>
         </div>
@@ -1292,33 +1359,22 @@ export default function App() {
 
   return (
     <>
-    <div id="rwg-main-app" style={{ fontFamily: "Georgia, serif", background: "#0f1d38", minHeight: "100vh", color: WHITE }}>
+    <div id="rwg-main-app" style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       {toast && (
-        <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, background: toast.color, color: WHITE, padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
+        <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, maxWidth: "calc(100vw - 40px)", background: toast.color, color: "#fff", padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 8px 24px rgba(15,23,42,0.16)" }}>
           {toast.msg}
         </div>
       )}
 
-      <div style={{ background: NAV, padding: "24px 24px 20px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: "bold", color: WHITE }}>Russell Wealth Group</h1>
-            <p style={{ margin: 0, fontSize: 13, color: WHITE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              New Client Intake · Confidential
-            </p>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: WHITE, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>
-              Saved Clients ({savedClients.length})
-            </button>
-          </div>
-        </div>
-      </div>
+      <div style={{ display: "flex", alignItems: "stretch" }}>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: 24, display: "flex", gap: 24, alignItems: "flex-start" }}>
-
-        {/* ── SIDEBAR NAV ── */}
-        <div style={{ width: 170, flexShrink: 0, position: "sticky", top: 24 }}>
+        {/* ── SIDEBAR ── */}
+        <aside className="side-rail" style={{ width: 250, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 14px" }}>
+          <div style={{ padding: "8px 8px 16px" }}>
+            <BrandLockup mark={46} />
+            <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>Client Intake</div>
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0 8px", marginBottom: 6 }}>Intake Sections</div>
           {[
             ["section-profile",   "Client Profile"],
             ["section-family",    "Family"],
@@ -1337,14 +1393,46 @@ export default function App() {
                 const el = document.getElementById(id);
                 if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
-              style={{ display: "block", width: "100%", textAlign: "left", background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 8, padding: "10px 14px", marginBottom: 8, fontSize: 12, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", letterSpacing: "0.04em", lineHeight: 1.3 }}
+              className="side-nav"
+              style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", marginBottom: 2, fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
             >
+              <IconChip id={id} size={26} />
               {label}
             </button>
           ))}
-        </div>
+          <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
+          <button
+            onClick={() => setView("roster")}
+            className="side-nav"
+            style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
+          >
+            <span style={{ width: 26, height: 26, borderRadius: 8, background: "#eef1f5", color: "#64748b", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><IcSvg><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></IcSvg></span>
+            Saved Clients
+            <span style={{ marginLeft: "auto", background: "#eaecf0", borderRadius: 999, padding: "1px 8px", fontSize: 11.5, fontWeight: 600, color: "#4b5563" }}>{savedClients.length}</span>
+          </button>
+        </aside>
 
         <div style={{ flex: 1, minWidth: 0 }}>
+
+        {/* ── MOBILE TOP BAR ── */}
+        <div className="mobile-top" style={{ display: "none", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 16px", background: NAV, borderBottom: "1px solid " + BORDER }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <AcornMark size={28} />
+            <span style={{ fontFamily: BRAND_SERIF, fontSize: 14, letterSpacing: "0.12em", color: BRAND_NAVY }}>RUSSELL <span style={{ fontSize: 10, letterSpacing: "0.2em" }}>WEALTH GROUP</span></span>
+          </span>
+          <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: INK, border: "1px solid " + BORDER, borderRadius: 10, padding: "7px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
+            Saved ({savedClients.length})
+          </button>
+        </div>
+
+        <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
+
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>New Client Intake</h1>
+          <p style={{ margin: "5px 0 0", fontSize: 14, color: MUTED }}>
+            Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+          </p>
+        </div>
 
         {/* ── CLIENT PROFILE ── */}
         <Panel title="Client Profile" id="section-profile">
@@ -1389,11 +1477,11 @@ export default function App() {
               </select>
               <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
               {clientEmails.length > 1 && (
-                <button onClick={() => window.confirm("Remove this email?") && setClientEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
+                <button onClick={() => window.confirm("Remove this email?") && setClientEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
               )}
             </div>
           ))}
-          <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer" }}>
             + Add Email
           </button>
           <Row cols={2}>
@@ -1453,8 +1541,8 @@ export default function App() {
             </F>
           </div>
           {client.hasPOBox === "yes" && (
-            <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
-              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
+            <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
               <Row cols={2}>
                 <F>
                   <Lbl t="PO Box Number" />
@@ -1548,8 +1636,8 @@ export default function App() {
           </Row>
 
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
-              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Spouse Details</div>
+            <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Spouse Details</div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1578,11 +1666,11 @@ export default function App() {
                   </select>
                   <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
                   {spouseEmails.length > 1 && (
-                    <button onClick={() => window.confirm("Remove this email?") && setSpouseEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif", flex: "none" }}>✕</button>
+                    <button onClick={() => window.confirm("Remove this email?") && setSpouseEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
                   )}
                 </div>
               ))}
-              <button onClick={() => setSpouseEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer", fontFamily: "Georgia, serif" }}>
+              <button onClick={() => setSpouseEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer" }}>
                 + Add Email
               </button>
               <Row cols={2}>
@@ -1601,9 +1689,9 @@ export default function App() {
                 <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, marginBottom: 10, borderTop: "1px solid " + ACCENT, paddingTop: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, marginBottom: 10, borderTop: "1px solid " + BORDER, paddingTop: 12 }}>
                 <Sec t="Home Address" />
-                <button onClick={() => setSpouse(p => ({ ...p, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip, hasPOBox: client.hasPOBox, poBox: client.poBox, poBoxCity: client.poBoxCity, poBoxState: client.poBoxState, poBoxZip: client.poBoxZip, preferredMailing: client.preferredMailing }))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif", marginBottom: 10 }}>
+                <button onClick={() => setSpouse(p => ({ ...p, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip, hasPOBox: client.hasPOBox, poBox: client.poBox, poBoxCity: client.poBoxCity, poBoxState: client.poBoxState, poBoxZip: client.poBoxZip, preferredMailing: client.preferredMailing }))} style={{ background: INPUT_BG, border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, marginBottom: 10 }}>
                   Copy Client Address?
                 </button>
               </div>
@@ -1647,8 +1735,8 @@ export default function App() {
                 </F>
               </div>
               {spouse.hasPOBox === "yes" && (
-                <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
-                  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
+                <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
                   <Row cols={2}>
                     <F>
                       <Lbl t="PO Box Number" />
@@ -1682,15 +1770,15 @@ export default function App() {
           )}
 
           {hasChildren === "yes" && (
-            <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
+            <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
               {children.map((ch, i) => (
-                <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+                <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
+                    <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Child {i + 1}</div>
                     <div style={{ display: "flex", gap: 8 }}>
-                      <button onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip } : x))} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>Copy Client Info</button>
+                      <button onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip } : x))} style={{ background: INPUT_BG, border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12 }}>Copy Client Info</button>
                       {children.length > 1 && (
-                        <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                        <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                       )}
                     </div>
                   </div>
@@ -1718,8 +1806,8 @@ export default function App() {
                     </F>
                   </Row>
                   {ch.isBeneficiary && (
-                    <div style={{ marginTop: 14, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
-                      <div style={{ fontSize: 11, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Beneficiary Information</div>
+                    <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 12 }}>Beneficiary Information</div>
                       <Row cols={3}>
                         <F><Lbl t="SSN" /><input value={ch.ssn} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, ssn: fmtSSN(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
                         <F>
@@ -1741,7 +1829,7 @@ export default function App() {
                               onBlur={e => { const n = parseFloat(e.target.value); if (!isNaN(n)) setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: Math.min(100, Math.max(0, n)) + "%" } : x)); else if (!e.target.value) setChildren(p => p.map(x => x.id === ch.id ? { ...x, percentage: "" } : x)); }}
                               style={{ ...IS, width: "100%" }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0"
                             />
-                            <span style={{ color: WHITE, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
+                            <span style={{ color: INK, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
                           </div>
                         </F>
                       </Row>
@@ -1765,7 +1853,7 @@ export default function App() {
                   )}
                 </div>
               ))}
-              <button onClick={() => setChildren(p => [...p, { ...emptyChild, id: Date.now() }])} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+              <button onClick={() => setChildren(p => [...p, { ...emptyChild, id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
                 + Add Child
               </button>
             </div>
@@ -1776,36 +1864,36 @@ export default function App() {
         {/* ── BENEFICIARIES ── */}
         <Panel title="Beneficiaries" id="section-bene">
           {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
-            <div key={ch.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>
                   Child Beneficiary — {ch.firstName} {ch.lastName}
                 </div>
-                <div style={{ fontSize: 11, color: WHITE, fontStyle: "italic" }}>Edit in Family section</div>
+                <div style={{ fontSize: 11, color: INK, fontStyle: "italic" }}>Edit in Family section</div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: WHITE }}>
-                {ch.firstName && <div><span style={{ color: WHITE }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
-                {ch.dob && <div><span style={{ color: WHITE }}>DOB: </span>{ch.dob}</div>}
-                {ch.gender && <div><span style={{ color: WHITE }}>Gender: </span>{ch.gender}</div>}
-                {ch.ssn && <div><span style={{ color: WHITE }}>SSN: </span>{ch.ssn}</div>}
-                {ch.relationship && <div><span style={{ color: WHITE }}>Relationship: </span>{ch.relationship}</div>}
-                {ch.percentage && <div><span style={{ color: WHITE }}>% to Inherit: </span>{ch.percentage}</div>}
-                {ch.email && <div><span style={{ color: WHITE }}>Email: </span>{ch.email}</div>}
-                {ch.phone && <div><span style={{ color: WHITE }}>Phone: </span>{ch.phone}</div>}
-                {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: WHITE }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
+              <div className="rg" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: INK }}>
+                {ch.firstName && <div><span style={{ color: INK }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
+                {ch.dob && <div><span style={{ color: INK }}>DOB: </span>{ch.dob}</div>}
+                {ch.gender && <div><span style={{ color: INK }}>Gender: </span>{ch.gender}</div>}
+                {ch.ssn && <div><span style={{ color: INK }}>SSN: </span>{ch.ssn}</div>}
+                {ch.relationship && <div><span style={{ color: INK }}>Relationship: </span>{ch.relationship}</div>}
+                {ch.percentage && <div><span style={{ color: INK }}>% to Inherit: </span>{ch.percentage}</div>}
+                {ch.email && <div><span style={{ color: INK }}>Email: </span>{ch.email}</div>}
+                {ch.phone && <div><span style={{ color: INK }}>Phone: </span>{ch.phone}</div>}
+                {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: INK }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
               </div>
             </div>
           ))}
           {children.filter(ch => ch.isBeneficiary).length > 0 && (
-            <div style={{ fontSize: 11, color: WHITE, fontStyle: "italic", marginBottom: 14, textAlign: "center" }}>
+            <div style={{ fontSize: 11, color: INK, fontStyle: "italic", marginBottom: 14, textAlign: "center" }}>
               ↑ Child beneficiaries added in Family section &nbsp;·&nbsp; Additional beneficiaries below
             </div>
           )}
           {beneficiaries.map((b, i) => (
-            <div key={b.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={b.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Beneficiary {i + 1}</div>
-                <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {i + 1}</div>
+                <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1842,7 +1930,7 @@ export default function App() {
                       onBlur={e => { const n = parseFloat(e.target.value); if (!isNaN(n)) updBene(b.id, "percentage", Math.min(100, Math.max(0, n)) + "%"); else if (!e.target.value) updBene(b.id, "percentage", ""); }}
                       style={{ ...IS, width: "100%" }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0"
                     />
-                    <span style={{ color: WHITE, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
+                    <span style={{ color: INK, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
                   </div>
                 </F>
               </Row>
@@ -1876,9 +1964,9 @@ export default function App() {
                 const addrState = src !== "manual" ? client.state : b.state;
                 const addrZip = src !== "manual" ? client.zip : b.zip;
                 const readOnly = b.addressSource !== "manual";
-                const roStyle = { ...IS, background: NAV, color: WHITE };
+                const roStyle = { ...IS, background: NAV, color: INK };
                 return readOnly ? (
-                  <div style={{ marginTop: 6, background: NAV, border: "2px solid " + ACCENT, borderRadius: 8, padding: "9px 13px", color: WHITE, fontSize: 14 }}>
+                  <div style={{ marginTop: 6, background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "9px 13px", color: INK, fontSize: 14 }}>
                     {addrLine}{addrLine && (addrCity || addrState || addrZip) ? ", " : ""}{addrCity}{addrState ? ", " + addrState : ""}{addrZip ? " " + addrZip : ""}
                     {!addrLine && !addrCity && <span style={{ fontStyle: "italic", opacity: 0.6 }}>No address on file yet</span>}
                   </div>
@@ -1914,13 +2002,13 @@ export default function App() {
             if (!total) return null;
             const over = total > 100;
             return (
-              <div style={{ background: NAV, border: "2px solid " + (over ? "#c0392b" : ACCENT), borderRadius: 8, padding: "10px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Allocated</span>
-                <span style={{ fontSize: 17, fontWeight: "bold", color: over ? "#e74c3c" : (total === 100 ? "#2ecc71" : WHITE) }}>{total}%{over ? " — exceeds 100%" : total === 100 ? " ✓" : ""}</span>
+              <div style={{ background: NAV, border: "1px solid " + (over ? DANGER : BORDER), borderRadius: 8, padding: "10px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Allocated</span>
+                <span style={{ fontSize: 17, fontWeight: "bold", color: over ? DANGER : (total === 100 ? SUCCESS : INK) }}>{total}%{over ? " — exceeds 100%" : total === 100 ? " ✓" : ""}</span>
               </div>
             );
           })()}
-          <button onClick={addBene} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+          <button onClick={addBene} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Beneficiary
           </button>
           <FileUpload section="beneficiaries" files={uploads.beneficiaries || []} onChange={handleUploadChange} />
@@ -1929,7 +2017,7 @@ export default function App() {
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment" id="section-employment">
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>
               {client.firstName || "Client"}
             </div>
           )}
@@ -1953,7 +2041,7 @@ export default function App() {
             <F><Lbl t="Compensation" /><input value={clientEmp.compensation || ""} onChange={e => setClientEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F>
               <Lbl t="Annual Equivalent" />
-              <div style={{ ...IS, background: "#0f1d38", color: "#a8c8f0", display: "flex", alignItems: "center" }}>
+              <div style={{ ...IS, background: "#f2f4f7", color: MUTED, display: "flex", alignItems: "center" }}>
                 {(() => {
                   const amt = parseInt((clientEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
                   const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[clientEmp.payFrequency] || 0;
@@ -1974,8 +2062,8 @@ export default function App() {
             <F><Lbl t="State" /><StateSelect value={clientEmp.workState} onChange={setCE("workState")} /></F>
           </Row>
 
-          <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
-            <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
             <Row cols={2}>
               <F>
                 <Lbl t="Has Retirement Plan?" />
@@ -2033,8 +2121,8 @@ export default function App() {
 
           {["married","domestic_partner"].includes(hasSpouse) && (
             <>
-              <div style={{ borderTop: "2px solid " + ACCENT, marginTop: 18, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
+              <div style={{ borderTop: "1px solid " + BORDER, marginTop: 18, paddingTop: 14 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
               </div>
               <Row cols={2}>
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2056,7 +2144,7 @@ export default function App() {
                 <F><Lbl t="Compensation" /><input value={spouseEmp.compensation || ""} onChange={e => setSpouseEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Annual Equivalent" />
-                  <div style={{ ...IS, background: "#0f1d38", color: "#a8c8f0", display: "flex", alignItems: "center" }}>
+                  <div style={{ ...IS, background: "#f2f4f7", color: MUTED, display: "flex", alignItems: "center" }}>
                     {(() => {
                       const amt = parseInt((spouseEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
                       const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[spouseEmp.payFrequency] || 0;
@@ -2076,8 +2164,8 @@ export default function App() {
                 <F><Lbl t="City" /><input value={spouseEmp.workCity} onChange={setSE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="State" /><StateSelect value={spouseEmp.workState} onChange={setSE("workState")} /></F>
               </Row>
-              <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
+              <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
                 <Row cols={2}>
                   <F>
                     <Lbl t="Has Retirement Plan?" />
@@ -2139,11 +2227,11 @@ export default function App() {
         {/* ── ANNUAL INCOME ── */}
         <Panel title="Income" id="section-income">
           {incomes.map((inc, i) => (
-            <div key={inc.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={inc.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Income Source {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income Source {i + 1}</div>
                 {incomes.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               <Row cols={3}>
@@ -2203,7 +2291,7 @@ export default function App() {
                   </F>
                   <F>
                     <Lbl t="Annual Equivalent" />
-                    <div style={{ ...IS, background: NAV, color: WHITE, display: "flex", alignItems: "center" }}>
+                    <div style={{ ...IS, background: NAV, color: INK, display: "flex", alignItems: "center" }}>
                       {(() => {
                         const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0);
                         if (!raw) return "—";
@@ -2216,7 +2304,7 @@ export default function App() {
               )}
             </div>
           ))}
-          <button onClick={addIncome} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+          <button onClick={addIncome} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Income Source
           </button>
           {(() => {
@@ -2242,37 +2330,37 @@ export default function App() {
             if (!bracket) return null;
             const rateColor = bracket.rate <= 12 ? "#1a6a3a" : bracket.rate <= 22 ? "#7a6a00" : bracket.rate <= 24 ? "#8a4a2a" : "#8a1a1a";
             return (
-              <div style={{ marginTop: 14, background: NAV, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 18px" }}>
-                <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>
+              <div style={{ marginTop: 14, background: NAV, border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 18px" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>
                   Estimated Tax Summary — Filing {married ? "Married Filing Jointly" : "Single"}
                 </div>
                 {clientAnnual > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: WHITE }}>Client Income ({client.firstName || "Client"})</span>
-                    <span style={{ fontSize: 14, color: WHITE }}>${clientAnnual.toLocaleString()}</span>
+                    <span style={{ fontSize: 13, color: INK }}>Client Income ({client.firstName || "Client"})</span>
+                    <span style={{ fontSize: 14, color: INK }}>${clientAnnual.toLocaleString()}</span>
                   </div>
                 )}
                 {spouseAnnual > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: WHITE }}>Spouse Income ({spouse.firstName || "Spouse"})</span>
-                    <span style={{ fontSize: 14, color: WHITE }}>${spouseAnnual.toLocaleString()}</span>
+                    <span style={{ fontSize: 13, color: INK }}>Spouse Income ({spouse.firstName || "Spouse"})</span>
+                    <span style={{ fontSize: 14, color: INK }}>${spouseAnnual.toLocaleString()}</span>
                   </div>
                 )}
                 {jointAnnual > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: WHITE }}>Joint Income</span>
-                    <span style={{ fontSize: 14, color: WHITE }}>${jointAnnual.toLocaleString()}</span>
+                    <span style={{ fontSize: 13, color: INK }}>Joint Income</span>
+                    <span style={{ fontSize: 14, color: INK }}>${jointAnnual.toLocaleString()}</span>
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, borderTop: "1px solid " + ACCENT, paddingTop: 8 }}>
-                  <span style={{ fontSize: 13, color: WHITE }}>Total Gross Income</span>
-                  <span style={{ fontSize: 15, fontWeight: "bold", color: WHITE }}>${totalAnnual.toLocaleString()}</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, borderTop: "1px solid " + BORDER, paddingTop: 8 }}>
+                  <span style={{ fontSize: 13, color: INK }}>Total Gross Income</span>
+                  <span style={{ fontSize: 15, fontWeight: "bold", color: INK }}>${totalAnnual.toLocaleString()}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: 13, color: WHITE }}>Marginal Tax Bracket</span>
-                  <span style={{ fontSize: 20, fontWeight: "bold", background: rateColor, color: WHITE, borderRadius: 7, padding: "3px 16px" }}>{bracket.rate}%</span>
+                  <span style={{ fontSize: 13, color: INK }}>Marginal Tax Bracket</span>
+                  <span style={{ fontSize: 20, fontWeight: "bold", background: rateColor, color: INK, borderRadius: 7, padding: "3px 16px" }}>{bracket.rate}%</span>
                 </div>
-                <div style={{ fontSize: 11, color: WHITE, marginTop: 10, fontStyle: "italic" }}>
+                <div style={{ fontSize: 11, color: INK, marginTop: 10, fontStyle: "italic" }}>
                   Based on 2024 IRS brackets · Does not account for deductions, credits, or other adjustments
                 </div>
               </div>
@@ -2294,7 +2382,7 @@ export default function App() {
             </F>
             <F>
               <Lbl t="Annual Equivalent" />
-              <div style={{ ...IS, background: NAV, color: WHITE, display: "flex", alignItems: "center" }}>
+              <div style={{ ...IS, background: NAV, color: INK, display: "flex", alignItems: "center" }}>
                 {(() => {
                   const raw = parseInt((annualExpenses.amount || "").replace(/[^0-9]/g, "") || 0);
                   if (!raw) return "—";
@@ -2309,11 +2397,11 @@ export default function App() {
         {/* ── REAL ESTATE ── */}
         <Panel title="Real Estate" id="section-realestate">
           {realEstate.map((r, i) => (
-            <div key={r.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+            <div key={r.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Property {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Property {i + 1}</div>
                 {realEstate.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
@@ -2332,7 +2420,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, marginBottom: 4 }}>
                 <Lbl t="Property Address" />
                 {r.description === "Personal Residence" && (
-                  <button onClick={() => { updRE(r.id, "address", client.addressLine1); updRE(r.id, "addressLine2", client.addressLine2); updRE(r.id, "city", client.city); updRE(r.id, "state", client.state); updRE(r.id, "zip", client.zip); }} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, color: WHITE, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 12, fontFamily: "Georgia, serif" }}>
+                  <button onClick={() => { updRE(r.id, "address", client.addressLine1); updRE(r.id, "addressLine2", client.addressLine2); updRE(r.id, "city", client.city); updRE(r.id, "state", client.state); updRE(r.id, "zip", client.zip); }} style={{ background: INPUT_BG, border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 12 }}>
                     Copy Client Address?
                   </button>
                 )}
@@ -2373,7 +2461,7 @@ export default function App() {
                         const q = encodeURIComponent(addr || "");
                         window.open("https://www.zillow.com/homes/" + q + "_rb/", "_blank");
                       }}
-                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#006aff", color: WHITE, fontWeight: "bold", border: "none", borderRadius: 6 }}
+                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#006aff", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}
                     >
                       Open Zillow ↗
                     </button>
@@ -2456,7 +2544,7 @@ export default function App() {
               )}
             </div>
           ))}
-          <button onClick={addRE} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+          <button onClick={addRE} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Property
           </button>
           <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange} />
@@ -2465,16 +2553,16 @@ export default function App() {
         {/* ── INVESTMENT & BANK ACCOUNTS ── */}
         <Panel title="Investment & Bank Accounts" id="section-accounts">
           {accounts.map((a, i) => (
-            <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               {/* Row 1: title + remove */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Account {i + 1}</div>
                 {accounts.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               {/* Row 2: owner / NQ-Q / OPT / event / timeframe */}
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid rgba(74,144,217,0.35)" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid " + BORDER }}>
                 <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
                   <option value="">— Owner —</option>
                   <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
@@ -2595,14 +2683,14 @@ export default function App() {
             </div>
           ))}
           {accounts.some(a => a.balance) && (
-            <div style={{ background: NAV, border: "2px solid " + ACCENT, borderRadius: 8, padding: "12px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Investment Assets</span>
-              <span style={{ fontSize: 18, fontWeight: "bold", color: WHITE }}>
+            <div style={{ background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Investment Assets</span>
+              <span style={{ fontSize: 18, fontWeight: "bold", color: INK }}>
                 ${accounts.reduce((sum, a) => sum + parseInt((a.balance || "").replace(/[^0-9]/g, "") || 0), 0).toLocaleString()}
               </span>
             </div>
           )}
-          <button onClick={addAcct} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+          <button onClick={addAcct} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Account
           </button>
           <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange} />
@@ -2637,10 +2725,10 @@ export default function App() {
             </F>
           </Row>
           {(willsTrust.hasWillDoc === "yes" || willsTrust.hasTrustDoc === "yes") && (
-            <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
+            <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
               {willsTrust.hasWillDoc === "yes" && (
                 <>
-                  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Will Details</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Will Details</div>
                   <Row cols={2}>
                     <F><DatePicker label="Date Will Was Executed" value={willsTrust.willDate} onChange={v => setWillsTrust(p => ({ ...p, willDate: v }))} /></F>
                     <F><Lbl t="Attorney / Firm" /><input value={willsTrust.willAttorney} onChange={e => setWillsTrust(p => ({ ...p, willAttorney: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2666,8 +2754,8 @@ export default function App() {
                 </>
               )}
               {willsTrust.hasTrustDoc === "yes" && (
-                <div style={{ marginTop: willsTrust.hasWillDoc === "yes" ? 20 : 0, borderTop: willsTrust.hasWillDoc === "yes" ? "2px solid " + ACCENT : "none", paddingTop: willsTrust.hasWillDoc === "yes" ? 16 : 0 }}>
-                  <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Trust Details</div>
+                <div style={{ marginTop: willsTrust.hasWillDoc === "yes" ? 20 : 0, borderTop: willsTrust.hasWillDoc === "yes" ? "1px solid " + BORDER : "none", paddingTop: willsTrust.hasWillDoc === "yes" ? 16 : 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Trust Details</div>
                   <Row cols={2}>
                     <F><Lbl t="Name of Trust" /><input value={willsTrust.trustName} onChange={e => setWillsTrust(p => ({ ...p, trustName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                     <F>
@@ -2703,8 +2791,8 @@ export default function App() {
             </div>
           )}
           {poa.hasPOA === "yes" && (
-            <div style={{ marginTop: 20, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
-              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Power of Attorney Details</div>
+            <div style={{ marginTop: 20, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Power of Attorney Details</div>
               <Lbl t="Type of POA" />
               <select data-lpignore="true" value={poa.poaType || ""} onChange={e => setPoa(p => ({ ...p, poaType: e.target.value || null }))} style={IS}>
                 <option value="">— Select —</option>
@@ -2740,11 +2828,11 @@ export default function App() {
         {/* ── AUTOMOBILES ── */}
         <Panel title="Automobiles" id="section-autos">
           {autos.map((a, i) => (
-            <div key={a.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Vehicle {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Vehicle {i + 1}</div>
                 {autos.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this vehicle?") && delAuto(a.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                  <button onClick={() => window.confirm("Remove this vehicle?") && delAuto(a.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               <Row cols={4}>
@@ -2811,7 +2899,7 @@ export default function App() {
                         if (condition) url += (mileage ? "&" : "?") + "condition=" + condition;
                         window.open(url, "_blank");
                       }}
-                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: WHITE, fontWeight: "bold", border: "none", borderRadius: 6 }}
+                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}
                     >
                       Open KBB ↗
                     </button>
@@ -2820,7 +2908,7 @@ export default function App() {
               </Row>
             </div>
           ))}
-          <button onClick={addAuto} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+          <button onClick={addAuto} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Vehicle
           </button>
           <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange} />
@@ -2829,10 +2917,10 @@ export default function App() {
         {/* ── LIFE INSURANCE ── */}
         <Panel title="Life Insurance" id="section-life">
           {lifePolicies.map((p, i) => (
-            <div key={p.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div key={p.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Policy {i + 1}</div>
-                <button onClick={() => window.confirm("Remove this policy?") && delLife(p.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Policy {i + 1}</div>
+                <button onClick={() => window.confirm("Remove this policy?") && delLife(p.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={4}>
                 <F>
@@ -2898,36 +2986,37 @@ export default function App() {
               </Row>
             </div>
           ))}
-          <button onClick={addLife} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+          <button onClick={addLife} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Policy
           </button>
           <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange} />
         </Panel>
 
-        <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-          <button onClick={handleSubmit} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", flex: 1 }}>
+        <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
+          <button onClick={handleSubmit} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 10, padding: "13px 32px", fontSize: 15, fontWeight: 600, cursor: "pointer", flex: 1 }}>
             Save Client Record
           </button>
-          <button onClick={() => setShowReport(true)} style={{ background: "#1a5c2a", color: WHITE, border: "none", borderRadius: 8, padding: "13px 24px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", flex: 1 }}>
+          <button onClick={() => setShowReport(true)} style={{ background: SUCCESS, color: "#fff", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 15, fontWeight: 600, cursor: "pointer", flex: 1 }}>
             📊 View Financial Summary
           </button>
         </div>
-        <div style={{ textAlign: "center", fontSize: 12, color: WHITE, paddingBottom: 32, letterSpacing: "0.06em" }}>
-          RUSSELL WEALTH GROUP · CONFIDENTIAL CLIENT DATA
+        <div style={{ textAlign: "center", fontSize: 12, color: MUTED, paddingBottom: 32 }}>
+          Russell Wealth Group · Confidential client data
         </div>
-        </div>{/* end flex content */}
-      </div>{/* end flex row */}
+        </div>{/* end main col */}
+        </div>{/* end content col */}
+      </div>{/* end shell */}
 
       {/* ── FLOATING SAVE BUTTON ── */}
-      <div style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+      <div className="float-save" style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
         <button
           onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
-          style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 10, padding: "13px 22px", fontSize: 15, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", boxShadow: "0 4px 20px rgba(0,0,0,0.5)", whiteSpace: "nowrap" }}
+          style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 10, padding: "13px 22px", fontSize: 15, fontWeight: "bold", cursor: "pointer", boxShadow: "0 8px 24px rgba(15,23,42,0.16)", whiteSpace: "nowrap" }}
         >
           💾 {activeClientId ? "Update File" : "Save Draft"}
         </button>
         {lastSaved && (
-          <div style={{ fontSize: 10, color: WHITE, textAlign: "right", background: "rgba(26,47,94,0.9)", borderRadius: 5, padding: "3px 8px" }}>
+          <div style={{ fontSize: 10, color: INK, textAlign: "right", background: "rgba(255,255,255,0.92)", border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px" }}>
             Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
         )}
@@ -2935,13 +3024,27 @@ export default function App() {
 
       <style>{`
         * { box-sizing: border-box; }
-        input, select, textarea { font-family: Georgia, serif; caret-color: #ffffff; }
-        input:focus, textarea:focus, select:focus { outline: 3px solid #ffffff; outline-offset: 1px; background: #2a4a80 !important; }
-        input::placeholder, textarea::placeholder { color: #a8c8f0 !important; opacity: 1; }
-        select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a8c8f0' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px !important; }
-        select option { background: #1a2f5e !important; color: #ffffff !important; font-family: Georgia, serif; font-size: 15px; }
-        select option:checked, select option:hover { background: #2a4a80 !important; color: #ffffff !important; }
-        @media (max-width: 600px) { .rg { grid-template-columns: 1fr !important; } }
+        input, select, textarea, button { font-family: inherit; }
+        input, select, textarea { caret-color: #151b28; transition: border-color 0.15s, box-shadow 0.15s; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #2f3a4a !important; box-shadow: 0 0 0 3px rgba(47,58,74,0.15) !important; }
+        input::placeholder, textarea::placeholder { color: #9aa3b0 !important; opacity: 1; }
+        select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23697180' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px !important; }
+        select option { background: #ffffff !important; color: #151b28 !important; font-size: 14px; }
+        select.sel-compact { padding-right: 24px !important; background-position: right 8px center !important; }
+        select option:checked, select option:hover { background: #eef1f5 !important; color: #151b28 !important; }
+        .side-nav:hover { background: #e9edf2 !important; color: #151b28 !important; }
+        button { transition: filter 0.15s, background 0.15s; }
+        button:hover { filter: brightness(0.97); }
+        @media (max-width: 900px) {
+          .side-rail { display: none; }
+          .mobile-top { display: flex !important; }
+          .rg { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 600px) {
+          .rg { grid-template-columns: 1fr !important; }
+          .main-col { padding: 18px 12px 36px !important; }
+          .float-save { bottom: 12px !important; right: 12px !important; }
+        }
         [data-lastpass-icon-root], [data-lastpass-root], [id^="lastpass"], [id*="lastpass"],
         .lastpass-icon, .lp-icon, [class*="lastpass"], [data-lpignore-ext],
         div[style*="z-index: 2147483647"]:not([class]):not([id]) { display: none !important; }
