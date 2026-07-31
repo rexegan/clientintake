@@ -4,7 +4,7 @@ const PAGE_BG = "#f4f6f9";
 const NAV     = "#ffffff";
 const CARD    = "#ffffff";
 const INPUT_BG = "#ffffff";
-const ACCENT  = "#414f62";
+const ACCENT  = "#2f3a4a";
 const INK     = "#151b28";
 const MUTED   = "#697180";
 const BORDER  = "#e1e4ea";
@@ -12,7 +12,7 @@ const DANGER  = "#d64545";
 const SUCCESS = "#2fa76f";
 
 const IS = {
-  background: INPUT_BG, border: "1px solid #cfd5de", borderRadius: 8,
+  background: INPUT_BG, border: "1px solid #cfd5de", borderRadius: 10,
   padding: "9px 12px", color: INK, fontSize: 14,
   width: "100%", boxSizing: "border-box", caretColor: INK,
   boxShadow: "0 1px 2px rgba(16,24,40,0.04)",
@@ -20,11 +20,11 @@ const IS = {
 };
 
 const Lbl = ({ t }) => (
-  <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 5, marginTop: 12 }}>{t}</div>
+  <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, marginBottom: 5, marginTop: 12 }}>{t}</div>
 );
 
 const Sec = ({ t }) => (
-  <div style={{ fontSize: 12, fontWeight: 700, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", borderBottom: "1px solid " + BORDER, paddingBottom: 6, marginTop: 22, marginBottom: 6 }}>{t}</div>
+  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK, borderBottom: "1px solid " + BORDER, paddingBottom: 7, marginTop: 24, marginBottom: 8 }}>{t}</div>
 );
 
 const Row = ({ children, cols = 2 }) => (
@@ -259,9 +259,9 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>Russell Wealth Group</h1>
-            <p style={{ margin: 0, marginTop: 2, fontSize: 12, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              Saved Clients · {clients.length} Record{clients.length !== 1 ? "s" : ""}
+            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>Saved Clients</h1>
+            <p style={{ margin: 0, marginTop: 3, fontSize: 13, color: MUTED }}>
+              Russell Wealth Group · {clients.length} record{clients.length !== 1 ? "s" : ""}
             </p>
           </div>
           <button onClick={onBack} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>
@@ -271,7 +271,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
       </div>
       <div style={{ maxWidth: 860, margin: "0 auto", padding: 24 }}>
         {clients.length === 0 ? (
-          <div style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 12, padding: 36, textAlign: "center" }}>
+          <div style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 14, padding: 36, textAlign: "center" }}>
             <div style={{ fontSize: 15, color: INK }}>No saved clients yet.</div>
           </div>
         ) : clients.filter(c => c && c.client).map(c => {
@@ -280,7 +280,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
             ...(c.realEstate || []).map(r => parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0)),
           ].reduce((a, b) => a + b, 0);
           return (
-            <div key={c.id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 12, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <div key={c.id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 14, padding: "18px 22px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ fontSize: 17, fontWeight: "bold", color: INK }}>{c.client?.firstName} {c.client?.lastName}</div>
@@ -330,7 +330,7 @@ function FileUpload({ section, files = [], onChange }) {
   };
   return (
     <div style={{ marginTop: 16, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-      <div style={{ fontSize: 11, color: INK, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Uploaded Files</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>Uploaded Files</div>
       {files.length > 0 && (
         <div style={{ marginBottom: 10 }}>
           {files.map(f => (
@@ -350,13 +350,41 @@ function FileUpload({ section, files = [], onChange }) {
   );
 }
 
+const IcSvg = ({ children }) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
+);
+
+const SECTION_META = {
+  "section-profile":    { color: "#3b82f6", bg: "#eef4ff", icon: <IcSvg><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></IcSvg> },
+  "section-family":     { color: "#8b5cf6", bg: "#f3efff", icon: <IcSvg><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6"/><path d="M17.8 14.6a6.5 6.5 0 0 1 3.7 5.4"/></IcSvg> },
+  "section-bene":       { color: "#ec4899", bg: "#fdeef6", icon: <IcSvg><path d="M12 20.5S4 15.5 3 10.5a4.8 4.8 0 0 1 9-2.4 4.8 4.8 0 0 1 9 2.4c-1 5-9 10-9 10z"/></IcSvg> },
+  "section-employment": { color: "#f59e0b", bg: "#fdf3e3", icon: <IcSvg><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></IcSvg> },
+  "section-income":     { color: "#10b981", bg: "#e7f7f1", icon: <IcSvg><path d="M12 2v20"/><path d="M16.5 5.5h-6a3 3 0 0 0 0 6h3a3 3 0 0 1 0 6h-6"/></IcSvg> },
+  "section-realestate": { color: "#14b8a6", bg: "#e6f7f5", icon: <IcSvg><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></IcSvg> },
+  "section-accounts":   { color: "#6366f1", bg: "#eeeffe", icon: <IcSvg><path d="M12 3L3 9h18z"/><path d="M5 12v6M10 12v6M14 12v6M19 12v6"/><path d="M3 21h18"/></IcSvg> },
+  "section-wills":      { color: "#a16207", bg: "#f8f1e2", icon: <IcSvg><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></IcSvg> },
+  "section-autos":      { color: "#ef4444", bg: "#fdeeee", icon: <IcSvg><path d="M5 16l1.6-4.8A2 2 0 0 1 8.5 10h7a2 2 0 0 1 1.9 1.2L19 16"/><rect x="3.5" y="16" width="17" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></IcSvg> },
+  "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
+};
+
+const IconChip = ({ id, size = 28 }) => {
+  const meta = SECTION_META[id];
+  if (!meta) return null;
+  return (
+    <span style={{ width: size, height: size, borderRadius: 8, background: meta.bg, color: meta.color, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      {meta.icon}
+    </span>
+  );
+};
+
 function Panel({ title, children, defaultOpen = true, id }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div id={id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 12, marginBottom: 20, overflow: "hidden", boxShadow: "0 1px 2px rgba(16,24,40,0.05)" }}>
+    <div id={id} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: 14, marginBottom: 20, overflow: "hidden", boxShadow: "0 1px 2px rgba(16,24,40,0.05)" }}>
       <div onClick={() => setOpen(o => !o)}
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 22px", cursor: "pointer", userSelect: "none" }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: INK, textTransform: "uppercase", letterSpacing: "0.08em" }}>{title}</div>
+        style={{ display: "flex", alignItems: "center", gap: 11, padding: "15px 22px", cursor: "pointer", userSelect: "none" }}>
+        <IconChip id={id} />
+        <div style={{ fontSize: 15, fontWeight: 600, color: INK, flex: 1 }}>{title}</div>
         <span style={{ color: MUTED, fontSize: 12, lineHeight: 1 }}>{open ? "▲" : "▼"}</span>
       </div>
       {open && <div style={{ padding: "0 22px 20px" }}>{children}</div>}
@@ -1289,7 +1317,7 @@ export default function App() {
           )}
           {totalAssets > 0 && (
             <div style={{ background: INPUT_BG, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginTop: 16, marginBottom: 8 }}>
-              <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Total Assets Captured</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, marginBottom: 4 }}>Total Assets Captured</div>
               <div style={{ fontSize: 22, fontWeight: "bold", color: INK }}>${totalAssets.toLocaleString()}</div>
             </div>
           )}
@@ -1310,26 +1338,18 @@ export default function App() {
         </div>
       )}
 
-      <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>Russell Wealth Group</h1>
-            <p style={{ margin: 0, marginTop: 2, fontSize: 12, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              New Client Intake · Confidential
-            </p>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: INK, border: "1px solid " + BORDER, borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: "bold", cursor: "pointer", whiteSpace: "nowrap" }}>
-              Saved Clients ({savedClients.length})
-            </button>
-          </div>
-        </div>
-      </div>
+      <div style={{ display: "flex", alignItems: "stretch" }}>
 
-      <div className="main-row" style={{ maxWidth: 1100, margin: "0 auto", padding: 24, display: "flex", gap: 24, alignItems: "flex-start" }}>
-
-        {/* ── SIDEBAR NAV ── */}
-        <div className="side-rail" style={{ width: 180, flexShrink: 0, position: "sticky", top: 24 }}>
+        {/* ── SIDEBAR ── */}
+        <aside className="side-rail" style={{ width: 250, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 14px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "2px 8px 16px" }}>
+            <span style={{ width: 34, height: 34, borderRadius: 10, background: ACCENT, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13 }}>RW</span>
+            <span>
+              <span style={{ display: "block", fontWeight: 700, fontSize: 13, color: INK, lineHeight: 1.25, whiteSpace: "nowrap" }}>Russell Wealth Group</span>
+              <span style={{ display: "block", fontSize: 11, color: MUTED }}>Client Intake</span>
+            </span>
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0 8px", marginBottom: 6 }}>Intake Sections</div>
           {[
             ["section-profile",   "Client Profile"],
             ["section-family",    "Family"],
@@ -1349,14 +1369,45 @@ export default function App() {
                 if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
               className="side-nav"
-              style={{ display: "block", width: "100%", textAlign: "left", background: "transparent", border: "none", color: MUTED, borderRadius: 8, padding: "9px 12px", marginBottom: 2, fontSize: 13, fontWeight: 600, cursor: "pointer", lineHeight: 1.3 }}
+              style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", marginBottom: 2, fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
             >
+              <IconChip id={id} size={26} />
               {label}
             </button>
           ))}
-        </div>
+          <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
+          <button
+            onClick={() => setView("roster")}
+            className="side-nav"
+            style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
+          >
+            <span style={{ width: 26, height: 26, borderRadius: 8, background: "#eef1f5", color: "#64748b", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><IcSvg><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></IcSvg></span>
+            Saved Clients
+            <span style={{ marginLeft: "auto", background: "#eaecf0", borderRadius: 999, padding: "1px 8px", fontSize: 11.5, fontWeight: 600, color: "#4b5563" }}>{savedClients.length}</span>
+          </button>
+        </aside>
 
         <div style={{ flex: 1, minWidth: 0 }}>
+
+        {/* ── MOBILE TOP BAR ── */}
+        <div className="mobile-top" style={{ display: "none", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 16px", background: NAV, borderBottom: "1px solid " + BORDER }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ width: 28, height: 28, borderRadius: 8, background: ACCENT, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 12 }}>RW</span>
+            <span style={{ fontWeight: 700, fontSize: 14, color: INK }}>Russell Wealth Group</span>
+          </span>
+          <button onClick={() => setView("roster")} style={{ background: INPUT_BG, color: INK, border: "1px solid " + BORDER, borderRadius: 10, padding: "7px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
+            Saved ({savedClients.length})
+          </button>
+        </div>
+
+        <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
+
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>New Client Intake</h1>
+          <p style={{ margin: "5px 0 0", fontSize: 14, color: MUTED }}>
+            Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+          </p>
+        </div>
 
         {/* ── CLIENT PROFILE ── */}
         <Panel title="Client Profile" id="section-profile">
@@ -1466,7 +1517,7 @@ export default function App() {
           </div>
           {client.hasPOBox === "yes" && (
             <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-              <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
               <Row cols={2}>
                 <F>
                   <Lbl t="PO Box Number" />
@@ -1561,7 +1612,7 @@ export default function App() {
 
           {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
-              <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Spouse Details</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Spouse Details</div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -1660,7 +1711,7 @@ export default function App() {
               </div>
               {spouse.hasPOBox === "yes" && (
                 <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-                  <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>PO Box Address</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
                   <Row cols={2}>
                     <F>
                       <Lbl t="PO Box Number" />
@@ -1698,7 +1749,7 @@ export default function App() {
               {children.map((ch, i) => (
                 <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Child {i + 1}</div>
+                    <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Child {i + 1}</div>
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip } : x))} style={{ background: INPUT_BG, border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12 }}>Copy Client Info</button>
                       {children.length > 1 && (
@@ -1731,7 +1782,7 @@ export default function App() {
                   </Row>
                   {ch.isBeneficiary && (
                     <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-                      <div style={{ fontSize: 11, color: INK, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Beneficiary Information</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 12 }}>Beneficiary Information</div>
                       <Row cols={3}>
                         <F><Lbl t="SSN" /><input value={ch.ssn} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, ssn: fmtSSN(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
                         <F>
@@ -1790,7 +1841,7 @@ export default function App() {
           {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
             <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: "bold" }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>
                   Child Beneficiary — {ch.firstName} {ch.lastName}
                 </div>
                 <div style={{ fontSize: 11, color: INK, fontStyle: "italic" }}>Edit in Family section</div>
@@ -1816,7 +1867,7 @@ export default function App() {
           {beneficiaries.map((b, i) => (
             <div key={b.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Beneficiary {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {i + 1}</div>
                 <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
@@ -1927,7 +1978,7 @@ export default function App() {
             const over = total > 100;
             return (
               <div style={{ background: NAV, border: "1px solid " + (over ? DANGER : BORDER), borderRadius: 8, padding: "10px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Allocated</span>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Allocated</span>
                 <span style={{ fontSize: 17, fontWeight: "bold", color: over ? DANGER : (total === 100 ? SUCCESS : INK) }}>{total}%{over ? " — exceeds 100%" : total === 100 ? " ✓" : ""}</span>
               </div>
             );
@@ -1941,7 +1992,7 @@ export default function App() {
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment" id="section-employment">
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>
               {client.firstName || "Client"}
             </div>
           )}
@@ -1987,7 +2038,7 @@ export default function App() {
           </Row>
 
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-            <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
             <Row cols={2}>
               <F>
                 <Lbl t="Has Retirement Plan?" />
@@ -2046,7 +2097,7 @@ export default function App() {
           {["married","domestic_partner"].includes(hasSpouse) && (
             <>
               <div style={{ borderTop: "1px solid " + BORDER, marginTop: 18, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
               </div>
               <Row cols={2}>
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2089,7 +2140,7 @@ export default function App() {
                 <F><Lbl t="State" /><StateSelect value={spouseEmp.workState} onChange={setSE("workState")} /></F>
               </Row>
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Employer Retirement Plan</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
                 <Row cols={2}>
                   <F>
                     <Lbl t="Has Retirement Plan?" />
@@ -2153,7 +2204,7 @@ export default function App() {
           {incomes.map((inc, i) => (
             <div key={inc.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Income Source {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income Source {i + 1}</div>
                 {incomes.length > 1 && (
                   <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
@@ -2255,7 +2306,7 @@ export default function App() {
             const rateColor = bracket.rate <= 12 ? "#1a6a3a" : bracket.rate <= 22 ? "#7a6a00" : bracket.rate <= 24 ? "#8a4a2a" : "#8a1a1a";
             return (
               <div style={{ marginTop: 14, background: NAV, border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 18px" }}>
-                <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>
                   Estimated Tax Summary — Filing {married ? "Married Filing Jointly" : "Single"}
                 </div>
                 {clientAnnual > 0 && (
@@ -2323,7 +2374,7 @@ export default function App() {
           {realEstate.map((r, i) => (
             <div key={r.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Property {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Property {i + 1}</div>
                 {realEstate.length > 1 && (
                   <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
@@ -2480,7 +2531,7 @@ export default function App() {
             <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               {/* Row 1: title + remove */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Account {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Account {i + 1}</div>
                 {accounts.length > 1 && (
                   <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
@@ -2608,7 +2659,7 @@ export default function App() {
           ))}
           {accounts.some(a => a.balance) && (
             <div style={{ background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Total Investment Assets</span>
+              <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Investment Assets</span>
               <span style={{ fontSize: 18, fontWeight: "bold", color: INK }}>
                 ${accounts.reduce((sum, a) => sum + parseInt((a.balance || "").replace(/[^0-9]/g, "") || 0), 0).toLocaleString()}
               </span>
@@ -2652,7 +2703,7 @@ export default function App() {
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
               {willsTrust.hasWillDoc === "yes" && (
                 <>
-                  <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Will Details</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Will Details</div>
                   <Row cols={2}>
                     <F><DatePicker label="Date Will Was Executed" value={willsTrust.willDate} onChange={v => setWillsTrust(p => ({ ...p, willDate: v }))} /></F>
                     <F><Lbl t="Attorney / Firm" /><input value={willsTrust.willAttorney} onChange={e => setWillsTrust(p => ({ ...p, willAttorney: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2679,7 +2730,7 @@ export default function App() {
               )}
               {willsTrust.hasTrustDoc === "yes" && (
                 <div style={{ marginTop: willsTrust.hasWillDoc === "yes" ? 20 : 0, borderTop: willsTrust.hasWillDoc === "yes" ? "1px solid " + BORDER : "none", paddingTop: willsTrust.hasWillDoc === "yes" ? 16 : 0 }}>
-                  <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Trust Details</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Trust Details</div>
                   <Row cols={2}>
                     <F><Lbl t="Name of Trust" /><input value={willsTrust.trustName} onChange={e => setWillsTrust(p => ({ ...p, trustName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                     <F>
@@ -2716,7 +2767,7 @@ export default function App() {
           )}
           {poa.hasPOA === "yes" && (
             <div style={{ marginTop: 20, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
-              <div style={{ fontSize: 12, color: INK, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Power of Attorney Details</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Power of Attorney Details</div>
               <Lbl t="Type of POA" />
               <select data-lpignore="true" value={poa.poaType || ""} onChange={e => setPoa(p => ({ ...p, poaType: e.target.value || null }))} style={IS}>
                 <option value="">— Select —</option>
@@ -2754,7 +2805,7 @@ export default function App() {
           {autos.map((a, i) => (
             <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Vehicle {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Vehicle {i + 1}</div>
                 {autos.length > 1 && (
                   <button onClick={() => window.confirm("Remove this vehicle?") && delAuto(a.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
@@ -2843,7 +2894,7 @@ export default function App() {
           {lifePolicies.map((p, i) => (
             <div key={p.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, color: INK, textTransform: "uppercase", letterSpacing: "0.07em" }}>Policy {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Policy {i + 1}</div>
                 <button onClick={() => window.confirm("Remove this policy?") && delLife(p.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={4}>
@@ -2917,18 +2968,19 @@ export default function App() {
         </Panel>
 
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
-          <button onClick={handleSubmit} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", flex: 1 }}>
+          <button onClick={handleSubmit} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 10, padding: "13px 32px", fontSize: 15, fontWeight: 600, cursor: "pointer", flex: 1 }}>
             Save Client Record
           </button>
-          <button onClick={() => setShowReport(true)} style={{ background: SUCCESS, color: "#fff", border: "none", borderRadius: 8, padding: "13px 24px", fontSize: 16, fontWeight: "bold", cursor: "pointer", flex: 1 }}>
+          <button onClick={() => setShowReport(true)} style={{ background: SUCCESS, color: "#fff", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 15, fontWeight: 600, cursor: "pointer", flex: 1 }}>
             📊 View Financial Summary
           </button>
         </div>
-        <div style={{ textAlign: "center", fontSize: 12, color: INK, paddingBottom: 32, letterSpacing: "0.06em" }}>
-          RUSSELL WEALTH GROUP · CONFIDENTIAL CLIENT DATA
+        <div style={{ textAlign: "center", fontSize: 12, color: MUTED, paddingBottom: 32 }}>
+          Russell Wealth Group · Confidential client data
         </div>
-        </div>{/* end flex content */}
-      </div>{/* end flex row */}
+        </div>{/* end main col */}
+        </div>{/* end content col */}
+      </div>{/* end shell */}
 
       {/* ── FLOATING SAVE BUTTON ── */}
       <div className="float-save" style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
@@ -2949,7 +3001,7 @@ export default function App() {
         * { box-sizing: border-box; }
         input, select, textarea, button { font-family: inherit; }
         input, select, textarea { caret-color: #151b28; transition: border-color 0.15s, box-shadow 0.15s; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: #414f62 !important; box-shadow: 0 0 0 3px rgba(65,79,98,0.15) !important; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #2f3a4a !important; box-shadow: 0 0 0 3px rgba(47,58,74,0.15) !important; }
         input::placeholder, textarea::placeholder { color: #9aa3b0 !important; opacity: 1; }
         select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23697180' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px !important; }
         select option { background: #ffffff !important; color: #151b28 !important; font-size: 14px; }
@@ -2959,11 +3011,12 @@ export default function App() {
         button:hover { filter: brightness(0.97); }
         @media (max-width: 900px) {
           .side-rail { display: none; }
+          .mobile-top { display: flex !important; }
           .rg { grid-template-columns: 1fr 1fr !important; }
         }
         @media (max-width: 600px) {
           .rg { grid-template-columns: 1fr !important; }
-          .main-row { padding: 12px !important; }
+          .main-col { padding: 18px 12px 36px !important; }
           .float-save { bottom: 12px !important; right: 12px !important; }
         }
         [data-lastpass-icon-root], [data-lastpass-root], [id^="lastpass"], [id*="lastpass"],
