@@ -127,6 +127,7 @@ const emptyClient = {
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"" };
+const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", annualPremium:"", policyNumber:"", issueDate:"", surrender:"" };
 
 const AUTO_MODELS = {
   "Acura": ["ILX","MDX","MDX A-Spec","MDX Type S","NSX","RDX","RDX A-Spec","TLX","TLX A-Spec","TLX Type S","ZDX"],
@@ -367,7 +368,7 @@ function fmt(n) {
 }
 
 function ClientReport({ data, onClose }) {
-  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, recordType = "prospect" } = data;
+  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, recordType = "prospect", lifePolicies = [] } = data;
 
   const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
   const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
@@ -810,6 +811,43 @@ function ClientReport({ data, onClose }) {
             </table>
           </>)}
 
+          {/* ── LIFE INSURANCE ── */}
+          {lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit).length > 0 && (<>
+            <div style={s.sectionHead}>Life Insurance</div>
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={s.th}>Carrier</th>
+                  <th style={s.th}>Type</th>
+                  <th style={s.th}>Insured</th>
+                  <th style={s.th}>Owner</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Death Benefit</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Cash Value</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Annual Premium</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit).map((p, i) => (
+                  <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                    <td style={s.td}>{p.carrier || "—"}</td>
+                    <td style={s.td}>{p.policyType || "—"}</td>
+                    <td style={s.td}>{p.insured || "—"}</td>
+                    <td style={s.td}>{p.owner || "—"}</td>
+                    <td style={s.tdr}>{p.deathBenefit || "—"}</td>
+                    <td style={s.tdr}>{p.cashValue || "—"}</td>
+                    <td style={s.tdr}>{p.annualPremium || "—"}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td style={s.tdTotal} colSpan={4}>Totals</td>
+                  <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.deathBenefit), 0))}</td>
+                  <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.cashValue), 0))}</td>
+                  <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.annualPremium), 0))}</td>
+                </tr>
+              </tbody>
+            </table>
+          </>)}
+
           {/* ── BENEFICIARIES ── */}
           {(beneficiaries.filter(b => b.firstName || b.lastName).length > 0 || children.filter(c => c.isBeneficiary).length > 0) && (<>
             <div style={s.sectionHead}>Beneficiaries</div>
@@ -935,6 +973,7 @@ export default function App() {
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
+  const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
@@ -1006,8 +1045,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, recordType,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, recordType]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, recordType, lifePolicies,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, recordType, lifePolicies]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1061,6 +1100,7 @@ export default function App() {
     setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
     setRecordType(record.recordType || "prospect");
+    setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1077,6 +1117,9 @@ export default function App() {
   const addAuto = () => setAutos(p => [...p, { ...emptyAuto, id: Date.now() }]);
   const delAuto = id => setAutos(p => p.filter(x => x.id !== id));
   const updAuto = (id, f, v) => setAutos(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
+  const addLife = () => setLifePolicies(p => [...p, { ...emptyLifePolicy, id: Date.now() }]);
+  const delLife = id => setLifePolicies(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyLifePolicy, id: Date.now() }]; });
+  const updLife = (id, f, v) => setLifePolicies(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
   const addRE = () => setRealEstate(p => [...p, { ...emptyRealEstate, id: Date.now() }]);
   const delRE = id => setRealEstate(p => p.filter(x => x.id !== id));
@@ -1169,6 +1212,7 @@ export default function App() {
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
     setUploads({});
     setRecordType("prospect");
+    setLifePolicies([{ ...emptyLifePolicy, id: 1 }]);
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -1198,6 +1242,7 @@ export default function App() {
           setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
           setRecordType(record.recordType || "prospect");
+          setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -1285,6 +1330,7 @@ export default function App() {
             ["section-wills",     "Wills & Trust"],
             ["section-poa",       "Power of Attorney"],
             ["section-autos",     "Automobiles"],
+            ["section-life",      "Life Insurance"],
           ].map(([id, label]) => (
             <button
               key={id}
@@ -1324,14 +1370,6 @@ export default function App() {
                 </button>
               ))}
             </div>
-            <span style={{
-              fontSize: 11, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em",
-              color: recordType === "client" ? "#4caf50" : "#f0a500",
-              border: `1px solid ${recordType === "client" ? "#4caf50" : "#f0a500"}`,
-              borderRadius: 4, padding: "2px 8px",
-            }}>
-              {recordType === "client" ? "Active Client" : "Prospect"}
-            </span>
           </div>
           <Row cols={3}>
             <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2344,12 +2382,12 @@ export default function App() {
               <Row cols={2}>
                 <F><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
-                  <Lbl t="Net Equity" />
-                  <div style={{ ...IS, background: NAV, color: WHITE, display: "flex", alignItems: "center" }}>
+                  <Lbl t="Net Equity (auto-calculated)" />
+                  <div style={{ ...IS, background: "#0f1d38", color: "#a8c8f0", display: "flex", alignItems: "center", fontStyle: "italic", cursor: "default", userSelect: "none", border: "2px solid rgba(74,144,217,0.3)" }}>
                     {(() => {
                       const mv = parseInt((r.marketValue || "").replace(/[^0-9]/g, "") || 0);
                       const mb = parseInt((r.mortgageBalance || "").replace(/[^0-9]/g, "") || 0);
-                      return mv > 0 ? "$" + (mv - mb).toLocaleString() : "—";
+                      return mv > 0 ? "$" + (mv - mb).toLocaleString() : "Enter market value";
                     })()}
                   </div>
                 </F>
@@ -2784,6 +2822,53 @@ export default function App() {
           <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange} />
         </Panel>
 
+        {/* ── LIFE INSURANCE ── */}
+        <Panel title="Life Insurance" id="section-life">
+          {lifePolicies.map((p, i) => (
+            <div key={p.id} style={{ background: INPUT_BG, border: "2px solid " + ACCENT, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: "0.07em" }}>Policy {i + 1}</div>
+                <button onClick={() => window.confirm("Remove this policy?") && delLife(p.id)} style={{ background: "#5a1a1a", border: "2px solid #c0392b", color: WHITE, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13, fontFamily: "Georgia, serif" }}>Remove</button>
+              </div>
+              <Row cols={4}>
+                <F><Lbl t="Carrier" /><input value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Policy Type" />
+                  <select value={p.policyType} onChange={e => updLife(p.id, "policyType", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="Term">Term</option>
+                    <option value="Whole Life">Whole Life</option>
+                    <option value="Universal Life">Universal Life (UL)</option>
+                    <option value="Indexed Universal Life">Indexed Universal Life (IUL)</option>
+                    <option value="Variable Universal Life">Variable Universal Life (VUL)</option>
+                    <option value="Variable Life">Variable Life (VL)</option>
+                    <option value="Guaranteed UL">Guaranteed Universal Life (GUL)</option>
+                    <option value="Final Expense">Final Expense</option>
+                    <option value="Group Life">Group / Employer Life</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </F>
+                <F><Lbl t="Insured" /><input value={p.insured} onChange={e => updLife(p.id, "insured", e.target.value)} style={IS} placeholder="Name of insured" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Owner" /><input value={p.owner} onChange={e => updLife(p.id, "owner", e.target.value)} style={IS} placeholder="Policy owner" autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={4}>
+                <F><Lbl t="Death Benefit" /><input value={p.deathBenefit} onChange={e => updLife(p.id, "deathBenefit", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Cash Value" /><input value={p.cashValue} onChange={e => updLife(p.id, "cashValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
+                <F><Lbl t="Annual Premium" /><input value={p.annualPremium} onChange={e => updLife(p.id, "annualPremium", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Surrender Value" /><input value={p.surrender} onChange={e => updLife(p.id, "surrender", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="Policy Number" /><input value={p.policyNumber} onChange={e => updLife(p.id, "policyNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><DatePicker label="Issue Date" value={p.issueDate} onChange={v => updLife(p.id, "issueDate", v)} /></F>
+              </Row>
+            </div>
+          ))}
+          <button onClick={addLife} style={{ background: "transparent", border: "2px dashed " + ACCENT, color: WHITE, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", fontFamily: "Georgia, serif", width: "100%" }}>
+            + Add Policy
+          </button>
+          <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange} />
+        </Panel>
+
         <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
           <button onClick={handleSubmit} style={{ background: ACCENT, color: WHITE, border: "none", borderRadius: 8, padding: "13px 32px", fontSize: 16, fontWeight: "bold", cursor: "pointer", fontFamily: "Georgia, serif", flex: 1 }}>
             Save Client Record
@@ -2831,7 +2916,7 @@ export default function App() {
     {showReport && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership, recordType }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership, recordType, lifePolicies }}
           onClose={() => setShowReport(false)}
         />
       </div>
