@@ -1328,7 +1328,6 @@ export default function App() {
             ["section-realestate","Real Estate"],
             ["section-accounts",  "Investment & Bank"],
             ["section-wills",     "Wills & Trust"],
-            ["section-poa",       "Power of Attorney"],
             ["section-autos",     "Automobiles"],
             ["section-life",      "Life Insurance"],
           ].map(([id, label]) => (
@@ -2700,13 +2699,9 @@ export default function App() {
               )}
             </div>
           )}
-          <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange} />
-        </Panel>
-
-        {/* ── POWER OF ATTORNEY ── */}
-        <Panel title="Power of Attorney" id="section-poa">
           {poa.hasPOA === "yes" && (
-            <div style={{ marginTop: 18, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
+            <div style={{ marginTop: 20, borderTop: "2px solid " + ACCENT, paddingTop: 16 }}>
+              <div style={{ fontSize: 12, color: WHITE, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Power of Attorney Details</div>
               <Lbl t="Type of POA" />
               <select data-lpignore="true" value={poa.poaType || ""} onChange={e => setPoa(p => ({ ...p, poaType: e.target.value || null }))} style={IS}>
                 <option value="">— Select —</option>
@@ -2736,7 +2731,7 @@ export default function App() {
               <textarea data-lpignore="true" value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
             </div>
           )}
-          <FileUpload section="poa" files={uploads.poa || []} onChange={handleUploadChange} />
+          <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange} />
         </Panel>
 
         {/* ── AUTOMOBILES ── */}
