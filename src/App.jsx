@@ -156,7 +156,7 @@ const emptyClient = {
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
-const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"" };
+const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"", hasLoan:null, loanBalance:"", lender:"", interestRate:"", monthlyPayment:"" };
 const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
 const DEFAULT_MORTGAGE_COS = [
   "Rocket Mortgage / Quicken Loans","United Wholesale Mortgage (UWM)","Wells Fargo Home Mortgage",
@@ -3635,6 +3635,22 @@ export default function App() {
                       Open KBB ↗
                     </button>
                   </F>
+                </>)}
+              </Row>
+              <Row cols={4}>
+                <F>
+                  <Lbl t="Auto Loan?" />
+                  <select value={a.hasLoan || ""} onChange={e => updAuto(a.id, "hasLoan", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No — Paid Off</option>
+                  </select>
+                </F>
+                {a.hasLoan === "yes" && (<>
+                  <F><Lbl t="Amount Owed" /><input value={a.loanBalance || ""} onChange={e => updAuto(a.id, "loanBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  <F><Lbl t="Financed With" /><input value={a.lender || ""} onChange={e => updAuto(a.id, "lender", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Lender name" /></F>
+                  <F><Lbl t="Interest Rate" /><input value={a.interestRate || ""} onChange={e => updAuto(a.id, "interestRate", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 4.9%" /></F>
+                  <F style={{ gridColumn: "span 1" }}><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                 </>)}
               </Row>
             </div>
