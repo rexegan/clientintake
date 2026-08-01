@@ -3590,6 +3590,7 @@ export default function App() {
                 </F>
                 <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
+              {/* Row: Auto Loan? | Amount Owed | Financed With | Interest Rate */}
               <Row cols={4}>
                 <F>
                   <Lbl t="Auto Loan?" />
@@ -3611,23 +3612,16 @@ export default function App() {
                   </F>
                   <F>
                     <Lbl t="Interest Rate" />
-                    <input
-                      value={a.interestRate || ""}
-                      onChange={e => {
-                        let v = e.target.value.replace(/[^0-9.]/g, "");
-                        updAuto(a.id, "interestRate", v);
-                      }}
-                      onBlur={e => {
-                        let v = e.target.value.replace(/[^0-9.]/g, "");
-                        if (v && !v.endsWith("%")) v = v + "%";
-                        updAuto(a.id, "interestRate", v);
-                      }}
-                      style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0.00%" />
+                    <input value={a.interestRate || ""} onChange={e => updAuto(a.id, "interestRate", e.target.value.replace(/[^0-9.]/g, ""))} onBlur={e => { let v = e.target.value.replace(/[^0-9.]/g, ""); if (v && !v.endsWith("%")) v = v + "%"; updAuto(a.id, "interestRate", v); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0.00%" />
                   </F>
-                  <F><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                 </>)}
               </Row>
+              {/* Row: Monthly Payment (if loan) | KBB? — always right of monthly payment */}
               <Row cols={4}>
+                {a.hasLoan === "yes"
+                  ? <F><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  : <F />
+                }
                 <F>
                   <Lbl t="KBB?" />
                   <select value={a.hasKbb || ""} onChange={e => updAuto(a.id, "hasKbb", e.target.value || null)} style={IS}>
@@ -3636,7 +3630,10 @@ export default function App() {
                     <option value="no">No</option>
                   </select>
                 </F>
-                {a.hasKbb === "yes" && (<>
+              </Row>
+              {/* Row: KBB details if yes */}
+              {a.hasKbb === "yes" && (
+                <Row cols={4}>
                   <F>
                     <Lbl t="Mileage" />
                     <input value={a.kbbMileage || ""} onChange={e => updAuto(a.id, "kbbMileage", e.target.value.replace(/\D/g, ""))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="e.g. 45000" />
@@ -3654,26 +3651,22 @@ export default function App() {
                   </F>
                   <F>
                     <Lbl t="Open KBB" />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const make = (a.make || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-                        const model = (a.model || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-                        const year = a.year || "";
-                        const mileage = a.kbbMileage || "";
-                        const condition = (a.kbbCondition || "").toLowerCase().replace(/\s+/g, "-");
-                        let url = "https://www.kbb.com/" + make + "/" + model + "/" + year + "/";
-                        if (mileage) url += "?mileage=" + mileage;
-                        if (condition) url += (mileage ? "&" : "?") + "condition=" + condition;
-                        window.open(url, "_blank");
-                      }}
-                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}
-                    >
+                    <button type="button" onClick={() => {
+                      const make = (a.make || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                      const model = (a.model || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                      const year = a.year || "";
+                      const mileage = a.kbbMileage || "";
+                      const condition = (a.kbbCondition || "").toLowerCase().replace(/\s+/g, "-");
+                      let url = "https://www.kbb.com/" + make + "/" + model + "/" + year + "/";
+                      if (mileage) url += "?mileage=" + mileage;
+                      if (condition) url += (mileage ? "&" : "?") + "condition=" + condition;
+                      window.open(url, "_blank");
+                    }} style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}>
                       Open KBB ↗
                     </button>
                   </F>
-                </>)}
-              </Row>
+                </Row>
+              )}
             </div>
           ))}
           <button onClick={addAuto} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
