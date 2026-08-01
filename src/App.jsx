@@ -3229,7 +3229,7 @@ export default function App() {
           <Sec t="Estate & Charitable Planning" />
           <Row cols={2}>
             <F>
-              <Lbl t="Estate Planning Documents for Decedent in Place?" />
+              <Lbl t="Estate Planning Documents in Place?" />
               <select value={inheritance.estatePlanning} onChange={setInh("estatePlanning")} style={IS}>
                 <option value="">— Select —</option>
                 <option value="yes_complete">Yes — Complete</option>
