@@ -1656,7 +1656,7 @@ export default function App() {
             ["section-employment","Employment"],
             ["section-income",    "Income"],
             ["section-realestate","Real Estate"],
-            ["section-accounts",  "Investment & Bank"],
+            ["section-accounts",  "Investment & Bank Acct"],
             ["section-wills",     "Wills & Trust"],
             ["section-autos",     "Automobiles"],
             ["section-life",      "Life Insurance"],
