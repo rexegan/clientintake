@@ -3292,7 +3292,7 @@ export default function App() {
             <F><Lbl t="Total Liabilities (Est.)" /><input value={nwState.totalLiabilities} onChange={e => setNwState(p => ({ ...p, totalLiabilities: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
             <F>
               <Lbl t="Estimated Net Worth" />
-              <div style={{ ...IS, background: "#f0edfe", color: "#4c1d95", fontWeight: 700, display: "flex", alignItems: "center" }}>
+              <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center" }}>
                 {(() => {
                   const a = parseInt((nwState.totalAssets || "").replace(/[^0-9]/g, "") || 0);
                   const l = parseInt((nwState.totalLiabilities || "").replace(/[^0-9]/g, "") || 0);
