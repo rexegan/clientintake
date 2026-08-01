@@ -13,8 +13,8 @@ const SUCCESS = "#2fa76f";
 
 const IS = {
   background: INPUT_BG, border: "1px solid #cfd5de", borderRadius: 10,
-  padding: "9px 12px", color: INK, fontSize: 14,
-  width: "100%", boxSizing: "border-box", caretColor: INK,
+  padding: "9px 12px", color: "#000", fontSize: 14, fontWeight: 500,
+  width: "100%", boxSizing: "border-box", caretColor: "#000",
   boxShadow: "0 1px 2px rgba(16,24,40,0.04)",
   WebkitAppearance: "none", MozAppearance: "none", appearance: "none",
 };
@@ -249,8 +249,8 @@ const INCOME_TYPES = [
 ];
 
 const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"" };
-const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
-const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
+const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", designationType:"primary", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
+const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", designationType:"primary", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 
 const US_STATES = [
   ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
@@ -974,37 +974,56 @@ function ClientReport({ data, onClose }) {
           </>)}
 
           {/* ── BENEFICIARIES ── */}
-          {(beneficiaries.filter(b => b.firstName || b.lastName).length > 0 || children.filter(c => c.isBeneficiary).length > 0) && (<>
-            <div style={s.sectionHead}>Beneficiaries</div>
-            <table style={s.table}>
-              <thead>
-                <tr>
-                  <th style={s.th}>Name</th>
-                  <th style={s.th}>Relationship</th>
-                  <th style={s.th}>Date of Birth</th>
-                  <th style={{ ...s.th, textAlign: "right" }}>% to Inherit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {children.filter(c => c.isBeneficiary).map((c, i) => (
-                  <tr key={"ch-"+i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
-                    <td style={s.td}>{[c.firstName, c.lastName].filter(Boolean).join(" ")}</td>
-                    <td style={s.td}>{c.relationship || "Child"}</td>
-                    <td style={s.td}>{c.dob || "—"}</td>
-                    <td style={s.tdr}>{c.percentage || "—"}</td>
-                  </tr>
-                ))}
-                {beneficiaries.filter(b => b.firstName || b.lastName).map((b, i) => (
-                  <tr key={"b-"+i} style={{ background: (children.filter(c=>c.isBeneficiary).length + i) % 2 === 0 ? "#fff" : LGRAY }}>
-                    <td style={s.td}>{[b.firstName, b.lastName].filter(Boolean).join(" ")}</td>
-                    <td style={s.td}>{b.relationship || "—"}</td>
-                    <td style={s.td}>{b.dob || "—"}</td>
-                    <td style={s.tdr}>{b.percentage || "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>)}
+          {(beneficiaries.filter(b => b.firstName || b.lastName).length > 0 || children.filter(c => c.isBeneficiary).length > 0) && (() => {
+            const allBenes = [
+              ...children.filter(c => c.isBeneficiary).map(c => ({ name: [c.firstName, c.lastName].filter(Boolean).join(" "), relationship: c.relationship || "Child", dob: c.dob || "—", percentage: c.percentage || "", designationType: c.designationType || "primary" })),
+              ...beneficiaries.filter(b => b.firstName || b.lastName).map(b => ({ name: [b.firstName, b.lastName].filter(Boolean).join(" "), relationship: b.relationship || "—", dob: b.dob || "—", percentage: b.percentage || "", designationType: b.designationType || "primary" })),
+            ];
+            const primaries   = allBenes.filter(b => b.designationType === "primary");
+            const contingents = allBenes.filter(b => b.designationType === "contingent");
+            const getPct = b => parseFloat((b.percentage || "").replace("%","")) || 0;
+            const primTotal   = primaries.reduce((s, b) => s + getPct(b), 0);
+            const contTotal   = contingents.reduce((s, b) => s + getPct(b), 0);
+            const BeneTable = ({ rows, groupTotal, caption }) => (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 12, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", color: caption === "Primary" ? "#1a5c2a" : "#92400e", marginBottom: 6 }}>{caption} Beneficiaries</div>
+                <table style={s.table}>
+                  <thead><tr>
+                    <th style={s.th}>Name</th>
+                    <th style={s.th}>Relationship</th>
+                    <th style={s.th}>Date of Birth</th>
+                    <th style={{ ...s.th, textAlign: "right" }}>% to Inherit</th>
+                    <th style={{ ...s.th, textAlign: "right" }}>% of {caption}</th>
+                  </tr></thead>
+                  <tbody>
+                    {rows.map((b, i) => {
+                      const p = getPct(b);
+                      const sharePct = groupTotal > 0 ? (p / groupTotal * 100).toFixed(1) : "—";
+                      return (
+                        <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+                          <td style={s.td}>{b.name}</td>
+                          <td style={s.td}>{b.relationship}</td>
+                          <td style={s.td}>{b.dob}</td>
+                          <td style={s.tdr}>{b.percentage || "—"}</td>
+                          <td style={{ ...s.tdr, color: "#5a6575" }}>{sharePct !== "—" ? sharePct + "%" : "—"}</td>
+                        </tr>
+                      );
+                    })}
+                    <tr>
+                      <td style={s.tdTotal} colSpan={3}>{caption} Total</td>
+                      <td style={{ ...s.tdTotalR, color: groupTotal === 100 ? "#1a5c2a" : groupTotal > 100 ? "#b03a3a" : NAVY }}>{groupTotal > 0 ? groupTotal + "%" : "—"}{groupTotal === 100 ? " ✓" : groupTotal > 100 ? " ⚠" : ""}</td>
+                      <td style={s.tdTotalR}>{groupTotal > 0 ? "100.0%" : "—"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            );
+            return (<>
+              <div style={s.sectionHead}>Beneficiaries</div>
+              {primaries.length   > 0 && <BeneTable rows={primaries}   groupTotal={primTotal}  caption="Primary" />}
+              {contingents.length > 0 && <BeneTable rows={contingents} groupTotal={contTotal}  caption="Contingent" />}
+            </>);
+          })()}
 
           {/* ── ESTATE PLANNING ── */}
           {(willsTrust.hasWillDoc || willsTrust.hasTrustDoc || poa.hasPOA) && (<>
@@ -1608,7 +1627,7 @@ export default function App() {
           <p style={{ margin: "5px 0 12px", fontSize: 14, color: MUTED }}>
             Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
             <button
               onClick={() => { if (window.confirm("Start a new prospect record? Current form will be cleared.")) { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } }}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
@@ -2019,7 +2038,7 @@ export default function App() {
                   {ch.isBeneficiary && (
                     <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 12 }}>Beneficiary Information</div>
-                      <Row cols={3}>
+                      <Row cols={4}>
                         <F><Lbl t="SSN" /><input value={ch.ssn} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, ssn: fmtSSN(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
                         <F>
                           <Lbl t="Relationship" />
@@ -2032,7 +2051,14 @@ export default function App() {
                           </select>
                         </F>
                         <F>
-                          <Lbl t="% to Inherit" />
+                          <Lbl t="Designation" />
+                          <select data-lpignore="true" value={ch.designationType || "primary"} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, designationType: e.target.value } : x))} style={IS}>
+                            <option value="primary">Primary</option>
+                            <option value="contingent">Contingent</option>
+                          </select>
+                        </F>
+                        <F>
+                          <Lbl t={`% to Inherit (${(ch.designationType || "primary") === "primary" ? "Primary" : "Contingent"})`} />
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                             <input
                               value={(ch.percentage || "").replace("%", "")}
@@ -2077,8 +2103,13 @@ export default function App() {
           {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
             <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>
-                  Child Beneficiary — {ch.firstName} {ch.lastName}
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Child Beneficiary — {ch.firstName} {ch.lastName}</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 5, padding: "3px 8px",
+                    background: (ch.designationType || "primary") === "primary" ? "#e6f4ea" : "#fef3c7",
+                    color:      (ch.designationType || "primary") === "primary" ? "#1a5c2a"  : "#92400e" }}>
+                    {(ch.designationType || "primary") === "primary" ? "Primary" : "Contingent"}
+                  </span>
                 </div>
                 <div style={{ fontSize: 11, color: INK, fontStyle: "italic" }}>Edit in Family section</div>
               </div>
@@ -2103,7 +2134,16 @@ export default function App() {
           {beneficiaries.map((b, i) => (
             <div key={b.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {i + 1}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {i + 1}</div>
+                  <select data-lpignore="true" value={b.designationType || "primary"} onChange={e => updBene(b.id, "designationType", e.target.value)}
+                    style={{ fontSize: 11, fontWeight: 700, border: "none", borderRadius: 5, padding: "3px 8px", cursor: "pointer",
+                      background: (b.designationType || "primary") === "primary" ? "#e6f4ea" : "#fef3c7",
+                      color:      (b.designationType || "primary") === "primary" ? "#1a5c2a"  : "#92400e" }}>
+                    <option value="primary">Primary</option>
+                    <option value="contingent">Contingent</option>
+                  </select>
+                </div>
                 <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
@@ -2133,7 +2173,7 @@ export default function App() {
               <Row cols={2}>
                 <F><Lbl t="Email Address" /><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
-                  <Lbl t="% to Inherit" />
+                  <Lbl t={`% to Inherit (${(b.designationType || "primary") === "primary" ? "Primary" : "Contingent"})`} />
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <input
                       value={(b.percentage || "").replace("%", "")}
@@ -2206,16 +2246,29 @@ export default function App() {
             </div>
           ))}
           {(() => {
-            const total = beneficiaries.reduce((sum, b) => {
-              const n = parseFloat((b.percentage || "").replace("%", "") || 0);
-              return sum + (isNaN(n) ? 0 : n);
-            }, 0);
-            if (!total) return null;
-            const over = total > 100;
+            const allBenes = [
+              ...children.filter(c => c.isBeneficiary).map(c => ({ ...c, _src: "child" })),
+              ...beneficiaries.map(b => ({ ...b, _src: "bene" })),
+            ];
+            const pct = b => { const n = parseFloat((b.percentage || "").replace("%", "") || 0); return isNaN(n) ? 0 : n; };
+            const primaries   = allBenes.filter(b => (b.designationType || "primary") === "primary");
+            const contingents = allBenes.filter(b => b.designationType === "contingent");
+            const primTotal = primaries.reduce((s, b) => s + pct(b), 0);
+            const contTotal = contingents.reduce((s, b) => s + pct(b), 0);
+            if (!primTotal && !contTotal) return null;
+            const Pill = ({ label, total }) => {
+              const over = total > 100;
+              return (
+                <div style={{ flex: 1, background: NAV, border: "1px solid " + (over ? DANGER : BORDER), borderRadius: 8, padding: "10px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: INK }}>{label} Total</span>
+                  <span style={{ fontSize: 17, fontWeight: "bold", color: over ? DANGER : (total === 100 ? SUCCESS : INK) }}>{total}%{over ? " ⚠" : total === 100 ? " ✓" : ""}</span>
+                </div>
+              );
+            };
             return (
-              <div style={{ background: NAV, border: "1px solid " + (over ? DANGER : BORDER), borderRadius: 8, padding: "10px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Allocated</span>
-                <span style={{ fontSize: 17, fontWeight: "bold", color: over ? DANGER : (total === 100 ? SUCCESS : INK) }}>{total}%{over ? " — exceeds 100%" : total === 100 ? " ✓" : ""}</span>
+              <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+                {primTotal > 0   && <Pill label="Primary"   total={primTotal} />}
+                {contTotal > 0   && <Pill label="Contingent" total={contTotal} />}
               </div>
             );
           })()}
