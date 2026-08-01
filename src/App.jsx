@@ -305,7 +305,7 @@ function ConfirmDialog({ message, confirmLabel = "Confirm", onConfirm, onCancel 
   );
 }
 
-function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfirm }) {
+function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfirm, currentName, currentType }) {
   return (
     <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
@@ -317,7 +317,7 @@ function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfir
             </p>
           </div>
           <button onClick={onBack} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>
-            ← New Intake
+            {currentName ? `← Return to ${currentName}` : "← New Intake"}
           </button>
         </div>
       </div>
@@ -1564,6 +1564,8 @@ export default function App() {
         }}
         onBack={() => setView("form")}
         onConfirm={showConfirm}
+        currentName={[client.firstName, client.lastName].filter(Boolean).join(" ") || null}
+        currentType={recordType}
       />
     );
   }
@@ -1682,6 +1684,14 @@ export default function App() {
                 style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
               >Prospect → Client</button>
             )}
+            <button
+              onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+            >+ Add Prospect</button>
+            <button
+              onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+            >+ Add Client</button>
             {/* Quick View multi-select dropdown */}
             <div style={{ position: "relative" }}>
               <button
@@ -1726,14 +1736,6 @@ export default function App() {
                 </div>
               )}
             </div>
-            <button
-              onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-            >+ Add Prospect</button>
-            <button
-              onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-            >+ Add Client</button>
             <button
               onClick={() => setView("roster")}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
