@@ -158,6 +158,14 @@ const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", 
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"" };
 const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
+const DEFAULT_MORTGAGE_COS = [
+  "Rocket Mortgage / Quicken Loans","United Wholesale Mortgage (UWM)","Wells Fargo Home Mortgage",
+  "JPMorgan Chase Bank","loanDepot","Fairway Independent Mortgage","Pennymac","Bank of America",
+  "U.S. Bank","Caliber Home Loans","Freedom Mortgage","Newrez / Shellpoint","Mr. Cooper / Nationstar",
+  "CrossCountry Mortgage","Guild Mortgage","Finance of America Mortgage","Guaranteed Rate",
+  "Movement Mortgage","Navy Federal Credit Union","Veterans United Home Loans",
+];
+
 const LIFE_CARRIERS = [
   "Aflac","AIG / American General","Allstate Life","American Equity","American Fidelity","American National (ANICO)",
   "Ameritas Life","Amica Life","Assurity Life","AXA / Equitable Life",
@@ -1087,6 +1095,15 @@ export default function App() {
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
   const [recordType, setRecordType] = useState("client");
+  const [customMortgageCos, setCustomMortgageCos] = useState(() => JSON.parse(localStorage.getItem("rwg_mortgage_cos") || "[]"));
+  const allMortgageCos = [...DEFAULT_MORTGAGE_COS, ...customMortgageCos.filter(c => !DEFAULT_MORTGAGE_COS.includes(c))].sort((a, b) => a.localeCompare(b));
+  const addCustomMortgageCo = (val) => {
+    const trimmed = val.trim();
+    if (!trimmed || DEFAULT_MORTGAGE_COS.includes(trimmed) || customMortgageCos.includes(trimmed)) return;
+    const updated = [...customMortgageCos, trimmed].sort((a, b) => a.localeCompare(b));
+    setCustomMortgageCos(updated);
+    localStorage.setItem("rwg_mortgage_cos", JSON.stringify(updated));
+  };
   const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
   const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
   const addCustomInstitution = (val) => {
@@ -1661,7 +1678,11 @@ export default function App() {
           </Row>
           {homeOwnership.ownOrRent === "own" && (<>
             <Row cols={3}>
-              <F><Lbl t="Mortgage Company" /><input value={homeOwnership.mortgageCompany} onChange={e => setHomeOwnership(p => ({ ...p, mortgageCompany: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              <F>
+                <Lbl t="Mortgage Company" />
+                <input list="mortgage-co-list-home" value={homeOwnership.mortgageCompany} onChange={e => setHomeOwnership(p => ({ ...p, mortgageCompany: e.target.value }))} onBlur={e => addCustomMortgageCo(e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Type or select..." />
+                <datalist id="mortgage-co-list-home">{allMortgageCos.map(c => <option key={c} value={c} />)}</datalist>
+              </F>
               <F><Lbl t="Mortgage Balance" /><input value={homeOwnership.mortgageBalance} onChange={e => setHomeOwnership(p => ({ ...p, mortgageBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               <F><Lbl t="Monthly Payment" /><input value={homeOwnership.monthlyPayment} onChange={e => setHomeOwnership(p => ({ ...p, monthlyPayment: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             </Row>
@@ -2563,7 +2584,11 @@ export default function App() {
                 </F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="Mortgage Company" /><input value={r.mortgageCompany} onChange={e => updRE(r.id, "mortgageCompany", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Mortgage Company" />
+                  <input list={`mortgage-co-list-${r.id}`} value={r.mortgageCompany} onChange={e => updRE(r.id, "mortgageCompany", e.target.value)} onBlur={e => addCustomMortgageCo(e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Type or select..." />
+                  <datalist id={`mortgage-co-list-${r.id}`}>{allMortgageCos.map(c => <option key={c} value={c} />)}</datalist>
+                </F>
                 <F><DatePicker label="Origination Date" value={r.originationDate} onChange={v => updRE(r.id, "originationDate", v)} /></F>
               </Row>
               <Row cols={3}>
