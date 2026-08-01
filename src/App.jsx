@@ -443,17 +443,19 @@ function fmt(n) {
 function ClientReport({ data, onClose }) {
   const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, lifePolicies = [] } = data;
 
-  const clientName = [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "Client";
-  const spouseName = [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ") || "Spouse";
+  const clientFirst = client.firstName || "";
+  const clientLast  = client.lastName  || "";
+  const spouseFirst = spouse.firstName || "";
+  const spouseLast  = spouse.lastName  || clientLast;
+  const clientName  = [clientFirst, client.middleName, clientLast].filter(Boolean).join(" ") || "Client";
+  const spouseName  = [spouseFirst, spouse.middleName, spouseLast].filter(Boolean).join(" ") || "Spouse";
   const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
-  // Header display: "Bob & Melody Carson" — client first, spouse first, shared last
+  // Header: "Bob & Melody Carson" or just "Bob Carson"
   const headerName = (() => {
-    if (!hasSpouseRecord) return clientName;
-    const last = client.lastName || "";
-    const cf = client.firstName || clientName;
-    const sf = spouse.firstName || spouseName;
-    if (last && (spouse.lastName || "") === last) return `${cf} & ${sf} ${last}`;
-    return `${cf} & ${sf}`;
+    if (!clientFirst && !clientLast) return "Client";
+    if (!hasSpouseRecord || !spouseFirst) return clientName;
+    if (clientLast && spouseLast === clientLast) return `${clientFirst} & ${spouseFirst} ${clientLast}`;
+    return `${clientName} & ${spouseName}`;
   })();
   const reportDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
@@ -1058,6 +1060,27 @@ export default function App() {
   const addInh = () => setInheritances(p => [...p, { ...emptyInheritance, id: Date.now() }]);
   const delInh = id => setInheritances(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyInheritance, id: Date.now() }]; });
   const updInh = (id, f, v) => setInheritances(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
+
+  const VAULT_CATEGORIES = [
+    "Investment Statements",
+    "Voided Check",
+    "Driver's License / Photo ID",
+    "Wills & Trust Documents",
+    "Marriage License",
+    "Death Certificate",
+    "Power of Attorney",
+    "Tax Returns",
+    "Insurance Policies",
+    "Social Security Card",
+    "Birth Certificate",
+    "Divorce Decree",
+    "Business Documents",
+    "Other Documents",
+  ];
+  const [vaults, setVaults] = useState([]);
+  const [vaultPickerVal, setVaultPickerVal] = useState("");
+  const addVault = (category) => { if (!category) return; setVaults(p => [...p, { id: Date.now(), category }]); setVaultPickerVal(""); };
+  const delVault = id => setVaults(p => p.filter(x => x.id !== id));
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
@@ -1129,8 +1152,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1187,6 +1210,7 @@ export default function App() {
     setRecordType(record.recordType || "client");
     setNwState(record.nwState || { ...emptyNwState });
     setInheritances(record.inheritances || (record.inheritance ? [{ ...record.inheritance, id: 1 }] : [{ ...emptyInheritance, id: 1 }]));
+    setVaults(record.vaults || []);
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1301,6 +1325,7 @@ export default function App() {
     setRecordType("client");
     setNwState({ ...emptyNwState });
     setInheritances([{ ...emptyInheritance, id: 1 }]);
+    setVaults([]);
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -3287,32 +3312,45 @@ export default function App() {
         </Panel>
 
         <Panel title="Client Toolbox" id="section-toolbox">
-          <div style={{ fontSize: 13, color: MUTED, marginBottom: 16 }}>Upload and store scanned documents for this client. Each drawer below is a separate vault for a document category.</div>
-          {[
-            { key: "toolbox_statements",      label: "Investment Statements",         desc: "Brokerage, retirement, and bank account statements" },
-            { key: "toolbox_voidedcheck",      label: "Voided Check",                  desc: "For ACH / direct deposit / transfer authorization" },
-            { key: "toolbox_driversLicense",   label: "Driver's License / Photo ID",   desc: "Government-issued photo identification" },
-            { key: "toolbox_willsTrust",       label: "Wills & Trust Documents",       desc: "Executed will, living trust, pour-over will, amendments" },
-            { key: "toolbox_marriageLicense",  label: "Marriage License",              desc: "Certified copy of marriage certificate" },
-            { key: "toolbox_deathCertificate", label: "Death Certificate",             desc: "For deceased spouse, beneficiary, or estate matters" },
-            { key: "toolbox_poa",              label: "Power of Attorney",             desc: "Durable, healthcare, or financial POA documents" },
-            { key: "toolbox_taxReturns",       label: "Tax Returns",                   desc: "Federal and state returns — last 2–3 years" },
-            { key: "toolbox_insurance",        label: "Insurance Policies",            desc: "Life, health, LTC, annuity, P&C policy documents" },
-            { key: "toolbox_other",            label: "Other Documents",               desc: "Any additional client documents" },
-          ].map(({ key, label, desc }) => (
-            <div key={key} style={{ border: "1px solid " + BORDER, borderRadius: 10, marginBottom: 12, overflow: "hidden" }}>
-              <div style={{ background: "#f1f3f6", padding: "10px 16px", display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontSize: 18 }}>🗂</span>
-                <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>{label}</div>
-                  <div style={{ fontSize: 11.5, color: MUTED }}>{desc}</div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>
+            <select
+              value={vaultPickerVal}
+              onChange={e => setVaultPickerVal(e.target.value)}
+              style={{ ...IS, flex: "1 1 220px", maxWidth: 320 }}
+            >
+              <option value="">— Select document category —</option>
+              {VAULT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <button
+              onClick={() => addVault(vaultPickerVal)}
+              disabled={!vaultPickerVal}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 8, padding: "9px 20px", fontSize: 13, fontWeight: 600, cursor: vaultPickerVal ? "pointer" : "not-allowed", opacity: vaultPickerVal ? 1 : 0.45, whiteSpace: "nowrap" }}
+            >
+              + Add Vault
+            </button>
+          </div>
+
+          {vaults.length === 0 && (
+            <div style={{ textAlign: "center", padding: "28px 0", color: MUTED, fontSize: 13, border: "1.5px dashed #d0d5de", borderRadius: 10 }}>
+              Select a category above and click <strong>+ Add Vault</strong> to create a document drawer.
+            </div>
+          )}
+
+          {vaults.map((v, i) => {
+            const uploadKey = `vault_${v.id}`;
+            return (
+              <div key={v.id} style={{ border: "1px solid " + BORDER, borderRadius: 10, marginBottom: 12, overflow: "hidden" }}>
+                <div style={{ background: "#f1f3f6", padding: "10px 16px", display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>🗂</span>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK, flex: 1 }}>{v.category}</div>
+                  <button onClick={() => window.confirm(`Remove "${v.category}" vault?`) && delVault(v.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12 }}>Remove</button>
+                </div>
+                <div style={{ padding: "10px 16px" }}>
+                  <FileUpload section={uploadKey} files={uploads[uploadKey] || []} onChange={handleUploadChange} hideLabel />
                 </div>
               </div>
-              <div style={{ padding: "10px 16px" }}>
-                <FileUpload section={key} files={uploads[key] || []} onChange={handleUploadChange} hideLabel />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </Panel>
 
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
