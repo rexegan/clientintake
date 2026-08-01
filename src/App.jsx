@@ -251,6 +251,8 @@ const INCOME_TYPES = [
 const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", designationType:"primary", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", designationType:"primary", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
+// Backward-compat: old records used `type:"Primary"/"Contingent"`, new ones use `designationType`
+const getDesignType = b => b.designationType || (b.type?.toLowerCase() === "contingent" ? "contingent" : "primary");
 
 const US_STATES = [
   ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
@@ -995,8 +997,8 @@ function ClientReport({ data, onClose }) {
           {/* ── BENEFICIARIES ── */}
           {(beneficiaries.filter(b => b.firstName || b.lastName).length > 0 || children.filter(c => c.isBeneficiary).length > 0) && (() => {
             const allBenes = [
-              ...children.filter(c => c.isBeneficiary).map(c => ({ name: [c.firstName, c.lastName].filter(Boolean).join(" "), relationship: c.relationship || "Child", dob: c.dob || "—", percentage: c.percentage || "", designationType: c.designationType || "primary" })),
-              ...beneficiaries.filter(b => b.firstName || b.lastName).map(b => ({ name: [b.firstName, b.lastName].filter(Boolean).join(" "), relationship: b.relationship || "—", dob: b.dob || "—", percentage: b.percentage || "", designationType: b.designationType || "primary" })),
+              ...children.filter(c => c.isBeneficiary).map(c => ({ name: [c.firstName, c.lastName].filter(Boolean).join(" "), relationship: c.relationship || "Child", dob: c.dob || "—", percentage: c.percentage || "", designationType: getDesignType(c) })),
+              ...beneficiaries.filter(b => b.firstName || b.lastName).map(b => ({ name: [b.firstName, b.lastName].filter(Boolean).join(" "), relationship: b.relationship || "—", dob: b.dob || "—", percentage: b.percentage || "", designationType: getDesignType(b) })),
             ];
             const primaries   = allBenes.filter(b => b.designationType === "primary");
             const contingents = allBenes.filter(b => b.designationType === "contingent");
@@ -1452,9 +1454,9 @@ export default function App() {
       { id: 8, type:"Annuity (Fixed Indexed)", institution:"North American Company", owner:"Client", accountNumber:"NA-7749021", balance:"$215,000", qualified:"Non-Qualified", hasRmdOrContrib:null, rmdContribAmount:"", rmdContribFrequency:"" },
     ]);
     setBeneficiaries([
-      { id: 1, firstName:"Catherine", middleName:"Anne", lastName:"Mitchell", relationship:"Spouse", type:"Primary", percentage:"100", dob:"07/22/1971", ssn:"519-74-6082", phone:"(615) 482-9174", address:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
-      { id: 2, firstName:"Tyler", middleName:"James", lastName:"Mitchell", relationship:"Child", type:"Contingent", percentage:"50", dob:"09/12/2002", ssn:"601-33-8847", phone:"(615) 390-4821", address:"1811 Cumberland Ave", city:"Knoxville", state:"TN", zip:"37916" },
-      { id: 3, firstName:"Olivia", middleName:"Grace", lastName:"Mitchell", relationship:"Child", type:"Contingent", percentage:"50", dob:"04/28/2005", ssn:"602-51-9034", phone:"(615) 482-9175", address:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
+      { id: 1, firstName:"Catherine", middleName:"Anne", lastName:"Mitchell", relationship:"Spouse", designationType:"primary", percentage:"100%", dob:"07/22/1971", ssn:"519-74-6082", email:"catherine.mitchell@gmail.com", addressSource:"manual", addressLine1:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
+      { id: 2, firstName:"Tyler", middleName:"James", lastName:"Mitchell", relationship:"Child", designationType:"contingent", percentage:"50%", dob:"09/12/2002", ssn:"601-33-8847", email:"tyler.mitchell@utk.edu", addressSource:"manual", addressLine1:"1811 Cumberland Ave", city:"Knoxville", state:"TN", zip:"37916" },
+      { id: 3, firstName:"Olivia", middleName:"Grace", lastName:"Mitchell", relationship:"Child", designationType:"contingent", percentage:"50%", dob:"04/28/2005", ssn:"602-51-9034", email:"olivia.mitchell@gmail.com", addressSource:"manual", addressLine1:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
     ]);
     setWillsTrust({ hasWill:"yes", willDate:"11/08/2019", willAttorney:"Bradford & Simmons Law Group", executor:"Catherine A. Mitchell", altExecutor:"Tyler J. Mitchell", willLocation:"Safe deposit box — Bank of America Franklin Branch", willUpdated:"yes", willUpdateDate:"11/08/2019", willNotes:"Pours over into living trust. Reviewed by attorney after second property purchase.", trustName:"Mitchell Family Living Trust", trustType:"revocable", trustDate:"11/08/2019", trustee:"James R. Mitchell & Catherine A. Mitchell", successorTrustee:"Tyler J. Mitchell", trustAttorney:"Bradford & Simmons Law Group", assetsTitled:"yes", trustLocation:"Safe deposit box — Bank of America Franklin Branch", trustNotes:"All real estate, brokerage, and non-qualified accounts titled in trust name." });
     setPoa({ hasPOA:"yes", poaType:"durable", agentName:"Catherine A. Mitchell", agentRelationship:"spouse", agentPhone:"(615) 482-9174", altAgent:"Tyler J. Mitchell", poaDate:"11/08/2019", poaAttorney:"Bradford & Simmons Law Group", poaLocation:"Safe deposit box — Bank of America Franklin Branch", poaNotes:"Healthcare directive also on file with Vanderbilt University Medical Center." });
@@ -2085,7 +2087,7 @@ export default function App() {
                           </select>
                         </F>
                         <F>
-                          <Lbl t={`% to Inherit (${(ch.designationType || "primary") === "primary" ? "Primary" : "Contingent"})`} />
+                          <Lbl t={`% to Inherit (${getDesignType(ch) === "primary" ? "Primary" : "Contingent"})`} />
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                             <input
                               value={(ch.percentage || "").replace("%", "")}
@@ -2133,7 +2135,7 @@ export default function App() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Child Beneficiary — {ch.firstName} {ch.lastName}</div>
                   <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 5, padding: "3px 8px", border: "1px solid " + BORDER, background: "#fff", color: INK }}>
-                    {(ch.designationType || "primary") === "primary" ? "Primary" : "Contingent"}
+                    {getDesignType(ch) === "primary" ? "Primary" : "Contingent"}
                   </span>
                 </div>
                 <div style={{ fontSize: 11, color: INK, fontStyle: "italic" }}>Edit in Family section</div>
@@ -2196,7 +2198,7 @@ export default function App() {
               <Row cols={2}>
                 <F><Lbl t="Email Address" /><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
-                  <Lbl t={`% to Inherit (${(b.designationType || "primary") === "primary" ? "Primary" : "Contingent"})`} />
+                  <Lbl t={`% to Inherit (${getDesignType(b) === "primary" ? "Primary" : "Contingent"})`} />
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <input
                       value={(b.percentage || "").replace("%", "")}
@@ -2274,8 +2276,8 @@ export default function App() {
               ...beneficiaries.map(b => ({ ...b, _src: "bene" })),
             ];
             const pct = b => { const n = parseFloat((b.percentage || "").replace("%", "") || 0); return isNaN(n) ? 0 : n; };
-            const primaries   = allBenes.filter(b => (b.designationType || "primary") === "primary");
-            const contingents = allBenes.filter(b => b.designationType === "contingent");
+            const primaries   = allBenes.filter(b => getDesignType(b) === "primary");
+            const contingents = allBenes.filter(b => getDesignType(b) === "contingent");
             const primTotal = primaries.reduce((s, b) => s + pct(b), 0);
             const contTotal = contingents.reduce((s, b) => s + pct(b), 0);
             if (!primTotal && !contTotal) return null;
