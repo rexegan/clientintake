@@ -3587,18 +3587,18 @@ export default function App() {
       </div>{/* end shell */}
 
       {/* ── FLOATING SAVE BUTTON ── */}
-      <div className="float-save" style={{ position: "fixed", bottom: 28, right: 28, zIndex: 2000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-        <button
-          onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
-          style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 10, padding: "13px 22px", fontSize: 15, fontWeight: "bold", cursor: "pointer", boxShadow: "0 8px 24px rgba(15,23,42,0.16)", whiteSpace: "nowrap" }}
-        >
-          💾 {activeClientId ? "Update File" : "Save Draft"}
-        </button>
+      <div className="float-save" style={{ position: "fixed", top: 10, right: 12, zIndex: 2000, display: "flex", alignItems: "center", gap: 8 }}>
         {lastSaved && (
-          <div style={{ fontSize: 10, color: INK, textAlign: "right", background: "rgba(255,255,255,0.92)", border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px" }}>
+          <div style={{ fontSize: 10, color: MUTED, background: "rgba(255,255,255,0.92)", border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", whiteSpace: "nowrap" }}>
             Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
         )}
+        <button
+          onClick={() => { autoSave(); showToast(activeClientId ? "File updated" : "Draft saved", ACCENT); }}
+          style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "7px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 8px rgba(15,23,42,0.18)", whiteSpace: "nowrap" }}
+        >
+          💾 {activeClientId ? "Update File" : "Save Draft"}
+        </button>
       </div>
 
       <style>{`
@@ -3622,7 +3622,7 @@ export default function App() {
         @media (max-width: 600px) {
           .rg { grid-template-columns: 1fr !important; }
           .main-col { padding: 18px 12px 36px !important; }
-          .float-save { bottom: 12px !important; right: 12px !important; }
+          .float-save { top: 6px !important; right: 6px !important; }
         }
         [data-lastpass-icon-root], [data-lastpass-root], [id^="lastpass"], [id*="lastpass"],
         .lastpass-icon, .lp-icon, [class*="lastpass"], [data-lpignore-ext],
