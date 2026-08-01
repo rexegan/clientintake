@@ -1612,17 +1612,17 @@ export default function App() {
             <select
               value=""
               onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } e.target.value = ""; }}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", appearance: "none", WebkitAppearance: "none", lineHeight: "1.4" }}
             >
-              <option value="">+ Add Prospect</option>
+              <option value="">+ Add Prospect ▾</option>
               <option value="yes">Yes — New Prospect</option>
             </select>
             <select
               value=""
               onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("client"); window.scrollTo(0,0); } e.target.value = ""; }}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", appearance: "none", WebkitAppearance: "none", lineHeight: "1.4" }}
             >
-              <option value="">+ Add Client</option>
+              <option value="">+ Add Client ▾</option>
               <option value="yes">Yes — New Client</option>
             </select>
             {recordType === "prospect" && (
