@@ -1406,7 +1406,7 @@ export default function App() {
             ["section-autos",     "Automobiles"],
             ["section-life",      "Life Insurance"],
             ["section-networth",  "Net Worth / Portfolio"],
-            ["section-inheritance", "Estate Issues"],
+            ["section-inheritance", "Estate Planning"],
           ].map(([id, label]) => (
             <button
               key={id}
@@ -3082,7 +3082,7 @@ export default function App() {
           </Row>
         </Panel>
 
-        <Panel title="Estate Issues" id="section-inheritance">
+        <Panel title="Estate Planning" id="section-inheritance">
 
           <Sec t="Inheritance Expectation" />
           <Row cols={3}>
