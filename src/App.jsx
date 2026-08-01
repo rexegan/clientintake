@@ -1692,57 +1692,59 @@ export default function App() {
               onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >+ Add Client</button>
-            {/* Quick View multi-select dropdown */}
-            <div style={{ position: "relative" }}>
+            {/* Quick View stacked above Saved Clients */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, position: "relative" }}>
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={() => setQuickViewOpen(o => !o)}
+                  style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, width: "100%" }}
+                >
+                  Quick View {quickViewSelected.length > 0 && <span style={{ background: "rgba(255,255,255,0.28)", borderRadius: 999, padding: "1px 6px", fontSize: 11 }}>{quickViewSelected.length}</span>} <span style={{ fontSize: 10, marginLeft: "auto" }}>{quickViewOpen ? "▲" : "▼"}</span>
+                </button>
+                {quickViewOpen && (
+                  <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, background: "#fff", border: "1px solid " + BORDER, borderRadius: 10, boxShadow: "0 8px 28px rgba(0,0,0,0.16)", zIndex: 3000, minWidth: 230, display: "flex", flexDirection: "column" }}>
+                    <div style={{ padding: "8px 14px 6px", borderBottom: "1px solid " + BORDER, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: "0.08em" }}>Select Sections</span>
+                      {quickViewSelected.length > 0 && (
+                        <button onClick={() => setQuickViewSelected([])} style={{ background: "none", border: "none", fontSize: 11, color: DANGER, cursor: "pointer", padding: 0, fontWeight: 600 }}>Clear</button>
+                      )}
+                    </div>
+                    <div style={{ overflowY: "auto", maxHeight: 280 }}>
+                      {QV_SECTIONS.map(([id, getLabel]) => {
+                        const label = getLabel();
+                        const checked = quickViewSelected.includes(id);
+                        return (
+                          <label key={id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 14px", cursor: "pointer", background: checked ? "#f0f4ff" : "none", borderLeft: checked ? "3px solid " + BRAND_NAVY : "3px solid transparent" }}
+                            onMouseEnter={e => { if (!checked) e.currentTarget.style.background = "#f4f6f9"; }}
+                            onMouseLeave={e => { if (!checked) e.currentTarget.style.background = "none"; }}
+                          >
+                            <input type="checkbox" checked={checked} onChange={() => setQuickViewSelected(s => checked ? s.filter(x => x !== id) : [...s, id])}
+                              style={{ accentColor: BRAND_NAVY, width: 14, height: 14, cursor: "pointer", flexShrink: 0 }} />
+                            <span style={{ fontSize: 13, color: INK, fontWeight: checked ? 600 : 500 }}>{label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    <div style={{ padding: "8px 14px 10px", borderTop: "1px solid " + BORDER }}>
+                      <button
+                        disabled={quickViewSelected.length === 0}
+                        onClick={() => { setQuickViewPanelOpen(true); setQuickViewOpen(false); }}
+                        style={{ width: "100%", background: quickViewSelected.length === 0 ? "#ccc" : BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontSize: 13, fontWeight: 700, cursor: quickViewSelected.length === 0 ? "default" : "pointer" }}
+                      >
+                        View Selected {quickViewSelected.length > 0 ? `(${quickViewSelected.length})` : ""}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <button
-                onClick={() => setQuickViewOpen(o => !o)}
-                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}
+                onClick={() => setView("roster")}
+                style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
               >
-                Quick View {quickViewSelected.length > 0 && <span style={{ background: "rgba(255,255,255,0.28)", borderRadius: 999, padding: "1px 6px", fontSize: 11 }}>{quickViewSelected.length}</span>} <span style={{ fontSize: 10 }}>{quickViewOpen ? "▲" : "▼"}</span>
+                <span>Saved Clients</span>
+                <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
               </button>
-              {quickViewOpen && (
-                <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, background: "#fff", border: "1px solid " + BORDER, borderRadius: 10, boxShadow: "0 8px 28px rgba(0,0,0,0.16)", zIndex: 3000, minWidth: 230, display: "flex", flexDirection: "column" }}>
-                  <div style={{ padding: "8px 14px 6px", borderBottom: "1px solid " + BORDER, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: "0.08em" }}>Select Sections</span>
-                    {quickViewSelected.length > 0 && (
-                      <button onClick={() => setQuickViewSelected([])} style={{ background: "none", border: "none", fontSize: 11, color: DANGER, cursor: "pointer", padding: 0, fontWeight: 600 }}>Clear</button>
-                    )}
-                  </div>
-                  <div style={{ overflowY: "auto", maxHeight: 280 }}>
-                    {QV_SECTIONS.map(([id, getLabel]) => {
-                      const label = getLabel();
-                      const checked = quickViewSelected.includes(id);
-                      return (
-                        <label key={id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 14px", cursor: "pointer", background: checked ? "#f0f4ff" : "none", borderLeft: checked ? "3px solid " + BRAND_NAVY : "3px solid transparent" }}
-                          onMouseEnter={e => { if (!checked) e.currentTarget.style.background = "#f4f6f9"; }}
-                          onMouseLeave={e => { if (!checked) e.currentTarget.style.background = "none"; }}
-                        >
-                          <input type="checkbox" checked={checked} onChange={() => setQuickViewSelected(s => checked ? s.filter(x => x !== id) : [...s, id])}
-                            style={{ accentColor: BRAND_NAVY, width: 14, height: 14, cursor: "pointer", flexShrink: 0 }} />
-                          <span style={{ fontSize: 13, color: INK, fontWeight: checked ? 600 : 500 }}>{label}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                  <div style={{ padding: "8px 14px 10px", borderTop: "1px solid " + BORDER }}>
-                    <button
-                      disabled={quickViewSelected.length === 0}
-                      onClick={() => { setQuickViewPanelOpen(true); setQuickViewOpen(false); }}
-                      style={{ width: "100%", background: quickViewSelected.length === 0 ? "#ccc" : BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontSize: 13, fontWeight: 700, cursor: quickViewSelected.length === 0 ? "default" : "pointer" }}
-                    >
-                      View Selected {quickViewSelected.length > 0 ? `(${quickViewSelected.length})` : ""}
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
-            <button
-              onClick={() => setView("roster")}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
-            >
-              <span>Saved Clients</span>
-              <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
-            </button>
             <button
               onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
               style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
