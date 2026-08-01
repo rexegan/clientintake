@@ -1324,6 +1324,67 @@ export default function App() {
     setSubmitted(true);
   };
 
+  const loadSampleData = () => {
+    setRecordType("client");
+    setClient({ firstName:"James", middleName:"Robert", lastName:"Mitchell", dob:"03/15/1968", ssn:"472-88-3291", gender:"Male", filingStatus:"Married", phone:"(615) 482-9173", altPhone:"(615) 391-7204", address:"4821 Stonegate Drive", addressLine2:"", city:"Franklin", state:"TN", zip:"37064", citizenship:"US Citizen", driversLicense:"M420-38159-60317", dlState:"TN", dlExpiration:"03/15/2028", employer:"", occupation:"Regional Vice President" });
+    setSpouse({ firstName:"Catherine", middleName:"Anne", lastName:"Mitchell", dob:"07/22/1971", ssn:"519-74-6082", gender:"Female", phone:"(615) 482-9174", altPhone:"", address:"4821 Stonegate Drive", addressLine2:"", city:"Franklin", state:"TN", zip:"37064", citizenship:"US Citizen", driversLicense:"M440-71225-48203", dlState:"TN", dlExpiration:"07/22/2027", occupation:"Middle School Science Teacher" });
+    setHasSpouse("married");
+    setClientEmails([{ id: 1, tag: "personal", address: "james.mitchell@gmail.com" }, { id: 2, tag: "work", address: "j.mitchell@pinnaclehealthgroup.com" }]);
+    setSpouseEmails([{ id: 1, tag: "personal", address: "catherine.mitchell@gmail.com" }, { id: 2, tag: "work", address: "c.mitchell@wcs.edu" }]);
+    setClientEmp({ employerName:"Pinnacle Healthcare Group", jobTitle:"Regional Vice President", workAddress:"1200 Meridian Blvd", workCity:"Nashville", workState:"TN", workZip:"37212", workPhone:"(615) 844-2200", startDate:"04/01/2014", payFrequency:"bimonthly", compensation:"$14,583", annualEquivalent:"$175,000" });
+    setSpouseEmp({ employerName:"Williamson County Schools", jobTitle:"Middle School Science Teacher", workAddress:"701 Highway 96 West", workCity:"Franklin", workState:"TN", workZip:"37064", workPhone:"(615) 472-4000", startDate:"08/15/2004", payFrequency:"monthly", compensation:"$5,100", annualEquivalent:"$61,200" });
+    setHasChildren("yes");
+    setChildren([
+      { id: 1, firstName:"Tyler", middleName:"James", lastName:"Mitchell", dob:"09/12/2002", age:"21", ssn:"601-33-8847", gender:"Male", dependent:"no", livingAt:"College — University of Tennessee, Knoxville" },
+      { id: 2, firstName:"Olivia", middleName:"Grace", lastName:"Mitchell", dob:"04/28/2005", age:"19", ssn:"602-51-9034", gender:"Female", dependent:"yes", livingAt:"Home" },
+    ]);
+    setIncomes([
+      { id: 1, type:"Salary / W-2", amount:"$14,583", frequency:"monthly", owner:"client", institution:"Pinnacle Healthcare Group" },
+      { id: 2, type:"Salary / W-2", amount:"$5,100", frequency:"monthly", owner:"spouse", institution:"Williamson County Schools" },
+      { id: 3, type:"Rental Income", amount:"$2,200", frequency:"monthly", owner:"joint", institution:"1203 Elm Creek Blvd Property" },
+      { id: 4, type:"Investment / Dividends", amount:"$8,400", frequency:"annual", owner:"joint", institution:"Fidelity Investments" },
+    ]);
+    setAutos([
+      { id: 1, year:"2022", make:"BMW", model:"X5 xDrive40i", vin:"5UXCR6C09N9K48321", color:"Alpine White", value:"$68,500", loanBalance:"$31,200", loanCompany:"BMW Financial Services", monthlyPayment:"$948", owner:"client" },
+      { id: 2, year:"2021", make:"Toyota", model:"Highlander XLE", vin:"5TDJZRFH5MS128744", color:"Midnight Black", value:"$38,900", loanBalance:"$0", loanCompany:"", monthlyPayment:"$0", owner:"spouse" },
+    ]);
+    setRealEstate([
+      { id: 1, description:"Personal Residence", descriptionNote:"Primary Home — Franklin TN", purchaseDate:"06/15/2012", purchasePrice:"$485,000", marketValue:"$892,000", mortgageBalance:"$187,400", netEquity:"$704,600", address:"4821 Stonegate Drive", addressLine2:"", city:"Franklin", state:"TN", zip:"37064", mortgageCompany:"Wells Fargo Home Mortgage", originationDate:"06/15/2012", interestRate:"3.625%", monthlyPmt:"$2,284", propertyTaxes:"$7,800", insurance:"$2,100", pmtIncludesTaxIns:"yes", hasOpt:null, optEvent:"", optTimeframe:"", hasZillow:"yes" },
+      { id: 2, description:"Investment / Rental", descriptionNote:"Rental Property — Nashville TN", purchaseDate:"03/22/2018", purchasePrice:"$285,000", marketValue:"$374,000", mortgageBalance:"$198,600", netEquity:"$175,400", address:"1203 Elm Creek Blvd", addressLine2:"Unit A", city:"Nashville", state:"TN", zip:"37209", mortgageCompany:"Rocket Mortgage / Quicken Loans", originationDate:"03/22/2018", interestRate:"4.250%", monthlyPmt:"$1,403", propertyTaxes:"$4,200", insurance:"$1,600", pmtIncludesTaxIns:"no", hasOpt:null, optEvent:"", optTimeframe:"", hasZillow:"yes" },
+    ]);
+    setAccounts([
+      { id: 1, type:"401(k)", institution:"Fidelity Investments", owner:"Client", accountNumber:"4401882937", balance:"$487,320", qualified:"Qualified Retirement", hasRmdOrContrib:"Contributing", rmdContribAmount:"$2,000", rmdContribFrequency:"monthly" },
+      { id: 2, type:"Roth IRA", institution:"Fidelity Investments", owner:"Client", accountNumber:"4418839201", balance:"$112,480", qualified:"Qualified Retirement", hasRmdOrContrib:"Contributing", rmdContribAmount:"$583", rmdContribFrequency:"monthly" },
+      { id: 3, type:"401(k)", institution:"Vanguard", owner:"Spouse", accountNumber:"7732049185", balance:"$198,750", qualified:"Qualified Retirement", hasRmdOrContrib:"Contributing", rmdContribAmount:"$800", rmdContribFrequency:"monthly" },
+      { id: 4, type:"Roth IRA", institution:"Vanguard", owner:"Spouse", accountNumber:"7748201934", balance:"$44,320", qualified:"Qualified Retirement", hasRmdOrContrib:"Contributing", rmdContribAmount:"$583", rmdContribFrequency:"monthly" },
+      { id: 5, type:"Non-Qualified Brokerage", institution:"Charles Schwab", owner:"Joint", accountNumber:"8812049302", balance:"$324,150", qualified:"Non-Qualified", hasRmdOrContrib:null, rmdContribAmount:"", rmdContribFrequency:"" },
+      { id: 6, type:"Checking / Savings", institution:"Bank of America", owner:"Joint", accountNumber:"0042918833", balance:"$48,700", qualified:"Non-Qualified", hasRmdOrContrib:null, rmdContribAmount:"", rmdContribFrequency:"" },
+      { id: 7, type:"Money Market", institution:"Bank of America", owner:"Joint", accountNumber:"0053920174", balance:"$85,000", qualified:"Non-Qualified", hasRmdOrContrib:null, rmdContribAmount:"", rmdContribFrequency:"" },
+      { id: 8, type:"Annuity (Fixed Indexed)", institution:"North American Company", owner:"Client", accountNumber:"NA-7749021", balance:"$215,000", qualified:"Non-Qualified", hasRmdOrContrib:null, rmdContribAmount:"", rmdContribFrequency:"" },
+    ]);
+    setBeneficiaries([
+      { id: 1, firstName:"Catherine", middleName:"Anne", lastName:"Mitchell", relationship:"Spouse", type:"Primary", percentage:"100", dob:"07/22/1971", ssn:"519-74-6082", phone:"(615) 482-9174", address:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
+      { id: 2, firstName:"Tyler", middleName:"James", lastName:"Mitchell", relationship:"Child", type:"Contingent", percentage:"50", dob:"09/12/2002", ssn:"601-33-8847", phone:"(615) 390-4821", address:"1811 Cumberland Ave", city:"Knoxville", state:"TN", zip:"37916" },
+      { id: 3, firstName:"Olivia", middleName:"Grace", lastName:"Mitchell", relationship:"Child", type:"Contingent", percentage:"50", dob:"04/28/2005", ssn:"602-51-9034", phone:"(615) 482-9175", address:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
+    ]);
+    setWillsTrust({ hasWill:"yes", willDate:"11/08/2019", willAttorney:"Bradford & Simmons Law Group", executor:"Catherine A. Mitchell", altExecutor:"Tyler J. Mitchell", willLocation:"Safe deposit box — Bank of America Franklin Branch", willUpdated:"yes", willUpdateDate:"11/08/2019", willNotes:"Pours over into living trust. Reviewed by attorney after second property purchase.", trustName:"Mitchell Family Living Trust", trustType:"revocable", trustDate:"11/08/2019", trustee:"James R. Mitchell & Catherine A. Mitchell", successorTrustee:"Tyler J. Mitchell", trustAttorney:"Bradford & Simmons Law Group", assetsTitled:"yes", trustLocation:"Safe deposit box — Bank of America Franklin Branch", trustNotes:"All real estate, brokerage, and non-qualified accounts titled in trust name." });
+    setPoa({ hasPOA:"yes", poaType:"durable", agentName:"Catherine A. Mitchell", agentRelationship:"spouse", agentPhone:"(615) 482-9174", altAgent:"Tyler J. Mitchell", poaDate:"11/08/2019", poaAttorney:"Bradford & Simmons Law Group", poaLocation:"Safe deposit box — Bank of America Franklin Branch", poaNotes:"Healthcare directive also on file with Vanderbilt University Medical Center." });
+    setLifePolicies([
+      { id: 1, carrier:"Lincoln Financial", policyType:"Term", termLength:"20", insured:"James R. Mitchell", owner:"Mitchell Family Living Trust", deathBenefit:"$1,000,000", cashValue:"", surrender:"", premiumAmount:"$148", premiumFrequency:"monthly", policyNumber:"LF-20-4482019", issueDate:"05/12/2014" },
+      { id: 2, carrier:"Northwestern Mutual", policyType:"Whole Life", termLength:"", insured:"James R. Mitchell", owner:"James R. Mitchell", deathBenefit:"$250,000", cashValue:"$87,400", surrender:"$81,200", premiumAmount:"$612", premiumFrequency:"monthly", policyNumber:"NM-88-2031947", issueDate:"01/15/2005" },
+      { id: 3, carrier:"Protective Life", policyType:"Term", termLength:"10", insured:"Catherine A. Mitchell", owner:"Mitchell Family Living Trust", deathBenefit:"$500,000", cashValue:"", surrender:"", premiumAmount:"$72", premiumFrequency:"monthly", policyNumber:"PL-10-7719384", issueDate:"09/22/2018" },
+    ]);
+    setHomeOwnership({ ownOrRent:"own", mortgageCompany:"Wells Fargo Home Mortgage", mortgageBalance:"$187,400", monthlyPayment:"$2,284", interestRate:"3.625%", loanOriginationDate:"06/15/2012", loanNumber:"WF-3812049-TN", monthlyRent:"", landlordName:"", landlordPhone:"" });
+    setAnnualExpenses({ amount:"$12,500", frequency:"monthly" });
+    setNwState({ totalAssets:"$2,489,120", totalLiabilities:"$417,200", liquidNetWorth:"$1,315,720", netWorthExHome:"$1,367,720", primaryEquity:"$704,600", pbCash:"$133,700", pbQualified:"$843,870", pbNonQual:"$324,150", pbAnnuities:"$215,000", pbCVLI:"$87,400", pbAlts:"", pbOther:"", notes:"Net worth calculated as of current market valuations. Primary residence per Zillow estimate. Annuity surrender value used for NW calculation. Life insurance CSV included in non-qualified bucket." });
+    setInheritances([{ id: 1, expectsInheritance:"possibly", estValue:"$600,000", timeline:"6-10 years", source:"parent", sourceDetails:"Robert E. Mitchell Sr. (age 78, Brentwood TN) — estate estimated $1.2M split with one sibling", numberOfSiblings:"1", siblingsInvolved:"yes_equal", familyConflicts:"no", conflictDetails:"", specialNeedsFamily:"no", specialNeedsTrust:"na", specialNeedsDetails:"", nursingCare:"yes_parent", ltcInsurance:"no", nursingCareDetails:"Father Robert Mitchell Sr. is in early-stage Alzheimer's. Currently at home with part-time care aide. Long-term memory care facility likely within 2–4 years. No LTC insurance in place. Potential Medicaid planning needed.", estatePlanning:"yes_partial", trusteeArrangements:"client_is_executor", charitableIntent:"considering", charitableDetails:"Family has historically supported St. Jude Children's Research Hospital and local Williamson County food bank.", additionalNotes:"Mother Margaret Mitchell (age 74) is in good health. Family home on Granny White Pike in Brentwood is the primary estate asset. Brother David Mitchell (age 53) is co-executor." }]);
+    setVaults([]);
+    setActiveClient(null);
+    setSubmitted(false);
+    window.scrollTo(0, 0);
+    showToast("Sample client loaded — James & Catherine Mitchell", SUCCESS);
+  };
+
   const handleReset = () => {
     setClient({ ...emptyClient }); setSpouse({ ...emptySpouse });
     setClientEmails([{ id: 1, tag: "personal", address: "" }]);
@@ -1523,6 +1584,12 @@ export default function App() {
               <option value="">+ Add Client</option>
               <option value="yes">Yes — New Client</option>
             </select>
+            <button
+              onClick={() => { if (window.confirm("Load sample client data? This will overwrite the current form.")) loadSampleData(); }}
+              style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
+            >
+              Load Sample
+            </button>
           </div>
         </div>
 
