@@ -3592,6 +3592,43 @@ export default function App() {
               </Row>
               <Row cols={4}>
                 <F>
+                  <Lbl t="Auto Loan?" />
+                  <select value={a.hasLoan || ""} onChange={e => updAuto(a.id, "hasLoan", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No — Paid Off</option>
+                  </select>
+                </F>
+                {a.hasLoan === "yes" && (<>
+                  <F><Lbl t="Amount Owed" /><input value={a.loanBalance || ""} onChange={e => updAuto(a.id, "loanBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  <F>
+                    <Lbl t="Financed With" />
+                    <select value={a.lender || ""} onChange={e => updAuto(a.id, "lender", e.target.value)} style={IS}>
+                      <option value="">— Select Lender —</option>
+                      {["Ally Financial","AmeriCredit (GM Financial)","Bank of America","Capital One Auto Finance","CarMax Auto Finance","Chase Auto","Credit Acceptance Corp","DriveTime","Fifth Third Bank","Ford Motor Credit","Honda Financial Services","Hyundai Motor Finance","Kia Finance America","Navy Federal Credit Union","Nissan Motor Acceptance","Pentagon Federal Credit Union","Santander Consumer USA","TD Auto Finance","Toyota Financial Services","US Bank"].map(l => <option key={l} value={l}>{l}</option>)}
+                      <option value="Other">Other</option>
+                    </select>
+                  </F>
+                  <F>
+                    <Lbl t="Interest Rate" />
+                    <input
+                      value={a.interestRate || ""}
+                      onChange={e => {
+                        let v = e.target.value.replace(/[^0-9.]/g, "");
+                        updAuto(a.id, "interestRate", v);
+                      }}
+                      onBlur={e => {
+                        let v = e.target.value.replace(/[^0-9.]/g, "");
+                        if (v && !v.endsWith("%")) v = v + "%";
+                        updAuto(a.id, "interestRate", v);
+                      }}
+                      style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0.00%" />
+                  </F>
+                  <F><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                </>)}
+              </Row>
+              <Row cols={4}>
+                <F>
                   <Lbl t="KBB?" />
                   <select value={a.hasKbb || ""} onChange={e => updAuto(a.id, "hasKbb", e.target.value || null)} style={IS}>
                     <option value="">— Select —</option>
@@ -3635,22 +3672,6 @@ export default function App() {
                       Open KBB ↗
                     </button>
                   </F>
-                </>)}
-              </Row>
-              <Row cols={4}>
-                <F>
-                  <Lbl t="Auto Loan?" />
-                  <select value={a.hasLoan || ""} onChange={e => updAuto(a.id, "hasLoan", e.target.value || null)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No — Paid Off</option>
-                  </select>
-                </F>
-                {a.hasLoan === "yes" && (<>
-                  <F><Lbl t="Amount Owed" /><input value={a.loanBalance || ""} onChange={e => updAuto(a.id, "loanBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-                  <F><Lbl t="Financed With" /><input value={a.lender || ""} onChange={e => updAuto(a.id, "lender", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Lender name" /></F>
-                  <F><Lbl t="Interest Rate" /><input value={a.interestRate || ""} onChange={e => updAuto(a.id, "interestRate", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 4.9%" /></F>
-                  <F style={{ gridColumn: "span 1" }}><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                 </>)}
               </Row>
             </div>
