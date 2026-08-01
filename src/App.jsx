@@ -644,7 +644,7 @@ function ClientReport({ data, onClose }) {
           {/* ── NET WORTH SNAPSHOT ── */}
           <div style={s.kpiRow}>
             <div style={{ ...s.kpi, background: NAVY, border: "none" }}><div style={{ ...s.kpiLbl, color: "#c7d0db" }}>Total Net Worth</div><div style={{ ...s.kpiVal, color: "#fff", fontSize: 20 }}>{fmt(netWorth)}</div><div style={{ fontSize: 10, color: "#c7d0db", marginTop: 2 }}>All assets minus liabilities</div></div>
-            <div style={s.kpi}><div style={s.kpiLbl}>Net Worth (ex-Home)</div><div style={s.kpiVal}>{fmt(netWorthExHome)}</div><div style={s.kpiSub}>Excl. primary residence equity</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Net Worth (ex-Home)</div><div style={s.kpiVal}>{fmt(netWorthExHome)}</div><div style={s.kpiSub}>Less primary residence equity</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Liquid Net Worth</div><div style={s.kpiVal}>{fmt(liquidAcctTotal)}</div><div style={s.kpiSub}>Investment &amp; bank accounts</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Annual Income</div><div style={s.kpiVal}>{fmt(annualIncome)}</div>{annExpRaw > 0 && <div style={s.kpiSub}>Expenses: {fmt(annExpRaw)}</div>}</div>
           </div>
@@ -1206,6 +1206,23 @@ export default function App() {
   const [showReport, setShowReport] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [quickViewSection, setQuickViewSection] = useState("");
+  const [quickViewSelected, setQuickViewSelected] = useState([]);
+  const [quickViewPanelOpen, setQuickViewPanelOpen] = useState(false);
+  const QV_SECTIONS = [
+    ["section-profile",    () => recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
+    ["section-family",     () => "Family"],
+    ["section-bene",       () => "Beneficiaries"],
+    ["section-employment", () => "Employment"],
+    ["section-income",     () => "Income"],
+    ["section-realestate", () => "Real Estate"],
+    ["section-accounts",   () => "Accounts"],
+    ["section-wills",      () => "Wills & Trust"],
+    ["section-autos",      () => "Autos"],
+    ["section-life",       () => "Life Insurance"],
+    ["section-networth",   () => "Net Worth / Portfolio"],
+    ["section-inheritance",() => "Estate Planning"],
+    ["section-toolbox",    () => "Client Toolbox"],
+  ];
   const [activeClientId, setActiveClientId] = useState(() => {
     const sid = sessionStorage.getItem("rwg_activeClientId");
     return sid ? Number(sid) : null;
@@ -1659,6 +1676,56 @@ export default function App() {
             Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            {recordType === "prospect" && (
+              <button
+                onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
+                style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              >Prospect → Client</button>
+            )}
+            {/* Quick View multi-select dropdown */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setQuickViewOpen(o => !o)}
+                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}
+              >
+                Quick View {quickViewSelected.length > 0 && <span style={{ background: "rgba(255,255,255,0.28)", borderRadius: 999, padding: "1px 6px", fontSize: 11 }}>{quickViewSelected.length}</span>} <span style={{ fontSize: 10 }}>{quickViewOpen ? "▲" : "▼"}</span>
+              </button>
+              {quickViewOpen && (
+                <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, background: "#fff", border: "1px solid " + BORDER, borderRadius: 10, boxShadow: "0 8px 28px rgba(0,0,0,0.16)", zIndex: 3000, minWidth: 230, display: "flex", flexDirection: "column" }}>
+                  <div style={{ padding: "8px 14px 6px", borderBottom: "1px solid " + BORDER, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: "0.08em" }}>Select Sections</span>
+                    {quickViewSelected.length > 0 && (
+                      <button onClick={() => setQuickViewSelected([])} style={{ background: "none", border: "none", fontSize: 11, color: DANGER, cursor: "pointer", padding: 0, fontWeight: 600 }}>Clear</button>
+                    )}
+                  </div>
+                  <div style={{ overflowY: "auto", maxHeight: 280 }}>
+                    {QV_SECTIONS.map(([id, getLabel]) => {
+                      const label = getLabel();
+                      const checked = quickViewSelected.includes(id);
+                      return (
+                        <label key={id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 14px", cursor: "pointer", background: checked ? "#f0f4ff" : "none", borderLeft: checked ? "3px solid " + BRAND_NAVY : "3px solid transparent" }}
+                          onMouseEnter={e => { if (!checked) e.currentTarget.style.background = "#f4f6f9"; }}
+                          onMouseLeave={e => { if (!checked) e.currentTarget.style.background = "none"; }}
+                        >
+                          <input type="checkbox" checked={checked} onChange={() => setQuickViewSelected(s => checked ? s.filter(x => x !== id) : [...s, id])}
+                            style={{ accentColor: BRAND_NAVY, width: 14, height: 14, cursor: "pointer", flexShrink: 0 }} />
+                          <span style={{ fontSize: 13, color: INK, fontWeight: checked ? 600 : 500 }}>{label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <div style={{ padding: "8px 14px 10px", borderTop: "1px solid " + BORDER }}>
+                    <button
+                      disabled={quickViewSelected.length === 0}
+                      onClick={() => { setQuickViewPanelOpen(true); setQuickViewOpen(false); }}
+                      style={{ width: "100%", background: quickViewSelected.length === 0 ? "#ccc" : BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontSize: 13, fontWeight: 700, cursor: quickViewSelected.length === 0 ? "default" : "pointer" }}
+                    >
+                      View Selected {quickViewSelected.length > 0 ? `(${quickViewSelected.length})` : ""}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
@@ -1667,47 +1734,6 @@ export default function App() {
               onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >+ Add Client</button>
-            {recordType === "prospect" && (
-              <button
-                onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
-                style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-              >
-                Prospect → Client
-              </button>
-            )}
-            <div style={{ position: "relative" }}>
-              <button
-                onClick={() => setQuickViewOpen(o => !o)}
-                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}
-              >
-                Quick View <span style={{ fontSize: 10 }}>{quickViewOpen ? "▲" : "▼"}</span>
-              </button>
-              {quickViewOpen && (
-                <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, background: "#fff", border: "1px solid " + BORDER, borderRadius: 10, boxShadow: "0 8px 28px rgba(0,0,0,0.14)", zIndex: 3000, minWidth: 210, padding: "6px 0" }}>
-                  {[
-                    ["section-profile",    recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
-                    ["section-family",     "Family"],
-                    ["section-bene",       "Beneficiaries"],
-                    ["section-employment", "Employment"],
-                    ["section-income",     "Income"],
-                    ["section-realestate", "Real Estate"],
-                    ["section-accounts",   "Accounts"],
-                    ["section-wills",      "Wills & Trust"],
-                    ["section-autos",      "Autos"],
-                    ["section-life",       "Life Insurance"],
-                    ["section-networth",   "Net Worth / Portfolio"],
-                    ["section-inheritance","Estate Planning"],
-                    ["section-toolbox",    "Client Toolbox"],
-                  ].map(([id, label]) => (
-                    <button key={id} onClick={() => { setQuickViewSection(id); setQuickViewOpen(false); }}
-                      style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: "8px 16px", fontSize: 13, color: INK, cursor: "pointer", fontWeight: 500 }}
-                      onMouseEnter={e => e.currentTarget.style.background = "#f4f6f9"}
-                      onMouseLeave={e => e.currentTarget.style.background = "none"}
-                    >{label}</button>
-                  ))}
-                </div>
-              )}
-            </div>
             <button
               onClick={() => setView("roster")}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
@@ -3673,56 +3699,57 @@ export default function App() {
         />
       </div>
     )}
-    {quickViewSection && (
-      <div onClick={() => setQuickViewSection("")} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 4000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-        <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, boxShadow: "0 16px 56px rgba(0,0,0,0.22)", width: "100%", maxWidth: 560, maxHeight: "80vh", display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px 12px", borderBottom: "1px solid " + BORDER }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: INK }}>Quick View — {
-              { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Accounts", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning", "section-toolbox": "Client Toolbox" }[quickViewSection]
-            }</div>
-            <button onClick={() => setQuickViewSection("")} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: MUTED, padding: "2px 6px" }}>✕</button>
-          </div>
-          <div style={{ overflowY: "auto", padding: "16px 20px 20px", fontSize: 13, color: INK, lineHeight: 1.7 }}>
-            {quickViewSection === "section-profile" && (() => {
-              const rows = [["Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "—"], ["DOB", client.dob || "—"], ["SSN", client.ssn || "—"], ["Gender", client.gender || "—"], ["Marital Status", client.filingStatus || "—"], ["Phone", client.phone || "—"], ["Email", client.email || "—"], ["Address", [client.address, client.city, client.state, client.zip].filter(Boolean).join(", ") || "—"]];
-              return <table style={{ width: "100%", borderCollapse: "collapse" }}><tbody>{rows.map(([k,v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: 140, verticalAlign: "top" }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500 }}>{v}</td></tr>)}</tbody></table>;
-            })()}
-            {quickViewSection === "section-family" && (() => {
-              const rows = [["Spouse", hasSpouse ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Yes (no name)" : hasSpouse === false ? "None" : "—"], ["Spouse DOB", spouse.dob || "—"], ["Children", hasChildren ? children.length > 0 ? children.map(c => [c.firstName, c.lastName].filter(Boolean).join(" ")).join(", ") : "Yes (none listed)" : hasChildren === false ? "None" : "—"]];
-              return <table style={{ width: "100%", borderCollapse: "collapse" }}><tbody>{rows.map(([k,v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: 140, verticalAlign: "top" }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500 }}>{v}</td></tr>)}</tbody></table>;
-            })()}
-            {quickViewSection === "section-bene" && (beneficiaries.length === 0 ? <span style={{ color: MUTED }}>No beneficiaries added.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 12 }}><th style={{ textAlign: "left", paddingBottom: 4 }}>Name</th><th style={{ textAlign: "left" }}>Designation</th><th style={{ textAlign: "left" }}>%</th><th style={{ textAlign: "left" }}>Relationship</th></tr></thead><tbody>{beneficiaries.map(b => <tr key={b.id}><td style={{ padding: "3px 0", fontWeight: 500 }}>{[b.firstName, b.lastName].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0", textTransform: "capitalize" }}>{b.designationType || "primary"}</td><td style={{ padding: "3px 0" }}>{b.percentage || "—"}</td><td style={{ padding: "3px 0", color: MUTED }}>{b.relationship || "—"}</td></tr>)}</tbody></table>)}
-            {quickViewSection === "section-employment" && (() => {
-              const rows = [["Employer", client.employer || "—"], ["Occupation", client.occupation || "—"], ["Work Phone", client.workPhone || "—"], ["Spouse Employer", spouse.employer || "—"], ["Spouse Occupation", spouse.occupation || "—"]];
-              return <table style={{ width: "100%", borderCollapse: "collapse" }}><tbody>{rows.map(([k,v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: 160, verticalAlign: "top" }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500 }}>{v}</td></tr>)}</tbody></table>;
-            })()}
-            {quickViewSection === "section-income" && (incomes.length === 0 ? <span style={{ color: MUTED }}>No income entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 12 }}><th style={{ textAlign: "left", paddingBottom: 4 }}>Source</th><th style={{ textAlign: "left" }}>Amount</th><th style={{ textAlign: "left" }}>Frequency</th></tr></thead><tbody>{incomes.map((inc, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500 }}>{inc.source || "—"}</td><td style={{ padding: "3px 0" }}>{inc.amount || "—"}</td><td style={{ padding: "3px 0", color: MUTED }}>{inc.frequency || "—"}</td></tr>)}</tbody></table>)}
-            {quickViewSection === "section-realestate" && (realEstate.length === 0 ? <span style={{ color: MUTED }}>No real estate entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 12 }}><th style={{ textAlign: "left", paddingBottom: 4 }}>Address</th><th style={{ textAlign: "left" }}>Value</th><th style={{ textAlign: "left" }}>Type</th></tr></thead><tbody>{realEstate.map((r, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500 }}>{r.address || "—"}</td><td style={{ padding: "3px 0" }}>{r.value || "—"}</td><td style={{ padding: "3px 0", color: MUTED }}>{r.propertyType || "—"}</td></tr>)}</tbody></table>)}
-            {quickViewSection === "section-accounts" && (accounts.length === 0 ? <span style={{ color: MUTED }}>No accounts entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 12 }}><th style={{ textAlign: "left", paddingBottom: 4 }}>Institution</th><th style={{ textAlign: "left" }}>Type</th><th style={{ textAlign: "left" }}>Balance</th><th style={{ textAlign: "left" }}>Owner</th></tr></thead><tbody>{accounts.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500 }}>{a.institution || "—"}</td><td style={{ padding: "3px 0" }}>{a.accountType || "—"}</td><td style={{ padding: "3px 0" }}>{a.balance || "—"}</td><td style={{ padding: "3px 0", color: MUTED }}>{a.owner || "—"}</td></tr>)}</tbody></table>)}
-            {quickViewSection === "section-wills" && (() => {
-              const rows = [["Has Will", willsTrust.hasWill === true ? "Yes" : willsTrust.hasWill === false ? "No" : "—"], ["Will Date", willsTrust.willDate || "—"], ["Executor", willsTrust.executor || "—"], ["Trust Name", willsTrust.trustName || "—"], ["Trust Type", willsTrust.trustType || "—"], ["Trustee", willsTrust.trustee || "—"], ["Has POA", poa.hasPOA === true ? "Yes" : poa.hasPOA === false ? "No" : "—"], ["POA Agent", poa.agentName || "—"]];
-              return <table style={{ width: "100%", borderCollapse: "collapse" }}><tbody>{rows.map(([k,v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: 140, verticalAlign: "top" }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500 }}>{v}</td></tr>)}</tbody></table>;
-            })()}
-            {quickViewSection === "section-autos" && (autos.length === 0 ? <span style={{ color: MUTED }}>No vehicles entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 12 }}><th style={{ textAlign: "left", paddingBottom: 4 }}>Vehicle</th><th style={{ textAlign: "left" }}>Year</th><th style={{ textAlign: "left" }}>Value</th></tr></thead><tbody>{autos.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500 }}>{[a.make, a.model].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0" }}>{a.year || "—"}</td><td style={{ padding: "3px 0" }}>{a.value || "—"}</td></tr>)}</tbody></table>)}
-            {quickViewSection === "section-life" && (lifePolicies.length === 0 ? <span style={{ color: MUTED }}>No life insurance policies entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 12 }}><th style={{ textAlign: "left", paddingBottom: 4 }}>Carrier</th><th style={{ textAlign: "left" }}>Type</th><th style={{ textAlign: "left" }}>Face Value</th><th style={{ textAlign: "left" }}>Owner</th></tr></thead><tbody>{lifePolicies.map((p, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500 }}>{p.carrier || "—"}</td><td style={{ padding: "3px 0" }}>{p.policyType || "—"}</td><td style={{ padding: "3px 0" }}>{p.faceValue || "—"}</td><td style={{ padding: "3px 0", color: MUTED }}>{p.owner || "—"}</td></tr>)}</tbody></table>)}
-            {quickViewSection === "section-networth" && (() => {
-              const rows = [["Est. Net Worth", client.estimatedNetWorth || "—"], ["Own / Rent", homeOwnership.ownOrRent || "—"], ["Mortgage Balance", homeOwnership.mortgageBalance || "—"], ["Annual Expenses", annualExpenses.amount ? `${annualExpenses.amount} / ${annualExpenses.frequency}` : "—"]];
-              return <table style={{ width: "100%", borderCollapse: "collapse" }}><tbody>{rows.map(([k,v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: 180, verticalAlign: "top" }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500 }}>{v}</td></tr>)}</tbody></table>;
-            })()}
-            {quickViewSection === "section-inheritance" && (() => {
-              const rows = [["Inheritance Expected", inheritances && inheritances.length > 0 ? inheritances.map(x => x.source || "unnamed").join(", ") : "—"], ["Safe Deposit Vaults", vaults && vaults.length > 0 ? vaults.map(x => x.institution || "unnamed").join(", ") : "—"]];
-              return <table style={{ width: "100%", borderCollapse: "collapse" }}><tbody>{rows.map(([k,v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: 200, verticalAlign: "top" }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500 }}>{v}</td></tr>)}</tbody></table>;
-            })()}
-            {quickViewSection === "section-toolbox" && <span style={{ color: MUTED }}>Client toolbox section — see form for uploaded documents and notes.</span>}
-          </div>
-          <div style={{ padding: "10px 20px 16px", borderTop: "1px solid " + BORDER, display: "flex", justifyContent: "flex-end", gap: 8 }}>
-            <button onClick={() => { setQuickViewSection(""); const el = document.getElementById(quickViewSection); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Go to Section</button>
-            <button onClick={() => setQuickViewSection("")} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 7, padding: "7px 16px", fontSize: 12, fontWeight: 600, color: INK, cursor: "pointer" }}>Close</button>
+    {quickViewPanelOpen && quickViewSelected.length > 0 && (() => {
+      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Accounts", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning", "section-toolbox": "Client Toolbox" };
+      const QvTable = ({ rows, labelWidth = 150 }) => (
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <tbody>{rows.map(([k, v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: labelWidth, verticalAlign: "top", fontSize: 12 }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{v}</td></tr>)}</tbody>
+        </table>
+      );
+      const renderSection = id => {
+        if (id === "section-profile") return <QvTable rows={[["Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "—"], ["DOB", client.dob || "—"], ["SSN", client.ssn || "—"], ["Gender", client.gender || "—"], ["Marital Status", client.filingStatus || "—"], ["Phone", client.phone || "—"], ["Email", client.email || "—"], ["Address", [client.address, client.city, client.state, client.zip].filter(Boolean).join(", ") || "—"]]} />;
+        if (id === "section-family") return <QvTable rows={[["Spouse", hasSpouse ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Yes (no name)" : hasSpouse === false ? "None" : "—"], ["Spouse DOB", spouse.dob || "—"], ["Children", hasChildren ? children.length > 0 ? children.map(c => [c.firstName, c.lastName].filter(Boolean).join(" ")).join(", ") : "Yes (none listed)" : hasChildren === false ? "None" : "—"]]} />;
+        if (id === "section-bene") return beneficiaries.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No beneficiaries added.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Name</th><th style={{ textAlign: "left", fontWeight: 600 }}>Designation</th><th style={{ textAlign: "left", fontWeight: 600 }}>%</th><th style={{ textAlign: "left", fontWeight: 600 }}>Relationship</th></tr></thead><tbody>{beneficiaries.map(b => <tr key={b.id}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{[b.firstName, b.lastName].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0", textTransform: "capitalize", fontSize: 13 }}>{b.designationType || "primary"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{b.percentage || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{b.relationship || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-employment") return <QvTable rows={[["Employer", client.employer || "—"], ["Occupation", client.occupation || "—"], ["Work Phone", client.workPhone || "—"], ["Spouse Employer", spouse.employer || "—"], ["Spouse Occupation", spouse.occupation || "—"]]} />;
+        if (id === "section-income") return incomes.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No income entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Source</th><th style={{ textAlign: "left", fontWeight: 600 }}>Amount</th><th style={{ textAlign: "left", fontWeight: 600 }}>Frequency</th></tr></thead><tbody>{incomes.map((inc, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{inc.source || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{inc.amount || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{inc.frequency || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-realestate") return realEstate.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No real estate entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Address</th><th style={{ textAlign: "left", fontWeight: 600 }}>Value</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th></tr></thead><tbody>{realEstate.map((r, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{r.address || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{r.value || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{r.propertyType || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-accounts") return accounts.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No accounts entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Institution</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th><th style={{ textAlign: "left", fontWeight: 600 }}>Balance</th><th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th></tr></thead><tbody>{accounts.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{a.institution || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.accountType || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.balance || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{a.owner || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-wills") return <QvTable rows={[["Has Will", willsTrust.hasWill === true ? "Yes" : willsTrust.hasWill === false ? "No" : "—"], ["Will Date", willsTrust.willDate || "—"], ["Executor", willsTrust.executor || "—"], ["Trust Name", willsTrust.trustName || "—"], ["Trust Type", willsTrust.trustType || "—"], ["Trustee", willsTrust.trustee || "—"], ["Has POA", poa.hasPOA === true ? "Yes" : poa.hasPOA === false ? "No" : "—"], ["POA Agent", poa.agentName || "—"]]} />;
+        if (id === "section-autos") return autos.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No vehicles entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Vehicle</th><th style={{ textAlign: "left", fontWeight: 600 }}>Year</th><th style={{ textAlign: "left", fontWeight: 600 }}>Value</th></tr></thead><tbody>{autos.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{[a.make, a.model].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.year || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.value || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-life") return lifePolicies.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No life insurance policies entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Carrier</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th><th style={{ textAlign: "left", fontWeight: 600 }}>Face Value</th><th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th></tr></thead><tbody>{lifePolicies.map((p, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{p.carrier || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{p.policyType || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{p.faceValue || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{p.owner || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-networth") return <QvTable labelWidth={170} rows={[["Est. Net Worth", client.estimatedNetWorth || "—"], ["Own / Rent", homeOwnership.ownOrRent || "—"], ["Mortgage Balance", homeOwnership.mortgageBalance || "—"], ["Annual Expenses", annualExpenses.amount ? `${annualExpenses.amount} / ${annualExpenses.frequency}` : "—"]]} />;
+        if (id === "section-inheritance") return <QvTable labelWidth={180} rows={[["Inheritance Expected", inheritances && inheritances.length > 0 ? inheritances.map(x => x.source || "unnamed").join(", ") : "—"], ["Safe Deposit Vaults", vaults && vaults.length > 0 ? vaults.map(x => x.institution || "unnamed").join(", ") : "—"]]} />;
+        if (id === "section-toolbox") return <span style={{ color: MUTED, fontSize: 13 }}>Client toolbox — see form for uploaded documents and notes.</span>;
+        return null;
+      };
+      return (
+        <div onClick={() => setQuickViewPanelOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 4000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, boxShadow: "0 16px 56px rgba(0,0,0,0.22)", width: "100%", maxWidth: 620, maxHeight: "85vh", display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px 12px", borderBottom: "1px solid " + BORDER }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: INK }}>Quick View</div>
+                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>{quickViewSelected.map(id => QV_LABEL[id]).join(" · ")}</div>
+              </div>
+              <button onClick={() => setQuickViewPanelOpen(false)} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: MUTED, padding: "2px 6px" }}>✕</button>
+            </div>
+            <div style={{ overflowY: "auto", padding: "4px 0 8px" }}>
+              {quickViewSelected.map((id, idx) => (
+                <div key={id} style={{ padding: "14px 22px 16px", borderBottom: idx < quickViewSelected.length - 1 ? "1px solid " + BORDER : "none" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: BRAND_NAVY, marginBottom: 10 }}>{QV_LABEL[id]}</div>
+                  {renderSection(id)}
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: "10px 20px 14px", borderTop: "1px solid " + BORDER, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+              <button onClick={() => { setQuickViewPanelOpen(false); setQuickViewOpen(true); }}
+                style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 7, padding: "7px 14px", fontSize: 12, fontWeight: 600, color: INK, cursor: "pointer" }}>← Edit Selection</button>
+              <button onClick={() => setQuickViewPanelOpen(false)}
+                style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Close</button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      );
+    })()}
     {confirmState.open && (
       <ConfirmDialog
         message={confirmState.message}
