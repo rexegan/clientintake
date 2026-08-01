@@ -4124,7 +4124,36 @@ export default function App() {
         if (id === "section-family") return <QvTable rows={[["Spouse", hasSpouse ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Yes (no name)" : hasSpouse === false ? "None" : "—"], ["Spouse DOB", spouse.dob || "—"], ["Children", hasChildren ? children.length > 0 ? children.map(c => [c.firstName, c.lastName].filter(Boolean).join(" ")).join(", ") : "Yes (none listed)" : hasChildren === false ? "None" : "—"]]} />;
         if (id === "section-bene") return beneficiaries.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No beneficiaries added.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Name</th><th style={{ textAlign: "left", fontWeight: 600 }}>Designation</th><th style={{ textAlign: "left", fontWeight: 600 }}>%</th><th style={{ textAlign: "left", fontWeight: 600 }}>Relationship</th></tr></thead><tbody>{beneficiaries.map(b => <tr key={b.id}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{[b.firstName, b.lastName].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0", textTransform: "capitalize", fontSize: 13 }}>{b.designationType || "primary"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{b.percentage || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{b.relationship || "—"}</td></tr>)}</tbody></table>;
         if (id === "section-employment") return <QvTable rows={[["Employer", client.employer || "—"], ["Occupation", client.occupation || "—"], ["Work Phone", client.workPhone || "—"], ["Spouse Employer", spouse.employer || "—"], ["Spouse Occupation", spouse.occupation || "—"]]} />;
-        if (id === "section-income") return incomes.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No income entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Source</th><th style={{ textAlign: "left", fontWeight: 600 }}>Amount</th><th style={{ textAlign: "left", fontWeight: 600 }}>Frequency</th></tr></thead><tbody>{incomes.map((inc, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{inc.source || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{inc.amount || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{inc.frequency || "—"}</td></tr>)}</tbody></table>;
+        if (id === "section-income") {
+          if (incomes.length === 0) return <span style={{ color: MUTED, fontSize: 13 }}>No income entries.</span>;
+          const fmtAnn = n => "$" + Math.round(n).toLocaleString();
+          const toAnn = (amt, freq) => { const map = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52, quarterly:4 }; return (parseDollar(amt) || 0) * (map[(freq||"").toLowerCase()] || 1); };
+          const totalAnnual = incomes.reduce((s, inc) => s + toAnn(inc.amount, inc.frequency), 0);
+          return (
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead><tr style={{ color: MUTED, fontSize: 11 }}>
+                <th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Source</th>
+                <th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th>
+                <th style={{ textAlign: "right", fontWeight: 600 }}>Annual Amount</th>
+              </tr></thead>
+              <tbody>
+                {incomes.filter(inc => inc.source || inc.amount).map((inc, i) => (
+                  <tr key={i}>
+                    <td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{inc.source || inc.type || "—"}</td>
+                    <td style={{ padding: "4px 0", fontSize: 12, color: MUTED }}>{inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client")}</td>
+                    <td style={{ padding: "4px 0", fontSize: 13, textAlign: "right" }}>{fmtAnn(toAnn(inc.amount, inc.frequency))}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr style={{ borderTop: "2px solid " + BRAND_NAVY }}>
+                  <td colSpan={2} style={{ padding: "5px 0", fontWeight: 700, fontSize: 13, color: BRAND_NAVY }}>Total Annual Income</td>
+                  <td style={{ padding: "5px 0", fontWeight: 700, fontSize: 13, textAlign: "right", color: BRAND_NAVY }}>{fmtAnn(totalAnnual)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          );
+        }
         if (id === "section-realestate") return realEstate.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No real estate entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Address</th><th style={{ textAlign: "left", fontWeight: 600 }}>Value</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th></tr></thead><tbody>{realEstate.map((r, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{r.address || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{r.value || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{r.propertyType || "—"}</td></tr>)}</tbody></table>;
         if (id === "section-accounts") return accounts.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No accounts entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Institution</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th><th style={{ textAlign: "left", fontWeight: 600 }}>Balance</th><th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th></tr></thead><tbody>{accounts.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{a.institution || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.accountType || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.balance || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{a.owner || "—"}</td></tr>)}</tbody></table>;
         if (id === "section-wills") return <QvTable rows={[["Has Will", willsTrust.hasWill === true ? "Yes" : willsTrust.hasWill === false ? "No" : "—"], ["Will Date", willsTrust.willDate || "—"], ["Executor", willsTrust.executor || "—"], ["Trust Name", willsTrust.trustName || "—"], ["Trust Type", willsTrust.trustType || "—"], ["Trustee", willsTrust.trustee || "—"], ["Has POA", poa.hasPOA === true ? "Yes" : poa.hasPOA === false ? "No" : "—"], ["POA Agent", poa.agentName || "—"]]} />;
