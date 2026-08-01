@@ -336,7 +336,7 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
   );
 }
 
-function FileUpload({ section, files = [], onChange }) {
+function FileUpload({ section, files = [], onChange, hideLabel = false }) {
   const inputRef = useRef(null);
   const handleFiles = (e) => {
     const chosen = Array.from(e.target.files);
@@ -358,7 +358,7 @@ function FileUpload({ section, files = [], onChange }) {
   };
   return (
     <div style={{ marginTop: 16, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>Uploaded Files</div>
+      {!hideLabel && <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>Uploaded Files</div>}
       {files.length > 0 && (
         <div style={{ marginBottom: 10 }}>
           {files.map(f => (
@@ -3309,7 +3309,7 @@ export default function App() {
                 </div>
               </div>
               <div style={{ padding: "10px 16px" }}>
-                <FileUpload section={key} files={uploads[key] || []} onChange={handleUploadChange} />
+                <FileUpload section={key} files={uploads[key] || []} onChange={handleUploadChange} hideLabel />
               </div>
             </div>
           ))}
