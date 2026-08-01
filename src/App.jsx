@@ -1677,7 +1677,7 @@ export default function App() {
           <p style={{ margin: "5px 0 12px", fontSize: 14, color: MUTED }}>
             Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
             {recordType === "prospect" && (
               <button
                 onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
