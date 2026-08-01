@@ -1229,6 +1229,9 @@ export default function App() {
   });
 
   const stateSnapshotRef = useRef({});
+  const [sectionUpdatedAt, setSectionUpdatedAt] = useState({});
+  const sectionMounted = useRef(false);
+  const markSection = id => setSectionUpdatedAt(s => ({ ...s, [id]: new Date() }));
 
   const setActiveClient = (id) => {
     if (id == null) { sessionStorage.removeItem("rwg_activeClientId"); }
@@ -1273,6 +1276,22 @@ export default function App() {
   };
 
   const handleUploadChange = (section, files) => setUploads(p => ({ ...p, [section]: files }));
+
+  // Track last-updated timestamps per sidebar section
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-profile"); }, [client, clientEmails]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-family"); }, [hasSpouse, spouse, spouseEmails, hasChildren, children]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-bene"); }, [beneficiaries]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-employment"); }, [clientEmp, spouseEmp]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-income"); }, [incomes]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-realestate"); }, [realEstate, homeOwnership]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-accounts"); }, [accounts]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-wills"); }, [willsTrust, poa]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-autos"); }, [autos]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-life"); }, [lifePolicies]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-networth"); }, [nwState, annualExpenses]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-inheritance"); }, [inheritances, vaults]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-toolbox"); }, [uploads]);
+  useEffect(() => { sectionMounted.current = true; }, []);
 
   const buildSnapshot = useCallback(() => ({
     client, spouse, hasSpouse, hasChildren, children,
@@ -1519,6 +1538,7 @@ export default function App() {
     setVaults([]);
     setActiveClient(null);
     setSubmitted(false);
+    setSectionUpdatedAt({});
   };
 
   if (view === "roster") {
@@ -1550,6 +1570,9 @@ export default function App() {
           setNwState(record.nwState || { ...emptyNwState });
           setActiveClient(record.id);
           setSubmitted(false);
+          setSectionUpdatedAt({});
+          sectionMounted.current = false;
+          setTimeout(() => { sectionMounted.current = true; }, 50);
           setView("form");
           window.scrollTo(0, 0);
         }}
@@ -1622,7 +1645,10 @@ export default function App() {
             <BrandLockup mark={46} />
             <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</div>
           </div>
-          <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0 8px", marginBottom: 6 }}>Intake Sections</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 8px", marginBottom: 6 }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Intake Sections</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.05em" }}>Last Updated</span>
+          </div>
           {[
             ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
             ["section-family",    "Family"],
@@ -1637,20 +1663,29 @@ export default function App() {
             ["section-networth",  "Net Worth / Portfolio"],
             ["section-inheritance", "Estate Planning"],
             ["section-toolbox",    "Client Toolbox"],
-          ].map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => {
-                const el = document.getElementById(id);
-                if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-              className="side-nav"
-              style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", marginBottom: 2, fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
-            >
-              <IconChip id={id} size={26} />
-              {label}
-            </button>
-          ))}
+          ].map(([id, label]) => {
+            const ts = sectionUpdatedAt[id];
+            return (
+              <button
+                key={id}
+                onClick={() => {
+                  const el = document.getElementById(id);
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className="side-nav"
+                style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", marginBottom: 2, fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
+              >
+                <IconChip id={id} size={26} />
+                <span style={{ flex: 1 }}>{label}</span>
+                {ts && (
+                  <span style={{ fontSize: 9.5, color: MUTED, fontWeight: 500, whiteSpace: "nowrap", lineHeight: 1.2, textAlign: "right" }}>
+                    {ts.toLocaleDateString("en-US", { month: "numeric", day: "numeric" })}<br/>
+                    {ts.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </aside>
 
         <div style={{ flex: 1, minWidth: 0 }}>
