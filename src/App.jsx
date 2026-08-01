@@ -1578,23 +1578,23 @@ export default function App() {
 
         <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
 
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
-          <div>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
             <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</h1>
-            <p style={{ margin: "5px 0 0", fontSize: 14, color: MUTED }}>
-              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-            </p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
             {recordType && (
-              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 5, padding: "2px 8px", alignSelf: "flex-end" }}>
+              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 5, padding: "2px 8px", whiteSpace: "nowrap" }}>
                 {recordType === "client" ? "Client" : "Prospect"}
               </span>
             )}
+          </div>
+          <p style={{ margin: "5px 0 12px", fontSize: 14, color: MUTED }}>
+            Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <select
               value=""
               onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } e.target.value = ""; }}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >
               <option value="">+ Add Prospect</option>
               <option value="yes">Yes — New Prospect</option>
@@ -1602,7 +1602,7 @@ export default function App() {
             <select
               value=""
               onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("client"); window.scrollTo(0,0); } e.target.value = ""; }}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >
               <option value="">+ Add Client</option>
               <option value="yes">Yes — New Client</option>
@@ -1610,21 +1610,21 @@ export default function App() {
             {recordType === "prospect" && (
               <button
                 onClick={() => { if (window.confirm("Convert this prospect to a client?")) setRecordType("client"); }}
-                style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
+                style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
               >
                 Prospect → Client
               </button>
             )}
             <button
               onClick={() => setView("roster")}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
             >
               <span>Saved Clients</span>
               <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
             </button>
             <button
               onClick={() => { if (window.confirm("Load sample client data? This will overwrite the current form.")) loadSampleData(); }}
-              style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
+              style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >
               Load Sample
             </button>
