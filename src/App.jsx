@@ -1574,6 +1574,14 @@ export default function App() {
               <option value="">+ Add Client</option>
               <option value="yes">Yes — New Client</option>
             </select>
+            {recordType === "prospect" && (
+              <button
+                onClick={() => { if (window.confirm("Convert this prospect to a client?")) setRecordType("client"); }}
+                style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
+              >
+                Prospect → Client
+              </button>
+            )}
             <button
               onClick={() => setView("roster")}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}
