@@ -644,7 +644,7 @@ function ClientReport({ data, onClose }) {
           {/* ── NET WORTH SNAPSHOT ── */}
           <div style={s.kpiRow}>
             <div style={{ ...s.kpi, background: NAVY, border: "none" }}><div style={{ ...s.kpiLbl, color: "#c7d0db" }}>Total Net Worth</div><div style={{ ...s.kpiVal, color: "#fff", fontSize: 20 }}>{fmt(netWorth)}</div><div style={{ fontSize: 10, color: "#c7d0db", marginTop: 2 }}>All assets minus liabilities</div></div>
-            <div style={s.kpi}><div style={s.kpiLbl}>Net Worth (ex-Home)</div><div style={s.kpiVal}>{fmt(netWorthExHome)}</div><div style={s.kpiSub}>Less primary residence equity</div></div>
+            <div style={s.kpi}><div style={s.kpiLbl}>Net Worth (ex-Home)</div><div style={s.kpiVal}>{fmt(netWorthExHome)}</div><div style={{ ...s.kpiSub, whiteSpace: "nowrap" }}>Less prim. resid. equity</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Liquid Net Worth</div><div style={s.kpiVal}>{fmt(liquidAcctTotal)}</div><div style={s.kpiSub}>Investment &amp; bank accounts</div></div>
             <div style={s.kpi}><div style={s.kpiLbl}>Annual Income</div><div style={s.kpiVal}>{fmt(annualIncome)}</div>{annExpRaw > 0 && <div style={s.kpiSub}>Expenses: {fmt(annExpRaw)}</div>}</div>
           </div>
