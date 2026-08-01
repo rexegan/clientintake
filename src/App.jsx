@@ -1053,7 +1053,7 @@ export default function App() {
   const [uploads, setUploads] = useState({});
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
-  const [recordType, setRecordType] = useState("prospect");
+  const [recordType, setRecordType] = useState("client");
   const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
   const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
   const addCustomInstitution = (val) => {
@@ -1379,11 +1379,11 @@ export default function App() {
         <aside className="side-rail" style={{ width: 250, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 14px" }}>
           <div style={{ padding: "8px 8px 16px" }}>
             <BrandLockup mark={46} />
-            <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>Client Intake</div>
+            <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</div>
           </div>
           <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0 8px", marginBottom: 6 }}>Intake Sections</div>
           {[
-            ["section-profile",   "Client Profile"],
+            ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
             ["section-family",    "Family"],
             ["section-bene",      "Beneficiaries"],
             ["section-employment","Employment"],
@@ -1436,7 +1436,7 @@ export default function App() {
 
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>New Client Intake</h1>
+            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "New Prospect Intake" : "New Client Intake"}</h1>
             <p style={{ margin: "5px 0 0", fontSize: 14, color: MUTED }}>
               Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </p>
@@ -1467,7 +1467,7 @@ export default function App() {
         </div>
 
         {/* ── CLIENT PROFILE ── */}
-        <Panel title="Client Profile" id="section-profile">
+        <Panel title={recordType === "prospect" ? "Prospect Profile" : "Client Profile"} id="section-profile">
           <Row cols={3}>
             <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
