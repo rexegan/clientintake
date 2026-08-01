@@ -1528,16 +1528,6 @@ export default function App() {
               {label}
             </button>
           ))}
-          <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
-          <button
-            onClick={() => setView("roster")}
-            className="side-nav"
-            style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
-          >
-            <span style={{ width: 26, height: 26, borderRadius: 8, background: "#eef1f5", color: "#64748b", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><IcSvg><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></IcSvg></span>
-            Saved Clients
-            <span style={{ marginLeft: "auto", background: "#eaecf0", borderRadius: 999, padding: "1px 8px", fontSize: 11.5, fontWeight: 600, color: "#4b5563" }}>{savedClients.length}</span>
-          </button>
         </aside>
 
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -1584,6 +1574,13 @@ export default function App() {
               <option value="">+ Add Client</option>
               <option value="yes">Yes — New Client</option>
             </select>
+            <button
+              onClick={() => setView("roster")}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}
+            >
+              <span>Saved Clients</span>
+              <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
+            </button>
             <button
               onClick={() => { if (window.confirm("Load sample client data? This will overwrite the current form.")) loadSampleData(); }}
               style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", width: 130 }}
