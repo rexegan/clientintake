@@ -670,15 +670,15 @@ function ClientReport({ data, onClose }) {
             {/* NET WORTH BREAKDOWN */}
             <div>
               <table style={s.table}>
-                <thead><tr><th style={s.th} colSpan={2}>Net Worth Breakdown</th></tr></thead>
+                <thead><tr><th style={s.th}>Net Worth Breakdown</th><th style={{ ...s.th, textAlign: "right" }}>Amount</th><th style={{ ...s.th, textAlign: "right" }}>%</th></tr></thead>
                 <tbody>
-                  <Row2 label="Total Assets" value={fmt(totalAssets)} />
-                  <Row2 label="Total Liabilities" value={fmt(totalLiabilities)} />
-                  <Row2 label="Total Net Worth" value={fmt(netWorth)} bold />
-                  <tr><td style={{ ...s.td, paddingTop: 16, color: "#5a6575" }} colSpan={2}><strong style={{ color: NAVY }}>Net Worth — Alternative Views</strong></td></tr>
-                  <Row2 label="Net Worth (Ex-Primary Residence)" value={fmt(netWorthExHome)} />
-                  <Row2 label="Liquid Net Worth (Investable Assets)" value={fmt(liquidAcctTotal)} bold />
-                  {primaryReEquity > 0 && <Row2 label="  Primary Residence Equity" value={fmt(primaryReEquity)} />}
+                  <tr><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>Total Assets</td><td style={s.tdr}>{fmt(totalAssets)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>100.0%</td></tr>
+                  <tr><td style={{ ...s.td, color: "#5a6575" }}>Total Liabilities</td><td style={s.tdr}>{fmt(totalLiabilities)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalAssets > 0 ? (totalLiabilities/totalAssets*100).toFixed(1) : "—"}%</td></tr>
+                  <tr><td style={s.tdTotal}><strong>Total Net Worth</strong></td><td style={s.tdTotalR}><strong>{fmt(netWorth)}</strong></td><td style={s.tdTotalR}>{totalAssets > 0 ? (netWorth/totalAssets*100).toFixed(1) : "—"}%</td></tr>
+                  <tr><td style={{ ...s.td, paddingTop: 16, color: "#5a6575" }} colSpan={3}><strong style={{ color: NAVY }}>Net Worth — Alternative Views</strong></td></tr>
+                  <tr><td style={{ ...s.td, color: "#5a6575" }}>Net Worth (Ex-Primary Residence)</td><td style={s.tdr}>{fmt(netWorthExHome)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{netWorth !== 0 ? (netWorthExHome/netWorth*100).toFixed(1) : "—"}%</td></tr>
+                  <tr><td style={{ ...s.td, color: "#5a6575" }}><strong>Liquid Net Worth (Investable Assets)</strong></td><td style={{ ...s.tdr, fontWeight: "bold", color: NAVY }}>{fmt(liquidAcctTotal)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{netWorth !== 0 ? (liquidAcctTotal/netWorth*100).toFixed(1) : "—"}%</td></tr>
+                  {primaryReEquity > 0 && <tr><td style={{ ...s.td, color: "#5a6575", paddingLeft: 20 }}>Primary Residence Equity</td><td style={s.tdr}>{fmt(primaryReEquity)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{netWorth !== 0 ? (primaryReEquity/netWorth*100).toFixed(1) : "—"}%</td></tr>}
                 </tbody>
               </table>
             </div>
