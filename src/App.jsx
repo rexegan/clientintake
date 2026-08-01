@@ -393,6 +393,7 @@ const SECTION_META = {
   "section-wills":      { color: "#a16207", bg: "#f8f1e2", icon: <IcSvg><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></IcSvg> },
   "section-autos":      { color: "#ef4444", bg: "#fdeeee", icon: <IcSvg><path d="M5 16l1.6-4.8A2 2 0 0 1 8.5 10h7a2 2 0 0 1 1.9 1.2L19 16"/><rect x="3.5" y="16" width="17" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></IcSvg> },
   "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
+  "section-networth":   { color: "#8b5cf6", bg: "#f0edfe", icon: <IcSvg><path d="M3 17l4-8 4 5 3-3 4 6"/><path d="M3 21h18"/></IcSvg> },
 };
 
 const IconChip = ({ id, size = 28 }) => {
@@ -1048,6 +1049,8 @@ export default function App() {
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
+  const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", notes: "" };
+  const [nwState, setNwState] = useState({ ...emptyNwState });
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
@@ -1119,8 +1122,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1174,7 +1177,8 @@ export default function App() {
     setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
     setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
-    setRecordType(record.recordType || "prospect");
+    setRecordType(record.recordType || "client");
+    setNwState(record.nwState || { ...emptyNwState });
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1286,7 +1290,8 @@ export default function App() {
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
     setUploads({});
     setLifePolicies([{ ...emptyLifePolicy, id: 1 }]);
-    setRecordType("prospect");
+    setRecordType("client");
+    setNwState({ ...emptyNwState });
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -1316,7 +1321,8 @@ export default function App() {
           setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
           setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
-          setRecordType(record.recordType || "prospect");
+          setRecordType(record.recordType || "client");
+          setNwState(record.nwState || { ...emptyNwState });
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -1393,6 +1399,7 @@ export default function App() {
             ["section-wills",     "Wills & Trust"],
             ["section-autos",     "Automobiles"],
             ["section-life",      "Life Insurance"],
+            ["section-networth",  "Net Worth / Portfolio"],
           ].map(([id, label]) => (
             <button
               key={id}
@@ -3022,6 +3029,50 @@ export default function App() {
             + Add Policy
           </button>
           <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange} />
+        </Panel>
+
+        <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
+          <Sec t="Net Worth Summary" />
+          <Row cols={3}>
+            <F><Lbl t="Total Assets (Est.)" /><input value={nwState.totalAssets} onChange={e => setNwState(p => ({ ...p, totalAssets: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Total Liabilities (Est.)" /><input value={nwState.totalLiabilities} onChange={e => setNwState(p => ({ ...p, totalLiabilities: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F>
+              <Lbl t="Estimated Net Worth" />
+              <div style={{ ...IS, background: "#f0edfe", color: "#4c1d95", fontWeight: 700, display: "flex", alignItems: "center" }}>
+                {(() => {
+                  const a = parseInt((nwState.totalAssets || "").replace(/[^0-9]/g, "") || 0);
+                  const l = parseInt((nwState.totalLiabilities || "").replace(/[^0-9]/g, "") || 0);
+                  return a || l ? "$" + (a - l).toLocaleString() : "—";
+                })()}
+              </div>
+            </F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="Liquid Net Worth" /><input value={nwState.liquidNetWorth} onChange={e => setNwState(p => ({ ...p, liquidNetWorth: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Net Worth (Ex-Primary Residence)" /><input value={nwState.netWorthExHome} onChange={e => setNwState(p => ({ ...p, netWorthExHome: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Primary Residence Equity" /><input value={nwState.primaryEquity} onChange={e => setNwState(p => ({ ...p, primaryEquity: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+          </Row>
+
+          <Sec t="Portfolio Breakdown" />
+          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Break down total investable assets by category.</div>
+          {[
+            { key: "pbCash",       label: "Cash & Cash Equivalents (Checking, Savings, MM, CDs)" },
+            { key: "pbQualified",  label: "Qualified Retirement Plans (401k, IRA, Pension, etc.)" },
+            { key: "pbNonQual",    label: "Non-Qualified / Taxable Brokerage & Trust" },
+            { key: "pbAnnuities",  label: "Annuities (Fixed, Indexed, Variable, RILA)" },
+            { key: "pbCVLI",       label: "Cash Value Life Insurance" },
+            { key: "pbAlts",       label: "Alternative / Illiquid Investments" },
+            { key: "pbOther",      label: "Other / Unclassified" },
+          ].map(({ key, label }) => (
+            <Row cols={2} key={key}>
+              <F><Lbl t={label} /><input value={nwState[key] || ""} onChange={e => setNwState(p => ({ ...p, [key]: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            </Row>
+          ))}
+
+          <Sec t="Balance Sheet Notes" />
+          <Row cols={1}>
+            <F><Lbl t="Additional Notes / Observations" /><textarea value={nwState.notes || ""} onChange={e => setNwState(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any context, caveats, or observations about this client's balance sheet..." /></F>
+          </Row>
         </Panel>
 
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
