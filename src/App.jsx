@@ -634,26 +634,27 @@ function ClientReport({ data, onClose }) {
             {/* ASSETS */}
             <div>
               <table style={s.table}>
-                <thead><tr><th style={s.th}>Assets</th><th style={{ ...s.th, textAlign: "right" }}>Value</th></tr></thead>
+                <thead><tr><th style={s.th}>Assets</th><th style={{ ...s.th, textAlign: "right" }}>Value</th><th style={{ ...s.th, textAlign: "right" }}>%</th></tr></thead>
                 <tbody>
-                  {acctTotal > 0 && <Row2 label="Investment &amp; Bank Accounts" value={fmt(acctTotal)} />}
-                  {reTotal > 0   && <Row2 label="Real Estate Holdings" value={fmt(reTotal)} />}
-                  {autoTotal > 0 && <Row2 label="Automobiles" value={fmt(autoTotal)} />}
-                  <tr><td style={s.tdTotal}>Total Assets</td><td style={s.tdTotalR}>{fmt(totalAssets)}</td></tr>
+                  {acctTotal > 0 && <tr><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>Investment &amp; Bank Accounts</td><td style={s.tdr}>{fmt(acctTotal)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalAssets > 0 ? (acctTotal/totalAssets*100).toFixed(1) : "0.0"}%</td></tr>}
+                  {reTotal > 0   && <tr><td style={{ ...s.td, color: "#5a6575" }}>Real Estate Holdings</td><td style={s.tdr}>{fmt(reTotal)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalAssets > 0 ? (reTotal/totalAssets*100).toFixed(1) : "0.0"}%</td></tr>}
+                  {autoTotal > 0 && <tr><td style={{ ...s.td, color: "#5a6575" }}>Automobiles</td><td style={s.tdr}>{fmt(autoTotal)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalAssets > 0 ? (autoTotal/totalAssets*100).toFixed(1) : "0.0"}%</td></tr>}
+                  <tr><td style={s.tdTotal}>Total Assets</td><td style={s.tdTotalR}>{fmt(totalAssets)}</td><td style={s.tdTotalR}>100.0%</td></tr>
                 </tbody>
               </table>
             </div>
             {/* LIABILITIES */}
             <div>
               <table style={s.table}>
-                <thead><tr><th style={s.th}>Liabilities</th><th style={{ ...s.th, textAlign: "right" }}>Balance</th></tr></thead>
+                <thead><tr><th style={s.th}>Liabilities</th><th style={{ ...s.th, textAlign: "right" }}>Balance</th><th style={{ ...s.th, textAlign: "right" }}>%</th></tr></thead>
                 <tbody>
-                  {realEstate.filter(r => parseDollar(r.mortgageBalance) > 0).map((r, i) => (
-                    <Row2 key={i} label={r.descriptionNote || r.description || `Property ${i+1}`} value={fmt(parseDollar(r.mortgageBalance))} />
-                  ))}
-                  {homeMortgage > 0 && <Row2 label="Personal Residence Mortgage" value={fmt(homeMortgage)} />}
-                  {totalLiabilities === 0 && <tr><td style={s.td} colSpan={2}><em style={{ color: "#8a94a3" }}>No liabilities recorded</em></td></tr>}
-                  <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td></tr>
+                  {realEstate.filter(r => parseDollar(r.mortgageBalance) > 0).map((r, i) => {
+                    const mb = parseDollar(r.mortgageBalance);
+                    return <tr key={i}><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>{r.descriptionNote || r.description || `Property ${i+1}`}</td><td style={s.tdr}>{fmt(mb)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalLiabilities > 0 ? (mb/totalLiabilities*100).toFixed(1) : "0.0"}%</td></tr>;
+                  })}
+                  {homeMortgage > 0 && <tr><td style={{ ...s.td, color: "#5a6575" }}>Personal Residence Mortgage</td><td style={s.tdr}>{fmt(homeMortgage)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalLiabilities > 0 ? (homeMortgage/totalLiabilities*100).toFixed(1) : "0.0"}%</td></tr>}
+                  {totalLiabilities === 0 && <tr><td style={s.td} colSpan={3}><em style={{ color: "#8a94a3" }}>No liabilities recorded</em></td></tr>}
+                  <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td><td style={s.tdTotalR}>{totalLiabilities > 0 ? "100.0%" : "—"}</td></tr>
                 </tbody>
               </table>
               <div style={{ ...s.netWorthBox, marginTop: 0, padding: "16px 20px", borderRadius: 8 }}>
@@ -684,18 +685,21 @@ function ClientReport({ data, onClose }) {
             {/* INCOME & EXPENSES */}
             <div>
               <table style={s.table}>
-                <thead><tr><th style={s.th} colSpan={2}>Annual Income &amp; Expenses</th></tr></thead>
+                <thead><tr><th style={s.th}>Annual Income &amp; Expenses</th><th style={{ ...s.th, textAlign: "right" }}>Amount</th><th style={{ ...s.th, textAlign: "right" }}>%</th></tr></thead>
                 <tbody>
-                  {incomes.filter(i => i.type).map((inc, i) => (
-                    <Row2 key={i} label={inc.type + (inc.owner === "spouse" ? ` (${spouseName})` : inc.owner === "joint" ? " (Joint)" : "")} value={fmt(toAnnual(inc.amount, inc.frequency))} />
-                  ))}
-                  <tr><td style={s.tdTotal}>Total Annual Income</td><td style={s.tdTotalR}>{fmt(annualIncome)}</td></tr>
+                  {incomes.filter(i => i.type).map((inc, i) => {
+                    const ann = toAnnual(inc.amount, inc.frequency);
+                    const pct = annualIncome > 0 ? (ann/annualIncome*100).toFixed(1) : "0.0";
+                    return <tr key={i}><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>{inc.type + (inc.owner === "spouse" ? ` (${spouseName})` : inc.owner === "joint" ? " (Joint)" : "")}</td><td style={s.tdr}>{fmt(ann)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td></tr>;
+                  })}
+                  <tr><td style={s.tdTotal}>Total Annual Income</td><td style={s.tdTotalR}>{fmt(annualIncome)}</td><td style={s.tdTotalR}>100.0%</td></tr>
                   {annExpRaw > 0 && (<>
-                    <tr><td style={s.td} colSpan={2}></td></tr>
-                    <Row2 label="Annual Household Expenses" value={fmt(annExpRaw)} />
+                    <tr><td style={s.td} colSpan={3}></td></tr>
+                    <tr><td style={{ ...s.td, color: "#5a6575" }}>Annual Household Expenses</td><td style={s.tdr}>{fmt(annExpRaw)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{annualIncome > 0 ? (annExpRaw/annualIncome*100).toFixed(1) : "—"}%</td></tr>
                     <tr>
                       <td style={s.tdTotal}>Annual Surplus / (Deficit)</td>
                       <td style={{ ...s.tdTotalR, color: surplusDeficit >= 0 ? "#1a5c2a" : "#b03a3a" }}>{surplusDeficit >= 0 ? "+" : ""}{fmt(surplusDeficit)}</td>
+                      <td style={{ ...s.tdTotalR, color: surplusDeficit >= 0 ? "#1a5c2a" : "#b03a3a" }}>{annualIncome > 0 ? Math.abs(surplusDeficit/annualIncome*100).toFixed(1) : "—"}%</td>
                     </tr>
                   </>)}
                 </tbody>
@@ -916,6 +920,12 @@ function ClientReport({ data, onClose }) {
           {/* ── LIFE INSURANCE ── */}
           {lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit).length > 0 && (<>
             <div style={s.sectionHead}>Life Insurance</div>
+            {(() => {
+              const activePolicies = lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit);
+              const totalDB = activePolicies.reduce((s, p) => s + parseDollar(p.deathBenefit), 0);
+              const totalCV = activePolicies.reduce((s, p) => s + parseDollar(p.cashValue), 0);
+              const totalPrem = activePolicies.reduce((s, p) => s + toAnnual(p.premiumAmount, p.premiumFrequency), 0);
+              return (
             <table style={s.table}>
               <thead>
                 <tr>
@@ -924,14 +934,17 @@ function ClientReport({ data, onClose }) {
                   <th style={s.th}>Insured</th>
                   <th style={s.th}>Owner</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Death Benefit</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>% of DB</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Cash Value</th>
-                  <th style={{ ...s.th, textAlign: "right" }}>Premium</th>
-                  <th style={s.th}>Frequency</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>% of CV</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Annual Prem.</th>
                 </tr>
               </thead>
               <tbody>
-                {lifePolicies.filter(p => p.carrier || p.policyType || p.deathBenefit).map((p, i) => {
-                  const freqLabel = { monthly: "Monthly", quarterly: "Quarterly", semiannually: "Semi-Ann.", annually: "Annually" }[p.premiumFrequency] || "—";
+                {activePolicies.map((p, i) => {
+                  const db = parseDollar(p.deathBenefit);
+                  const cv = parseDollar(p.cashValue);
+                  const prem = toAnnual(p.premiumAmount, p.premiumFrequency);
                   return (
                   <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                     <td style={s.td}>{p.carrier || "—"}</td>
@@ -939,20 +952,25 @@ function ClientReport({ data, onClose }) {
                     <td style={s.td}>{p.insured || "—"}</td>
                     <td style={s.td}>{p.owner || "—"}</td>
                     <td style={s.tdr}>{p.deathBenefit || "—"}</td>
+                    <td style={{ ...s.tdr, color: "#5a6575" }}>{totalDB > 0 ? (db/totalDB*100).toFixed(1) : "—"}%</td>
                     <td style={s.tdr}>{p.cashValue || "—"}</td>
-                    <td style={s.tdr}>{p.premiumAmount || "—"}</td>
-                    <td style={s.td}>{p.premiumAmount ? freqLabel : "—"}</td>
+                    <td style={{ ...s.tdr, color: "#5a6575" }}>{totalCV > 0 ? (cv/totalCV*100).toFixed(1) : "—"}%</td>
+                    <td style={s.tdr}>{prem > 0 ? fmt(prem) : "—"}</td>
                   </tr>
                   );
                 })}
                 <tr>
                   <td style={s.tdTotal} colSpan={4}>Totals</td>
-                  <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.deathBenefit), 0))}</td>
-                  <td style={s.tdTotalR}>{fmt(lifePolicies.reduce((s, p) => s + parseDollar(p.cashValue), 0))}</td>
-                  <td style={s.tdTotalR} colSpan={2}></td>
+                  <td style={s.tdTotalR}>{fmt(totalDB)}</td>
+                  <td style={s.tdTotalR}>100.0%</td>
+                  <td style={s.tdTotalR}>{fmt(totalCV)}</td>
+                  <td style={s.tdTotalR}>{totalCV > 0 ? "100.0%" : "—"}</td>
+                  <td style={s.tdTotalR}>{totalPrem > 0 ? fmt(totalPrem) : "—"}</td>
                 </tr>
               </tbody>
             </table>
+              );
+            })()}
           </>)}
 
           {/* ── BENEFICIARIES ── */}
