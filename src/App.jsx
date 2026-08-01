@@ -1205,6 +1205,13 @@ export default function App() {
   const [lastSaved, setLastSaved] = useState(null);
   const [showReport, setShowReport] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
+  const quickViewRef = useRef(null);
+  useEffect(() => {
+    if (!quickViewOpen) return;
+    const handler = e => { if (quickViewRef.current && !quickViewRef.current.contains(e.target)) setQuickViewOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [quickViewOpen]);
   const [quickViewSection, setQuickViewSection] = useState("");
   const [quickViewSelected, setQuickViewSelected] = useState([]);
   const [quickViewPanelOpen, setQuickViewPanelOpen] = useState(false);
@@ -1733,7 +1740,7 @@ export default function App() {
               </div>
               {/* Column 2: Quick View / Saved Clients stacked */}
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <div style={{ position: "relative" }}>
+                <div ref={quickViewRef} style={{ position: "relative" }}>
                   <button onClick={() => setQuickViewOpen(o => !o)}
                     style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, width: "100%" }}>
                     Quick View {quickViewSelected.length > 0 && <span style={{ background: "rgba(255,255,255,0.28)", borderRadius: 999, padding: "1px 6px", fontSize: 11 }}>{quickViewSelected.length}</span>} <span style={{ fontSize: 10, marginLeft: "auto" }}>{quickViewOpen ? "▲" : "▼"}</span>
