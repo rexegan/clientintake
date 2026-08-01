@@ -2521,7 +2521,7 @@ export default function App() {
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontSize: 13, color: INK }}>Marginal Tax Bracket</span>
-                  <span style={{ fontSize: 20, fontWeight: "bold", background: rateColor, color: INK, borderRadius: 7, padding: "3px 16px" }}>{bracket.rate}%</span>
+                  <span style={{ fontSize: 20, fontWeight: "bold", color: INK }}>{bracket.rate}%</span>
                 </div>
                 <div style={{ fontSize: 11, color: INK, marginTop: 10, fontStyle: "italic" }}>
                   Based on 2024 IRS brackets · Does not account for deductions, credits, or other adjustments
