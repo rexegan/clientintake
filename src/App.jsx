@@ -394,6 +394,7 @@ const SECTION_META = {
   "section-autos":      { color: "#ef4444", bg: "#fdeeee", icon: <IcSvg><path d="M5 16l1.6-4.8A2 2 0 0 1 8.5 10h7a2 2 0 0 1 1.9 1.2L19 16"/><rect x="3.5" y="16" width="17" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></IcSvg> },
   "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
   "section-networth":   { color: "#8b5cf6", bg: "#f0edfe", icon: <IcSvg><path d="M3 17l4-8 4 5 3-3 4 6"/><path d="M3 21h18"/></IcSvg> },
+  "section-inheritance":{ color: "#0ea5e9", bg: "#e8f5fd", icon: <IcSvg><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></IcSvg> },
 };
 
 const IconChip = ({ id, size = 28 }) => {
@@ -1051,6 +1052,9 @@ export default function App() {
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
   const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", notes: "" };
   const [nwState, setNwState] = useState({ ...emptyNwState });
+  const emptyInheritance = { expectsInheritance: "", estValue: "", timeline: "", source: "", numberOfSiblings: "", siblingsInvolved: "", specialNeedsFamily: "", specialNeedsDetails: "", nursingCare: "", nursingCareDetails: "", estatePlanning: "", trusteeArrangements: "", familyConflicts: "", conflictDetails: "", charitableIntent: "", charitableDetails: "", additionalNotes: "" };
+  const [inheritance, setInheritance] = useState({ ...emptyInheritance });
+  const setInh = f => e => setInheritance(p => ({ ...p, [f]: e.target.value }));
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
@@ -1122,8 +1126,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritance,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritance]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1179,6 +1183,7 @@ export default function App() {
     setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
     setRecordType(record.recordType || "client");
     setNwState(record.nwState || { ...emptyNwState });
+    setInheritance(record.inheritance || { ...emptyInheritance });
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1292,6 +1297,7 @@ export default function App() {
     setLifePolicies([{ ...emptyLifePolicy, id: 1 }]);
     setRecordType("client");
     setNwState({ ...emptyNwState });
+    setInheritance({ ...emptyInheritance });
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -1400,6 +1406,7 @@ export default function App() {
             ["section-autos",     "Automobiles"],
             ["section-life",      "Life Insurance"],
             ["section-networth",  "Net Worth / Portfolio"],
+            ["section-inheritance", "Future Inheritance"],
           ].map(([id, label]) => (
             <button
               key={id}
@@ -3072,6 +3079,196 @@ export default function App() {
           <Sec t="Balance Sheet Notes" />
           <Row cols={1}>
             <F><Lbl t="Additional Notes / Observations" /><textarea value={nwState.notes || ""} onChange={e => setNwState(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any context, caveats, or observations about this client's balance sheet..." /></F>
+          </Row>
+        </Panel>
+
+        <Panel title="Future Inheritance" id="section-inheritance">
+
+          <Sec t="Inheritance Expectation" />
+          <Row cols={3}>
+            <F>
+              <Lbl t="Expecting an Inheritance?" />
+              <select value={inheritance.expectsInheritance} onChange={setInh("expectsInheritance")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+                <option value="possibly">Possibly</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </F>
+            <F><Lbl t="Estimated Value" /><input value={inheritance.estValue} onChange={e => setInheritance(p => ({ ...p, estValue: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F>
+              <Lbl t="Anticipated Timeline" />
+              <select value={inheritance.timeline} onChange={setInh("timeline")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="0-2 years">0 – 2 Years</option>
+                <option value="3-5 years">3 – 5 Years</option>
+                <option value="6-10 years">6 – 10 Years</option>
+                <option value="10+ years">10+ Years</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </F>
+          </Row>
+          <Row cols={2}>
+            <F>
+              <Lbl t="Source of Inheritance" />
+              <select value={inheritance.source} onChange={setInh("source")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="parent">Parent(s)</option>
+                <option value="grandparent">Grandparent(s)</option>
+                <option value="relative">Other Relative</option>
+                <option value="trust">Existing Trust</option>
+                <option value="multiple">Multiple Sources</option>
+                <option value="other">Other</option>
+              </select>
+            </F>
+            <F><Lbl t="Source Details / Name(s)" /><input value={inheritance.sourceDetails || ""} onChange={setInh("sourceDetails")} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Mother's estate, John Smith Trust" /></F>
+          </Row>
+
+          <Sec t="Family Structure" />
+          <Row cols={3}>
+            <F>
+              <Lbl t="Number of Siblings" />
+              <select value={inheritance.numberOfSiblings} onChange={setInh("numberOfSiblings")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="0">0 — Only Child</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6+">6 or More</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Siblings Involved in Estate?" />
+              <select value={inheritance.siblingsInvolved} onChange={setInh("siblingsInvolved")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes_equal">Yes — Equal Split</option>
+                <option value="yes_unequal">Yes — Unequal Split</option>
+                <option value="no">No — Client is Sole Heir</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Family Conflicts / Disputes?" />
+              <select value={inheritance.familyConflicts} onChange={setInh("familyConflicts")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+                <option value="potential">Potential / Uncertain</option>
+              </select>
+            </F>
+          </Row>
+          {inheritance.familyConflicts === "yes" || inheritance.familyConflicts === "potential" ? (
+            <Row cols={1}>
+              <F><Lbl t="Conflict Details" /><textarea value={inheritance.conflictDetails} onChange={setInh("conflictDetails")} style={{ ...IS, minHeight: 70, resize: "vertical" }} placeholder="Describe any known family disputes, contested wills, or relationship concerns..." /></F>
+            </Row>
+          ) : null}
+
+          <Sec t="Special Needs & Care Considerations" />
+          <Row cols={2}>
+            <F>
+              <Lbl t="Any Family Members with Special Needs?" />
+              <select value={inheritance.specialNeedsFamily} onChange={setInh("specialNeedsFamily")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="no">No</option>
+                <option value="yes_child">Yes — Child</option>
+                <option value="yes_sibling">Yes — Sibling</option>
+                <option value="yes_parent">Yes — Parent</option>
+                <option value="yes_other">Yes — Other Relative</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Special Needs Trust in Place?" />
+              <select value={inheritance.specialNeedsTrust || ""} onChange={setInh("specialNeedsTrust")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+                <option value="needed">No — But Needed</option>
+                <option value="na">N/A</option>
+              </select>
+            </F>
+          </Row>
+          {inheritance.specialNeedsFamily && inheritance.specialNeedsFamily !== "no" ? (
+            <Row cols={1}>
+              <F><Lbl t="Special Needs Details" /><textarea value={inheritance.specialNeedsDetails} onChange={setInh("specialNeedsDetails")} style={{ ...IS, minHeight: 70, resize: "vertical" }} placeholder="Describe the situation, any government benefits at risk, care requirements, etc." /></F>
+            </Row>
+          ) : null}
+
+          <Row cols={2}>
+            <F>
+              <Lbl t="Nursing Care / Long-Term Care Considerations?" />
+              <select value={inheritance.nursingCare} onChange={setInh("nursingCare")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="no">No</option>
+                <option value="yes_parent">Yes — Parent(s) in or nearing care</option>
+                <option value="yes_spouse">Yes — Spouse</option>
+                <option value="yes_self">Yes — Client (self)</option>
+                <option value="yes_other">Yes — Other Family Member</option>
+                <option value="future_concern">Future Concern / Planning Needed</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Long-Term Care Insurance in Place?" />
+              <select value={inheritance.ltcInsurance || ""} onChange={setInh("ltcInsurance")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+                <option value="partial">Partial / Being Arranged</option>
+                <option value="self_fund">Self-Funding / No Insurance</option>
+              </select>
+            </F>
+          </Row>
+          {inheritance.nursingCare && inheritance.nursingCare !== "no" ? (
+            <Row cols={1}>
+              <F><Lbl t="Care Details / Facility / Cost Concerns" /><textarea value={inheritance.nursingCareDetails} onChange={setInh("nursingCareDetails")} style={{ ...IS, minHeight: 70, resize: "vertical" }} placeholder="Describe care situation, estimated costs, facility name, Medicaid planning concerns, etc." /></F>
+            </Row>
+          ) : null}
+
+          <Sec t="Estate & Charitable Planning" />
+          <Row cols={2}>
+            <F>
+              <Lbl t="Estate Planning Documents for Decedent in Place?" />
+              <select value={inheritance.estatePlanning} onChange={setInh("estatePlanning")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes_complete">Yes — Complete</option>
+                <option value="yes_partial">Yes — Partial / Outdated</option>
+                <option value="no">No</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Trustee / Executor Arrangements" />
+              <select value={inheritance.trusteeArrangements} onChange={setInh("trusteeArrangements")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="client_is_executor">Client is Executor / Trustee</option>
+                <option value="professional">Professional / Corporate Trustee</option>
+                <option value="family_member">Family Member</option>
+                <option value="not_established">Not Yet Established</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </F>
+          </Row>
+          <Row cols={2}>
+            <F>
+              <Lbl t="Charitable Giving Intent?" />
+              <select value={inheritance.charitableIntent} onChange={setInh("charitableIntent")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="no">No</option>
+                <option value="yes_donor_advised">Yes — Donor Advised Fund</option>
+                <option value="yes_direct">Yes — Direct Gifts</option>
+                <option value="yes_bequest">Yes — Charitable Bequest</option>
+                <option value="yes_crt">Yes — Charitable Remainder Trust</option>
+                <option value="considering">Considering / Open to It</option>
+              </select>
+            </F>
+            <F><Lbl t="Charitable Details / Organizations" /><input value={inheritance.charitableDetails} onChange={setInh("charitableDetails")} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Names of organizations, causes, or giving vehicles" /></F>
+          </Row>
+
+          <Sec t="Additional Notes" />
+          <Row cols={1}>
+            <F><Lbl t="Other Inheritance / Estate Notes" /><textarea value={inheritance.additionalNotes} onChange={setInh("additionalNotes")} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any other relevant details about expected inheritance, family dynamics, or planning considerations..." /></F>
           </Row>
         </Panel>
 
