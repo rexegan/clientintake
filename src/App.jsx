@@ -286,7 +286,7 @@ const RELATIONSHIP_TYPES = [
   "Trust","Estate","Charity / Organization","Other",
 ];
 
-function ClientRoster({ clients, onDelete, onOpen, onBack }) {
+function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack }) {
   return (
     <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
@@ -332,8 +332,9 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
                   Last saved: {c.savedAt ? new Date(c.savedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " at " + new Date(c.savedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }) : "—"}
                 </div>
               </div>
-              <div style={{ display: "flex", gap: 10 }}>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Open</button>
+                <button onClick={() => onDuplicate(c)} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Duplicate</button>
                 <button onClick={() => window.confirm("Delete this client? This cannot be undone.") && onDelete(c.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Delete</button>
               </div>
             </div>
@@ -1439,6 +1440,13 @@ export default function App() {
           setSubmitted(false);
           setView("form");
           window.scrollTo(0, 0);
+        }}
+        onDuplicate={(record) => {
+          const copy = { ...record, id: Date.now(), savedAt: new Date().toISOString(), client: { ...record.client, firstName: record.client?.firstName ? "Copy of " + record.client.firstName : "Copy" } };
+          const updated = [copy, ...savedClients];
+          localStorage.setItem("rwg_clients", JSON.stringify(updated));
+          setSavedClients(updated);
+          showToast("Record duplicated — open it from the list to edit.", ACCENT);
         }}
         onDelete={(id) => {
           const updated = savedClients.filter(c => c.id !== id);
