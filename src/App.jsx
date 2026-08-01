@@ -2203,7 +2203,7 @@ export default function App() {
             </F>
             <F><Lbl t="Compensation" /><input value={clientEmp.compensation || ""} onChange={e => setClientEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F>
-              <Lbl t="Annual Equivalent" />
+              <Lbl t="Annual" />
               <div style={{ ...IS, background: "#f2f4f7", color: MUTED, display: "flex", alignItems: "center" }}>
                 {(() => {
                   const amt = parseInt((clientEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
@@ -2306,7 +2306,7 @@ export default function App() {
                 </F>
                 <F><Lbl t="Compensation" /><input value={spouseEmp.compensation || ""} onChange={e => setSpouseEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
-                  <Lbl t="Annual Equivalent" />
+                  <Lbl t="Annual" />
                   <div style={{ ...IS, background: "#f2f4f7", color: MUTED, display: "flex", alignItems: "center" }}>
                     {(() => {
                       const amt = parseInt((spouseEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
@@ -2453,7 +2453,7 @@ export default function App() {
                     <input value={inc.amount} onChange={e => updIncome(inc.id, "amount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
                   </F>
                   <F>
-                    <Lbl t="Annual Equivalent" />
+                    <Lbl t="Annual" />
                     <div style={{ ...IS, background: NAV, color: INK, display: "flex", alignItems: "center" }}>
                       {(() => {
                         const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0);
@@ -2544,7 +2544,7 @@ export default function App() {
               <input value={annualExpenses.amount} onChange={e => setAnnualExpenses(p => ({ ...p, amount: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
             </F>
             <F>
-              <Lbl t="Annual Equivalent" />
+              <Lbl t="Annual" />
               <div style={{ ...IS, background: NAV, color: INK, display: "flex", alignItems: "center" }}>
                 {(() => {
                   const raw = parseInt((annualExpenses.amount || "").replace(/[^0-9]/g, "") || 0);
