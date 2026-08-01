@@ -1716,12 +1716,12 @@ export default function App() {
             </div>
           </div>
           {/* Subtitle + buttons row */}
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
             <span style={{ fontSize: 14, color: MUTED }}>
               Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </span>
             {/* Button group: Add Prospect | [QV/Saved/AddClient column] | Load Sample */}
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexShrink: 0 }}>
               {recordType === "prospect" && (
                 <button
                   onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
