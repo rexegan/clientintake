@@ -4121,6 +4121,30 @@ export default function App() {
         if (id === "section-toolbox") return <span style={{ color: MUTED, fontSize: 13 }}>Client toolbox — see form for uploaded documents and notes.</span>;
         return null;
       };
+      const printQV = () => {
+        const el = document.getElementById("qv-print-content");
+        if (!el) return;
+        const win = window.open("", "_blank", "width=900,height=700");
+        win.document.write(`<!doctype html><html><head><title>Quick View</title><style>
+          body { font-family: Georgia, 'Times New Roman', serif; color: #151b28; margin: 0; padding: 32px 40px; }
+          h1 { font-size: 22px; margin: 0 0 4px; }
+          .sub { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #697180; margin-bottom: 24px; }
+          .sec-head { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #2e3d66; border-bottom: 2px solid #2e3d66; padding-bottom: 4px; margin: 20px 0 10px; }
+          table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 8px; }
+          td, th { padding: 5px 8px; border-bottom: 1px solid #e1e4ea; vertical-align: top; }
+          th { background: #e9edf2; color: #2e3d66; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; }
+          .lbl { color: #697180; width: 150px; }
+          @page { margin: 0.6in 0.5in; size: letter portrait; }
+          @media print { body { padding: 0; } }
+        </style></head><body>`);
+        win.document.write(`<h1>${[client.firstName, client.lastName].filter(Boolean).join(" ") || "Quick View"}</h1>`);
+        win.document.write(`<div class="sub">Russell Wealth Group · Quick View · ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</div>`);
+        win.document.write(el.innerHTML);
+        win.document.write("</body></html>");
+        win.document.close();
+        win.focus();
+        setTimeout(() => { win.print(); win.close(); }, 400);
+      };
       return (
         <div onClick={() => setQuickViewPanelOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 4000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
           <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, boxShadow: "0 16px 56px rgba(0,0,0,0.22)", width: "100%", maxWidth: 620, maxHeight: "85vh", display: "flex", flexDirection: "column" }}>
@@ -4131,10 +4155,10 @@ export default function App() {
               </div>
               <button onClick={() => setQuickViewPanelOpen(false)} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: MUTED, padding: "2px 6px" }}>✕</button>
             </div>
-            <div style={{ overflowY: "auto", padding: "4px 0 8px" }}>
+            <div id="qv-print-content" style={{ overflowY: "auto", padding: "4px 0 8px" }}>
               {quickViewSelected.map((id, idx) => (
                 <div key={id} style={{ padding: "14px 22px 16px", borderBottom: idx < quickViewSelected.length - 1 ? "1px solid " + BORDER : "none" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: BRAND_NAVY, marginBottom: 10 }}>{QV_LABEL[id]}</div>
+                  <div className="sec-head" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: BRAND_NAVY, marginBottom: 10 }}>{QV_LABEL[id]}</div>
                   {renderSection(id)}
                 </div>
               ))}
@@ -4143,7 +4167,7 @@ export default function App() {
               <button onClick={() => { setQuickViewPanelOpen(false); setQuickViewOpen(true); }}
                 style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 7, padding: "7px 14px", fontSize: 12, fontWeight: 600, color: INK, cursor: "pointer" }}>← Edit Selection</button>
               <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={() => window.print()}
+                <button onClick={printQV}
                   style={{ background: "#5b6e85", color: "#fff", border: "none", borderRadius: 7, padding: "7px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>🖨 Print</button>
                 <button onClick={() => setQuickViewPanelOpen(false)}
                   style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Close</button>
