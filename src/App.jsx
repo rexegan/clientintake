@@ -1408,28 +1408,6 @@ export default function App() {
             </button>
           ))}
           <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
-          <select
-            value=""
-            onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } e.target.value = ""; }}
-            style={{ display: "block", width: "100%", marginBottom: 6, background: "#2a1f00", color: "#f0a500", border: "1px solid #f0a500", borderRadius: 8, padding: "7px 10px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-          >
-            <option value="">Add Prospect?</option>
-            <option value="yes">Yes — New Prospect</option>
-          </select>
-          <select
-            value=""
-            onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("client"); window.scrollTo(0,0); } e.target.value = ""; }}
-            style={{ display: "block", width: "100%", marginBottom: 8, background: "#0f2a0f", color: "#4caf50", border: "1px solid #4caf50", borderRadius: 8, padding: "7px 10px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-          >
-            <option value="">Add Client?</option>
-            <option value="yes">Yes — New Client</option>
-          </select>
-          {recordType && (
-            <div style={{ textAlign: "center", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: recordType === "client" ? "#4caf50" : "#f0a500", border: `1px solid ${recordType === "client" ? "#4caf50" : "#f0a500"}`, borderRadius: 6, padding: "3px 8px", marginBottom: 4 }}>
-              {recordType === "client" ? "Client" : "Prospect"}
-            </div>
-          )}
-          <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
           <button
             onClick={() => setView("roster")}
             className="side-nav"
@@ -1456,11 +1434,36 @@ export default function App() {
 
         <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
 
-        <div style={{ marginBottom: 24 }}>
-          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>New Client Intake</h1>
-          <p style={{ margin: "5px 0 0", fontSize: 14, color: MUTED }}>
-            Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-          </p>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>New Client Intake</h1>
+            <p style={{ margin: "5px 0 0", fontSize: 14, color: MUTED }}>
+              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+            </p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, paddingTop: 4 }}>
+            {recordType && (
+              <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 6, padding: "4px 10px" }}>
+                {recordType === "client" ? "Client" : "Prospect"}
+              </span>
+            )}
+            <select
+              value=""
+              onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } e.target.value = ""; }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              <option value="">+ Add Prospect</option>
+              <option value="yes">Yes — New Prospect</option>
+            </select>
+            <select
+              value=""
+              onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("client"); window.scrollTo(0,0); } e.target.value = ""; }}
+              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              <option value="">+ Add Client</option>
+              <option value="yes">Yes — New Client</option>
+            </select>
+          </div>
         </div>
 
         {/* ── CLIENT PROFILE ── */}
