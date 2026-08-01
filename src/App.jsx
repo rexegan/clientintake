@@ -2105,9 +2105,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Child Beneficiary — {ch.firstName} {ch.lastName}</div>
-                  <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 5, padding: "3px 8px",
-                    background: (ch.designationType || "primary") === "primary" ? "#e6f4ea" : "#fef3c7",
-                    color:      (ch.designationType || "primary") === "primary" ? "#1a5c2a"  : "#92400e" }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 5, padding: "3px 8px", border: "1px solid " + BORDER, background: "#fff", color: INK }}>
                     {(ch.designationType || "primary") === "primary" ? "Primary" : "Contingent"}
                   </span>
                 </div>
@@ -2137,9 +2135,7 @@ export default function App() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {i + 1}</div>
                   <select data-lpignore="true" value={b.designationType || "primary"} onChange={e => updBene(b.id, "designationType", e.target.value)}
-                    style={{ fontSize: 11, fontWeight: 700, border: "none", borderRadius: 5, padding: "3px 8px", cursor: "pointer",
-                      background: (b.designationType || "primary") === "primary" ? "#e6f4ea" : "#fef3c7",
-                      color:      (b.designationType || "primary") === "primary" ? "#1a5c2a"  : "#92400e" }}>
+                    style={{ fontSize: 11, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", cursor: "pointer", background: "#fff", color: INK }}>
                     <option value="primary">Primary</option>
                     <option value="contingent">Contingent</option>
                   </select>
