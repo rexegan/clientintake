@@ -1677,10 +1677,11 @@ export default function App() {
               </span>
             )}
           </div>
-          <p style={{ margin: "5px 0 12px", fontSize: 14, color: MUTED }}>
-            Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-          </p>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexWrap: "wrap", justifyContent: "space-between", margin: "5px 0 12px" }}>
+            <span style={{ fontSize: 14, color: MUTED, whiteSpace: "nowrap" }}>
+              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+            </span>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexWrap: "wrap" }}>
             {recordType === "prospect" && (
               <button
                 onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
@@ -1754,7 +1755,8 @@ export default function App() {
             >
               Load Sample
             </button>
-          </div>
+            </div>{/* end inner button group */}
+          </div>{/* end subtitle + buttons row */}
         </div>
 
         {/* ── CLIENT PROFILE ── */}
