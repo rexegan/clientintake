@@ -3084,7 +3084,7 @@ export default function App() {
 
         <Panel title="Estate Planning" id="section-inheritance">
 
-          <Sec t="Inheritance Expectation" />
+          <Sec t="Inheritance" />
           <Row cols={3}>
             <F>
               <Lbl t="Expecting an Inheritance?" />
