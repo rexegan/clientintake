@@ -485,7 +485,7 @@ function ClientReport({ data, onClose }) {
     if (!clientFirst && !clientLast) return "Client";
     if (!hasSpouseRecord || !spouseFirst) return [clientFirst, clientLast].filter(Boolean).join(" ") || "Client";
     if (clientLast && spouseLast === clientLast) return `${clientFirst} & ${spouseFirst} ${clientLast}`;
-    return `${clientName} & ${spouseName}`;
+    return `${clientFirst} & ${spouseFirst} ${spouseLast}`.trim();
   })();
   const reportDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
