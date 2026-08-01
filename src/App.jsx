@@ -3055,19 +3055,19 @@ export default function App() {
 
           <Sec t="Portfolio Breakdown" />
           <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Break down total investable assets by category.</div>
-          {[
-            { key: "pbCash",       label: "Cash & Cash Equivalents (Checking, Savings, MM, CDs)" },
-            { key: "pbQualified",  label: "Qualified Retirement Plans (401k, IRA, Pension, etc.)" },
-            { key: "pbNonQual",    label: "Non-Qualified / Taxable Brokerage & Trust" },
-            { key: "pbAnnuities",  label: "Annuities (Fixed, Indexed, Variable, RILA)" },
-            { key: "pbCVLI",       label: "Cash Value Life Insurance" },
-            { key: "pbAlts",       label: "Alternative / Illiquid Investments" },
-            { key: "pbOther",      label: "Other / Unclassified" },
-          ].map(({ key, label }) => (
-            <Row cols={2} key={key}>
-              <F><Lbl t={label} /><input value={nwState[key] || ""} onChange={e => setNwState(p => ({ ...p, [key]: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            </Row>
-          ))}
+          <Row cols={2}>
+            {[
+              { key: "pbCash",       label: "Cash & Cash Equivalents (Checking, Savings, MM, CDs)" },
+              { key: "pbQualified",  label: "Qualified Retirement Plans (401k, IRA, Pension, etc.)" },
+              { key: "pbNonQual",    label: "Non-Qualified / Taxable Brokerage & Trust" },
+              { key: "pbAnnuities",  label: "Annuities (Fixed, Indexed, Variable, RILA)" },
+              { key: "pbCVLI",       label: "Cash Value Life Insurance" },
+              { key: "pbAlts",       label: "Alternative / Illiquid Investments" },
+              { key: "pbOther",      label: "Other / Unclassified" },
+            ].map(({ key, label }) => (
+              <F key={key}><Lbl t={label} /><input value={nwState[key] || ""} onChange={e => setNwState(p => ({ ...p, [key]: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            ))}
+          </Row>
 
           <Sec t="Balance Sheet Notes" />
           <Row cols={1}>
