@@ -309,6 +309,9 @@ function ClientRoster({ clients, onDelete, onOpen, onBack }) {
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ fontSize: 17, fontWeight: "bold", color: INK }}>{c.client?.firstName} {c.client?.lastName}</div>
+                  <span style={{ fontSize: 10, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", color: c.recordType === "client" ? "#4caf50" : "#f0a500", border: `1px solid ${c.recordType === "client" ? "#4caf50" : "#f0a500"}`, borderRadius: 4, padding: "2px 7px" }}>
+                    {c.recordType === "client" ? "Client" : "Prospect"}
+                  </span>
                 </div>
                 {["married","domestic_partner"].includes(c.hasSpouse) && c.spouse?.firstName && (
                   <div style={{ fontSize: 13, color: INK, marginTop: 2 }}>Spouse: {c.spouse.firstName} {c.spouse.lastName}</div>
@@ -1050,6 +1053,7 @@ export default function App() {
   const [uploads, setUploads] = useState({});
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
+  const [recordType, setRecordType] = useState("prospect");
   const [customInstitutions, setCustomInstitutions] = useState(() => JSON.parse(localStorage.getItem("rwg_institutions") || "[]"));
   const allInstitutions = [...DEFAULT_INSTITUTIONS, ...customInstitutions.filter(c => !DEFAULT_INSTITUTIONS.includes(c))].sort((a, b) => a.localeCompare(b));
   const addCustomInstitution = (val) => {
@@ -1115,8 +1119,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1170,6 +1174,7 @@ export default function App() {
     setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
     setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
+    setRecordType(record.recordType || "prospect");
     setUploads(record.uploads || {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1281,6 +1286,7 @@ export default function App() {
     setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
     setUploads({});
     setLifePolicies([{ ...emptyLifePolicy, id: 1 }]);
+    setRecordType("prospect");
     setActiveClient(null);
     setSubmitted(false);
   };
@@ -1310,6 +1316,7 @@ export default function App() {
           setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
           setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
+          setRecordType(record.recordType || "prospect");
           setActiveClient(record.id);
           setSubmitted(false);
           setView("form");
@@ -1400,6 +1407,28 @@ export default function App() {
               {label}
             </button>
           ))}
+          <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
+          <select
+            value=""
+            onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } e.target.value = ""; }}
+            style={{ display: "block", width: "100%", marginBottom: 6, background: "#2a1f00", color: "#f0a500", border: "1px solid #f0a500", borderRadius: 8, padding: "7px 10px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+          >
+            <option value="">Add Prospect?</option>
+            <option value="yes">Yes — New Prospect</option>
+          </select>
+          <select
+            value=""
+            onChange={e => { if (e.target.value === "yes") { handleReset(); setRecordType("client"); window.scrollTo(0,0); } e.target.value = ""; }}
+            style={{ display: "block", width: "100%", marginBottom: 8, background: "#0f2a0f", color: "#4caf50", border: "1px solid #4caf50", borderRadius: 8, padding: "7px 10px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+          >
+            <option value="">Add Client?</option>
+            <option value="yes">Yes — New Client</option>
+          </select>
+          {recordType && (
+            <div style={{ textAlign: "center", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: recordType === "client" ? "#4caf50" : "#f0a500", border: `1px solid ${recordType === "client" ? "#4caf50" : "#f0a500"}`, borderRadius: 6, padding: "3px 8px", marginBottom: 4 }}>
+              {recordType === "client" ? "Client" : "Prospect"}
+            </div>
+          )}
           <div style={{ height: 1, background: BORDER, margin: "12px 6px" }} />
           <button
             onClick={() => setView("roster")}
