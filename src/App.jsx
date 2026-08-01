@@ -483,7 +483,7 @@ function ClientReport({ data, onClose }) {
   // Header: "Bob & Melody Carson" or just "Bob Carson"
   const headerName = (() => {
     if (!clientFirst && !clientLast) return "Client";
-    if (!hasSpouseRecord || !spouseFirst) return clientName;
+    if (!hasSpouseRecord || !spouseFirst) return [clientFirst, clientLast].filter(Boolean).join(" ") || "Client";
     if (clientLast && spouseLast === clientLast) return `${clientFirst} & ${spouseFirst} ${clientLast}`;
     return `${clientName} & ${spouseName}`;
   })();
@@ -735,7 +735,7 @@ function ClientReport({ data, onClose }) {
               <thead>
                 <tr>
                   <th style={s.th}>Asset Category</th>
-                  <th style={{ ...s.th, textAlign: "right" }}>Dollar Amount</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Amount</th>
                   <th style={{ ...s.th, textAlign: "right", width: 80 }}>% of Total</th>
                   <th style={{ ...s.th, width: 200 }}>Allocation</th>
                 </tr>
@@ -793,7 +793,7 @@ function ClientReport({ data, onClose }) {
                       <td style={s.td}>{a.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.owner || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : <em style={{ color: "#9aa" }}>—</em>}</td>
-                      <td style={s.td}>{a.hasRmdOrContrib || <em style={{ color: "#9aa" }}>—</em>}{a.rmdContribAmount ? <span style={{ color: "#5a6575" }}> · {a.rmdContribAmount}/{a.rmdContribFrequency || "—"}</span> : ""}</td>
+                      <td style={s.td}>{(a.hasRmdOrContrib || "").replace(/^Contributing$/i, "Contrib.") || <em style={{ color: "#9aa" }}>—</em>}{a.rmdContribAmount ? <span style={{ color: "#5a6575" }}> · {a.rmdContribAmount}/{a.rmdContribFrequency || "—"}</span> : ""}</td>
                       <td style={s.tdr}>{a.balance ? <strong>{a.balance}</strong> : <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td>
                     </tr>
@@ -1703,40 +1703,39 @@ export default function App() {
 
         <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
 
-        <div style={{ marginBottom: 16, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-          {/* Left: title + subtitle */}
-          <div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</h1>
-              {recordType && (
-                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 5, padding: "2px 8px", whiteSpace: "nowrap" }}>
-                  {recordType === "client" ? "Client" : "Prospect"}
-                </span>
-              )}
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, marginTop: 6 }}>
-              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-            </div>
+        <div style={{ marginBottom: 16 }}>
+          {/* Row 1: title only */}
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</h1>
+            {recordType && (
+              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 5, padding: "2px 8px", whiteSpace: "nowrap" }}>
+                {recordType === "client" ? "Client" : "Prospect"}
+              </span>
+            )}
           </div>
-          {/* Right: all buttons */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexShrink: 0 }}>
+          {/* Row 2: subtitle left, buttons far right */}
+          <div style={{ display: "flex", alignItems: "flex-start", marginTop: 6 }}>
+            <span style={{ flex: 1, fontSize: 14, color: MUTED }}>
+              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+            </span>
+            {/* Button group */}
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexShrink: 0, marginLeft: 16 }}>
               {recordType === "prospect" && (
-                <button
-                  onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
-                  style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-                >Prospect → Client</button>
+                <button onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
+                  style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Prospect → Client</button>
               )}
-              <button
-                onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
-                style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-              >+ Add Prospect</button>
-              {/* Middle column: Quick View + Saved Clients stacked above Add Client */}
+              {/* Column 1: Add Prospect / Add Client stacked */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <button onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
+                  style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Add Prospect</button>
+                <button onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
+                  style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Add Client</button>
+              </div>
+              {/* Column 2: Quick View / Saved Clients stacked */}
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <div style={{ position: "relative" }}>
-                  <button
-                    onClick={() => setQuickViewOpen(o => !o)}
-                    style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, width: "100%" }}
-                  >
+                  <button onClick={() => setQuickViewOpen(o => !o)}
+                    style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, width: "100%" }}>
                     Quick View {quickViewSelected.length > 0 && <span style={{ background: "rgba(255,255,255,0.28)", borderRadius: 999, padding: "1px 6px", fontSize: 11 }}>{quickViewSelected.length}</span>} <span style={{ fontSize: 10, marginLeft: "auto" }}>{quickViewOpen ? "▲" : "▼"}</span>
                   </button>
                   {quickViewOpen && (
@@ -1764,33 +1763,24 @@ export default function App() {
                         })}
                       </div>
                       <div style={{ padding: "8px 14px 10px", borderTop: "1px solid " + BORDER }}>
-                        <button
-                          disabled={quickViewSelected.length === 0}
-                          onClick={() => { setQuickViewPanelOpen(true); setQuickViewOpen(false); }}
-                          style={{ width: "100%", background: quickViewSelected.length === 0 ? "#ccc" : BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontSize: 13, fontWeight: 700, cursor: quickViewSelected.length === 0 ? "default" : "pointer" }}
-                        >
+                        <button disabled={quickViewSelected.length === 0} onClick={() => { setQuickViewPanelOpen(true); setQuickViewOpen(false); }}
+                          style={{ width: "100%", background: quickViewSelected.length === 0 ? "#ccc" : BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontSize: 13, fontWeight: 700, cursor: quickViewSelected.length === 0 ? "default" : "pointer" }}>
                           View Selected {quickViewSelected.length > 0 ? `(${quickViewSelected.length})` : ""}
                         </button>
                       </div>
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={() => setView("roster")}
-                  style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
-                >
+                <button onClick={() => setView("roster")}
+                  style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
                   <span>Saved Clients</span>
                   <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
                 </button>
-                <button
-                  onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
-                  style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-                >+ Add Client</button>
               </div>
-              <button
-                onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
-                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-              >Load Sample</button>
+              {/* Column 3: Load Sample */}
+              <button onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
+                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Load Sample</button>
+            </div>
           </div>
         </div>
 
