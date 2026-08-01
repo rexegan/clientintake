@@ -286,7 +286,24 @@ const RELATIONSHIP_TYPES = [
   "Trust","Estate","Charity / Organization","Other",
 ];
 
-function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack }) {
+function ConfirmDialog({ message, confirmLabel = "Confirm", onConfirm, onCancel }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 9000, pointerEvents: "none" }}>
+      <div style={{ position: "absolute", bottom: 60, left: "50%", transform: "translateX(-50%)",
+        pointerEvents: "all", background: "#fff", border: "1px solid #e1e4ea",
+        borderRadius: 14, padding: "22px 28px 20px", boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
+        maxWidth: 420, width: "90vw", textAlign: "center" }}>
+        <p style={{ margin: "0 0 18px", fontSize: 14, color: "#151b28", lineHeight: 1.6, whiteSpace: "pre-line" }}>{message}</p>
+        <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+          <button onClick={onCancel}  style={{ padding: "8px 22px", fontSize: 13, fontWeight: 600, borderRadius: 8, border: "1px solid #cfd5de", background: "#fff", color: "#151b28", cursor: "pointer" }}>Cancel</button>
+          <button onClick={onConfirm} style={{ padding: "8px 22px", fontSize: 13, fontWeight: 600, borderRadius: 8, border: "none", background: "#2f3a4a", color: "#fff", cursor: "pointer" }}>{confirmLabel}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfirm }) {
   return (
     <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
@@ -334,8 +351,9 @@ function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack }) {
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <button onClick={() => onOpen(c)} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Open</button>
+                <button onClick={() => onOpen(c)} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Edit</button>
                 <button onClick={() => onDuplicate(c)} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Duplicate</button>
-                <button onClick={() => window.confirm("Delete this client? This cannot be undone.") && onDelete(c.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Delete</button>
+                <button onClick={() => onConfirm("Delete this client? This cannot be undone.", () => onDelete(c.id), "Delete")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: 13 }}>Delete</button>
               </div>
             </div>
           );
@@ -345,7 +363,8 @@ function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack }) {
   );
 }
 
-function FileUpload({ section, files = [], onChange, hideLabel = false }) {
+function FileUpload({ section, files = [], onChange, hideLabel = false, onConfirm }) {
+  const askConfirm = onConfirm || ((msg, cb) => { if (window.confirm(msg)) cb(); });
   const inputRef = useRef(null);
   const handleFiles = (e) => {
     const chosen = Array.from(e.target.files);
@@ -374,7 +393,7 @@ function FileUpload({ section, files = [], onChange, hideLabel = false }) {
             <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, background: "#f2f4f7", borderRadius: 6, padding: "6px 10px" }}>
               <a href={f.data} download={f.name} style={{ color: INK, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
               <span style={{ fontSize: 11, color: INK, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
-              <button onClick={() => window.confirm(`Remove "${f.name}"?`) && onChange(section, files.filter(x => x.id !== f.id))} style={{ background: "#faeaea", border: "none", color: DANGER, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, flexShrink: 0 }}>✕</button>
+              <button onClick={() => askConfirm(`Remove "${f.name}"?`, () => onChange(section, files.filter(x => x.id !== f.id)))} style={{ background: "#faeaea", border: "none", color: DANGER, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, flexShrink: 0 }}>✕</button>
             </div>
           ))}
         </div>
@@ -657,9 +676,9 @@ function ClientReport({ data, onClose }) {
                   <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td><td style={s.tdTotalR}>{totalLiabilities > 0 ? "100.0%" : "—"}</td></tr>
                 </tbody>
               </table>
-              <div style={{ ...s.netWorthBox, marginTop: 0, padding: "16px 20px", borderRadius: 8 }}>
-                <div style={s.nwLabel}>Estimated Net Worth</div>
-                <div style={{ ...s.nwValue, fontSize: 26 }}>{fmt(netWorth)}</div>
+              <div style={{ marginTop: 0, padding: "16px 20px", borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center", border: "2px solid " + BLUE }}>
+                <div style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: NAVY }}>Estimated Net Worth</div>
+                <div style={{ fontSize: 26, fontWeight: "bold", color: NAVY }}>{fmt(netWorth)}</div>
               </div>
             </div>
           </div>
@@ -1099,6 +1118,9 @@ function ClientReport({ data, onClose }) {
 
 export default function App() {
   const [view, setView] = useState("form");
+  const [confirmState, setConfirmState] = useState({ open: false, message: "", confirmLabel: "Confirm", onConfirm: null });
+  const showConfirm = (message, onConfirm, confirmLabel = "Confirm") => setConfirmState({ open: true, message, confirmLabel, onConfirm });
+  const closeConfirm = () => setConfirmState(s => ({ ...s, open: false, onConfirm: null }));
   const [savedClients, setSavedClients] = useState(
     () => JSON.parse(localStorage.getItem("rwg_clients") || "[]")
   );
@@ -1365,26 +1387,30 @@ export default function App() {
       return false;
     });
 
+    const doSave = () => {
+      const record = {
+        id: Date.now(),
+        savedAt: new Date().toISOString(),
+        client, spouse, hasSpouse, hasChildren, children,
+        clientEmails, spouseEmails,
+        clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
+        beneficiaries, willsTrust, poa,
+      };
+      saveClient(record);
+      setActiveClient(record.id);
+      setSubmitted(true);
+    };
+
     if (duplicate) {
       const existingName = `${duplicate.client?.firstName || ""} ${duplicate.client?.lastName || ""}`;
       const savedDate = new Date(duplicate.savedAt).toLocaleDateString();
-      const proceed = window.confirm(
-        `A client named "${existingName}" already exists (saved ${savedDate}).\n\nSave anyway as a new record?`
+      showConfirm(
+        `A client named "${existingName}" already exists (saved ${savedDate}).\n\nSave anyway as a new record?`,
+        doSave, "Save Anyway"
       );
-      if (!proceed) return;
+    } else {
+      doSave();
     }
-
-    const record = {
-      id: Date.now(),
-      savedAt: new Date().toISOString(),
-      client, spouse, hasSpouse, hasChildren, children,
-      clientEmails, spouseEmails,
-      clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-      beneficiaries, willsTrust, poa,
-    };
-    saveClient(record);
-    setActiveClient(record.id);
-    setSubmitted(true);
   };
 
   const loadSampleData = () => {
@@ -1516,6 +1542,7 @@ export default function App() {
           setSavedClients(updated);
         }}
         onBack={() => setView("form")}
+        onConfirm={showConfirm}
       />
     );
   }
@@ -1629,16 +1656,16 @@ export default function App() {
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
             <button
-              onClick={() => { if (window.confirm("Start a new prospect record? Current form will be cleared.")) { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); } }}
+              onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >+ Add Prospect</button>
             <button
-              onClick={() => { if (window.confirm("Start a new client record? Current form will be cleared.")) { handleReset(); setRecordType("client"); window.scrollTo(0,0); } }}
+              onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
               style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >+ Add Client</button>
             {recordType === "prospect" && (
               <button
-                onClick={() => { if (window.confirm("Convert this prospect to a client?")) setRecordType("client"); }}
+                onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
                 style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
               >
                 Prospect → Client
@@ -1652,7 +1679,7 @@ export default function App() {
               <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
             </button>
             <button
-              onClick={() => { if (window.confirm("Load sample client data? This will overwrite the current form.")) loadSampleData(); }}
+              onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
               style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
             >
               Load Sample
@@ -1703,7 +1730,7 @@ export default function App() {
               </select>
               <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
               {clientEmails.length > 1 && (
-                <button onClick={() => window.confirm("Remove this email?") && setClientEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
+                <button onClick={() => showConfirm("Remove this email?", () => setClientEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
               )}
             </div>
           ))}
@@ -1833,7 +1860,7 @@ export default function App() {
               <F><Lbl t="Landlord Phone" /><input value={homeOwnership.landlordPhone} onChange={e => setHomeOwnership(p => ({ ...p, landlordPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             </Row>
           )}
-          <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange} />
+          <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── FAMILY ── */}
@@ -1896,7 +1923,7 @@ export default function App() {
                   </select>
                   <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
                   {spouseEmails.length > 1 && (
-                    <button onClick={() => window.confirm("Remove this email?") && setSpouseEmails(p => p.filter(x => x.id !== em.id))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
+                    <button onClick={() => showConfirm("Remove this email?", () => setSpouseEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
                   )}
                 </div>
               ))}
@@ -2008,7 +2035,7 @@ export default function App() {
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={() => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: client.lastName, addressLine1: client.addressLine1, addressLine2: client.addressLine2, city: client.city, state: client.state, zip: client.zip } : x))} style={{ background: INPUT_BG, border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12 }}>Copy Client Info</button>
                       {children.length > 1 && (
-                        <button onClick={() => window.confirm("Remove this child?") && setChildren(p => p.filter(x => x.id !== ch.id))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                        <button onClick={() => showConfirm("Remove this child?", () => setChildren(p => p.filter(x => x.id !== ch.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                       )}
                     </div>
                   </div>
@@ -2095,7 +2122,7 @@ export default function App() {
               </button>
             </div>
           )}
-          <FileUpload section="family" files={uploads.family || []} onChange={handleUploadChange} />
+          <FileUpload section="family" files={uploads.family || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── BENEFICIARIES ── */}
@@ -2140,7 +2167,7 @@ export default function App() {
                     <option value="contingent">Contingent</option>
                   </select>
                 </div>
-                <button onClick={() => window.confirm("Remove this beneficiary?") && delBene(b.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                <button onClick={() => showConfirm("Remove this beneficiary?", () => delBene(b.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2271,7 +2298,7 @@ export default function App() {
           <button onClick={addBene} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Beneficiary
           </button>
-          <FileUpload section="beneficiaries" files={uploads.beneficiaries || []} onChange={handleUploadChange} />
+          <FileUpload section="beneficiaries" files={uploads.beneficiaries || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── EMPLOYMENT ── */}
@@ -2481,7 +2508,7 @@ export default function App() {
               </div>
             </>
           )}
-          <FileUpload section="employment" files={uploads.employment || []} onChange={handleUploadChange} />
+          <FileUpload section="employment" files={uploads.employment || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── ANNUAL INCOME ── */}
@@ -2491,7 +2518,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income Source {i + 1}</div>
                 {incomes.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this income source?") && delIncome(inc.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                  <button onClick={() => showConfirm("Remove this income source?", () => delIncome(inc.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               <Row cols={3}>
@@ -2651,7 +2678,7 @@ export default function App() {
               </div>
             </F>
           </Row>
-          <FileUpload section="income" files={uploads.income || []} onChange={handleUploadChange} />
+          <FileUpload section="income" files={uploads.income || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── REAL ESTATE ── */}
@@ -2661,7 +2688,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Property {i + 1}</div>
                 {realEstate.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this property?") && delRE(r.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                  <button onClick={() => showConfirm("Remove this property?", () => delRE(r.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
@@ -2811,7 +2838,7 @@ export default function App() {
           <button onClick={addRE} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Property
           </button>
-          <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange} />
+          <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── INVESTMENT & BANK ACCOUNTS ── */}
@@ -2822,7 +2849,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Account {i + 1}</div>
                 {accounts.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this account?") && delAcct(a.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                  <button onClick={() => showConfirm("Remove this account?", () => delAcct(a.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               {/* Row 2: owner / NQ-Q / OPT / event / timeframe */}
@@ -2957,7 +2984,7 @@ export default function App() {
           <button onClick={addAcct} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Account
           </button>
-          <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange} />
+          <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── WILLS & TRUST ── */}
@@ -3086,7 +3113,7 @@ export default function App() {
               <textarea data-lpignore="true" value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
             </div>
           )}
-          <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange} />
+          <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── AUTOMOBILES ── */}
@@ -3096,7 +3123,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Vehicle {i + 1}</div>
                 {autos.length > 1 && (
-                  <button onClick={() => window.confirm("Remove this vehicle?") && delAuto(a.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                  <button onClick={() => showConfirm("Remove this vehicle?", () => delAuto(a.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
               <Row cols={4}>
@@ -3175,7 +3202,7 @@ export default function App() {
           <button onClick={addAuto} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Vehicle
           </button>
-          <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange} />
+          <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── LIFE INSURANCE ── */}
@@ -3184,7 +3211,7 @@ export default function App() {
             <div key={p.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Policy {i + 1}</div>
-                <button onClick={() => window.confirm("Remove this policy?") && delLife(p.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                <button onClick={() => showConfirm("Remove this policy?", () => delLife(p.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={4}>
                 <F>
@@ -3253,7 +3280,7 @@ export default function App() {
           <button onClick={addLife} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Policy
           </button>
-          <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange} />
+          <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
@@ -3305,7 +3332,7 @@ export default function App() {
             <div key={inh.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Inheritance {i + 1}</div>
-                <button onClick={() => window.confirm("Remove this inheritance record?") && delInh(inh.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                <button onClick={() => showConfirm("Remove this inheritance record?", () => delInh(inh.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
 
               <Sec t="Inheritance" />
@@ -3532,10 +3559,10 @@ export default function App() {
                 <div style={{ background: "#f1f3f6", padding: "10px 16px", display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 18 }}>🗂</span>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: INK, flex: 1 }}>{v.category}</div>
-                  <button onClick={() => window.confirm(`Remove "${v.category}" vault?`) && delVault(v.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12 }}>Remove</button>
+                  <button onClick={() => showConfirm(`Remove "${v.category}" vault?`, () => delVault(v.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 12 }}>Remove</button>
                 </div>
                 <div style={{ padding: "10px 16px" }}>
-                  <FileUpload section={uploadKey} files={uploads[uploadKey] || []} onChange={handleUploadChange} hideLabel />
+                  <FileUpload section={uploadKey} files={uploads[uploadKey] || []} onChange={handleUploadChange} hideLabel  onConfirm={showConfirm}/>
                 </div>
               </div>
             );
@@ -3608,6 +3635,14 @@ export default function App() {
           onClose={() => setShowReport(false)}
         />
       </div>
+    )}
+    {confirmState.open && (
+      <ConfirmDialog
+        message={confirmState.message}
+        confirmLabel={confirmState.confirmLabel}
+        onConfirm={() => { closeConfirm(); confirmState.onConfirm && confirmState.onConfirm(); }}
+        onCancel={closeConfirm}
+      />
     )}
     </>
   );
