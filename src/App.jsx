@@ -1703,9 +1703,9 @@ export default function App() {
 
         <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
 
-        <div style={{ marginBottom: 16 }}>
-          {/* Title row */}
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+        <div style={{ marginBottom: 16, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+          {/* Left: title + subtitle */}
+          <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
               <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</h1>
               {recordType && (
@@ -1714,14 +1714,12 @@ export default function App() {
                 </span>
               )}
             </div>
-          </div>
-          {/* Subtitle + buttons row */}
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 14, color: MUTED }}>
+            <div style={{ fontSize: 14, color: MUTED, marginTop: 6 }}>
               Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-            </span>
-            {/* Button group: Add Prospect | [QV/Saved/AddClient column] | Load Sample */}
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexShrink: 0 }}>
+            </div>
+          </div>
+          {/* Right: all buttons */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexShrink: 0 }}>
               {recordType === "prospect" && (
                 <button
                   onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
@@ -1793,7 +1791,6 @@ export default function App() {
                 onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
                 style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
               >Load Sample</button>
-            </div>
           </div>
         </div>
 
