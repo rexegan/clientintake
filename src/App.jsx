@@ -1669,35 +1669,18 @@ export default function App() {
         <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
 
         <div style={{ marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</h1>
-            {recordType && (
-              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 5, padding: "2px 8px", whiteSpace: "nowrap" }}>
-                {recordType === "client" ? "Client" : "Prospect"}
-              </span>
-            )}
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexWrap: "wrap", justifyContent: "space-between", margin: "5px 0 12px" }}>
-            <span style={{ fontSize: 14, color: MUTED, whiteSpace: "nowrap" }}>
-              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-            </span>
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexWrap: "wrap" }}>
-            {recordType === "prospect" && (
-              <button
-                onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
-                style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-              >Prospect → Client</button>
-            )}
-            <button
-              onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-            >+ Add Prospect</button>
-            <button
-              onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
-              style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-            >+ Add Client</button>
+          {/* Row 1: title left, Quick View + Saved Clients right */}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: INK }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</h1>
+              {recordType && (
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: recordType === "client" ? "#2fa76f" : BRAND_NAVY, border: `1px solid ${recordType === "client" ? "#2fa76f" : BRAND_NAVY}`, borderRadius: 5, padding: "2px 8px", whiteSpace: "nowrap" }}>
+                  {recordType === "client" ? "Client" : "Prospect"}
+                </span>
+              )}
+            </div>
             {/* Quick View stacked above Saved Clients */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, position: "relative" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, flexShrink: 0 }}>
               <div style={{ position: "relative" }}>
                 <button
                   onClick={() => setQuickViewOpen(o => !o)}
@@ -1749,14 +1732,33 @@ export default function App() {
                 <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
               </button>
             </div>
-            <button
-              onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
-              style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-            >
-              Load Sample
-            </button>
-            </div>{/* end inner button group */}
-          </div>{/* end subtitle + buttons row */}
+          </div>
+          {/* Row 2: subtitle left, action buttons right */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 14, color: MUTED }}>
+              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              {recordType === "prospect" && (
+                <button
+                  onClick={() => showConfirm("Convert this prospect to a client?", () => setRecordType("client"), "Convert")}
+                  style={{ background: "#2fa76f", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+                >Prospect → Client</button>
+              )}
+              <button
+                onClick={() => showConfirm("Start a new prospect record? Current form will be cleared.", () => { handleReset(); setRecordType("prospect"); window.scrollTo(0,0); })}
+                style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              >+ Add Prospect</button>
+              <button
+                onClick={() => showConfirm("Start a new client record? Current form will be cleared.", () => { handleReset(); setRecordType("client"); window.scrollTo(0,0); })}
+                style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              >+ Add Client</button>
+              <button
+                onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
+                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              >Load Sample</button>
+            </div>
+          </div>
         </div>
 
         {/* ── CLIENT PROFILE ── */}
