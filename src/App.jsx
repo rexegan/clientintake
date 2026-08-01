@@ -1118,6 +1118,337 @@ function ClientReport({ data, onClose }) {
   );
 }
 
+function SummaryReview({ data, onClose }) {
+  const {
+    client = {}, spouse = {}, hasSpouse, hasChildren, children = [],
+    beneficiaries = [], clientEmp = {}, spouseEmp = {},
+    incomes = [], realEstate = [], homeOwnership = {},
+    accounts = [], willsTrust = {}, poa = {},
+    autos = [], lifePolicies = [],
+    nwState = {}, annualExpenses = { amount: "", frequency: "monthly" },
+    inheritances = [], vaults = [], recordType = "client",
+  } = data;
+
+  const P = "Georgia, 'Times New Roman', serif";
+  const NAVY = "#2e3d66";
+  const BLUE = "#5b6e85";
+  const LGRAY = "#f4f6fa";
+  const BDR = "1px solid #dce1ea";
+  const INK = "#151b28";
+  const MUT = "#697180";
+
+  const clientFirst = client.firstName || "";
+  const clientLast  = client.lastName  || "";
+  const spouseFirst = spouse.firstName || "";
+  const spouseLast  = spouse.lastName  || clientLast;
+  const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
+  const headerName = (() => {
+    if (!clientFirst && !clientLast) return "Client";
+    if (!hasSpouseRecord || !spouseFirst) return [clientFirst, clientLast].filter(Boolean).join(" ") || "Client";
+    if (clientLast && spouseLast === clientLast) return `${clientFirst} & ${spouseFirst} ${clientLast}`;
+    return `${clientFirst} & ${spouseFirst} ${spouseLast}`.trim();
+  })();
+  const reportDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const fmt = n => "$" + Math.round(n).toLocaleString();
+  const parseDollar = v => { if (!v) return 0; return parseFloat(String(v).replace(/[^0-9.-]/g,"")) || 0; };
+
+  const SH = ({ title }) => (
+    <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 5, marginTop: 28, marginBottom: 10, fontWeight: "bold" }}>{title}</div>
+  );
+  const Grid = ({ rows }) => (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "6px 24px", marginBottom: 4 }}>
+      {rows.filter(([,v]) => v).map(([k, v]) => (
+        <div key={k}>
+          <div style={{ fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 1 }}>{k}</div>
+          <div style={{ fontSize: 13, color: INK, fontWeight: 500 }}>{v}</div>
+        </div>
+      ))}
+    </div>
+  );
+  const Tbl = ({ cols, rows, emptyMsg }) => rows.length === 0
+    ? <div style={{ fontSize: 12, color: MUT, fontStyle: "italic", marginBottom: 4 }}>{emptyMsg || "None recorded."}</div>
+    : <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, marginBottom: 6 }}>
+        <thead>
+          <tr>{cols.map(c => <th key={c} style={{ textAlign: "left", padding: "4px 8px", background: "#e9edf2", color: NAVY, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700 }}>{c}</th>)}</tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
+              {r.map((cell, j) => <td key={j} style={{ padding: "5px 8px", borderBottom: BDR, verticalAlign: "top" }}>{cell || <span style={{ color: "#bbb" }}>—</span>}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>;
+
+  const acctTotal = accounts.reduce((s, a) => s + parseDollar(a.balance), 0);
+  const reTotal   = realEstate.reduce((s, r) => s + parseDollar(r.marketValue), 0);
+  const autoTotal = autos.reduce((s, a) => s + parseDollar(a.value), 0);
+  const lifeCV    = lifePolicies.reduce((s, p) => s + parseDollar(p.cashValue), 0);
+  const reMort    = realEstate.reduce((s, r) => s + parseDollar(r.mortgageBalance), 0);
+  const autoLoan  = autos.reduce((s, a) => s + parseDollar(a.loanBalance), 0);
+  const totalAssets = acctTotal + reTotal + autoTotal + lifeCV;
+  const totalLiab   = reMort + autoLoan;
+  const netWorth    = totalAssets - totalLiab;
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1100, overflowY: "auto", padding: "20px 0" }}>
+      <div id="sr-print-toolbar" style={{ maxWidth: 860, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
+        <button onClick={(e) => { e.currentTarget.disabled = true; setTimeout(() => { window.print(); e.currentTarget.disabled = false; }, 50); }}
+          style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
+        <button onClick={onClose}
+          style={{ background: "#d64545", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
+      </div>
+
+      <div id="sr-report" style={{ fontFamily: P, color: INK, background: "#fff", maxWidth: 860, margin: "0 auto", padding: "0 0 60px", boxShadow: "0 4px 32px rgba(0,0,0,0.18)" }}>
+        {/* Header */}
+        <div style={{ background: NAVY, color: "#fff", padding: "28px 40px 20px", borderRadius: "10px 10px 0 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <div style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#c7d0db", marginBottom: 6 }}>Russell Wealth Group · Confidential</div>
+            <div style={{ fontSize: 28, fontWeight: "bold", margin: "0 0 4px" }}>{headerName}</div>
+            <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db", marginTop: 8 }}>
+              {recordType === "prospect" ? "Prospect" : "Client"} Summary Review · Prepared {reportDate}
+            </div>
+          </div>
+          <AcornMark size={44} color="#c7d0db" />
+        </div>
+
+        <div style={{ padding: "0 40px" }}>
+
+          {/* Profile */}
+          <SH title={recordType === "prospect" ? "Prospect Profile" : "Client Profile"} />
+          <Grid rows={[
+            ["Full Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ")],
+            ["Date of Birth", client.dob],
+            ["Gender", client.gender],
+            ["Marital Status", client.filingStatus],
+            ["SSN", client.ssn],
+            ["Phone", client.phone],
+            ["Alt Phone", client.altPhone],
+            ["Email", client.email],
+            ["Citizenship", client.citizenship],
+            ["Address", [client.address, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", ")],
+            ["Driver's License", client.driversLicense ? `${client.driversLicense} (${client.dlState || ""} exp. ${client.dlExpiration || ""})` : ""],
+          ]} />
+
+          {/* Family */}
+          {(hasSpouseRecord || hasChildren) && <>
+            <SH title="Family" />
+            {hasSpouseRecord && (
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>Spouse</div>
+                <Grid rows={[
+                  ["Full Name", [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ")],
+                  ["Date of Birth", spouse.dob],
+                  ["Gender", spouse.gender],
+                  ["SSN", spouse.ssn],
+                  ["Phone", spouse.phone],
+                  ["Email", spouse.email],
+                ]} />
+              </div>
+            )}
+            {hasChildren && children.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>Children</div>
+                <Tbl cols={["Name", "DOB", "Relationship"]}
+                  rows={children.map(c => [[c.firstName, c.lastName].filter(Boolean).join(" "), c.dob, c.relationship])} />
+              </div>
+            )}
+          </>}
+
+          {/* Beneficiaries */}
+          <SH title="Beneficiaries" />
+          <Tbl cols={["Name", "Designation", "%", "Relationship", "DOB"]}
+            rows={beneficiaries.map(b => [
+              [b.firstName, b.lastName].filter(Boolean).join(" "),
+              b.designationType || "primary",
+              b.percentage,
+              b.relationship,
+              b.dob,
+            ])} emptyMsg="No beneficiaries recorded." />
+
+          {/* Employment */}
+          <SH title="Employment" />
+          {[{ label: "Client", emp: clientEmp }, ...(hasSpouseRecord ? [{ label: "Spouse", emp: spouseEmp }] : [])].map(({ label, emp }) => emp.employer ? (
+            <div key={label} style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>{label}</div>
+              <Grid rows={[
+                ["Employer", emp.employer],
+                ["Occupation", emp.occupation],
+                ["Start Date", emp.startDate],
+                ["Work Phone", emp.workPhone],
+                ["Retirement Plan", emp.retirementType || (emp.hasRetirement === false ? "None" : "")],
+                ["Retirement Balance", emp.retirementBalance],
+                ["Contribution", emp.contributionAmt ? `${emp.contributionAmt}${emp.hasMatch ? ` (match ${emp.matchPct})` : ""}` : ""],
+              ]} />
+            </div>
+          ) : null)}
+
+          {/* Income */}
+          <SH title="Income" />
+          <Tbl cols={["Source / Type", "Owner", "Amount", "Frequency", "Start Date"]}
+            rows={incomes.filter(i => i.source || i.type).map(inc => [inc.source || inc.type, inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client"), inc.amount, inc.frequency, inc.startDate])}
+            emptyMsg="No income recorded." />
+
+          {/* Real Estate */}
+          <SH title="Real Estate" />
+          {homeOwnership.ownOrRent && (
+            <Grid rows={[
+              ["Own or Rent", homeOwnership.ownOrRent === "own" ? "Owns" : "Rents"],
+              ...(homeOwnership.ownOrRent === "own" ? [
+                ["Mortgage Co.", homeOwnership.mortgageCompany],
+                ["Balance", homeOwnership.mortgageBalance],
+                ["Monthly Payment", homeOwnership.monthlyPayment],
+                ["Interest Rate", homeOwnership.interestRate],
+              ] : [
+                ["Monthly Rent", homeOwnership.monthlyRent],
+                ["Landlord", homeOwnership.landlordName],
+              ]),
+            ]} />
+          )}
+          <Tbl cols={["Address", "Type", "Market Value", "Mortgage Bal.", "Ownership"]}
+            rows={realEstate.filter(r => r.address || r.marketValue).map(r => [r.address, r.propertyType, r.marketValue, r.mortgageBalance, r.ownership])}
+            emptyMsg="No additional real estate recorded." />
+
+          {/* Investment & Bank Accounts */}
+          <SH title="Investment & Bank Accounts" />
+          <Tbl cols={["Institution", "Type", "Owner", "Acct #", "Qualified", "Transactions", "Balance"]}
+            rows={accounts.filter(a => a.institution || a.balance).map(a => [a.institution, a.type, a.owner, a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : "", a.qualified, (a.hasRmdOrContrib || "").replace(/^Contributing$/i, "Contrib."), a.balance])}
+            emptyMsg="No accounts recorded." />
+          {acctTotal > 0 && <div style={{ textAlign: "right", fontWeight: 700, fontSize: 13, color: NAVY, marginTop: 4 }}>Total: {fmt(acctTotal)}</div>}
+
+          {/* Wills & Trust */}
+          <SH title="Wills, Trust & POA" />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0 32px" }}>
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>Will</div>
+              <Grid rows={[
+                ["Has Will", willsTrust.hasWill === true ? "Yes" : willsTrust.hasWill === false ? "No" : ""],
+                ["Will Date", willsTrust.willDate],
+                ["Attorney", willsTrust.willAttorney],
+                ["Executor", willsTrust.executor],
+                ["Alt. Executor", willsTrust.altExecutor],
+                ["Location", willsTrust.willLocation],
+              ]} />
+            </div>
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>Trust</div>
+              <Grid rows={[
+                ["Trust Name", willsTrust.trustName],
+                ["Trust Type", willsTrust.trustType],
+                ["Trust Date", willsTrust.trustDate],
+                ["Trustee", willsTrust.trustee],
+                ["Successor", willsTrust.successorTrustee],
+                ["Location", willsTrust.trustLocation],
+              ]} />
+            </div>
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>Power of Attorney</div>
+              <Grid rows={[
+                ["Has POA", poa.hasPOA === true ? "Yes" : poa.hasPOA === false ? "No" : ""],
+                ["POA Type", poa.poaType],
+                ["Agent", poa.agentName],
+                ["Relationship", poa.agentRelationship],
+                ["Agent Phone", poa.agentPhone],
+                ["Alt. Agent", poa.altAgent],
+              ]} />
+            </div>
+          </div>
+
+          {/* Autos */}
+          <SH title="Vehicles" />
+          <Tbl cols={["Year", "Make", "Model", "Owner", "Value", "Loan Balance", "Lender"]}
+            rows={autos.filter(a => a.make || a.value).map(a => [a.year, a.make, a.model, a.owner, a.value, a.loanBalance, a.lender])}
+            emptyMsg="No vehicles recorded." />
+
+          {/* Life Insurance */}
+          <SH title="Life Insurance" />
+          <Tbl cols={["Insured", "Type", "Company", "Death Benefit", "Cash Value", "Premium", "Owner"]}
+            rows={lifePolicies.filter(p => p.company || p.deathBenefit).map(p => [p.insured, p.type, p.company, p.deathBenefit, p.cashValue, p.premium ? `${p.premium}/${p.premiumFrequency || "mo"}` : "", p.owner])}
+            emptyMsg="No life insurance recorded." />
+
+          {/* Net Worth Summary */}
+          <SH title="Net Worth Summary" />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 40px" }}>
+            <div>
+              <Tbl cols={["Assets", "Value"]} rows={[
+                ...(acctTotal > 0 ? [["Investment & Bank Accounts", fmt(acctTotal)]] : []),
+                ...(reTotal > 0 ? [["Real Estate", fmt(reTotal)]] : []),
+                ...(autoTotal > 0 ? [["Vehicles", fmt(autoTotal)]] : []),
+                ...(lifeCV > 0 ? [["Life Insurance (CV)", fmt(lifeCV)]] : []),
+                ...(totalAssets > 0 ? [["Total Assets", fmt(totalAssets)]] : []),
+              ]} emptyMsg="No assets recorded." />
+            </div>
+            <div>
+              <Tbl cols={["Liabilities", "Balance"]} rows={[
+                ...(reMort > 0 ? [["Mortgages", fmt(reMort)]] : []),
+                ...(autoLoan > 0 ? [["Auto Loans", fmt(autoLoan)]] : []),
+                ...(totalLiab > 0 ? [["Total Liabilities", fmt(totalLiab)]] : []),
+              ]} emptyMsg="No liabilities recorded." />
+              {netWorth !== 0 && (
+                <div style={{ background: NAVY, color: "#fff", borderRadius: 8, padding: "12px 16px", marginTop: 8 }}>
+                  <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db" }}>Total Net Worth</div>
+                  <div style={{ fontSize: 24, fontWeight: "bold", marginTop: 4 }}>{fmt(netWorth)}</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Estate Planning */}
+          {inheritances.some(i => Object.values(i).some(v => v && v !== 1)) && <>
+            <SH title="Estate Planning" />
+            {inheritances.map((inh, idx) => (
+              <Grid key={idx} rows={[
+                ["Expects Inheritance", inh.expectsInheritance],
+                ["Est. Value", inh.estValue],
+                ["Timeline", inh.timeline],
+                ["Source", inh.source],
+                ["Charitable Intent", inh.charitableIntent],
+                ["Charitable Details", inh.charitableDetails],
+                ["Special Needs", inh.specialNeedsFamily],
+                ["LTC Insurance", inh.ltcInsurance],
+                ["Notes", inh.additionalNotes],
+              ]} />
+            ))}
+          </>}
+
+          {/* Document Vault */}
+          {vaults.length > 0 && <>
+            <SH title="Document Vault Checklist" />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
+              {vaults.map(v => (
+                <div key={v.id} style={{ fontSize: 12, background: LGRAY, borderRadius: 5, padding: "3px 10px", color: NAVY, fontWeight: 500 }}>✓ {v.category}</div>
+              ))}
+            </div>
+          </>}
+
+          {/* Footer */}
+          <div style={{ marginTop: 40, borderTop: "1px solid #dce1ea", paddingTop: 12, display: "flex", justifyContent: "space-between", color: MUT, fontSize: 10 }}>
+            <span>Russell Wealth Group · Confidential</span>
+            <span>Prepared {reportDate}</span>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          #sr-report, #sr-report * { visibility: visible !important; }
+          #sr-report {
+            position: fixed !important;
+            top: 0; left: 0; width: 100%;
+            box-shadow: none !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          #sr-print-toolbar { display: none !important; }
+        }
+        @page { margin: 0.6in 0.5in; size: letter portrait; }
+      `}</style>
+    </div>
+  );
+}
+
 export default function App() {
   const [view, setView] = useState("form");
   const [confirmState, setConfirmState] = useState({ open: false, message: "", confirmLabel: "Confirm", onConfirm: null });
@@ -1204,6 +1535,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
   const [showReport, setShowReport] = useState(false);
+  const [showSummaryReview, setShowSummaryReview] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const quickViewRef = useRef(null);
   useEffect(() => {
@@ -1784,9 +2116,13 @@ export default function App() {
                   <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "1px 7px", fontSize: 11, fontWeight: 700 }}>{savedClients.length}</span>
                 </button>
               </div>
-              {/* Column 3: Load Sample */}
-              <button onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
-                style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Load Sample</button>
+              {/* Column 3: Load Sample + Summary Review */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <button onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
+                  style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Load Sample</button>
+                <button onClick={() => setShowSummaryReview(true)}
+                  style={{ background: "#2e3d66", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Summary Review</button>
+              </div>
             </div>
           </div>
         </div>
@@ -3689,7 +4025,7 @@ export default function App() {
       </div>{/* end shell */}
 
       {/* ── FLOATING SAVE BUTTON ── */}
-      <div className="float-save" style={{ position: "fixed", top: 10, right: 12, zIndex: 2000, display: showReport ? "none" : "flex", alignItems: "center", gap: 8 }}>
+      <div className="float-save" style={{ position: "fixed", top: 10, right: 12, zIndex: 2000, display: (showReport || showSummaryReview) ? "none" : "flex", alignItems: "center", gap: 8 }}>
         {lastSaved && (
           <div style={{ fontSize: 10, color: MUTED, background: "rgba(255,255,255,0.92)", border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", whiteSpace: "nowrap" }}>
             Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -3732,6 +4068,12 @@ export default function App() {
       `}</style>
     </div>
 
+    {showSummaryReview && (
+      <SummaryReview
+        data={{ client, spouse, hasSpouse, hasChildren, children, beneficiaries, clientEmp, spouseEmp, incomes, realEstate, homeOwnership, accounts, willsTrust, poa, autos, lifePolicies, nwState, annualExpenses, inheritances, vaults, recordType }}
+        onClose={() => setShowSummaryReview(false)}
+      />
+    )}
     {showReport && (
       <div id="rwg-report-wrap">
         <ClientReport
@@ -3784,8 +4126,12 @@ export default function App() {
             <div style={{ padding: "10px 20px 14px", borderTop: "1px solid " + BORDER, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
               <button onClick={() => { setQuickViewPanelOpen(false); setQuickViewOpen(true); }}
                 style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 7, padding: "7px 14px", fontSize: 12, fontWeight: 600, color: INK, cursor: "pointer" }}>← Edit Selection</button>
-              <button onClick={() => setQuickViewPanelOpen(false)}
-                style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Close</button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={() => window.print()}
+                  style={{ background: "#5b6e85", color: "#fff", border: "none", borderRadius: 7, padding: "7px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>🖨 Print</button>
+                <button onClick={() => setQuickViewPanelOpen(false)}
+                  style={{ background: BRAND_NAVY, color: "#fff", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Close</button>
+              </div>
             </div>
           </div>
         </div>
