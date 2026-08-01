@@ -1236,8 +1236,11 @@ export default function App() {
     setActiveClientId(id);
   };
 
+  const capName = v => v.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
   const setC = f => e => setClient(p => ({ ...p, [f]: e.target.value }));
   const setS = f => e => setSpouse(p => ({ ...p, [f]: e.target.value }));
+  const setCN = f => e => setClient(p => ({ ...p, [f]: capName(e.target.value) }));
+  const setSN = f => e => setSpouse(p => ({ ...p, [f]: capName(e.target.value) }));
   const setCE = f => e => setClientEmp(p => ({ ...p, [f]: e.target.value }));
   const setSE = f => e => setSpouseEmp(p => ({ ...p, [f]: e.target.value }));
 
@@ -1757,9 +1760,9 @@ export default function App() {
         {/* ── CLIENT PROFILE ── */}
         <Panel title={recordType === "prospect" ? "Prospect Profile" : "Client Profile"} id="section-profile">
           <Row cols={3}>
-            <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="First Name" /><input value={client.firstName} onChange={setCN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setCN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setCN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={4}>
             <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
@@ -1963,9 +1966,9 @@ export default function App() {
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Spouse Details</div>
               <Row cols={3}>
-                <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setS("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setS("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setS("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setSN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setSN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setSN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={3}>
                 <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} /></F>
@@ -2107,9 +2110,9 @@ export default function App() {
                     </div>
                   </div>
                   <Row cols={3}>
-                    <F><Lbl t="First Name" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                    <F><Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                    <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F><Lbl t="First Name" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F><Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
                   <Row cols={3}>
                     <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} /></F>
@@ -2237,9 +2240,9 @@ export default function App() {
                 <button onClick={() => showConfirm("Remove this beneficiary?", () => delBene(b.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
-                <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={4}>
                 <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} /></F>
