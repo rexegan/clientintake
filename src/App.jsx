@@ -755,10 +755,14 @@ function ClientReport({ data, onClose }) {
                     <th style={s.th}>Acct #</th>
                     <th style={s.th}>Transactions</th>
                     <th style={{ ...s.th, textAlign: "right" }}>Balance</th>
+                    <th style={{ ...s.th, textAlign: "right" }}>% of Total</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {accts.map((a, i) => (
+                  {accts.map((a, i) => {
+                    const bal = parseDollar(a.balance);
+                    const pct = acctTotal > 0 ? (bal / acctTotal * 100).toFixed(1) : "0.0";
+                    return (
                     <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                       <td style={s.td}>{a.type || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
@@ -766,11 +770,14 @@ function ClientReport({ data, onClose }) {
                       <td style={s.td}>{a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.td}>{a.hasRmdOrContrib || <em style={{ color: "#9aa" }}>—</em>}{a.rmdContribAmount ? <span style={{ color: "#5a6575" }}> · {a.rmdContribAmount}/{a.rmdContribFrequency || "—"}</span> : ""}</td>
                       <td style={s.tdr}>{a.balance ? <strong>{a.balance}</strong> : <em style={{ color: "#9aa" }}>—</em>}</td>
+                      <td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td>
                     </tr>
-                  ))}
+                    );
+                  })}
                   <tr>
                     <td style={s.tdTotal} colSpan={5}>{group} Subtotal</td>
                     <td style={s.tdTotalR}>{fmt(accts.reduce((s, a) => s + parseDollar(a.balance), 0))}</td>
+                    <td style={s.tdTotalR}>{acctTotal > 0 ? (accts.reduce((s, a) => s + parseDollar(a.balance), 0) / acctTotal * 100).toFixed(1) : "0.0"}%</td>
                   </tr>
                 </tbody>
               </table>
@@ -792,6 +799,7 @@ function ClientReport({ data, onClose }) {
                   <th style={s.th}>Purchase Date</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Purchase Price</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Market Value</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>% of RE Total</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Mortgage Bal.</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Equity</th>
                 </tr>
@@ -801,6 +809,7 @@ function ClientReport({ data, onClose }) {
                   const mv = parseDollar(r.marketValue);
                   const mb = parseDollar(r.mortgageBalance);
                   const equity = mv - mb;
+                  const pct = reTotal > 0 ? (mv / reTotal * 100).toFixed(1) : "0.0";
                   return (
                     <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                       <td style={s.td}>
@@ -811,6 +820,7 @@ function ClientReport({ data, onClose }) {
                       <td style={s.td}>{r.purchaseDate || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.tdr}>{r.purchasePrice || <em style={{ color: "#9aa" }}>—</em>}</td>
                       <td style={s.tdr}><strong>{r.marketValue || "—"}</strong></td>
+                      <td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td>
                       <td style={s.tdr}>{r.mortgageBalance || "—"}</td>
                       <td style={{ ...s.tdr, color: equity >= 0 ? "#1a5c2a" : "#b03a3a", fontWeight: "bold" }}>{fmt(equity)}</td>
                     </tr>
@@ -819,6 +829,7 @@ function ClientReport({ data, onClose }) {
                 <tr>
                   <td style={s.tdTotal} colSpan={4}>Totals</td>
                   <td style={s.tdTotalR}>{fmt(reTotal)}</td>
+                  <td style={s.tdTotalR}>100.0%</td>
                   <td style={s.tdTotalR}>{fmt(reMortgages)}</td>
                   <td style={{ ...s.tdTotalR, color: (reTotal - reMortgages) >= 0 ? "#1a5c2a" : "#b03a3a" }}>{fmt(reTotal - reMortgages)}</td>
                 </tr>
@@ -837,23 +848,30 @@ function ClientReport({ data, onClose }) {
                   <th style={s.th}>Belongs To</th>
                   <th style={s.th}>Frequency</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Amount</th>
-                  <th style={{ ...s.th, textAlign: "right" }}>Annual Equiv.</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>Annual</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>% of Income</th>
                 </tr>
               </thead>
               <tbody>
-                {incomes.filter(i => i.type).map((inc, i) => (
+                {incomes.filter(i => i.type).map((inc, i) => {
+                  const ann = toAnnual(inc.amount, inc.frequency);
+                  const pct = annualIncome > 0 ? (ann / annualIncome * 100).toFixed(1) : "0.0";
+                  return (
                   <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                     <td style={s.td}>{inc.type}</td>
                     <td style={s.td}>{inc.institution || <em style={{ color: "#9aa" }}>—</em>}</td>
                     <td style={s.td}>{inc.owner === "spouse" ? (spouse.firstName || spouseName) : inc.owner === "joint" ? "Joint" : (client.firstName || clientName)}</td>
                     <td style={s.td}>{inc.frequency ? inc.frequency.charAt(0).toUpperCase() + inc.frequency.slice(1) : "—"}</td>
                     <td style={s.tdr}>{inc.amount || "—"}</td>
-                    <td style={s.tdr}><strong>{fmt(toAnnual(inc.amount, inc.frequency))}</strong></td>
+                    <td style={s.tdr}><strong>{fmt(ann)}</strong></td>
+                    <td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td>
                   </tr>
-                ))}
+                  );
+                })}
                 <tr>
                   <td style={s.tdTotal} colSpan={5}>Total Annual Income</td>
                   <td style={s.tdTotalR}>{fmt(annualIncome)}</td>
+                  <td style={s.tdTotalR}>100.0%</td>
                 </tr>
               </tbody>
             </table>
@@ -869,20 +887,27 @@ function ClientReport({ data, onClose }) {
                   <th style={s.th}>Make</th>
                   <th style={s.th}>Model</th>
                   <th style={{ ...s.th, textAlign: "right" }}>Est. Value</th>
+                  <th style={{ ...s.th, textAlign: "right" }}>% of Total</th>
                 </tr>
               </thead>
               <tbody>
-                {autos.filter(a => a.make || a.model || a.value).map((a, i) => (
+                {autos.filter(a => a.make || a.model || a.value).map((a, i) => {
+                  const val = parseDollar(a.value);
+                  const pct = autoTotal > 0 ? (val / autoTotal * 100).toFixed(1) : "0.0";
+                  return (
                   <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
                     <td style={s.td}>{a.year || "—"}</td>
                     <td style={s.td}>{a.make || "—"}</td>
                     <td style={s.td}>{a.model || "—"}</td>
                     <td style={s.tdr}>{a.value || "—"}</td>
+                    <td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td>
                   </tr>
-                ))}
+                  );
+                })}
                 <tr>
                   <td style={s.tdTotal} colSpan={3}>Total Auto Value</td>
                   <td style={s.tdTotalR}>{fmt(autoTotal)}</td>
+                  <td style={s.tdTotalR}>100.0%</td>
                 </tr>
               </tbody>
             </table>
