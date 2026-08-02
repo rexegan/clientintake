@@ -2123,7 +2123,7 @@ export default function App() {
                 <button onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
                   style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Load Sample</button>
                 <button onClick={() => setShowSummaryReview(true)}
-                  style={{ background: "#2e3d66", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Summary Review</button>
+                  style={{ background: SUCCESS, color: "#fff", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>📋 Summary Review</button>
               </div>
             </div>
           </div>
