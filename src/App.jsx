@@ -269,7 +269,7 @@ const US_STATES = [
 ];
 
 const StateSelect = ({ value, onChange }) => (
-  <select data-lpignore="true" value={value || ""} onChange={onChange} style={{ ...IS, minWidth: 190 }}>
+  <select data-lpignore="true" value={value || ""} onChange={onChange} style={{ ...IS, width: "auto", minWidth: 220 }}>
     <option value="">— Select —</option>
     {US_STATES.map(([abbr, name]) => (
       <option key={abbr} value={abbr}>{abbr} — {name}</option>
