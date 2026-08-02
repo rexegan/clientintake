@@ -2822,7 +2822,7 @@ export default function App() {
             {clientEmp.hasRetirement === "yes" && (
               <>
                 <Row cols={2}>
-                  <F><Lbl t="Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  <F><Lbl t="Monthly Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                   <F>
                     <Lbl t="Employer Match" />
                     <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
@@ -2923,7 +2923,7 @@ export default function App() {
                 {spouseEmp.hasRetirement === "yes" && (
                   <>
                     <Row cols={2}>
-                      <F><Lbl t="Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                      <F><Lbl t="Monthly Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                       <F>
                         <Lbl t="Employer Match" />
                         <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
@@ -4198,7 +4198,7 @@ export default function App() {
               ["Work Address", [emp.workAddress, emp.workCity, emp.workState, emp.workZip].filter(Boolean).join(", ")],
               ["Retirement Plan", emp.hasRetirement === false ? "None" : emp.retirementType],
               ["Employer Match", emp.hasMatch === false ? "None" : emp.matchPct ? emp.matchPct + "%" : ""],
-              ["Employee Contribution", emp.contributionAmt], ["Retirement Balance", emp.retirementBalance], ["Custodian", emp.retirementCustodian],
+              ["Monthly Employee Contribution", emp.contributionAmt], ["Retirement Balance", emp.retirementBalance], ["Custodian", emp.retirementCustodian],
             ].filter(([,v]) => v)} />
           </>);
           return (<><EmpBlock label={`${client.firstName || "Client"} — Employment`} emp={clientEmp} /><EmpBlock label={`${spouse.firstName || "Spouse"} — Employment`} emp={hasSpouseRecord ? spouseEmp : null} /></>);
