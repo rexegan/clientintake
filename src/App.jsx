@@ -767,7 +767,7 @@ function ClientReport({ data, onClose }) {
           </>)}
 
           {/* ── INVESTMENT & BANK ACCOUNTS ── */}
-          <div style={s.sectionHead}>Investment &amp; Bank Account Holdings</div>
+          <div style={s.sectionHead}>Investment &amp; Bank Accounts</div>
           {Object.entries(qualGroups).map(([group, accts]) => (
             <div key={group} style={{ marginBottom: 20 }}>
               <div style={{ fontSize: 12, fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", color: "#5a6575", marginBottom: 6 }}>{group}</div>
@@ -4119,49 +4119,230 @@ export default function App() {
           <tbody>{rows.map(([k, v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: labelWidth, verticalAlign: "top", fontSize: 12 }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{v}</td></tr>)}</tbody>
         </table>
       );
+      const td = { padding: "5px 8px", borderBottom: "1px solid #e8ecf0", verticalAlign: "top", fontSize: 13 };
+      const th = { padding: "5px 8px", background: "#eef1f6", color: BRAND_NAVY, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", textAlign: "left" };
+      const Tbl = ({ cols, rows, emptyMsg, foot }) => rows.length === 0
+        ? <span style={{ color: MUTED, fontSize: 13, fontStyle: "italic" }}>{emptyMsg || "None recorded."}</span>
+        : <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 6 }}>
+            <thead><tr>{cols.map(c => <th key={c} style={th}>{c}</th>)}</tr></thead>
+            <tbody>{rows.map((r, i) => <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8f9fb" }}>{r.map((cell, j) => <td key={j} style={td}>{cell || <span style={{ color: "#ccc" }}>—</span>}</td>)}</tr>)}</tbody>
+            {foot && <tfoot><tr style={{ borderTop: "2px solid " + BRAND_NAVY }}>{foot.map((cell, j) => <td key={j} style={{ ...td, fontWeight: 700, color: BRAND_NAVY, borderBottom: "none" }}>{cell}</td>)}</tr></tfoot>}
+          </table>;
+      const Sub = ({ t }) => <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: MUTED, margin: "10px 0 5px" }}>{t}</div>;
+      const toAnn = (amt, freq) => { const map = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52, quarterly:4 }; return (parseDollar(amt) || 0) * (map[(freq||"").toLowerCase()] || 1); };
+      const fmtN = n => n ? "$" + Math.round(n).toLocaleString() : "";
+      const ownerName = o => o === "spouse" ? (spouse.firstName || "Spouse") : o === "joint" ? "Joint" : (client.firstName || "Client");
+      const yn = v => v === true ? "Yes" : v === false ? "No" : "—";
+
       const renderSection = id => {
-        if (id === "section-profile") return <QvTable rows={[["Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ") || "—"], ["DOB", client.dob || "—"], ["SSN", client.ssn || "—"], ["Gender", client.gender || "—"], ["Marital Status", client.filingStatus || "—"], ["Phone", client.phone || "—"], ["Email", client.email || "—"], ["Address", [client.address, client.city, client.state, client.zip].filter(Boolean).join(", ") || "—"]]} />;
-        if (id === "section-family") return <QvTable rows={[["Spouse", hasSpouse ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Yes (no name)" : hasSpouse === false ? "None" : "—"], ["Spouse DOB", spouse.dob || "—"], ["Children", hasChildren ? children.length > 0 ? children.map(c => [c.firstName, c.lastName].filter(Boolean).join(" ")).join(", ") : "Yes (none listed)" : hasChildren === false ? "None" : "—"]]} />;
-        if (id === "section-bene") return beneficiaries.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No beneficiaries added.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Name</th><th style={{ textAlign: "left", fontWeight: 600 }}>Designation</th><th style={{ textAlign: "left", fontWeight: 600 }}>%</th><th style={{ textAlign: "left", fontWeight: 600 }}>Relationship</th></tr></thead><tbody>{beneficiaries.map(b => <tr key={b.id}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{[b.firstName, b.lastName].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0", textTransform: "capitalize", fontSize: 13 }}>{b.designationType || "primary"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{b.percentage || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{b.relationship || "—"}</td></tr>)}</tbody></table>;
-        if (id === "section-employment") return <QvTable rows={[["Employer", client.employer || "—"], ["Occupation", client.occupation || "—"], ["Work Phone", client.workPhone || "—"], ["Spouse Employer", spouse.employer || "—"], ["Spouse Occupation", spouse.occupation || "—"]]} />;
-        if (id === "section-income") {
-          if (incomes.length === 0) return <span style={{ color: MUTED, fontSize: 13 }}>No income entries.</span>;
-          const fmtAnn = n => "$" + Math.round(n).toLocaleString();
-          const toAnn = (amt, freq) => { const map = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52, quarterly:4 }; return (parseDollar(amt) || 0) * (map[(freq||"").toLowerCase()] || 1); };
-          const totalAnnual = incomes.reduce((s, inc) => s + toAnn(inc.amount, inc.frequency), 0);
-          return (
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead><tr style={{ color: MUTED, fontSize: 11 }}>
-                <th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Source</th>
-                <th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th>
-                <th style={{ textAlign: "right", fontWeight: 600 }}>Annual Amount</th>
-              </tr></thead>
-              <tbody>
-                {incomes.filter(inc => inc.source || inc.amount).map((inc, i) => (
-                  <tr key={i}>
-                    <td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{inc.source || inc.type || "—"}</td>
-                    <td style={{ padding: "4px 0", fontSize: 12, color: MUTED }}>{inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client")}</td>
-                    <td style={{ padding: "4px 0", fontSize: 13, textAlign: "right" }}>{fmtAnn(toAnn(inc.amount, inc.frequency))}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr style={{ borderTop: "2px solid " + BRAND_NAVY }}>
-                  <td colSpan={2} style={{ padding: "5px 0", fontWeight: 700, fontSize: 13, color: BRAND_NAVY }}>Total Annual Income</td>
-                  <td style={{ padding: "5px 0", fontWeight: 700, fontSize: 13, textAlign: "right", color: BRAND_NAVY }}>{fmtAnn(totalAnnual)}</td>
-                </tr>
-              </tfoot>
-            </table>
-          );
+
+        if (id === "section-profile") return (<>
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Full Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ")],
+            ["Date of Birth", client.dob], ["SSN", client.ssn], ["Gender", client.gender], ["Marital / Filing Status", client.filingStatus],
+            ["Cell Phone", client.cell], ["Home Phone", client.homePhone], ["Email", client.email],
+            ["Address", [client.addressLine1, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", ")],
+            ["PO Box", client.hasPOBox ? [client.poBox, client.poBoxCity, client.poBoxState, client.poBoxZip].filter(Boolean).join(", ") : ""],
+            ["Preferred Mailing", client.preferredMailing],
+            ["Driver's License #", client.dlNumber], ["DL State", client.dlState], ["DL Issuer", client.dlIssuerName], ["DL Issue Date", client.dlIssueDate], ["DL Expiration", client.dlExpDate],
+          ].filter(([,v]) => v)} />
+          {clientEmails?.filter(e => e.address).length > 0 && <>
+            <Sub t="Email Addresses" />
+            <Tbl cols={["Tag","Address"]} rows={clientEmails.filter(e => e.address).map(e => [e.tag, e.address])} />
+          </>}
+        </>);
+
+        if (id === "section-family") return (<>
+          {hasSpouseRecord ? (<>
+            <Sub t="Spouse" />
+            <Tbl cols={["Field","Value"]} rows={[
+              ["Full Name", [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ")],
+              ["Date of Birth", spouse.dob], ["SSN", spouse.ssn], ["Gender", spouse.gender],
+              ["Cell Phone", spouse.cell], ["Home Phone", spouse.homePhone], ["Email", spouse.email],
+              ["Address", [spouse.addressLine1, spouse.addressLine2, spouse.city, spouse.state, spouse.zip].filter(Boolean).join(", ")],
+              ["Driver's License #", spouse.dlNumber], ["DL State", spouse.dlState], ["DL Expiration", spouse.dlExpDate],
+            ].filter(([,v]) => v)} emptyMsg="No spouse recorded." />
+            {spouseEmails?.filter(e => e.address).length > 0 && <>
+              <Sub t="Spouse Email Addresses" />
+              <Tbl cols={["Tag","Address"]} rows={spouseEmails.filter(e => e.address).map(e => [e.tag, e.address])} />
+            </>}
+          </>) : <span style={{ color: MUTED, fontSize: 13 }}>No spouse recorded.</span>}
+          {hasChildren && children.length > 0 && (<>
+            <Sub t="Children" />
+            <Tbl cols={["Name","DOB","Relationship","Gender","SSN"]}
+              rows={children.map(c => [[c.firstName, c.lastName].filter(Boolean).join(" "), c.dob, c.relationship, c.gender, c.ssn])} />
+          </>)}
+        </>);
+
+        if (id === "section-bene") return (
+          <Tbl cols={["Name","Designation","%","Relationship","DOB","SSN","Email","Address"]}
+            rows={beneficiaries.map(b => [
+              [b.firstName, b.middleName, b.lastName].filter(Boolean).join(" "),
+              (b.designationType || "primary").charAt(0).toUpperCase() + (b.designationType || "primary").slice(1),
+              b.percentage, b.relationship, b.dob, b.ssn, b.email,
+              [b.addressLine1, b.city, b.state, b.zip].filter(Boolean).join(", "),
+            ])} emptyMsg="No beneficiaries recorded." />
+        );
+
+        if (id === "section-employment") {
+          const EmpBlock = ({ label, emp }) => !emp?.employer ? null : (<>
+            <Sub t={label} />
+            <Tbl cols={["Field","Value"]} rows={[
+              ["Employer", emp.employer], ["Occupation", emp.occupation], ["Start Date", emp.startDate], ["Work Phone", emp.workPhone],
+              ["Work Address", [emp.workAddress, emp.workCity, emp.workState, emp.workZip].filter(Boolean).join(", ")],
+              ["Retirement Plan", emp.hasRetirement === false ? "None" : emp.retirementType],
+              ["Employer Match", emp.hasMatch === false ? "None" : emp.matchPct ? emp.matchPct + "%" : ""],
+              ["Employee Contribution", emp.contributionAmt], ["Retirement Balance", emp.retirementBalance], ["Custodian", emp.retirementCustodian],
+            ].filter(([,v]) => v)} />
+          </>);
+          return (<><EmpBlock label={`${client.firstName || "Client"} — Employment`} emp={clientEmp} /><EmpBlock label={`${spouse.firstName || "Spouse"} — Employment`} emp={hasSpouseRecord ? spouseEmp : null} /></>);
         }
-        if (id === "section-realestate") return realEstate.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No real estate entries.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Address</th><th style={{ textAlign: "left", fontWeight: 600 }}>Value</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th></tr></thead><tbody>{realEstate.map((r, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{r.address || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{r.value || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{r.propertyType || "—"}</td></tr>)}</tbody></table>;
-        if (id === "section-accounts") return accounts.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No accounts entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Institution</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th><th style={{ textAlign: "left", fontWeight: 600 }}>Balance</th><th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th></tr></thead><tbody>{accounts.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{a.institution || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.accountType || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.balance || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{a.owner || "—"}</td></tr>)}</tbody></table>;
-        if (id === "section-wills") return <QvTable rows={[["Has Will", willsTrust.hasWill === true ? "Yes" : willsTrust.hasWill === false ? "No" : "—"], ["Will Date", willsTrust.willDate || "—"], ["Executor", willsTrust.executor || "—"], ["Trust Name", willsTrust.trustName || "—"], ["Trust Type", willsTrust.trustType || "—"], ["Trustee", willsTrust.trustee || "—"], ["Has POA", poa.hasPOA === true ? "Yes" : poa.hasPOA === false ? "No" : "—"], ["POA Agent", poa.agentName || "—"]]} />;
-        if (id === "section-autos") return autos.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No vehicles entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Vehicle</th><th style={{ textAlign: "left", fontWeight: 600 }}>Year</th><th style={{ textAlign: "left", fontWeight: 600 }}>Value</th></tr></thead><tbody>{autos.map((a, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{[a.make, a.model].filter(Boolean).join(" ") || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.year || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{a.value || "—"}</td></tr>)}</tbody></table>;
-        if (id === "section-life") return lifePolicies.length === 0 ? <span style={{ color: MUTED, fontSize: 13 }}>No life insurance policies entered.</span> : <table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr style={{ color: MUTED, fontSize: 11 }}><th style={{ textAlign: "left", paddingBottom: 4, fontWeight: 600 }}>Carrier</th><th style={{ textAlign: "left", fontWeight: 600 }}>Type</th><th style={{ textAlign: "left", fontWeight: 600 }}>Face Value</th><th style={{ textAlign: "left", fontWeight: 600 }}>Owner</th></tr></thead><tbody>{lifePolicies.map((p, i) => <tr key={i}><td style={{ padding: "3px 0", fontWeight: 500, fontSize: 13 }}>{p.carrier || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{p.policyType || "—"}</td><td style={{ padding: "3px 0", fontSize: 13 }}>{p.faceValue || "—"}</td><td style={{ padding: "3px 0", color: MUTED, fontSize: 13 }}>{p.owner || "—"}</td></tr>)}</tbody></table>;
-        if (id === "section-networth") return <QvTable labelWidth={170} rows={[["Est. Net Worth", client.estimatedNetWorth || "—"], ["Own / Rent", homeOwnership.ownOrRent || "—"], ["Mortgage Balance", homeOwnership.mortgageBalance || "—"], ["Annual Expenses", annualExpenses.amount ? `${annualExpenses.amount} / ${annualExpenses.frequency}` : "—"]]} />;
-        if (id === "section-inheritance") return <QvTable labelWidth={180} rows={[["Inheritance Expected", inheritances && inheritances.length > 0 ? inheritances.map(x => x.source || "unnamed").join(", ") : "—"], ["Safe Deposit Vaults", vaults && vaults.length > 0 ? vaults.map(x => x.institution || "unnamed").join(", ") : "—"]]} />;
-        if (id === "section-toolbox") return <span style={{ color: MUTED, fontSize: 13 }}>Client toolbox — see form for uploaded documents and notes.</span>;
+
+        if (id === "section-income") {
+          const totalAnnual = incomes.reduce((s, inc) => s + toAnn(inc.amount, inc.frequency), 0);
+          return <Tbl cols={["Source / Type","Owner","Amount","Frequency","Annual"]}
+            rows={incomes.filter(inc => inc.source || inc.type || inc.amount).map(inc => [
+              inc.source || inc.type, ownerName(inc.owner), inc.amount,
+              inc.frequency ? inc.frequency.charAt(0).toUpperCase() + inc.frequency.slice(1) : "",
+              fmtN(toAnn(inc.amount, inc.frequency)),
+            ])}
+            foot={["Total Annual Income", "", "", "", fmtN(totalAnnual)]}
+            emptyMsg="No income recorded." />;
+        }
+
+        if (id === "section-realestate") return (<>
+          {homeOwnership.ownOrRent && (<>
+            <Sub t="Primary Residence" />
+            <Tbl cols={["Field","Value"]} rows={[
+              ["Own or Rent", homeOwnership.ownOrRent === "own" ? "Owns" : "Rents"],
+              ...(homeOwnership.ownOrRent === "own" ? [
+                ["Mortgage Company", homeOwnership.mortgageCompany], ["Mortgage Balance", homeOwnership.mortgageBalance],
+                ["Monthly Payment", homeOwnership.monthlyPayment], ["Interest Rate", homeOwnership.interestRate],
+                ["Loan Origination", homeOwnership.loanOriginationDate], ["Loan Number", homeOwnership.loanNumber],
+              ] : [
+                ["Monthly Rent", homeOwnership.monthlyRent], ["Landlord", homeOwnership.landlordName], ["Landlord Phone", homeOwnership.landlordPhone],
+              ]),
+            ].filter(([,v]) => v)} />
+          </>)}
+          <Sub t="Additional Properties" />
+          <Tbl cols={["Description","Address","Market Value","Purchase Price","Purchase Date","Mortgage Bal.","Mortgage Co.","Rate","Monthly Pmt","Taxes","Insurance"]}
+            rows={realEstate.filter(r => r.address || r.marketValue || r.description).map(r => [
+              r.description, [r.address, r.city, r.state, r.zip].filter(Boolean).join(", "),
+              r.marketValue, r.purchasePrice, r.purchaseDate, r.mortgageBalance, r.mortgageCompany, r.interestRate, r.monthlyPmt, r.propertyTaxes, r.insurance,
+            ])} emptyMsg="No additional properties recorded." />
+        </>);
+
+        if (id === "section-accounts") {
+          const total = accounts.reduce((s, a) => s + parseDollar(a.balance), 0);
+          return <Tbl cols={["Institution","Type","Owner","Acct #","Qualified","Transactions","Balance"]}
+            rows={accounts.filter(a => a.institution || a.balance).map(a => [
+              a.institution, a.type, a.owner,
+              a.accountNumber ? "···" + String(a.accountNumber).slice(-4) : "",
+              a.qualified, (a.hasRmdOrContrib || "").replace(/^Contributing$/i, "Contrib."),
+              a.balance,
+            ])}
+            foot={["Total", "", "", "", "", "", fmtN(total)]}
+            emptyMsg="No accounts recorded." />;
+        }
+
+        if (id === "section-wills") return (<>
+          <Sub t="Will" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Has Will", yn(willsTrust.hasWill)], ["Will Date", willsTrust.willDate], ["Attorney", willsTrust.willAttorney],
+            ["Executor", willsTrust.executor], ["Alt. Executor", willsTrust.altExecutor], ["Location", willsTrust.willLocation],
+            ["Needs Update", yn(willsTrust.willUpdated)], ["Update Date", willsTrust.willUpdateDate], ["Notes", willsTrust.willNotes],
+          ].filter(([,v]) => v && v !== "—")} emptyMsg="No will information recorded." />
+          <Sub t="Trust" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Trust Name", willsTrust.trustName], ["Trust Type", willsTrust.trustType], ["Trust Date", willsTrust.trustDate],
+            ["Trustee", willsTrust.trustee], ["Successor Trustee", willsTrust.successorTrustee], ["Attorney", willsTrust.trustAttorney],
+            ["Assets Titled", yn(willsTrust.assetsTitled)], ["Location", willsTrust.trustLocation], ["Notes", willsTrust.trustNotes],
+          ].filter(([,v]) => v && v !== "—")} emptyMsg="No trust information recorded." />
+          <Sub t="Power of Attorney" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Has POA", yn(poa.hasPOA)], ["POA Type", poa.poaType], ["Agent", poa.agentName],
+            ["Relationship", poa.agentRelationship], ["Agent Phone", poa.agentPhone], ["Alt. Agent", poa.altAgent],
+            ["Date", poa.poaDate], ["Attorney", poa.poaAttorney], ["Location", poa.poaLocation], ["Notes", poa.poaNotes],
+          ].filter(([,v]) => v && v !== "—")} emptyMsg="No POA information recorded." />
+        </>);
+
+        if (id === "section-autos") {
+          const totalVal = autos.reduce((s, a) => s + parseDollar(a.value), 0);
+          const totalOwed = autos.reduce((s, a) => s + parseDollar(a.loanBalance), 0);
+          return <Tbl cols={["Year","Make","Model","Est. Value","Loan?","Amount Owed","Financed With","Rate","Mo. Payment","KBB Mileage","Condition"]}
+            rows={autos.filter(a => a.make || a.year).map(a => [
+              a.year, a.make, a.model, a.value,
+              a.hasLoan === "yes" ? "Yes" : a.hasLoan === "no" ? "Paid Off" : "",
+              a.loanBalance, a.lender, a.interestRate, a.monthlyPayment,
+              a.kbbMileage, a.kbbCondition,
+            ])}
+            foot={["", "", "Totals", fmtN(totalVal), "", fmtN(totalOwed), "", "", "", "", ""]}
+            emptyMsg="No vehicles recorded." />;
+        }
+
+        if (id === "section-life") {
+          const totalDB = lifePolicies.reduce((s, p) => s + parseDollar(p.deathBenefit), 0);
+          const totalCV = lifePolicies.reduce((s, p) => s + parseDollar(p.cashValue), 0);
+          return <Tbl cols={["Carrier","Type","Insured","Owner","Death Benefit","Cash Value","Premium","Frequency","Policy #","Issue Date","Surrender"]}
+            rows={lifePolicies.filter(p => p.carrier || p.deathBenefit).map(p => [
+              p.carrier, p.policyType, p.insured, p.owner, p.deathBenefit, p.cashValue,
+              p.premiumAmount, p.premiumFrequency, p.policyNumber, p.issueDate, p.surrender,
+            ])}
+            foot={["", "", "", "Totals", fmtN(totalDB), fmtN(totalCV), "", "", "", "", ""]}
+            emptyMsg="No life insurance recorded." />;
+        }
+
+        if (id === "section-networth") return (<>
+          <Sub t="Balance Sheet Estimates" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Total Assets", nwState.totalAssets], ["Total Liabilities", nwState.totalLiabilities],
+            ["Liquid Net Worth", nwState.liquidNetWorth], ["Net Worth ex-Home", nwState.netWorthExHome],
+            ["Primary Residence Equity", nwState.primaryEquity],
+            ["Annual Expenses", annualExpenses.amount ? `${annualExpenses.amount} / ${annualExpenses.frequency}` : ""],
+          ].filter(([,v]) => v)} emptyMsg="No net worth data entered." />
+          <Sub t="Portfolio Breakdown" />
+          <Tbl cols={["Category","Amount"]} rows={[
+            ["Cash & Cash Equivalents", nwState.pbCash],
+            ["Qualified Retirement Plans", nwState.pbQualified],
+            ["Non-Qualified / Taxable Brokerage", nwState.pbNonQual],
+            ["Annuities", nwState.pbAnnuities],
+            ["Cash Value Life Insurance", nwState.pbCVLI],
+            ["Alternative / Illiquid", nwState.pbAlts],
+            ["Other / Unclassified", nwState.pbOther],
+          ].filter(([,v]) => v)} emptyMsg="No portfolio breakdown entered." />
+          {nwState.notes && <><Sub t="Notes" /><div style={{ fontSize: 13, color: INK }}>{nwState.notes}</div></>}
+        </>);
+
+        if (id === "section-inheritance") return (<>
+          {inheritances.map((inh, idx) => (<div key={idx}>
+            {inheritances.length > 1 && <Sub t={`Estate Planning Record ${idx + 1}`} />}
+            <Tbl cols={["Field","Value"]} rows={[
+              ["Expects Inheritance", inh.expectsInheritance], ["Est. Value", inh.estValue], ["Timeline", inh.timeline],
+              ["Source", inh.source], ["Source Details", inh.sourceDetails], ["# of Siblings", inh.numberOfSiblings],
+              ["Siblings Involved", inh.siblingsInvolved], ["Special Needs in Family", inh.specialNeedsFamily],
+              ["Special Needs Trust", inh.specialNeedsTrust], ["Special Needs Details", inh.specialNeedsDetails],
+              ["Nursing Care Concern", inh.nursingCare], ["LTC Insurance", inh.ltcInsurance], ["Nursing Care Details", inh.nursingCareDetails],
+              ["Estate Planning Status", inh.estatePlanning], ["Trustee Arrangements", inh.trusteeArrangements],
+              ["Family Conflicts", inh.familyConflicts], ["Conflict Details", inh.conflictDetails],
+              ["Charitable Intent", inh.charitableIntent], ["Charitable Details", inh.charitableDetails],
+              ["Additional Notes", inh.additionalNotes],
+            ].filter(([,v]) => v)} emptyMsg="No estate planning data entered." />
+          </div>))}
+          {vaults.length > 0 && (<>
+            <Sub t="Document Vault" />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 10px" }}>
+              {vaults.map(v => <span key={v.id} style={{ fontSize: 12, background: "#eef1f6", borderRadius: 4, padding: "2px 8px", color: BRAND_NAVY, fontWeight: 500 }}>✓ {v.category}</span>)}
+            </div>
+          </>)}
+        </>);
+
+        if (id === "section-toolbox") {
+          const allUploads = Object.entries(uploads || {}).flatMap(([section, files]) => (files || []).map(f => [section, f.name || f]));
+          return allUploads.length > 0
+            ? <Tbl cols={["Section","File"]} rows={allUploads} />
+            : <span style={{ color: MUTED, fontSize: 13, fontStyle: "italic" }}>No files uploaded.</span>;
+        }
+
         return null;
       };
       const printQV = () => {
