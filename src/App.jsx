@@ -62,7 +62,7 @@ const F = ({ children }) => <div>{children}</div>;
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-function DatePicker({ value, onChange, label, futureYears = 0 }) {
+function DatePicker({ value, onChange, label, futureYears = 0, compact = false }) {
   const parts = (value || "").split("/");
   const mm = parts[0] || "";
   const dd = parts[1] || "";
@@ -82,15 +82,15 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
   return (
     <>
       {label && <Lbl t={label} />}
-      <div style={{ display: "flex", gap: 6, width: "100%", flexWrap: "wrap" }}>
-        <select className="sel-compact" data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, flex: "1.25 1 0%", minWidth: 64 }}>
+      <div style={{ display: "flex", gap: 6, width: compact ? "fit-content" : "100%", flexWrap: "wrap" }}>
+        <select className="sel-compact" data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, flex: compact ? "none" : "1.25 1 0%", width: compact ? 108 : undefined, minWidth: compact ? undefined : 64 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: "1 1 0%", minWidth: 56 }}>
+        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: compact ? "none" : "1 1 0%", width: compact ? 68 : undefined, minWidth: compact ? undefined : 56 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -109,7 +109,7 @@ function DatePicker({ value, onChange, label, futureYears = 0 }) {
             const v = e.target.value.replace(/\D/g, "").slice(0, 4);
             set(mm, dd, v);
           }}
-          style={{ ...sel, flex: "1 1 0%", minWidth: 56 }}
+          style={{ ...sel, flex: compact ? "none" : "1 1 0%", width: compact ? 68 : undefined, minWidth: compact ? undefined : 56 }}
         />
       </div>
     </>
@@ -2758,9 +2758,9 @@ export default function App() {
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={1}>
-            <F><DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} /></F>
-          </Row>
+          <div style={{ marginBottom: 8 }}>
+            <DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} compact />
+          </div>
           <Row cols={4}>
             <F><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F>
@@ -2863,9 +2863,9 @@ export default function App() {
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={1}>
-                <F><DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} /></F>
-              </Row>
+              <div style={{ marginBottom: 8 }}>
+                <DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} compact />
+              </div>
               <Row cols={4}>
                 <F><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
