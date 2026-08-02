@@ -1908,6 +1908,12 @@ export default function App() {
 
   if (view === "roster") {
     return (
+      <>
+      {toast && (
+        <div style={{ position: "fixed", top: 20, right: 20, zIndex: 3000, maxWidth: "calc(100vw - 40px)", background: toast.color, color: "#fff", padding: "12px 20px", borderRadius: 10, fontSize: 14, boxShadow: "0 8px 24px rgba(15,23,42,0.16)" }}>
+          {toast.msg}
+        </div>
+      )}
       <ClientRoster
         clients={savedClients}
         onOpen={(record) => {
@@ -1933,6 +1939,7 @@ export default function App() {
           setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
           setRecordType(record.recordType || "client");
           setNwState(record.nwState || { ...emptyNwState });
+          setSuitability(record.suitability || { ...emptySuitability });
           setActiveClient(record.id);
           setSubmitted(false);
           setSectionUpdatedAt({});
@@ -1958,6 +1965,15 @@ export default function App() {
         currentName={[client.firstName, client.lastName].filter(Boolean).join(" ") || null}
         currentType={recordType}
       />
+      {confirmState.open && (
+        <ConfirmDialog
+          message={confirmState.message}
+          confirmLabel={confirmState.confirmLabel}
+          onConfirm={() => { closeConfirm(); confirmState.onConfirm && confirmState.onConfirm(); }}
+          onCancel={closeConfirm}
+        />
+      )}
+      </>
     );
   }
 
@@ -4191,16 +4207,6 @@ export default function App() {
                 <option>Up to 10% temporary loss</option>
                 <option>Up to 20% temporary loss</option>
                 <option>Up to 30% or more temporary loss</option>
-              </select>
-            </F>
-            <F>
-              <Lbl t="ESG / Socially Responsible Preference" />
-              <select value={suitability.esgPreference} onChange={e => setSuitability(p => ({ ...p, esgPreference: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>No preference</option>
-                <option>Prefer ESG/SRI options</option>
-                <option>Exclude specific sectors</option>
-                <option>Strong ESG requirement</option>
               </select>
             </F>
           </Row>
