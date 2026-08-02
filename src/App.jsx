@@ -4198,11 +4198,13 @@ export default function App() {
 
           {/* ── DETAILED PORTFOLIO BREAKDOWN ── */}
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Portfolio Breakdown by Product Type (%)</div>
-          <Row cols={4}>
+          <Row cols={2}>
             <F><Lbl t="Fixed Indexed Annuities %" /><input value={suitability.pctFixedIndexedAnnuities} onChange={e => setSuitability(p => ({ ...p, pctFixedIndexedAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Fixed Annuities %" /><input value={suitability.pctFixedAnnuities} onChange={e => setSuitability(p => ({ ...p, pctFixedAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Cash Value Life Ins. %" /><input value={suitability.pctCashValueLife} onChange={e => setSuitability(p => ({ ...p, pctCashValueLife: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Liquid Cash (Chk/Sav/MM/CD) %" /><input value={suitability.pctLiquidCash} onChange={e => setSuitability(p => ({ ...p, pctLiquidCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={2}>
+            <F><Lbl t="Cash Value Life Insurance %" /><input value={suitability.pctCashValueLife} onChange={e => setSuitability(p => ({ ...p, pctCashValueLife: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Liquid Cash — Checking, Savings, Money Market, CD %" /><input value={suitability.pctLiquidCash} onChange={e => setSuitability(p => ({ ...p, pctLiquidCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
 
           {/* ── QUALIFIED vs NON-QUALIFIED ── */}
