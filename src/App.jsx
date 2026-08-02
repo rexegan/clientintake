@@ -269,7 +269,7 @@ const US_STATES = [
 ];
 
 const StateSelect = ({ value, onChange }) => (
-  <select data-lpignore="true" value={value || ""} onChange={onChange} style={IS}>
+  <select data-lpignore="true" value={value || ""} onChange={onChange} style={{ ...IS, minWidth: 190 }}>
     <option value="">— Select —</option>
     {US_STATES.map(([abbr, name]) => (
       <option key={abbr} value={abbr}>{abbr} — {name}</option>
@@ -2790,7 +2790,7 @@ export default function App() {
             <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
               <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" placeholder="ZIP" />
               <input value={clientEmp.workCity} onChange={setCE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" placeholder="City" />
-              <div style={{ width: 190 }}><StateSelect value={clientEmp.workState} onChange={setCE("workState")} /></div>
+              <StateSelect value={clientEmp.workState} onChange={setCE("workState")} />
             </div>
           </div>
           <Row cols={1}>
@@ -2895,7 +2895,7 @@ export default function App() {
                 <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
                   <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" placeholder="ZIP" />
                   <input value={spouseEmp.workCity} onChange={setSE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" placeholder="City" />
-                  <div style={{ width: 190 }}><StateSelect value={spouseEmp.workState} onChange={setSE("workState")} /></div>
+                  <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} />
                 </div>
               </div>
               <Row cols={1}>
