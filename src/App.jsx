@@ -1532,7 +1532,7 @@ export default function App() {
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
-  const emptySuitability = { riskTolerance: "", investmentObjective: "", timeHorizon: "", liquidityNeeds: "", investmentExperience: "", taxBracket: "", pctEquities: "", pctFixedIncome: "", pctCash: "", pctAlternatives: "", pctAnnuities: "", lossComfort: "", esgPreference: "", primaryGoal: "", secondaryGoal: "", incomeNeed: "", growthNeed: "", notes: "" };
+  const emptySuitability = { riskTolerance: "", investmentObjective: "", timeHorizon: "", liquidityNeeds: "", investmentExperience: "", taxBracket: "", pctEquities: "", pctFixedIncome: "", pctCash: "", pctAlternatives: "", pctAnnuities: "", pctFixedIndexedAnnuities: "", pctFixedAnnuities: "", pctCashValueLife: "", pctLiquidCash: "", pctQualified: "", pctNonQualified: "", lossComfort: "", esgPreference: "", primaryGoal: "", secondaryGoal: "", incomeNeed: "", growthNeed: "", notes: "" };
   const [suitability, setSuitability] = useState({ ...emptySuitability });
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
@@ -4180,6 +4180,7 @@ export default function App() {
           </Row>
 
           {/* ── TARGET ALLOCATION ── */}
+          {/* ── BROAD ALLOCATION ── */}
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Target Allocation (%) — must total 100%</div>
           <Row cols={5}>
             <F><Lbl t="Equities %" /><input value={suitability.pctEquities} onChange={e => setSuitability(p => ({ ...p, pctEquities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
@@ -4190,6 +4191,28 @@ export default function App() {
           </Row>
           {(() => {
             const total = ["pctEquities","pctFixedIncome","pctCash","pctAlternatives","pctAnnuities"].reduce((s, k) => s + (parseFloat(suitability[k]) || 0), 0);
+            if (!total) return null;
+            const ok = Math.abs(total - 100) < 0.01;
+            return <div style={{ fontSize: 12, fontWeight: 600, color: ok ? SUCCESS : DANGER, marginTop: 4 }}>Total: {total.toFixed(1)}% {ok ? "✓" : "(must equal 100%)"}</div>;
+          })()}
+
+          {/* ── DETAILED PORTFOLIO BREAKDOWN ── */}
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Portfolio Breakdown by Product Type (%)</div>
+          <Row cols={4}>
+            <F><Lbl t="Fixed Indexed Annuities %" /><input value={suitability.pctFixedIndexedAnnuities} onChange={e => setSuitability(p => ({ ...p, pctFixedIndexedAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Fixed Annuities %" /><input value={suitability.pctFixedAnnuities} onChange={e => setSuitability(p => ({ ...p, pctFixedAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Cash Value Life Ins. %" /><input value={suitability.pctCashValueLife} onChange={e => setSuitability(p => ({ ...p, pctCashValueLife: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Liquid Cash (Chk/Sav/MM/CD) %" /><input value={suitability.pctLiquidCash} onChange={e => setSuitability(p => ({ ...p, pctLiquidCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+
+          {/* ── QUALIFIED vs NON-QUALIFIED ── */}
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Qualified vs. Non-Qualified (%)</div>
+          <Row cols={2}>
+            <F><Lbl t="Qualified Money (IRA / 401k / etc.) %" /><input value={suitability.pctQualified} onChange={e => setSuitability(p => ({ ...p, pctQualified: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Non-Qualified Money %" /><input value={suitability.pctNonQualified} onChange={e => setSuitability(p => ({ ...p, pctNonQualified: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          {(() => {
+            const total = (parseFloat(suitability.pctQualified) || 0) + (parseFloat(suitability.pctNonQualified) || 0);
             if (!total) return null;
             const ok = Math.abs(total - 100) < 0.01;
             return <div style={{ fontSize: 12, fontWeight: 600, color: ok ? SUCCESS : DANGER, marginTop: 4 }}>Total: {total.toFixed(1)}% {ok ? "✓" : "(must equal 100%)"}</div>;
