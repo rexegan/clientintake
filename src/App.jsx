@@ -1129,11 +1129,12 @@ function SummaryReview({ data, onClose }) {
     inheritances = [], vaults = [], recordType = "client",
   } = data;
 
-  const P = "Georgia, 'Times New Roman', serif";
-  const NAVY = "#2e3d66";
+  const P = "'DM Sans', 'Segoe UI', system-ui, sans-serif";
+  const NAVY = "#414f62";
   const BLUE = "#5b6e85";
+  const DGRAY = "#4a5a6e";
   const LGRAY = "#f4f6fa";
-  const BDR = "1px solid #dce1ea";
+  const BDR = "1px solid #e1e4ea";
   const INK = "#151b28";
   const MUT = "#697180";
 
@@ -1153,10 +1154,10 @@ function SummaryReview({ data, onClose }) {
   const parseDollar = v => { if (!v) return 0; return parseFloat(String(v).replace(/[^0-9.-]/g,"")) || 0; };
 
   const SH = ({ title }) => (
-    <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 5, marginTop: 28, marginBottom: 10, fontWeight: "bold" }}>{title}</div>
+    <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: BLUE, borderBottom: "2px solid " + BLUE, paddingBottom: 6, marginTop: 32, marginBottom: 12, fontWeight: "bold", textAlign: "center" }}>{title}</div>
   );
   const Grid = ({ rows }) => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "6px 24px", marginBottom: 4 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "6px 24px", marginBottom: 8 }}>
       {rows.filter(([,v]) => v).map(([k, v]) => (
         <div key={k}>
           <div style={{ fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 1 }}>{k}</div>
@@ -1165,16 +1166,18 @@ function SummaryReview({ data, onClose }) {
       ))}
     </div>
   );
+  const thS = { textAlign: "center", padding: "7px 10px", background: DGRAY, color: "#fff", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" };
+  const tdS = { padding: "7px 10px", borderBottom: BDR, verticalAlign: "top", fontSize: 13 };
   const Tbl = ({ cols, rows, emptyMsg }) => rows.length === 0
     ? <div style={{ fontSize: 12, color: MUT, fontStyle: "italic", marginBottom: 4 }}>{emptyMsg || "None recorded."}</div>
-    : <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, marginBottom: 6 }}>
+    : <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 8 }}>
         <thead>
-          <tr>{cols.map(c => <th key={c} style={{ textAlign: "left", padding: "4px 8px", background: "#e9edf2", color: NAVY, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700 }}>{c}</th>)}</tr>
+          <tr>{cols.map(c => <th key={c} style={thS}>{c}</th>)}</tr>
         </thead>
         <tbody>
           {rows.map((r, i) => (
             <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : LGRAY }}>
-              {r.map((cell, j) => <td key={j} style={{ padding: "5px 8px", borderBottom: BDR, verticalAlign: "top" }}>{cell || <span style={{ color: "#bbb" }}>—</span>}</td>)}
+              {r.map((cell, j) => <td key={j} style={tdS}>{cell || <span style={{ color: "#9aa" }}>—</span>}</td>)}
             </tr>
           ))}
         </tbody>
@@ -1192,27 +1195,27 @@ function SummaryReview({ data, onClose }) {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1100, overflowY: "auto", padding: "20px 0" }}>
-      <div id="sr-print-toolbar" style={{ maxWidth: 860, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
+      <div id="sr-print-toolbar" style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
         <button onClick={(e) => { e.currentTarget.disabled = true; setTimeout(() => { window.print(); e.currentTarget.disabled = false; }, 50); }}
           style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
         <button onClick={onClose}
           style={{ background: "#d64545", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
       </div>
 
-      <div id="sr-report" style={{ fontFamily: P, color: INK, background: "#fff", maxWidth: 860, margin: "0 auto", padding: "0 0 60px", boxShadow: "0 4px 32px rgba(0,0,0,0.18)" }}>
+      <div id="sr-report" style={{ fontFamily: P, color: INK, background: "#fff", maxWidth: 900, margin: "0 auto", padding: "0 0 60px" }}>
         {/* Header */}
-        <div style={{ background: NAVY, color: "#fff", padding: "28px 40px 20px", borderRadius: "10px 10px 0 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div className="rpt-pad" style={{ background: NAVY, color: "#fff", padding: "32px 40px 24px", borderRadius: "10px 10px 0 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
           <div>
-            <div style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#c7d0db", marginBottom: 6 }}>Russell Wealth Group · Confidential</div>
-            <div style={{ fontSize: 28, fontWeight: "bold", margin: "0 0 4px" }}>{headerName}</div>
-            <div style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db", marginTop: 8 }}>
+            <div style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "#c7d0db", marginBottom: 6 }}>Russell Wealth Group · Confidential</div>
+            <div style={{ fontSize: 32, fontWeight: "bold", margin: "0 0 4px" }}>{headerName}</div>
+            <div style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db", marginTop: 10 }}>
               {recordType === "prospect" ? "Prospect" : "Client"} Summary Review · Prepared {reportDate}
             </div>
           </div>
-          <AcornMark size={44} color="#c7d0db" />
+          <AcornMark size={46} color="#c7d0db" />
         </div>
 
-        <div style={{ padding: "0 40px" }}>
+        <div className="rpt-pad" style={{ padding: "0 40px" }}>
 
           {/* Profile */}
           <SH title={recordType === "prospect" ? "Prospect Profile" : "Client Profile"} />
@@ -1387,9 +1390,9 @@ function SummaryReview({ data, onClose }) {
                 ...(totalLiab > 0 ? [["Total Liabilities", fmt(totalLiab)]] : []),
               ]} emptyMsg="No liabilities recorded." />
               {netWorth !== 0 && (
-                <div style={{ background: NAVY, color: "#fff", borderRadius: 8, padding: "12px 16px", marginTop: 8 }}>
-                  <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db" }}>Total Net Worth</div>
-                  <div style={{ fontSize: 24, fontWeight: "bold", marginTop: 4 }}>{fmt(netWorth)}</div>
+                <div style={{ background: NAVY, color: "#fff", borderRadius: 10, padding: "16px 20px", marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "#c7d0db" }}>Total Net Worth</div>
+                  <div style={{ fontSize: 28, fontWeight: "bold" }}>{fmt(netWorth)}</div>
                 </div>
               )}
             </div>
@@ -1424,8 +1427,8 @@ function SummaryReview({ data, onClose }) {
           </>}
 
           {/* Footer */}
-          <div style={{ marginTop: 40, borderTop: "1px solid #dce1ea", paddingTop: 12, display: "flex", justifyContent: "space-between", color: MUT, fontSize: 10 }}>
-            <span>Russell Wealth Group · Confidential</span>
+          <div style={{ marginTop: 48, paddingTop: 16, borderTop: "1px solid #e1e4ea", display: "flex", justifyContent: "space-between", fontSize: 11, color: MUT }}>
+            <span>Russell Wealth Group · Confidential · For Advisor Use Only</span>
             <span>Prepared {reportDate}</span>
           </div>
         </div>
@@ -1433,19 +1436,35 @@ function SummaryReview({ data, onClose }) {
 
       <style>{`
         @media print {
-          body * { visibility: hidden; }
-          #sr-report, #sr-report * { visibility: visible !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          #rwg-main-app { display: none !important; }
+          #sr-report-wrap { display: block !important; }
+          #sr-report-wrap > div {
+            position: static !important;
+            background: white !important;
+            overflow: visible !important;
+            padding: 0 !important;
+            inset: auto !important;
+            z-index: auto !important;
+          }
+          #sr-print-toolbar { display: none !important; }
           #sr-report {
-            position: fixed !important;
-            top: 0; left: 0; width: 100%;
-            box-shadow: none !important;
+            position: static !important;
             max-width: 100% !important;
             padding: 0 !important;
             margin: 0 !important;
+            box-shadow: none !important;
+            background: white !important;
           }
-          #sr-print-toolbar { display: none !important; }
+          table { page-break-inside: avoid; }
+          tr { page-break-inside: avoid; }
         }
         @page { margin: 0.6in 0.5in; size: letter portrait; }
+        @media screen and (max-width: 700px) {
+          .rpt-pad { padding-left: 16px !important; padding-right: 16px !important; }
+          #sr-report table { display: block; overflow-x: auto; }
+          #sr-report { margin: 0 8px !important; }
+        }
       `}</style>
     </div>
   );
@@ -2123,7 +2142,7 @@ export default function App() {
                 <button onClick={() => showConfirm("Load sample client data? This will overwrite the current form.", loadSampleData, "Load Sample")}
                   style={{ background: "#64748b", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Load Sample</button>
                 <button onClick={() => setShowSummaryReview(true)}
-                  style={{ background: SUCCESS, color: "#fff", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>📋 Summary Review</button>
+                  style={{ background: "#2e3d66", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Summary Review</button>
               </div>
             </div>
           </div>
