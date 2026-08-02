@@ -2785,16 +2785,16 @@ export default function App() {
               </div>
             </F>
           </Row>
-          <Row cols={2}>
-            <F>
-              <Lbl t="ZIP" />
-              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
-            </F>
+          <div style={{ marginBottom: 8 }}>
+            <Lbl t="ZIP / City / State" />
+            <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
+              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" placeholder="ZIP" />
+              <input value={clientEmp.workCity} onChange={setCE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" placeholder="City" />
+              <div style={{ width: 90 }}><StateSelect value={clientEmp.workState} onChange={setCE("workState")} /></div>
+            </div>
+          </div>
+          <Row cols={1}>
             <F><Lbl t="Work Street Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <Row cols={2}>
-            <F><Lbl t="City" /><input value={clientEmp.workCity} onChange={setCE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="State" /><StateSelect value={clientEmp.workState} onChange={setCE("workState")} /></F>
           </Row>
 
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
@@ -2890,16 +2890,16 @@ export default function App() {
                   </div>
                 </F>
               </Row>
-              <Row cols={2}>
-                <F>
-                  <Lbl t="ZIP" />
-                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" />
-                </F>
+              <div style={{ marginBottom: 8 }}>
+                <Lbl t="ZIP / City / State" />
+                <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
+                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" placeholder="ZIP" />
+                  <input value={spouseEmp.workCity} onChange={setSE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" placeholder="City" />
+                  <div style={{ width: 90 }}><StateSelect value={spouseEmp.workState} onChange={setSE("workState")} /></div>
+                </div>
+              </div>
+              <Row cols={1}>
                 <F><Lbl t="Work Street Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Row cols={2}>
-                <F><Lbl t="City" /><input value={spouseEmp.workCity} onChange={setSE("workCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="State" /><StateSelect value={spouseEmp.workState} onChange={setSE("workState")} /></F>
               </Row>
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
