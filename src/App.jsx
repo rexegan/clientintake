@@ -4128,10 +4128,12 @@ export default function App() {
     </div>
 
     {showSummaryReview && (
-      <SummaryReview
-        data={{ client, spouse, hasSpouse, hasChildren, children, beneficiaries, clientEmp, spouseEmp, incomes, realEstate, homeOwnership, accounts, willsTrust, poa, autos, lifePolicies, nwState, annualExpenses, inheritances, vaults, recordType }}
-        onClose={() => setShowSummaryReview(false)}
-      />
+      <div id="rwg-report-wrap">
+        <ClientReport
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership, lifePolicies }}
+          onClose={() => setShowSummaryReview(false)}
+        />
+      </div>
     )}
     {showReport && (
       <div id="rwg-report-wrap">
