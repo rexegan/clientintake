@@ -425,6 +425,7 @@ const SECTION_META = {
   "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
   "section-networth":   { color: "#8b5cf6", bg: "#f0edfe", icon: <IcSvg><path d="M3 17l4-8 4 5 3-3 4 6"/><path d="M3 21h18"/></IcSvg> },
   "section-inheritance":{ color: "#0ea5e9", bg: "#e8f5fd", icon: <IcSvg><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></IcSvg> },
+  "section-suitability":{ color: "#7c3aed", bg: "#f3effe", icon: <IcSvg><path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z"/><path d="M12 8v4l3 3"/></IcSvg> },
   "section-toolbox":    { color: "#64748b", bg: "#f1f3f6", icon: <IcSvg><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/><path d="M3 16h18"/></IcSvg> },
 };
 
@@ -1531,6 +1532,8 @@ export default function App() {
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
+  const emptySuitability = { riskTolerance: "", investmentObjective: "", timeHorizon: "", liquidityNeeds: "", investmentExperience: "", taxBracket: "", pctEquities: "", pctFixedIncome: "", pctCash: "", pctAlternatives: "", pctAnnuities: "", lossComfort: "", esgPreference: "", primaryGoal: "", secondaryGoal: "", incomeNeed: "", growthNeed: "", notes: "" };
+  const [suitability, setSuitability] = useState({ ...emptySuitability });
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
   const [recordType, setRecordType] = useState("client");
@@ -1581,6 +1584,7 @@ export default function App() {
     ["section-life",       () => "Life Insurance"],
     ["section-networth",   () => "Net Worth / Portfolio"],
     ["section-inheritance",() => "Estate Planning"],
+    ["section-suitability",() => "Suitability"],
     ["section-toolbox",    () => "Client Toolbox"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
@@ -1650,6 +1654,7 @@ export default function App() {
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-life"); }, [lifePolicies]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-networth"); }, [nwState, annualExpenses]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-inheritance"); }, [inheritances, vaults]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-suitability"); }, [suitability]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-toolbox"); }, [uploads]);
   useEffect(() => { sectionMounted.current = true; }, []);
 
@@ -1657,8 +1662,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults]);
+    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -2022,6 +2027,7 @@ export default function App() {
             ["section-life",      "Life Insurance"],
             ["section-networth",  "Net Worth / Portfolio"],
             ["section-inheritance", "Estate Planning"],
+            ["section-suitability", "Suitability"],
             ["section-toolbox",    "Client Toolbox"],
           ].map(([id, label]) => {
             const ts = sectionUpdatedAt[id];
@@ -4024,6 +4030,186 @@ export default function App() {
           <button onClick={addInh} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Inheritance
           </button>
+        </Panel>
+
+        <Panel title="Suitability" id="section-suitability">
+          {/* ── INVESTMENT PROFILE ── */}
+          <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Investment Profile</div>
+          <Row cols={3}>
+            <F>
+              <Lbl t="Risk Tolerance" />
+              <select value={suitability.riskTolerance} onChange={e => setSuitability(p => ({ ...p, riskTolerance: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Conservative</option>
+                <option>Moderately Conservative</option>
+                <option>Moderate</option>
+                <option>Moderately Aggressive</option>
+                <option>Aggressive</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Investment Objective" />
+              <select value={suitability.investmentObjective} onChange={e => setSuitability(p => ({ ...p, investmentObjective: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Capital Preservation</option>
+                <option>Income</option>
+                <option>Growth &amp; Income</option>
+                <option>Growth</option>
+                <option>Aggressive Growth</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Time Horizon" />
+              <select value={suitability.timeHorizon} onChange={e => setSuitability(p => ({ ...p, timeHorizon: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Short-Term (0–3 yrs)</option>
+                <option>Medium-Term (3–7 yrs)</option>
+                <option>Long-Term (7–15 yrs)</option>
+                <option>Very Long-Term (15+ yrs)</option>
+              </select>
+            </F>
+          </Row>
+          <Row cols={3}>
+            <F>
+              <Lbl t="Liquidity Needs" />
+              <select value={suitability.liquidityNeeds} onChange={e => setSuitability(p => ({ ...p, liquidityNeeds: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>None</option>
+                <option>Low</option>
+                <option>Moderate</option>
+                <option>High</option>
+                <option>Very High</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Investment Experience" />
+              <select value={suitability.investmentExperience} onChange={e => setSuitability(p => ({ ...p, investmentExperience: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>None</option>
+                <option>Limited</option>
+                <option>Moderate</option>
+                <option>Good</option>
+                <option>Extensive</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Federal Tax Bracket" />
+              <select value={suitability.taxBracket} onChange={e => setSuitability(p => ({ ...p, taxBracket: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>10%</option>
+                <option>12%</option>
+                <option>22%</option>
+                <option>24%</option>
+                <option>32%</option>
+                <option>35%</option>
+                <option>37%</option>
+              </select>
+            </F>
+          </Row>
+
+          {/* ── GOALS ── */}
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Goals & Priorities</div>
+          <Row cols={2}>
+            <F>
+              <Lbl t="Primary Goal" />
+              <select value={suitability.primaryGoal} onChange={e => setSuitability(p => ({ ...p, primaryGoal: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Retirement Income</option>
+                <option>Wealth Accumulation</option>
+                <option>Capital Preservation</option>
+                <option>Estate Transfer</option>
+                <option>Education Funding</option>
+                <option>Tax Reduction</option>
+                <option>Charitable Giving</option>
+                <option>Business Succession</option>
+                <option>Other</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Secondary Goal" />
+              <select value={suitability.secondaryGoal} onChange={e => setSuitability(p => ({ ...p, secondaryGoal: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Retirement Income</option>
+                <option>Wealth Accumulation</option>
+                <option>Capital Preservation</option>
+                <option>Estate Transfer</option>
+                <option>Education Funding</option>
+                <option>Tax Reduction</option>
+                <option>Charitable Giving</option>
+                <option>Business Succession</option>
+                <option>Other</option>
+              </select>
+            </F>
+          </Row>
+          <Row cols={2}>
+            <F>
+              <Lbl t="Need for Income?" />
+              <select value={suitability.incomeNeed} onChange={e => setSuitability(p => ({ ...p, incomeNeed: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>No — reinvest all returns</option>
+                <option>Some — partial distributions</option>
+                <option>Yes — regular income required</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Growth Requirement" />
+              <select value={suitability.growthNeed} onChange={e => setSuitability(p => ({ ...p, growthNeed: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Not important</option>
+                <option>Modest growth acceptable</option>
+                <option>Growth is important</option>
+                <option>Maximum growth desired</option>
+              </select>
+            </F>
+          </Row>
+
+          {/* ── TARGET ALLOCATION ── */}
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Target Allocation (%) — must total 100%</div>
+          <Row cols={5}>
+            <F><Lbl t="Equities %" /><input value={suitability.pctEquities} onChange={e => setSuitability(p => ({ ...p, pctEquities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Fixed Income %" /><input value={suitability.pctFixedIncome} onChange={e => setSuitability(p => ({ ...p, pctFixedIncome: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Cash %" /><input value={suitability.pctCash} onChange={e => setSuitability(p => ({ ...p, pctCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Alternatives %" /><input value={suitability.pctAlternatives} onChange={e => setSuitability(p => ({ ...p, pctAlternatives: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Annuities %" /><input value={suitability.pctAnnuities} onChange={e => setSuitability(p => ({ ...p, pctAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          {(() => {
+            const total = ["pctEquities","pctFixedIncome","pctCash","pctAlternatives","pctAnnuities"].reduce((s, k) => s + (parseFloat(suitability[k]) || 0), 0);
+            if (!total) return null;
+            const ok = Math.abs(total - 100) < 0.01;
+            return <div style={{ fontSize: 12, fontWeight: 600, color: ok ? SUCCESS : DANGER, marginTop: 4 }}>Total: {total.toFixed(1)}% {ok ? "✓" : "(must equal 100%)"}</div>;
+          })()}
+
+          {/* ── RISK / OTHER ── */}
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Risk &amp; Preferences</div>
+          <Row cols={2}>
+            <F>
+              <Lbl t="Comfort with Temporary Loss" />
+              <select value={suitability.lossComfort} onChange={e => setSuitability(p => ({ ...p, lossComfort: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Not comfortable with any loss</option>
+                <option>Up to 5% temporary loss</option>
+                <option>Up to 10% temporary loss</option>
+                <option>Up to 20% temporary loss</option>
+                <option>Up to 30% or more temporary loss</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="ESG / Socially Responsible Preference" />
+              <select value={suitability.esgPreference} onChange={e => setSuitability(p => ({ ...p, esgPreference: e.target.value }))} style={IS} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>No preference</option>
+                <option>Prefer ESG/SRI options</option>
+                <option>Exclude specific sectors</option>
+                <option>Strong ESG requirement</option>
+              </select>
+            </F>
+          </Row>
+          <Row cols={1}>
+            <F>
+              <Lbl t="Suitability Notes" />
+              <textarea value={suitability.notes} onChange={e => setSuitability(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 80, resize: "vertical" }} placeholder="Additional suitability notes, special circumstances, or advisor observations..." autoComplete="new-password" data-lpignore="true" />
+            </F>
+          </Row>
         </Panel>
 
         <Panel title="Client Toolbox" id="section-toolbox">
