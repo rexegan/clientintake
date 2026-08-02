@@ -2000,14 +2000,14 @@ export default function App() {
       <div style={{ display: "flex", alignItems: "stretch" }}>
 
         {/* ── SIDEBAR ── */}
-        <aside className="side-rail" style={{ width: 250, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 14px" }}>
-          <div style={{ padding: "8px 8px 16px" }}>
-            <BrandLockup mark={46} />
+        <aside className="side-rail" style={{ width: 226, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 10px" }}>
+          <div style={{ padding: "8px 6px 14px" }}>
+            <BrandLockup mark={42} />
             <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</div>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 8px", marginBottom: 6 }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Intake Sections</span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.05em" }}>Last Updated</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 4 }}>
+            <span style={{ fontSize: 10, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Intake Sections</span>
+            <span style={{ fontSize: 9, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.04em" }}>Updated</span>
           </div>
           {[
             ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
@@ -2033,12 +2033,12 @@ export default function App() {
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
                 className="side-nav"
-                style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 10, padding: "6px 8px", marginBottom: 2, fontSize: 13.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
+                style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 9, padding: "5px 6px", marginBottom: 1, fontSize: 12.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
               >
-                <IconChip id={id} size={26} />
+                <IconChip id={id} size={22} />
                 <span style={{ flex: 1 }}>{label}</span>
                 {ts && (
-                  <span style={{ fontSize: 9.5, color: MUTED, fontWeight: 500, whiteSpace: "nowrap", lineHeight: 1.2, textAlign: "right" }}>
+                  <span style={{ fontSize: 8.5, color: MUTED, fontWeight: 500, whiteSpace: "nowrap", lineHeight: 1.25, textAlign: "right" }}>
                     {ts.toLocaleDateString("en-US", { month: "numeric", day: "numeric" })}<br/>
                     {ts.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
                   </span>
