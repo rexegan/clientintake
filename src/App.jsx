@@ -1299,6 +1299,8 @@ function SummaryReview({ data, onClose }) {
                 ["Balance", homeOwnership.mortgageBalance],
                 ["Monthly Payment", homeOwnership.monthlyPayment],
                 ["Interest Rate", homeOwnership.interestRate],
+                ["Annual Property Taxes", homeOwnership.annualPropertyTaxes],
+                ["Annual Insurance", homeOwnership.annualInsurance],
               ] : [
                 ["Monthly Rent", homeOwnership.monthlyRent],
                 ["Landlord", homeOwnership.landlordName],
@@ -1510,7 +1512,7 @@ export default function App() {
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
-  const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
+  const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
   const [annualExpenses, setAnnualExpenses] = useState({ amount: "", frequency: "monthly" });
   const [recordType, setRecordType] = useState("client");
   const [customMortgageCos, setCustomMortgageCos] = useState(() => JSON.parse(localStorage.getItem("rwg_mortgage_cos") || "[]"));
@@ -1688,7 +1690,7 @@ export default function App() {
     setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
-    setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
+    setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
     setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
     setRecordType(record.recordType || "client");
@@ -1902,7 +1904,7 @@ export default function App() {
           setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
           setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
           setUploads(record.uploads || {});
-          setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
+          setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
           setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
           setRecordType(record.recordType || "client");
@@ -2291,6 +2293,10 @@ export default function App() {
               <F><Lbl t="Interest Rate" /><input value={homeOwnership.interestRate} onChange={e => setHomeOwnership(p => ({ ...p, interestRate: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6.5%" /></F>
               <F><DatePicker label="Loan Origination Date" value={homeOwnership.loanOriginationDate} onChange={v => setHomeOwnership(p => ({ ...p, loanOriginationDate: v }))} /></F>
               <F><Lbl t="Loan Number" /><input value={homeOwnership.loanNumber} onChange={e => setHomeOwnership(p => ({ ...p, loanNumber: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
+            <Row cols={3}>
+              <F><Lbl t="Annual Property Taxes" /><input value={homeOwnership.annualPropertyTaxes || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualPropertyTaxes: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+              <F><Lbl t="Annual Insurance" /><input value={homeOwnership.annualInsurance || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualInsurance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
             </Row>
           </>)}
           {homeOwnership.ownOrRent === "rent" && (
@@ -4219,6 +4225,7 @@ export default function App() {
                 ["Mortgage Company", homeOwnership.mortgageCompany], ["Mortgage Balance", homeOwnership.mortgageBalance],
                 ["Monthly Payment", homeOwnership.monthlyPayment], ["Interest Rate", homeOwnership.interestRate],
                 ["Loan Origination", homeOwnership.loanOriginationDate], ["Loan Number", homeOwnership.loanNumber],
+                ["Annual Property Taxes", homeOwnership.annualPropertyTaxes], ["Annual Insurance", homeOwnership.annualInsurance],
               ] : [
                 ["Monthly Rent", homeOwnership.monthlyRent], ["Landlord", homeOwnership.landlordName], ["Landlord Phone", homeOwnership.landlordPhone],
               ]),
