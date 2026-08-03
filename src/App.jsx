@@ -212,7 +212,7 @@ const emptyClient = {
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
-const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
+const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"", inServiceTransfer:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"", hasLoan:null, loanBalance:"", lender:"", interestRate:"", monthlyPayment:"" };
 const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
 const DEFAULT_MORTGAGE_COS = [
@@ -3217,9 +3217,9 @@ export default function App() {
                     </div>
                   );
                 })()}
-                <Row cols={2}>
-                  <F><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                  <F>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+                  <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
+                  <div style={{ flex: "0 0 210px" }}>
                     <Lbl t="Custodian / Plan Sponsor" />
                     <select data-lpignore="true" value={clientEmp.retirementCustodian || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
                       <option value="">— Select —</option>
@@ -3231,8 +3231,16 @@ export default function App() {
                     {clientEmp.retirementCustodian === "Other" && (
                       <input value={clientEmp.retirementCustodianOther || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodianOther: e.target.value }))} style={{ ...IS, marginTop: 6 }} placeholder="Specify custodian" autoComplete="new-password" data-lpignore="true" />
                     )}
-                  </F>
-                </Row>
+                  </div>
+                  <div style={{ flex: "0 0 150px" }}>
+                    <Lbl t="In Service Transfer?" />
+                    <select value={clientEmp.inServiceTransfer || ""} onChange={e => setClientEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={IS} data-lpignore="true">
+                      <option value="">— Select —</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                </div>
               </>
             )}
           </div>
@@ -3347,9 +3355,9 @@ export default function App() {
                         </div>
                       );
                     })()}
-                    <Row cols={2}>
-                      <F><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                      <F>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+                      <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
+                      <div style={{ flex: "0 0 210px" }}>
                         <Lbl t="Custodian / Plan Sponsor" />
                         <select data-lpignore="true" value={spouseEmp.retirementCustodian || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
                           <option value="">— Select —</option>
@@ -3361,8 +3369,16 @@ export default function App() {
                         {spouseEmp.retirementCustodian === "Other" && (
                           <input value={spouseEmp.retirementCustodianOther || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodianOther: e.target.value }))} style={{ ...IS, marginTop: 6 }} placeholder="Specify custodian" autoComplete="new-password" data-lpignore="true" />
                         )}
-                      </F>
-                    </Row>
+                      </div>
+                      <div style={{ flex: "0 0 150px" }}>
+                        <Lbl t="In Service Transfer?" />
+                        <select value={spouseEmp.inServiceTransfer || ""} onChange={e => setSpouseEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={IS} data-lpignore="true">
+                          <option value="">— Select —</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
