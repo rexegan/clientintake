@@ -1066,13 +1066,13 @@ function ClientReport({ data, onClose }) {
               </table>
               <table style={s.table}>
                 <tbody>
-                  {poas.filter(p => p.hasPOA === "yes").map((p, i) => (<React.Fragment key={i}>
-                    {poas.filter(x => x.hasPOA === "yes").length > 1 && <Row2 label={`POA ${i + 1}`} value="" />}
-                    <Row2 label="Power of Attorney" value="✓ Yes" />
-                    {p.poaType && <Row2 label="POA Type" value={p.poaType} />}
-                    {p.agentName && <Row2 label="Agent Name" value={p.agentName} />}
-                    {p.agentRelationship && <Row2 label="Agent Relationship" value={p.agentRelationship} />}
-                  </React.Fragment>))}
+                  {poas.filter(p => p.hasPOA === "yes").map((p, i) => (<>
+                    {poas.filter(x => x.hasPOA === "yes").length > 1 && <Row2 key={`lbl-${i}`} label={`POA ${i + 1}`} value="" />}
+                    <Row2 key={`poa-${i}`} label="Power of Attorney" value="✓ Yes" />
+                    {p.poaType && <Row2 key={`type-${i}`} label="POA Type" value={p.poaType} />}
+                    {p.agentName && <Row2 key={`agent-${i}`} label="Agent Name" value={p.agentName} />}
+                    {p.agentRelationship && <Row2 key={`rel-${i}`} label="Agent Relationship" value={p.agentRelationship} />}
+                  </>))}
                 </tbody>
               </table>
             </div>
