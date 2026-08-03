@@ -2261,26 +2261,29 @@ export default function App() {
           </Row>
 
           <Sec t="Citizenship & Dependents" />
-          <Row cols={3}>
-            <F>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="US Citizen?" />
-              <select data-lpignore="true" value={client.usCitizen || ""} onChange={setC("usCitizen")} style={IS}>
-                <option value="">— Select —</option>
+              <select data-lpignore="true" value={client.usCitizen || ""} onChange={setC("usCitizen")} style={{ ...IS, width: 88 }}>
+                <option value="">—</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
-            </F>
+            </div>
             {client.usCitizen === "no" && (
-              <F><Lbl t="Country of Citizenship" /><input value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
+                <Lbl t="Country of Citizenship" />
+                <input value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" />
+              </div>
             )}
-            <F>
-              <Lbl t="Number of Dependents" />
-              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={IS}>
-                <option value="">— Select —</option>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="# of Dependents" />
+              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 72 }}>
+                <option value="">—</option>
                 {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
               </select>
-            </F>
-          </Row>
+            </div>
+          </div>
 
           <Sec t="Driver's License" />
           <Row cols={3}>
@@ -2494,26 +2497,29 @@ export default function App() {
               </Row>
 
               <Sec t="Citizenship & Dependents" />
-              <Row cols={3}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="US Citizen?" />
-                  <select data-lpignore="true" value={spouse.usCitizen || ""} onChange={setS("usCitizen")} style={IS}>
-                    <option value="">— Select —</option>
+                  <select data-lpignore="true" value={spouse.usCitizen || ""} onChange={setS("usCitizen")} style={{ ...IS, width: 88 }}>
+                    <option value="">—</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                   </select>
-                </F>
+                </div>
                 {spouse.usCitizen === "no" && (
-                  <F><Lbl t="Country of Citizenship" /><input value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
+                    <Lbl t="Country of Citizenship" />
+                    <input value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" />
+                  </div>
                 )}
-                <F>
-                  <Lbl t="Number of Dependents" />
-                  <select data-lpignore="true" value={spouse.numDependents || ""} onChange={setS("numDependents")} style={IS}>
-                    <option value="">— Select —</option>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="# of Dependents" />
+                  <select data-lpignore="true" value={spouse.numDependents || ""} onChange={setS("numDependents")} style={{ ...IS, width: 72 }}>
+                    <option value="">—</option>
                     {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
 
               <Sec t="Driver's License" />
               <Row cols={3}>
