@@ -2209,20 +2209,23 @@ export default function App() {
             <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setCN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setCN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={4}>
-            <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></F>
-            <F><Lbl t="SSN" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="SSN" />
+              <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Gender" />
-              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={IS}>
+              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 106 }}>
                 <option value="">— Select —</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
-            </F>
-            <F>
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Marital Status" />
-              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={IS}>
+              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 168 }}>
                 <option value="">— Select —</option>
                 <option value="Single">Single</option>
                 <option value="Married">Married</option>
@@ -2232,8 +2235,8 @@ export default function App() {
                 <option value="Widower">Widower</option>
                 <option value="Domestic Partner">Domestic Partner</option>
               </select>
-            </F>
-          </Row>
+            </div>
+          </div>
           <Lbl t="Email Addresses" />
           {clientEmails.map((em, i) => (
             <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
