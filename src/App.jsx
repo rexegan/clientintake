@@ -2598,18 +2598,21 @@ export default function App() {
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setSN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setSN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={3}>
-                <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact /></F>
-                <F><Lbl t="SSN" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact /></div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="SSN" />
+                  <input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Gender" />
-                  <select data-lpignore="true" value={spouse.gender || ""} onChange={setS("gender")} style={IS}>
+                  <select data-lpignore="true" value={spouse.gender || ""} onChange={setS("gender")} style={{ ...IS, width: 106 }}>
                     <option value="">— Select —</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
               <Lbl t="Email Addresses" />
               {spouseEmails.map((em) => (
                 <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
