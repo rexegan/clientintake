@@ -487,6 +487,7 @@ const SECTION_META = {
   "section-inheritance":{ color: "#0ea5e9", bg: "#e8f5fd", icon: <IcSvg><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></IcSvg> },
   "section-suitability":{ color: "#7c3aed", bg: "#f3effe", icon: <IcSvg><path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z"/><path d="M12 8v4l3 3"/></IcSvg> },
   "section-toolbox":    { color: "#64748b", bg: "#f1f3f6", icon: <IcSvg><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/><path d="M3 16h18"/></IcSvg> },
+  "section-alerts":     { color: "#ef4444", bg: "#fef2f2", icon: <IcSvg><path d="M10.3 3.5L2.1 17A2 2 0 0 0 3.8 20h16.4a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><circle cx="12" cy="17" r="1"/></IcSvg> },
 };
 
 const IconChip = ({ id, size = 28 }) => {
@@ -1700,6 +1701,7 @@ export default function App() {
     ["section-inheritance",() => "Estate Planning"],
     ["section-suitability",() => "Suitability"],
     ["section-toolbox",    () => "Client Toolbox"],
+    ["section-alerts",     () => "Alerts"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
     const sid = sessionStorage.getItem("rwg_activeClientId");
@@ -2166,6 +2168,7 @@ export default function App() {
             ["section-inheritance", "Estate Planning"],
             ["section-suitability", "Suitability"],
             ["section-toolbox",    "Client Toolbox"],
+            ["section-alerts",     "Alerts"],
           ].map(([id, label]) => {
             const ts = sectionUpdatedAt[id];
             return (
@@ -4638,6 +4641,131 @@ export default function App() {
               </div>
             );
           })}
+        </Panel>
+
+        <Panel title="Alerts" id="section-alerts">
+          {(() => {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const alerts = [];
+
+            const parseDate = (str) => {
+              if (!str) return null;
+              const [m, d, y] = str.split("/").map(Number);
+              if (!m || !d || !y) return null;
+              const dt = new Date(y, m - 1, d);
+              return isNaN(dt.getTime()) ? null : dt;
+            };
+
+            const daysUntil = (dt) => Math.round((dt - today) / 86400000);
+
+            const parseDob = (dob) => {
+              const dt = parseDate(dob);
+              if (!dt) return null;
+              let age = today.getFullYear() - dt.getFullYear();
+              const m = today.getMonth() - dt.getMonth();
+              if (m < 0 || (m === 0 && today.getDate() < dt.getDate())) age--;
+              return { dt, age };
+            };
+
+            const ageUntilBirthday = (dobStr, targetAge) => {
+              const info = parseDob(dobStr);
+              if (!info) return null;
+              const bday = new Date(info.dt);
+              bday.setFullYear(today.getFullYear() + (targetAge - info.age));
+              if (bday < today) bday.setFullYear(bday.getFullYear() + 1);
+              return daysUntil(bday);
+            };
+
+            // ID / Document expiry alerts
+            const checkIdExpiry = (person, personLabel, idType, dlExpDate) => {
+              const exp = parseDate(dlExpDate);
+              if (!exp) return;
+              const days = daysUntil(exp);
+              const label = idType || "Driver's License";
+              if (days < 0) {
+                alerts.push({ sev: "danger", title: `${personLabel} — ${label} Expired`, body: `Expired ${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} ago on ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}.` });
+              } else if (days <= 30) {
+                alerts.push({ sev: "danger", title: `${personLabel} — ${label} Expiring in ${days} Day${days !== 1 ? "s" : ""}`, body: `Expires ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}. Renew immediately.` });
+              } else if (days <= 90) {
+                alerts.push({ sev: "warning", title: `${personLabel} — ${label} Expiring Soon`, body: `Expires in ${days} days on ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}.` });
+              } else if (days <= 180) {
+                alerts.push({ sev: "info", title: `${personLabel} — ${label} Expiring in 6 Months`, body: `Expires ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})} (${days} days away).` });
+              }
+            };
+
+            checkIdExpiry(client, client.firstName || "Client", client.idType, client.dlExpDate);
+            if (hasSpouseRecord) checkIdExpiry(spouse, spouse.firstName || "Spouse", spouse.idType, spouse.dlExpDate);
+
+            // RMD alerts — RMD age is 73 (SECURE 2.0 Act)
+            const RMD_AGE = 73;
+            const checkRmd = (personLabel, dob) => {
+              const info = parseDob(dob);
+              if (!info) return;
+              const { age } = info;
+              if (age >= RMD_AGE) {
+                alerts.push({ sev: "danger", title: `${personLabel} — RMD Required`, body: `Age ${age} — Required Minimum Distributions must be taken annually. First RMD deadline was April 1 of the year after turning ${RMD_AGE}.` });
+              } else if (age === RMD_AGE - 1) {
+                const daysToRmd = ageUntilBirthday(dob, RMD_AGE);
+                alerts.push({ sev: "warning", title: `${personLabel} — RMD Beginning in ${daysToRmd !== null ? daysToRmd + " Days" : "Less Than 1 Year"}`, body: `Turns ${RMD_AGE} in ${daysToRmd !== null ? daysToRmd + " days" : "under a year"}. First RMD must be taken by April 1 of the following year. Begin planning now.` });
+              } else if (age >= RMD_AGE - 2) {
+                const daysToRmd = ageUntilBirthday(dob, RMD_AGE);
+                alerts.push({ sev: "info", title: `${personLabel} — RMD Approaching (Age ${age})`, body: `RMD begins at age ${RMD_AGE} — approximately ${daysToRmd !== null ? Math.round(daysToRmd / 30) + " months" : "2 years"} away. Begin distribution planning.` });
+              }
+            };
+
+            checkRmd(client.firstName || "Client", client.dob);
+            if (hasSpouseRecord) checkRmd(spouse.firstName || "Spouse", spouse.dob);
+
+            // Life insurance expiry / term alerts
+            lifePolicies.forEach((p, i) => {
+              if (!p.carrier && !p.policyType) return;
+              const label = [p.carrier, p.policyType].filter(Boolean).join(" — ") || `Policy ${i + 1}`;
+              if (p.policyType && p.policyType.toLowerCase().includes("term")) {
+                const exp = parseDate(p.issueDate);
+                if (!exp) return;
+                // Term policies typically 10/20/30yr — just flag if no term length on file
+                alerts.push({ sev: "info", title: `Term Life — ${label}`, body: `Confirm term length and expiration date. No maturity date on file for this term policy.` });
+              }
+            });
+
+            // DL expiry for autos — flag if no valid DL on file
+            if (autos.length > 0 && !client.dlExpDate && !client.dlNumber) {
+              alerts.push({ sev: "info", title: "No Driver's License on File", body: "Client has vehicle(s) recorded but no driver's license information has been entered." });
+            }
+
+            if (alerts.length === 0) {
+              return (
+                <div style={{ textAlign: "center", padding: "32px 16px", color: MUTED }}>
+                  <div style={{ fontSize: 36, marginBottom: 10 }}>✅</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: SUCCESS, marginBottom: 4 }}>No Active Alerts</div>
+                  <div style={{ fontSize: 13 }}>All documents are current and no upcoming deadlines detected.</div>
+                </div>
+              );
+            }
+
+            const sevStyle = {
+              danger:  { border: "#fca5a5", bg: "#fff1f1", icon: "🔴", label: "Action Required" },
+              warning: { border: "#fcd34d", bg: "#fffbeb", icon: "🟡", label: "Attention Needed" },
+              info:    { border: "#93c5fd", bg: "#eff6ff", icon: "🔵", label: "Heads Up" },
+            };
+            const order = { danger: 0, warning: 1, info: 2 };
+            alerts.sort((a, b) => order[a.sev] - order[b.sev]);
+
+            return alerts.map((al, i) => {
+              const ss = sevStyle[al.sev];
+              return (
+                <div key={i} style={{ border: `1px solid ${ss.border}`, background: ss.bg, borderRadius: 10, padding: "14px 16px", marginBottom: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 16 }}>{ss.icon}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: INK, flex: 1 }}>{al.title}</span>
+                    <span style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, fontWeight: 600 }}>{ss.label}</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#4b5563", paddingLeft: 24 }}>{al.body}</div>
+                </div>
+              );
+            });
+          })()}
         </Panel>
 
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
