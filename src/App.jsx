@@ -123,6 +123,7 @@ const MailLink = ({ email }) => email
 const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value || "");
+  const [typing, setTyping] = useState(false);
   const ref = useRef(null);
   useEffect(() => { setQuery(value || ""); }, [value]);
   useEffect(() => {
@@ -130,13 +131,14 @@ const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) =>
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-  const filtered = query.trim()
+  const filtered = typing && query.trim()
     ? options.filter(o => o.toLowerCase().includes(query.trim().toLowerCase()))
     : options;
-  const handleSelect = (opt) => { setQuery(opt); onChange(opt); setOpen(false); };
+  const handleSelect = (opt) => { setQuery(opt); onChange(opt); setOpen(false); setTyping(false); };
   const handleBlur = () => {
     setTimeout(() => {
       setOpen(false);
+      setTyping(false);
       if (onBlur) onBlur(query.trim());
       if (query.trim() && query.trim() !== value) onChange(query.trim());
     }, 150);
@@ -145,8 +147,8 @@ const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) =>
     <div ref={ref} style={{ position: "relative" }}>
       <input
         value={query}
-        onChange={e => { setQuery(e.target.value); onChange(e.target.value); setOpen(true); }}
-        onFocus={() => setOpen(true)}
+        onChange={e => { setQuery(e.target.value); onChange(e.target.value); setOpen(true); setTyping(true); }}
+        onFocus={() => { setOpen(true); setTyping(false); }}
         onBlur={handleBlur}
         placeholder={placeholder || "Type or select…"}
         autoComplete="off"
