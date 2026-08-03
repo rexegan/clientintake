@@ -2916,7 +2916,7 @@ export default function App() {
                 </div>
               ))}
               <button onClick={() => setChildren(p => [...p, { ...emptyChild, id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
-                + Add Child
+                + Add Child or New Beneficiary
               </button>
             </div>
           )}
@@ -2954,11 +2954,14 @@ export default function App() {
               ↑ Child beneficiaries added in Family section &nbsp;·&nbsp; Additional beneficiaries below
             </div>
           )}
-          {beneficiaries.map((b, i) => (
+          {beneficiaries.filter(b => b.firstName || b.lastName || b.relationship || b.percentage).map((b, i) => {
+            const childBeneCount = children.filter(c => c.isBeneficiary).length;
+            const beneNum = childBeneCount + i + 1;
+            return (
             <div key={b.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {i + 1}</div>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Beneficiary {beneNum}</div>
                   <select data-lpignore="true" value={b.designationType || "primary"} onChange={e => updBene(b.id, "designationType", e.target.value)}
                     style={{ fontSize: 11, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", cursor: "pointer", background: "#fff", color: INK }}>
                     <option value="primary">Primary</option>
@@ -3065,7 +3068,8 @@ export default function App() {
                 );
               })()}
             </div>
-          ))}
+            );
+          })}
           {(() => {
             const allBenes = [
               ...children.filter(c => c.isBeneficiary).map(c => ({ ...c, _src: "child" })),
