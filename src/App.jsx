@@ -156,10 +156,10 @@ const emptyClient = {
   dob:"", ssn:"", gender:"", filingStatus:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
-  usCitizen:"", countryOfCitizenship:"", numDependents:"",
+  usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
 };
-const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
+const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"", hasLoan:null, loanBalance:"", lender:"", interestRate:"", monthlyPayment:"" };
 const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
@@ -630,7 +630,24 @@ function ClientReport({ data, onClose }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1000, overflowY: "auto", padding: "20px 0" }}>
       {/* toolbar */}
       <div id="rwg-print-toolbar" style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
-        <button onClick={(e) => { e.currentTarget.disabled = true; setTimeout(() => { window.print(); e.currentTarget.disabled = false; }, 50); }} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
+        <button onClick={() => {
+          const el = document.getElementById("rwg-report");
+          if (!el) return;
+          const win = window.open("", "_blank", "width=960,height=800");
+          win.document.write(`<!doctype html><html><head><title>Financial Summary</title><style>
+            @page { margin: 0.6in 0.5in; size: letter portrait; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }
+            body { margin: 0; padding: 0; font-family: 'DM Sans','Segoe UI',system-ui,sans-serif; color: #151b28; background: #fff; }
+            @media print { body { padding: 0; } }
+            table { page-break-inside: avoid; }
+            tr { page-break-inside: avoid; }
+          </style></head><body>`);
+          win.document.write(el.outerHTML);
+          win.document.write("</body></html>");
+          win.document.close();
+          win.focus();
+          setTimeout(() => { win.print(); }, 600);
+        }} style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
         <button onClick={onClose} style={{ background: DANGER, color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
       </div>
 
@@ -1205,7 +1222,24 @@ function SummaryReview({ data, onClose }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1100, overflowY: "auto", padding: "20px 0" }}>
       <div id="sr-print-toolbar" style={{ maxWidth: 900, margin: "0 auto 12px", display: "flex", gap: 10, justifyContent: "flex-end", padding: "0 10px" }}>
-        <button onClick={(e) => { e.currentTarget.disabled = true; setTimeout(() => { window.print(); e.currentTarget.disabled = false; }, 50); }}
+        <button onClick={() => {
+          const el = document.getElementById("sr-report");
+          if (!el) return;
+          const win = window.open("", "_blank", "width=960,height=800");
+          win.document.write(`<!doctype html><html><head><title>Summary Review</title><style>
+            @page { margin: 0.6in 0.5in; size: letter portrait; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }
+            body { margin: 0; padding: 0; font-family: 'DM Sans','Segoe UI',system-ui,sans-serif; color: #151b28; background: #fff; }
+            @media print { body { padding: 0; } }
+            table { page-break-inside: avoid; }
+            tr { page-break-inside: avoid; }
+          </style></head><body>`);
+          win.document.write(el.outerHTML);
+          win.document.write("</body></html>");
+          win.document.close();
+          win.focus();
+          setTimeout(() => { win.print(); }, 600);
+        }}
           style={{ background: BLUE, color: "#fff", border: "none", borderRadius: 7, padding: "9px 22px", fontFamily: P, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🖨 Print / Save PDF</button>
         <button onClick={onClose}
           style={{ background: "#d64545", color: "#fff", border: "none", borderRadius: 7, padding: "9px 18px", fontFamily: P, fontSize: 14, cursor: "pointer" }}>✕ Close</button>
@@ -2263,6 +2297,25 @@ export default function App() {
           <Sec t="Citizenship & Dependents" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
+              <Lbl t="Type of ID" />
+              <select data-lpignore="true" value={client.idType || ""} onChange={setC("idType")} style={{ ...IS, width: 188 }}>
+                <option value="">— Select —</option>
+                <option>Driver's License</option>
+                <option>Passport</option>
+                <option>Passport Card</option>
+                <option>State-Issued ID</option>
+                <option>Military ID</option>
+                <option>U.S. Permanent Resident Card (Green Card)</option>
+                <option>Employment Authorization Card (EAD)</option>
+                <option>Tribal ID</option>
+                <option>Veteran's ID Card</option>
+                <option>Federal Government Employee ID</option>
+                <option>Social Security Card</option>
+                <option>Birth Certificate</option>
+                <option>Other Government-Issued ID</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="US Citizen?" />
               <select data-lpignore="true" value={client.usCitizen || ""} onChange={setC("usCitizen")} style={{ ...IS, width: 88 }}>
                 <option value="">—</option>
@@ -2498,6 +2551,25 @@ export default function App() {
 
               <Sec t="Citizenship & Dependents" />
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Type of ID" />
+                  <select data-lpignore="true" value={spouse.idType || ""} onChange={setS("idType")} style={{ ...IS, width: 188 }}>
+                    <option value="">— Select —</option>
+                    <option>Driver's License</option>
+                    <option>Passport</option>
+                    <option>Passport Card</option>
+                    <option>State-Issued ID</option>
+                    <option>Military ID</option>
+                    <option>U.S. Permanent Resident Card (Green Card)</option>
+                    <option>Employment Authorization Card (EAD)</option>
+                    <option>Tribal ID</option>
+                    <option>Veteran's ID Card</option>
+                    <option>Federal Government Employee ID</option>
+                    <option>Social Security Card</option>
+                    <option>Birth Certificate</option>
+                    <option>Other Government-Issued ID</option>
+                  </select>
+                </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="US Citizen?" />
                   <select data-lpignore="true" value={spouse.usCitizen || ""} onChange={setS("usCitizen")} style={{ ...IS, width: 88 }}>
