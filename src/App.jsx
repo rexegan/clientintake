@@ -2295,7 +2295,7 @@ export default function App() {
           </Row>
 
           <Sec t="Citizenship & Dependents" />
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-end", marginBottom: 12 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Type of ID" />
               <select data-lpignore="true" value={client.idType || ""} onChange={setC("idType")} style={{ ...IS, width: 188 }}>
@@ -2550,7 +2550,7 @@ export default function App() {
               </Row>
 
               <Sec t="Citizenship & Dependents" />
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-end", marginBottom: 12 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Type of ID" />
                   <select data-lpignore="true" value={spouse.idType || ""} onChange={setS("idType")} style={{ ...IS, width: 188 }}>
