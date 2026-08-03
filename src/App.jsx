@@ -3886,11 +3886,12 @@ export default function App() {
                   <Lbl t="Source of Inheritance" />
                   <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
-                    <option value="parent">Parent(s)</option>
-                    <option value="grandparent">Grandparent(s)</option>
-                    <option value="relative">Other Relative</option>
+                    <option value="parents_estate">Parents' Estate</option>
+                    <option value="grandparents_estate">Grandparents' Estate</option>
+                    <option value="other_relatives">Other Relatives</option>
                     <option value="trust">Existing Trust</option>
                     <option value="multiple">Multiple Sources</option>
+                    <option value="real_estate">Real Estate</option>
                     <option value="other">Other</option>
                   </select>
                 </F>
