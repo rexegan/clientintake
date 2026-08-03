@@ -242,6 +242,7 @@ const ACCOUNT_TYPES = [
 ];
 
 const INCOME_TYPES = [
+  "Account Withdrawal",
   "Alimony / Child Support",
   "Employment — W2",
   "Investment / Dividends",
@@ -1818,9 +1819,9 @@ export default function App() {
     if (prev?.linkedIncomeId) setIncomes(p => p.filter(x => x.id !== prev.linkedIncomeId));
     if (needsIncome) {
       const incId = Date.now();
-      const incType = txType === "RMDs" ? "Pension" : "Investment / Dividends";
+      const incType = txType === "RMDs" ? "Pension" : "Account Withdrawal";
       setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: txType, linkedIncomeId: incId } : x));
-      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: incType, amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id, institution: acct.institution || "" }]);
+      setIncomes(p => [...p, { ...emptyIncome, id: incId, type: incType, amount: acct.rmdContribAmount || "", frequency: acct.rmdContribFrequency || "", owner: (acct.owner || "").toLowerCase() === "spouse" ? "spouse" : "client", linkedAcctId: acct.id, institution: acct.institution || "", accountType: acct.type || "", txType }]);
     } else {
       setAccounts(p => p.map(x => x.id === acct.id ? { ...x, hasRmdOrContrib: txType || null, linkedIncomeId: null } : x));
     }
@@ -1829,9 +1830,9 @@ export default function App() {
   const syncAcctIncome = (acct, field, value) => {
     updAcct(acct.id, field, value);
     if (!acct.linkedIncomeId) return;
-    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : field === "institution" ? "institution" : null;
+    const incomeField = field === "rmdContribAmount" ? "amount" : field === "rmdContribFrequency" ? "frequency" : field === "institution" ? "institution" : field === "type" ? "accountType" : field === "owner" ? "owner" : null;
     if (incomeField) {
-      setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, [incomeField]: value } : x));
+      setIncomes(p => p.map(x => x.id === acct.linkedIncomeId ? { ...x, [incomeField]: incomeField === "owner" ? ((value || "").toLowerCase() === "spouse" ? "spouse" : "client") : value } : x));
     }
   };
 
@@ -3344,24 +3345,13 @@ export default function App() {
                 </F>
               </Row>
               {inc.linkedAcctId && (
-                <Row cols={3}>
-                  <F>
-                    <Lbl t="Sending Institution" />
-                    <input
-                      list={`inc-inst-list-${inc.id}`}
-                      value={inc.institution || ""}
-                      onChange={e => updIncome(inc.id, "institution", e.target.value)}
-                      onBlur={e => addCustomInstitution(e.target.value)}
-                      style={IS}
-                      autoComplete="off"
-                      data-lpignore="true"
-                      placeholder="e.g. Vanguard, Fidelity…"
-                    />
-                    <datalist id={`inc-inst-list-${inc.id}`}>
-                      {allInstitutions.map(n => <option key={n} value={n} />)}
-                    </datalist>
-                  </F>
-                </Row>
+                <div style={{ background: "#eef4fb", border: "1px solid #b8d0ef", borderRadius: 8, padding: "10px 14px", marginBottom: 10, display: "flex", flexWrap: "wrap", gap: "6px 24px", alignItems: "center" }}>
+                  <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3a5a8a", fontWeight: 700, width: "100%", marginBottom: 2 }}>Auto-linked from Investment / Bank Account</div>
+                  {inc.accountType && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Account Type: </span><strong>{inc.accountType}</strong></div>}
+                  {inc.institution && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Institution: </span><strong>{inc.institution}</strong></div>}
+                  {inc.txType && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Transaction: </span><strong>{inc.txType}</strong></div>}
+                  <div style={{ fontSize: 11, color: MUTED, width: "100%", marginTop: 2 }}>Edit amount and frequency below — changes sync back automatically.</div>
+                </div>
               )}
               {inc.frequency && (
                 <Row cols={2}>
