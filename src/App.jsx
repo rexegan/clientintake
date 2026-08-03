@@ -472,7 +472,7 @@ function fmt(n) {
 }
 
 function ClientReport({ data, onClose }) {
-  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poa = {}, annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, lifePolicies = [] } = data;
+  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poas = [], annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, lifePolicies = [] } = data;
 
   const clientFirst = client.firstName || "";
   const clientLast  = client.lastName  || "";
@@ -1048,7 +1048,7 @@ function ClientReport({ data, onClose }) {
           })()}
 
           {/* ── ESTATE PLANNING ── */}
-          {(willsTrust.hasWillDoc || willsTrust.hasTrustDoc || poa.hasPOA) && (<>
+          {(willsTrust.hasWillDoc || willsTrust.hasTrustDoc || poas.some(p => p.hasPOA === "yes")) && (<>
             <div style={s.sectionHead}>Estate Planning Documents</div>
             <div className="rpt-two" style={s.twoCol}>
               <table style={s.table}>
@@ -1062,10 +1062,13 @@ function ClientReport({ data, onClose }) {
               </table>
               <table style={s.table}>
                 <tbody>
-                  {poa.hasPOA && <Row2 label="Power of Attorney" value={poa.hasPOA === "yes" ? "✓ Yes" : "No"} />}
-                  {poa.poaType && <Row2 label="POA Type" value={poa.poaType} />}
-                  {poa.agentName && <Row2 label="Agent Name" value={poa.agentName} />}
-                  {poa.agentRelationship && <Row2 label="Agent Relationship" value={poa.agentRelationship} />}
+                  {poas.filter(p => p.hasPOA === "yes").map((p, i) => (<React.Fragment key={i}>
+                    {poas.filter(x => x.hasPOA === "yes").length > 1 && <Row2 label={`POA ${i + 1}`} value="" />}
+                    <Row2 label="Power of Attorney" value="✓ Yes" />
+                    {p.poaType && <Row2 label="POA Type" value={p.poaType} />}
+                    {p.agentName && <Row2 label="Agent Name" value={p.agentName} />}
+                    {p.agentRelationship && <Row2 label="Agent Relationship" value={p.agentRelationship} />}
+                  </React.Fragment>))}
                 </tbody>
               </table>
             </div>
@@ -1124,7 +1127,7 @@ function SummaryReview({ data, onClose }) {
     client = {}, spouse = {}, hasSpouse, hasChildren, children = [],
     beneficiaries = [], clientEmp = {}, spouseEmp = {},
     incomes = [], realEstate = [], homeOwnership = {},
-    accounts = [], willsTrust = {}, poa = {},
+    accounts = [], willsTrust = {}, poas = [],
     autos = [], lifePolicies = [],
     nwState = {}, annualExpenses = { amount: "", frequency: "monthly" },
     inheritances = [], vaults = [], recordType = "client",
@@ -1349,14 +1352,19 @@ function SummaryReview({ data, onClose }) {
             </div>
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: MUT, marginBottom: 6 }}>Power of Attorney</div>
-              <Grid rows={[
-                ["Has POA", poa.hasPOA === true ? "Yes" : poa.hasPOA === false ? "No" : ""],
-                ["POA Type", poa.poaType],
-                ["Agent", poa.agentName],
-                ["Relationship", poa.agentRelationship],
-                ["Agent Phone", poa.agentPhone],
-                ["Alt. Agent", poa.altAgent],
-              ]} />
+              {poas.map((p, i) => (
+                <div key={i} style={{ marginBottom: poas.length > 1 ? 8 : 0 }}>
+                  {poas.length > 1 && <div style={{ fontSize: 10, color: MUT, marginBottom: 3 }}>POA {i + 1}</div>}
+                  <Grid rows={[
+                    ["Has POA", p.hasPOA === "yes" ? "Yes" : p.hasPOA === "no" ? "No" : ""],
+                    ["POA Type", p.poaType],
+                    ["Agent", p.agentName],
+                    ["Relationship", p.agentRelationship],
+                    ["Agent Phone", p.agentPhone],
+                    ["Alt. Agent", p.altAgent],
+                  ].filter(([,v]) => v)} />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -1490,9 +1498,11 @@ export default function App() {
     willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"",
     trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"",
   });
-  const [poa, setPoa] = useState({
-    hasPOA: null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"",
-  });
+  const emptyPoa = { hasPOA: null, poaType: null, agentName: "", agentRelationship: null, agentPhone: "", altAgent: "", poaDate: "", poaAttorney: "", poaLocation: "", poaNotes: "" };
+  const [poas, setPoas] = useState([{ ...emptyPoa, id: 1 }]);
+  const addPoa = () => setPoas(p => [...p, { ...emptyPoa, id: Date.now() }]);
+  const delPoa = id => setPoas(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyPoa, id: Date.now() }]; });
+  const updPoa = (id, f, v) => setPoas(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
   const [clientEmails, setClientEmails] = useState([{ id: 1, tag: "personal", address: "" }]);
   const [spouseEmails, setSpouseEmails] = useState([{ id: 1, tag: "personal", address: "" }]);
@@ -1649,7 +1659,7 @@ export default function App() {
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-income"); }, [incomes]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-realestate"); }, [realEstate, homeOwnership]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-accounts"); }, [accounts]);
-  useEffect(() => { if (!sectionMounted.current) return; markSection("section-wills"); }, [willsTrust, poa]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-wills"); }, [willsTrust, poas]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-autos"); }, [autos]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-life"); }, [lifePolicies]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-networth"); }, [nwState, annualExpenses]);
@@ -1662,8 +1672,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poa, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability]);
+    beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1713,7 +1723,7 @@ export default function App() {
     setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
     setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
-    setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+    setPoas(record.poas || (record.poa ? [{ ...emptyPoa, ...record.poa, id: 1 }] : [{ ...emptyPoa, id: 1 }]));
     setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
     setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
     setLifePolicies(record.lifePolicies || [{ ...emptyLifePolicy, id: 1 }]);
@@ -1802,7 +1812,7 @@ export default function App() {
         client, spouse, hasSpouse, hasChildren, children,
         clientEmails, spouseEmails,
         clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-        beneficiaries, willsTrust, poa,
+        beneficiaries, willsTrust, poas,
       };
       saveClient(record);
       setActiveClient(record.id);
@@ -1865,7 +1875,7 @@ export default function App() {
       { id: 3, firstName:"Olivia", middleName:"Grace", lastName:"Mitchell", relationship:"Child", designationType:"contingent", percentage:"50%", dob:"04/28/2005", ssn:"602-51-9034", email:"olivia.mitchell@gmail.com", addressSource:"manual", addressLine1:"4821 Stonegate Drive", city:"Franklin", state:"TN", zip:"37064" },
     ]);
     setWillsTrust({ hasWill:"yes", willDate:"11/08/2019", willAttorney:"Bradford & Simmons Law Group", executor:"Catherine A. Mitchell", altExecutor:"Tyler J. Mitchell", willLocation:"Safe deposit box — Bank of America Franklin Branch", willUpdated:"yes", willUpdateDate:"11/08/2019", willNotes:"Pours over into living trust. Reviewed by attorney after second property purchase.", trustName:"Mitchell Family Living Trust", trustType:"revocable", trustDate:"11/08/2019", trustee:"James R. Mitchell & Catherine A. Mitchell", successorTrustee:"Tyler J. Mitchell", trustAttorney:"Bradford & Simmons Law Group", assetsTitled:"yes", trustLocation:"Safe deposit box — Bank of America Franklin Branch", trustNotes:"All real estate, brokerage, and non-qualified accounts titled in trust name." });
-    setPoa({ hasPOA:"yes", poaType:"durable", agentName:"Catherine A. Mitchell", agentRelationship:"spouse", agentPhone:"(615) 482-9174", altAgent:"Tyler J. Mitchell", poaDate:"11/08/2019", poaAttorney:"Bradford & Simmons Law Group", poaLocation:"Safe deposit box — Bank of America Franklin Branch", poaNotes:"Healthcare directive also on file with Vanderbilt University Medical Center." });
+    setPoas([{ ...emptyPoa, id: 1, hasPOA:"yes", poaType:"Durable Power of Attorney", agentName:"Catherine A. Mitchell", agentRelationship:"spouse", agentPhone:"(615) 482-9174", altAgent:"Tyler J. Mitchell", poaDate:"11/08/2019", poaAttorney:"Bradford & Simmons Law Group", poaLocation:"Safe deposit box — Bank of America Franklin Branch", poaNotes:"Healthcare directive also on file with Vanderbilt University Medical Center." }]);
     setLifePolicies([
       { id: 1, carrier:"Lincoln Financial", policyType:"Term", termLength:"20", insured:"James R. Mitchell", owner:"Mitchell Family Living Trust", deathBenefit:"$1,000,000", cashValue:"", surrender:"", premiumAmount:"$148", premiumFrequency:"monthly", policyNumber:"LF-20-4482019", issueDate:"05/12/2014" },
       { id: 2, carrier:"Northwestern Mutual", policyType:"Whole Life", termLength:"", insured:"James R. Mitchell", owner:"James R. Mitchell", deathBenefit:"$250,000", cashValue:"$87,400", surrender:"$81,200", premiumAmount:"$612", premiumFrequency:"monthly", policyNumber:"NM-88-2031947", issueDate:"01/15/2005" },
@@ -1894,7 +1904,7 @@ export default function App() {
     setHasSpouse(null); setHasChildren(null); setChildren([]);
     setBeneficiaries([{ ...emptyBeneficiary, id: 1 }]);
     setWillsTrust({ hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
-    setPoa({ hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+    setPoas([{ ...emptyPoa, id: 1 }]);
     setUploads({});
     setLifePolicies([{ ...emptyLifePolicy, id: 1 }]);
     setRecordType("client");
@@ -1932,7 +1942,7 @@ export default function App() {
           setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
           setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
           setWillsTrust(record.willsTrust || { hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
-          setPoa(record.poa || { hasPOA:null, poaType:null, agentName:"", agentRelationship:null, agentPhone:"", altAgent:"", poaDate:"", poaAttorney:"", poaLocation:"", poaNotes:"" });
+          setPoas(record.poas || (record.poa ? [{ ...emptyPoa, ...record.poa, id: 1 }] : [{ ...emptyPoa, id: 1 }]));
           setUploads(record.uploads || {});
           setHomeOwnership(record.homeOwnership || { ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
           setAnnualExpenses(record.annualExpenses || { amount: "", frequency: "monthly" });
@@ -3490,14 +3500,6 @@ export default function App() {
               </select>
             </F>
             <F>
-              <Lbl t="POA?" />
-              <select data-lpignore="true" value={poa.hasPOA || ""} onChange={e => setPoa(p => ({ ...p, hasPOA: e.target.value || null }))} style={IS}>
-                <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </F>
-            <F>
               <Lbl t="Trust?" />
               <select data-lpignore="true" value={willsTrust.hasTrustDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasTrustDoc: e.target.value || null }))} style={IS}>
                 <option value="">— Select —</option>
@@ -3572,38 +3574,60 @@ export default function App() {
               )}
             </div>
           )}
-          {poa.hasPOA === "yes" && (
-            <div style={{ marginTop: 20, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Power of Attorney Details</div>
-              <Lbl t="Type of POA" />
-              <select data-lpignore="true" value={poa.poaType || ""} onChange={e => setPoa(p => ({ ...p, poaType: e.target.value || null }))} style={IS}>
-                <option value="">— Select —</option>
-                <option>Durable Power of Attorney</option><option>Financial Power of Attorney</option>
-                <option>Healthcare / Medical POA</option><option>Limited Power of Attorney</option><option>Springing Power of Attorney</option>
-              </select>
+          {poas.map((poa, poaIdx) => (
+            <div key={poa.id} style={{ marginTop: 20, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK }}>Power of Attorney{poas.length > 1 ? ` ${poaIdx + 1}` : ""}</div>
+                {poas.length > 1 && (
+                  <button onClick={() => delPoa(poa.id)} style={{ background: "none", border: "none", color: DANGER, fontSize: 12, fontWeight: 600, cursor: "pointer", padding: "2px 6px" }}>Remove</button>
+                )}
+              </div>
               <Row cols={2}>
-                <F><Lbl t="Agent (Attorney-in-Fact)" /><input value={poa.agentName} onChange={e => setPoa(p => ({ ...p, agentName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
-                  <Lbl t="Agent's Relationship" />
-                  <select data-lpignore="true" value={poa.agentRelationship || ""} onChange={e => setPoa(p => ({ ...p, agentRelationship: e.target.value || null }))} style={IS}>
+                  <Lbl t="Has POA?" />
+                  <select data-lpignore="true" value={poa.hasPOA || ""} onChange={e => updPoa(poa.id, "hasPOA", e.target.value || null)} style={IS}>
                     <option value="">— Select —</option>
-                    {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Type of POA" />
+                  <select data-lpignore="true" value={poa.poaType || ""} onChange={e => updPoa(poa.id, "poaType", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option>Durable Power of Attorney</option><option>Financial Power of Attorney</option>
+                    <option>Healthcare / Medical POA</option><option>Limited Power of Attorney</option><option>Springing Power of Attorney</option>
                   </select>
                 </F>
               </Row>
-              <Row cols={2}>
-                <F><Lbl t="Agent's Phone" /><input value={poa.agentPhone} onChange={e => setPoa(p => ({ ...p, agentPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Alternate Agent" /><input value={poa.altAgent} onChange={e => setPoa(p => ({ ...p, altAgent: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Row cols={2}>
-                <F><DatePicker label="Date POA Was Executed" value={poa.poaDate} onChange={v => setPoa(p => ({ ...p, poaDate: v }))} /></F>
-                <F><Lbl t="Attorney / Firm" /><input value={poa.poaAttorney} onChange={e => setPoa(p => ({ ...p, poaAttorney: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Lbl t="Location of POA Documents" /><input value={poa.poaLocation} onChange={e => setPoa(p => ({ ...p, poaLocation: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" />
-              <Lbl t="Notes / Additional Details" />
-              <textarea data-lpignore="true" value={poa.poaNotes} onChange={e => setPoa(p => ({ ...p, poaNotes: e.target.value }))} rows={3} style={{ ...IS, resize: "vertical" }} />
+              {poa.hasPOA === "yes" && (<>
+                <Row cols={2}>
+                  <F><Lbl t="Agent (Attorney-in-Fact)" /><input value={poa.agentName} onChange={e => updPoa(poa.id, "agentName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F>
+                    <Lbl t="Agent's Relationship" />
+                    <select data-lpignore="true" value={poa.agentRelationship || ""} onChange={e => updPoa(poa.id, "agentRelationship", e.target.value || null)} style={IS}>
+                      <option value="">— Select —</option>
+                      {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </F>
+                </Row>
+                <Row cols={2}>
+                  <F><Lbl t="Agent's Phone" /><input value={poa.agentPhone} onChange={e => updPoa(poa.id, "agentPhone", fmtPhone(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Alternate Agent" /><input value={poa.altAgent} onChange={e => updPoa(poa.id, "altAgent", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                </Row>
+                <Row cols={2}>
+                  <F><DatePicker label="Date POA Was Executed" value={poa.poaDate} onChange={v => updPoa(poa.id, "poaDate", v)} /></F>
+                  <F><Lbl t="Attorney / Firm" /><input value={poa.poaAttorney} onChange={e => updPoa(poa.id, "poaAttorney", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                </Row>
+                <Lbl t="Location of POA Documents" /><input value={poa.poaLocation} onChange={e => updPoa(poa.id, "poaLocation", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" />
+                <Lbl t="Notes / Additional Details" />
+                <textarea data-lpignore="true" value={poa.poaNotes} onChange={e => updPoa(poa.id, "poaNotes", e.target.value)} rows={3} style={{ ...IS, resize: "vertical" }} />
+              </>)}
             </div>
-          )}
+          ))}
+          <div style={{ marginTop: 12 }}>
+            <button onClick={addPoa} style={{ background: "none", border: "1px dashed " + BORDER, borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, color: BRAND_NAVY, cursor: "pointer" }}>+ Add Another POA</button>
+          </div>
           <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
@@ -4348,7 +4372,7 @@ export default function App() {
     {showSummaryReview && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership, lifePolicies }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poas, annualExpenses, homeOwnership, lifePolicies }}
           onClose={() => setShowSummaryReview(false)}
         />
       </div>
@@ -4356,13 +4380,13 @@ export default function App() {
     {showReport && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poa, annualExpenses, homeOwnership, lifePolicies }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poas, annualExpenses, homeOwnership, lifePolicies }}
           onClose={() => setShowReport(false)}
         />
       </div>
     )}
     {quickViewPanelOpen && quickViewSelected.length > 0 && (() => {
-      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning", "section-toolbox": "Client Toolbox" };
+      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning", "section-suitability": "Suitability", "section-toolbox": "Client Toolbox" };
       const QvTable = ({ rows, labelWidth = 150 }) => (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>{rows.map(([k, v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: labelWidth, verticalAlign: "top", fontSize: 12 }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{v}</td></tr>)}</tbody>
@@ -4509,11 +4533,16 @@ export default function App() {
             ["Assets Titled", yn(willsTrust.assetsTitled)], ["Location", willsTrust.trustLocation], ["Notes", willsTrust.trustNotes],
           ].filter(([,v]) => v && v !== "—")} emptyMsg="No trust information recorded." />
           <Sub t="Power of Attorney" />
-          <Tbl cols={["Field","Value"]} rows={[
-            ["Has POA", yn(poa.hasPOA)], ["POA Type", poa.poaType], ["Agent", poa.agentName],
-            ["Relationship", poa.agentRelationship], ["Agent Phone", poa.agentPhone], ["Alt. Agent", poa.altAgent],
-            ["Date", poa.poaDate], ["Attorney", poa.poaAttorney], ["Location", poa.poaLocation], ["Notes", poa.poaNotes],
-          ].filter(([,v]) => v && v !== "—")} emptyMsg="No POA information recorded." />
+          {poas.map((p, i) => (
+            <div key={i} style={{ marginBottom: 6 }}>
+              {poas.length > 1 && <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, marginBottom: 4 }}>POA {i + 1}</div>}
+              <Tbl cols={["Field","Value"]} rows={[
+                ["Has POA", yn(p.hasPOA)], ["POA Type", p.poaType], ["Agent", p.agentName],
+                ["Relationship", p.agentRelationship], ["Agent Phone", p.agentPhone], ["Alt. Agent", p.altAgent],
+                ["Date", p.poaDate], ["Attorney", p.poaAttorney], ["Location", p.poaLocation], ["Notes", p.poaNotes],
+              ].filter(([,v]) => v && v !== "—")} emptyMsg="No POA information recorded." />
+            </div>
+          ))}
         </>);
 
         if (id === "section-autos") {
@@ -4584,6 +4613,39 @@ export default function App() {
               {vaults.map(v => <span key={v.id} style={{ fontSize: 12, background: "#eef1f6", borderRadius: 4, padding: "2px 8px", color: BRAND_NAVY, fontWeight: 500 }}>✓ {v.category}</span>)}
             </div>
           </>)}
+        </>);
+
+        if (id === "section-suitability") return (<>
+          <Sub t="Investment Profile" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Risk Tolerance", suitability.riskTolerance], ["Investment Objective", suitability.investmentObjective],
+            ["Time Horizon", suitability.timeHorizon], ["Liquidity Needs", suitability.liquidityNeeds],
+            ["Investment Experience", suitability.investmentExperience], ["Tax Bracket", suitability.taxBracket],
+          ].filter(([,v]) => v)} emptyMsg="No investment profile entered." />
+          <Sub t="Goals & Priorities" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Primary Goal", suitability.primaryGoal], ["Secondary Goal", suitability.secondaryGoal],
+            ["Income Need", suitability.incomeNeed], ["Growth Need", suitability.growthNeed],
+          ].filter(([,v]) => v)} emptyMsg="No goals entered." />
+          <Sub t="Target Allocation %" />
+          <Tbl cols={["Category","%"]} rows={[
+            ["Equities", suitability.pctEquities], ["Fixed Income", suitability.pctFixedIncome],
+            ["Cash", suitability.pctCash], ["Alternatives", suitability.pctAlternatives], ["Annuities", suitability.pctAnnuities],
+          ].filter(([,v]) => v)} emptyMsg="No allocation entered." />
+          <Sub t="Portfolio Breakdown by Product Type %" />
+          <Tbl cols={["Product","%"]} rows={[
+            ["Fixed Indexed Annuities", suitability.pctFixedIndexedAnnuities], ["Fixed Annuities", suitability.pctFixedAnnuities],
+            ["Cash Value Life Insurance", suitability.pctCashValueLife], ["Liquid Cash (Checking/Savings/MM/CD)", suitability.pctLiquidCash],
+          ].filter(([,v]) => v)} emptyMsg="No product breakdown entered." />
+          <Sub t="Qualified vs Non-Qualified %" />
+          <Tbl cols={["Category","%"]} rows={[
+            ["Qualified (IRA/401k/etc.)", suitability.pctQualified], ["Non-Qualified", suitability.pctNonQualified],
+          ].filter(([,v]) => v)} emptyMsg="No qualified/non-qualified breakdown entered." />
+          <Sub t="Risk & Preferences" />
+          <Tbl cols={["Field","Value"]} rows={[
+            ["Loss Comfort", suitability.lossComfort],
+          ].filter(([,v]) => v)} emptyMsg="No risk preferences entered." />
+          {suitability.notes && <><Sub t="Notes" /><div style={{ fontSize: 13, color: INK }}>{suitability.notes}</div></>}
         </>);
 
         if (id === "section-toolbox") {
