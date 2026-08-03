@@ -2338,30 +2338,55 @@ export default function App() {
             </div>
           </div>
 
-          <Sec t="Driver's License" />
-          <Row cols={3}>
-            <F><Lbl t="License Number" /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Issuing State" /><StateSelect value={client.dlState} onChange={setC("dlState")} /></F>
-            <F><Lbl t="Issuer Name" /><input value={client.dlIssuerName} onChange={setC("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <Row cols={2}>
-            <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
-            <F><DatePicker label="Expiration Date" futureYears={10} value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
-          </Row>
-          <div style={{ marginTop: 10, marginBottom: 4 }}>
-            <Lbl t="Driver's License Image" />
-            {clientDlImage ? (
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
-                <img src={clientDlImage} alt="Client DL" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
-                <button onClick={() => setClientDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+          {(() => {
+            const idMeta = {
+              "Driver's License":               { title: "Driver's License",            numLbl: "License Number",       locType: "state" },
+              "State-Issued ID":                { title: "State-Issued ID",              numLbl: "ID Number",            locType: "state" },
+              "Birth Certificate":              { title: "Birth Certificate",            numLbl: "Certificate Number",   locType: "state" },
+              "Passport":                       { title: "Passport",                     numLbl: "Passport Number",      locType: "country" },
+              "Passport Card":                  { title: "Passport Card",                numLbl: "Passport Card Number", locType: "country" },
+              "U.S. Permanent Resident Card (Green Card)": { title: "Green Card",        numLbl: "Card Number",          locType: "country" },
+              "Employment Authorization Card (EAD)":       { title: "EAD Card",          numLbl: "Card Number",          locType: "country" },
+              "Military ID":                    { title: "Military ID",                  numLbl: "ID Number",            locType: "branch" },
+              "Tribal ID":                      { title: "Tribal ID",                   numLbl: "ID Number",            locType: "authority" },
+              "Veteran's ID Card":              { title: "Veteran's ID Card",            numLbl: "ID Number",            locType: "authority" },
+              "Federal Government Employee ID": { title: "Federal Government Employee ID", numLbl: "ID Number",          locType: "authority" },
+              "Social Security Card":           { title: "Social Security Card",         numLbl: "SSN",                  locType: "none" },
+              "Other Government-Issued ID":     { title: "Government-Issued ID",         numLbl: "ID Number",            locType: "authority" },
+            };
+            const meta = idMeta[client.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
+            const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
+            return (<>
+              <Sec t={meta.title} />
+              <Row cols={3}>
+                <F><Lbl t={meta.numLbl} /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                {meta.locType === "state"
+                  ? <F><Lbl t="Issuing State" /><StateSelect value={client.dlState} onChange={setC("dlState")} /></F>
+                  : meta.locType !== "none"
+                    ? <F><Lbl t={locLabel} /><input value={client.dlState} onChange={setC("dlState")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    : <F />}
+                <F><Lbl t="Issuer Name" /><input value={client.dlIssuerName} onChange={setC("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={2}>
+                <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
+                <F><DatePicker label="Expiration Date" futureYears={10} value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
+              </Row>
+              <div style={{ marginTop: 10, marginBottom: 4 }}>
+                <Lbl t={meta.title + " Image"} />
+                {clientDlImage ? (
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
+                    <img src={clientDlImage} alt="Client ID" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                    <button onClick={() => setClientDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+                  </div>
+                ) : (
+                  <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                    📎 Upload {meta.title} Image
+                    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setClientDlImage)} />
+                  </label>
+                )}
               </div>
-            ) : (
-              <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
-                📎 Upload DL Image
-                <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setClientDlImage)} />
-              </label>
-            )}
-          </div>
+            </>);
+          })()}
 
           <Sec t="Home Address" />
           <Row cols={2}>
@@ -2593,30 +2618,55 @@ export default function App() {
                 </div>
               </div>
 
-              <Sec t="Driver's License" />
-              <Row cols={3}>
-                <F><Lbl t="License Number" /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} /></F>
-                <F><Lbl t="Issuer Name" /><input value={spouse.dlIssuerName} onChange={setS("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Row cols={2}>
-                <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
-                <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
-              </Row>
-              <div style={{ marginTop: 10, marginBottom: 4 }}>
-                <Lbl t="Driver's License Image" />
-                {spouseDlImage ? (
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
-                    <img src={spouseDlImage} alt="Spouse DL" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
-                    <button onClick={() => setSpouseDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+              {(() => {
+                const idMeta = {
+                  "Driver's License":               { title: "Driver's License",            numLbl: "License Number",       locType: "state" },
+                  "State-Issued ID":                { title: "State-Issued ID",              numLbl: "ID Number",            locType: "state" },
+                  "Birth Certificate":              { title: "Birth Certificate",            numLbl: "Certificate Number",   locType: "state" },
+                  "Passport":                       { title: "Passport",                     numLbl: "Passport Number",      locType: "country" },
+                  "Passport Card":                  { title: "Passport Card",                numLbl: "Passport Card Number", locType: "country" },
+                  "U.S. Permanent Resident Card (Green Card)": { title: "Green Card",        numLbl: "Card Number",          locType: "country" },
+                  "Employment Authorization Card (EAD)":       { title: "EAD Card",          numLbl: "Card Number",          locType: "country" },
+                  "Military ID":                    { title: "Military ID",                  numLbl: "ID Number",            locType: "branch" },
+                  "Tribal ID":                      { title: "Tribal ID",                   numLbl: "ID Number",            locType: "authority" },
+                  "Veteran's ID Card":              { title: "Veteran's ID Card",            numLbl: "ID Number",            locType: "authority" },
+                  "Federal Government Employee ID": { title: "Federal Government Employee ID", numLbl: "ID Number",          locType: "authority" },
+                  "Social Security Card":           { title: "Social Security Card",         numLbl: "SSN",                  locType: "none" },
+                  "Other Government-Issued ID":     { title: "Government-Issued ID",         numLbl: "ID Number",            locType: "authority" },
+                };
+                const meta = idMeta[spouse.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
+                const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
+                return (<>
+                  <Sec t={meta.title} />
+                  <Row cols={3}>
+                    <F><Lbl t={meta.numLbl} /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    {meta.locType === "state"
+                      ? <F><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} /></F>
+                      : meta.locType !== "none"
+                        ? <F><Lbl t={locLabel} /><input value={spouse.dlState} onChange={setS("dlState")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        : <F />}
+                    <F><Lbl t="Issuer Name" /><input value={spouse.dlIssuerName} onChange={setS("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  </Row>
+                  <Row cols={2}>
+                    <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
+                    <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
+                  </Row>
+                  <div style={{ marginTop: 10, marginBottom: 4 }}>
+                    <Lbl t={meta.title + " Image"} />
+                    {spouseDlImage ? (
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
+                        <img src={spouseDlImage} alt="Spouse ID" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                        <button onClick={() => setSpouseDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+                      </div>
+                    ) : (
+                      <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                        📎 Upload {meta.title} Image
+                        <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setSpouseDlImage)} />
+                      </label>
+                    )}
                   </div>
-                ) : (
-                  <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
-                    📎 Upload DL Image
-                    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setSpouseDlImage)} />
-                  </label>
-                )}
-              </div>
+                </>);
+              })()}
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, marginBottom: 10, borderTop: "1px solid " + BORDER, paddingTop: 12 }}>
                 <Sec t="Home Address" />
