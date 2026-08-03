@@ -4647,6 +4647,7 @@ export default function App() {
           {(() => {
             const today = new Date();
             today.setHours(0,0,0,0);
+            const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse);
             const alerts = [];
 
             const parseDate = (str) => {
