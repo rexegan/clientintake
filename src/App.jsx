@@ -116,6 +116,10 @@ function DatePicker({ value, onChange, label, futureYears = 0, compact = false }
   );
 }
 
+const MailLink = ({ email }) => email
+  ? <a href={`mailto:${email}`} style={{ color: "#2563eb", textDecoration: "none" }} onMouseEnter={e => e.target.style.textDecoration="underline"} onMouseLeave={e => e.target.style.textDecoration="none"}>{email}</a>
+  : null;
+
 const fmtPhone = (r) => {
   const d = r.replace(/\D/g, "").slice(0, 10);
   if (!d.length) return "";
@@ -1231,7 +1235,7 @@ function SummaryReview({ data, onClose }) {
             ["SSN", client.ssn],
             ["Phone", client.phone],
             ["Alt Phone", client.altPhone],
-            ["Email", client.email],
+            ["Email", client.email ? <MailLink email={client.email} /> : ""],
             ["Citizenship", client.citizenship],
             ["Address", [client.address, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", ")],
             ["Driver's License", client.driversLicense ? `${client.driversLicense} (${client.dlState || ""} exp. ${client.dlExpiration || ""})` : ""],
@@ -1249,7 +1253,7 @@ function SummaryReview({ data, onClose }) {
                   ["Gender", spouse.gender],
                   ["SSN", spouse.ssn],
                   ["Phone", spouse.phone],
-                  ["Email", spouse.email],
+                  ["Email", spouse.email ? <MailLink email={spouse.email} /> : ""],
                 ]} />
               </div>
             )}
@@ -2642,7 +2646,7 @@ export default function App() {
                 {ch.ssn && <div><span style={{ color: INK }}>SSN: </span>{ch.ssn}</div>}
                 {ch.relationship && <div><span style={{ color: INK }}>Relationship: </span>{ch.relationship}</div>}
                 {ch.percentage && <div><span style={{ color: INK }}>% to Inherit: </span>{ch.percentage}</div>}
-                {ch.email && <div><span style={{ color: INK }}>Email: </span>{ch.email}</div>}
+                {ch.email && <div><span style={{ color: INK }}>Email: </span><MailLink email={ch.email} /></div>}
                 {ch.phone && <div><span style={{ color: INK }}>Phone: </span>{ch.phone}</div>}
                 {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: INK }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
               </div>
@@ -4413,7 +4417,7 @@ export default function App() {
           <Tbl cols={["Field","Value"]} rows={[
             ["Full Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ")],
             ["Date of Birth", client.dob], ["SSN", client.ssn], ["Gender", client.gender], ["Marital / Filing Status", client.filingStatus],
-            ["Cell Phone", client.cell], ["Home Phone", client.homePhone], ["Email", client.email],
+            ["Cell Phone", client.cell], ["Home Phone", client.homePhone], ["Email", client.email ? <MailLink email={client.email} /> : ""],
             ["Address", [client.addressLine1, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", ")],
             ["PO Box", client.hasPOBox ? [client.poBox, client.poBoxCity, client.poBoxState, client.poBoxZip].filter(Boolean).join(", ") : ""],
             ["Preferred Mailing", client.preferredMailing],
@@ -4421,7 +4425,7 @@ export default function App() {
           ].filter(([,v]) => v)} />
           {clientEmails?.filter(e => e.address).length > 0 && <>
             <Sub t="Email Addresses" />
-            <Tbl cols={["Tag","Address"]} rows={clientEmails.filter(e => e.address).map(e => [e.tag, e.address])} />
+            <Tbl cols={["Tag","Address"]} rows={clientEmails.filter(e => e.address).map(e => [e.tag, <MailLink email={e.address} />])} />
           </>}
         </>);
 
@@ -4431,13 +4435,13 @@ export default function App() {
             <Tbl cols={["Field","Value"]} rows={[
               ["Full Name", [spouse.firstName, spouse.middleName, spouse.lastName].filter(Boolean).join(" ")],
               ["Date of Birth", spouse.dob], ["SSN", spouse.ssn], ["Gender", spouse.gender],
-              ["Cell Phone", spouse.cell], ["Home Phone", spouse.homePhone], ["Email", spouse.email],
+              ["Cell Phone", spouse.cell], ["Home Phone", spouse.homePhone], ["Email", spouse.email ? <MailLink email={spouse.email} /> : ""],
               ["Address", [spouse.addressLine1, spouse.addressLine2, spouse.city, spouse.state, spouse.zip].filter(Boolean).join(", ")],
               ["Driver's License #", spouse.dlNumber], ["DL State", spouse.dlState], ["DL Expiration", spouse.dlExpDate],
             ].filter(([,v]) => v)} emptyMsg="No spouse recorded." />
             {spouseEmails?.filter(e => e.address).length > 0 && <>
               <Sub t="Spouse Email Addresses" />
-              <Tbl cols={["Tag","Address"]} rows={spouseEmails.filter(e => e.address).map(e => [e.tag, e.address])} />
+              <Tbl cols={["Tag","Address"]} rows={spouseEmails.filter(e => e.address).map(e => [e.tag, <MailLink email={e.address} />])} />
             </>}
           </>) : <span style={{ color: MUTED, fontSize: 13 }}>No spouse recorded.</span>}
           {hasChildren && children.length > 0 && (<>
@@ -4452,7 +4456,7 @@ export default function App() {
             rows={beneficiaries.map(b => [
               [b.firstName, b.middleName, b.lastName].filter(Boolean).join(" "),
               (b.designationType || "primary").charAt(0).toUpperCase() + (b.designationType || "primary").slice(1),
-              b.percentage, b.relationship, b.dob, b.ssn, b.email,
+              b.percentage, b.relationship, b.dob, b.ssn, b.email ? <MailLink email={b.email} /> : "",
               [b.addressLine1, b.city, b.state, b.zip].filter(Boolean).join(", "),
             ])} emptyMsg="No beneficiaries recorded." />
         );
