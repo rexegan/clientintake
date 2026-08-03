@@ -3065,14 +3065,41 @@ export default function App() {
                 <Row cols={2}>
                   <F><Lbl t="Monthly Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                   <F>
-                    <Lbl t="Employer Match" />
+                    <Lbl t="Employer Match %" />
                     <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
                       <option value="">— Select —</option>
                       <option value="No Match">No Match</option>
-                      {[1,2,3,4,5,6].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
+                      {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                     </select>
                   </F>
                 </Row>
+                {(() => {
+                  const matchNum = parseInt((clientEmp.matchPct || "").replace(/[^0-9]/g, "") || 0);
+                  const compAmt = parseInt((clientEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
+                  const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[clientEmp.payFrequency] || 0;
+                  const annualIncome = compAmt && mult ? compAmt * mult : 0;
+                  const empMonthly = parseInt((clientEmp.contributionAmt || "").replace(/[^0-9]/g, "") || 0);
+                  const maxMatchAnnual = annualIncome && matchNum ? Math.round(annualIncome * matchNum / 100) : 0;
+                  const maxMatchMonthly = maxMatchAnnual ? Math.round(maxMatchAnnual / 12) : 0;
+                  const totalMonthly = empMonthly + maxMatchMonthly;
+                  if (!matchNum) return null;
+                  const Tile = ({ label, val, accent }) => (
+                    <div style={{ flex: 1, minWidth: 150, background: accent ? "#e8f0fb" : "#f4f6f9", border: "1px solid " + (accent ? "#b3c9ef" : BORDER), borderRadius: 8, padding: "12px 14px" }}>
+                      <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>{label}</div>
+                      <div style={{ fontSize: 20, fontWeight: 700, color: accent ? "#1a4a8a" : INK }}>{val || "—"}</div>
+                    </div>
+                  );
+                  return (
+                    <div style={{ marginBottom: 12 }}>
+                      {annualIncome > 0 && <div style={{ fontSize: 12, color: MUTED, marginBottom: 8 }}>Max employer match: <strong style={{ color: INK }}>${maxMatchAnnual.toLocaleString()}/yr</strong> &nbsp;({matchNum}% × ${annualIncome.toLocaleString()} annual income)</div>}
+                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        <Tile label="Employee Contribution / mo" val={empMonthly ? "$" + empMonthly.toLocaleString() : null} />
+                        <Tile label="Employer Match / mo" val={maxMatchMonthly ? "$" + maxMatchMonthly.toLocaleString() : null} />
+                        <Tile label={"Total " + (clientEmp.retirementType || "Retirement Plan") + " / mo"} val={totalMonthly ? "$" + totalMonthly.toLocaleString() : null} accent />
+                      </div>
+                    </div>
+                  );
+                })()}
                 <Row cols={2}>
                   <F><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                   <F>
@@ -3168,14 +3195,41 @@ export default function App() {
                     <Row cols={2}>
                       <F><Lbl t="Monthly Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                       <F>
-                        <Lbl t="Employer Match" />
+                        <Lbl t="Employer Match %" />
                         <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
                           <option value="">— Select —</option>
                           <option value="No Match">No Match</option>
-                          {[1,2,3,4,5,6].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
+                          {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                         </select>
                       </F>
                     </Row>
+                    {(() => {
+                      const matchNum = parseInt((spouseEmp.matchPct || "").replace(/[^0-9]/g, "") || 0);
+                      const compAmt = parseInt((spouseEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
+                      const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[spouseEmp.payFrequency] || 0;
+                      const annualIncome = compAmt && mult ? compAmt * mult : 0;
+                      const empMonthly = parseInt((spouseEmp.contributionAmt || "").replace(/[^0-9]/g, "") || 0);
+                      const maxMatchAnnual = annualIncome && matchNum ? Math.round(annualIncome * matchNum / 100) : 0;
+                      const maxMatchMonthly = maxMatchAnnual ? Math.round(maxMatchAnnual / 12) : 0;
+                      const totalMonthly = empMonthly + maxMatchMonthly;
+                      if (!matchNum) return null;
+                      const Tile = ({ label, val, accent }) => (
+                        <div style={{ flex: 1, minWidth: 150, background: accent ? "#e8f0fb" : "#f4f6f9", border: "1px solid " + (accent ? "#b3c9ef" : BORDER), borderRadius: 8, padding: "12px 14px" }}>
+                          <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>{label}</div>
+                          <div style={{ fontSize: 20, fontWeight: 700, color: accent ? "#1a4a8a" : INK }}>{val || "—"}</div>
+                        </div>
+                      );
+                      return (
+                        <div style={{ marginBottom: 12 }}>
+                          {annualIncome > 0 && <div style={{ fontSize: 12, color: MUTED, marginBottom: 8 }}>Max employer match: <strong style={{ color: INK }}>${maxMatchAnnual.toLocaleString()}/yr</strong> &nbsp;({matchNum}% × ${annualIncome.toLocaleString()} annual income)</div>}
+                          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                            <Tile label="Employee Contribution / mo" val={empMonthly ? "$" + empMonthly.toLocaleString() : null} />
+                            <Tile label="Employer Match / mo" val={maxMatchMonthly ? "$" + maxMatchMonthly.toLocaleString() : null} />
+                            <Tile label={"Total " + (spouseEmp.retirementType || "Retirement Plan") + " / mo"} val={totalMonthly ? "$" + totalMonthly.toLocaleString() : null} accent />
+                          </div>
+                        </div>
+                      );
+                    })()}
                     <Row cols={2}>
                       <F><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                       <F>
