@@ -1546,6 +1546,16 @@ export default function App() {
   const [realEstate, setRealEstate] = useState([{ ...emptyRealEstate, id: 1 }]);
   const [accounts, setAccounts] = useState([{ ...emptyAccount, id: 1 }]);
   const [uploads, setUploads] = useState({});
+  const [clientDlImage, setClientDlImage] = useState(null);
+  const [spouseDlImage, setSpouseDlImage] = useState(null);
+  const handleDlImageUpload = (setter) => (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => setter(ev.target.result);
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
   const emptySuitability = { riskTolerance: "", investmentObjective: "", timeHorizon: "", liquidityNeeds: "", investmentExperience: "", taxBracket: "", pctEquities: "", pctFixedIncome: "", pctCash: "", pctAlternatives: "", pctAnnuities: "", pctFixedIndexedAnnuities: "", pctFixedAnnuities: "", pctCashValueLife: "", pctLiquidCash: "", pctQualified: "", pctNonQualified: "", lossComfort: "", esgPreference: "", primaryGoal: "", secondaryGoal: "", incomeNeed: "", growthNeed: "", notes: "" };
   const [suitability, setSuitability] = useState({ ...emptySuitability });
   const [homeOwnership, setHomeOwnership] = useState({ ownOrRent: null, mortgageCompany: "", mortgageBalance: "", monthlyPayment: "", interestRate: "", loanOriginationDate: "", loanNumber: "", annualPropertyTaxes: "", annualInsurance: "", monthlyRent: "", landlordName: "", landlordPhone: "" });
@@ -1736,6 +1746,8 @@ export default function App() {
     setInheritances(record.inheritances || (record.inheritance ? [{ ...record.inheritance, id: 1 }] : [{ ...emptyInheritance, id: 1 }]));
     setVaults(record.vaults || []);
     setUploads(record.uploads || {});
+    setClientDlImage(record.clientDlImage || null);
+    setSpouseDlImage(record.spouseDlImage || null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1817,6 +1829,7 @@ export default function App() {
         clientEmails, spouseEmails,
         clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
         beneficiaries, willsTrust, poas,
+        clientDlImage, spouseDlImage,
       };
       saveClient(record);
       setActiveClient(record.id);
@@ -1910,6 +1923,8 @@ export default function App() {
     setWillsTrust({ hasWill:null, willDate:"", willAttorney:"", executor:"", altExecutor:"", willLocation:"", willUpdated:null, willUpdateDate:"", willNotes:"", trustName:"", trustType:null, trustDate:"", trustee:"", successorTrustee:"", trustAttorney:"", assetsTitled:null, trustLocation:"", trustNotes:"" });
     setPoas([{ ...emptyPoa, id: 1 }]);
     setUploads({});
+    setClientDlImage(null);
+    setSpouseDlImage(null);
     setLifePolicies([{ ...emptyLifePolicy, id: 1 }]);
     setRecordType("client");
     setNwState({ ...emptyNwState });
@@ -1954,6 +1969,8 @@ export default function App() {
           setRecordType(record.recordType || "client");
           setNwState(record.nwState || { ...emptyNwState });
           setSuitability(record.suitability || { ...emptySuitability });
+          setClientDlImage(record.clientDlImage || null);
+          setSpouseDlImage(record.spouseDlImage || null);
           setActiveClient(record.id);
           setSubmitted(false);
           setSectionUpdatedAt({});
@@ -2249,6 +2266,20 @@ export default function App() {
             <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
             <F><DatePicker label="Expiration Date" futureYears={10} value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
           </Row>
+          <div style={{ marginTop: 10, marginBottom: 4 }}>
+            <Lbl t="Driver's License Image" />
+            {clientDlImage ? (
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
+                <img src={clientDlImage} alt="Client DL" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                <button onClick={() => setClientDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+              </div>
+            ) : (
+              <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                📎 Upload DL Image
+                <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setClientDlImage)} />
+              </label>
+            )}
+          </div>
 
           <Sec t="Home Address" />
           <Row cols={2}>
@@ -2446,6 +2477,20 @@ export default function App() {
                 <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
                 <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
+              <div style={{ marginTop: 10, marginBottom: 4 }}>
+                <Lbl t="Driver's License Image" />
+                {spouseDlImage ? (
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
+                    <img src={spouseDlImage} alt="Spouse DL" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                    <button onClick={() => setSpouseDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+                  </div>
+                ) : (
+                  <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                    📎 Upload DL Image
+                    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setSpouseDlImage)} />
+                  </label>
+                )}
+              </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, marginBottom: 10, borderTop: "1px solid " + BORDER, paddingTop: 12 }}>
                 <Sec t="Home Address" />
