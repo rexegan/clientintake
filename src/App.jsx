@@ -2339,6 +2339,7 @@ export default function App() {
                 <option value="spouse">Spouse</option>
               </select>
               <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
+              {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
               {clientEmails.length > 1 && (
                 <button onClick={() => showConfirm("Remove this email?", () => setClientEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
               )}
@@ -2619,6 +2620,7 @@ export default function App() {
                     <option value="spouse">Spouse</option>
                   </select>
                   <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
+                  {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
                   {spouseEmails.length > 1 && (
                     <button onClick={() => showConfirm("Remove this email?", () => setSpouseEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
                   )}
@@ -2878,7 +2880,7 @@ export default function App() {
                         </F>
                       </Row>
                       <Row cols={2}>
-                        <F><Lbl t="Email" /><input value={ch.email} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, email: e.target.value } : x))} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        <F><Lbl t="Email" /><div style={{ display: "flex", gap: 6, alignItems: "center" }}><input value={ch.email} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, email: e.target.value } : x))} type="email" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />{ch.email && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(ch.email)}`} target="_blank" rel="noreferrer" title="Send email" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16, flexShrink: 0 }}>✉</a>}</div></F>
                         <F><Lbl t="Phone" /><input value={ch.phone} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, phone: fmtPhone(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="(555) 555-5555" /></F>
                       </Row>
                       <Row cols={3}>
@@ -2987,7 +2989,7 @@ export default function App() {
                 </F>
               </Row>
               <Row cols={2}>
-                <F><Lbl t="Email Address" /><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Email Address" /><div style={{ display: "flex", gap: 6, alignItems: "center" }}><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />{b.email && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(b.email)}`} target="_blank" rel="noreferrer" title="Send email" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16, flexShrink: 0 }}>✉</a>}</div></F>
                 <F>
                   <Lbl t={`% to Inherit (${getDesignType(b) === "primary" ? "Primary" : "Contingent"})`} />
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
