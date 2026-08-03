@@ -156,9 +156,10 @@ const emptyClient = {
   dob:"", ssn:"", gender:"", filingStatus:"", cell:"", homePhone:"", email:"",
   addressLine1:"", addressLine2:"", city:"", state:"", zip:"",
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
+  usCitizen:"", countryOfCitizenship:"", numDependents:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
 };
-const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
+const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"", hasLoan:null, loanBalance:"", lender:"", interestRate:"", monthlyPayment:"" };
 const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
@@ -253,7 +254,7 @@ const INCOME_TYPES = [
 ];
 
 const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"" };
-const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", designationType:"primary", email:"", phone:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
+const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", designationType:"primary", email:"", phone:"", usCitizen:"", countryOfCitizenship:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", designationType:"primary", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 // Backward-compat: old records used `type:"Primary"/"Contingent"`, new ones use `designationType`
 const getDesignType = b => b.designationType || (b.type?.toLowerCase() === "contingent" ? "contingent" : "primary");
@@ -2256,6 +2257,28 @@ export default function App() {
             <F><Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
 
+          <Sec t="Citizenship & Dependents" />
+          <Row cols={3}>
+            <F>
+              <Lbl t="US Citizen?" />
+              <select data-lpignore="true" value={client.usCitizen || ""} onChange={setC("usCitizen")} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            {client.usCitizen === "no" && (
+              <F><Lbl t="Country of Citizenship" /><input value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            )}
+            <F>
+              <Lbl t="Number of Dependents" />
+              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={IS}>
+                <option value="">— Select —</option>
+                {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
+              </select>
+            </F>
+          </Row>
+
           <Sec t="Driver's License" />
           <Row cols={3}>
             <F><Lbl t="License Number" /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2467,6 +2490,28 @@ export default function App() {
                 <F><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
 
+              <Sec t="Citizenship & Dependents" />
+              <Row cols={3}>
+                <F>
+                  <Lbl t="US Citizen?" />
+                  <select data-lpignore="true" value={spouse.usCitizen || ""} onChange={setS("usCitizen")} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+                {spouse.usCitizen === "no" && (
+                  <F><Lbl t="Country of Citizenship" /><input value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                )}
+                <F>
+                  <Lbl t="Number of Dependents" />
+                  <select data-lpignore="true" value={spouse.numDependents || ""} onChange={setS("numDependents")} style={IS}>
+                    <option value="">— Select —</option>
+                    {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
+                  </select>
+                </F>
+              </Row>
+
               <Sec t="Driver's License" />
               <Row cols={3}>
                 <F><Lbl t="License Number" /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2646,6 +2691,19 @@ export default function App() {
                       <Row cols={2}>
                         <F><Lbl t="Email" /><input value={ch.email} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, email: e.target.value } : x))} type="email" style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                         <F><Lbl t="Phone" /><input value={ch.phone} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, phone: fmtPhone(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="(555) 555-5555" /></F>
+                      </Row>
+                      <Row cols={3}>
+                        <F>
+                          <Lbl t="US Citizen?" />
+                          <select data-lpignore="true" value={ch.usCitizen || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, usCitizen: e.target.value } : x))} style={IS}>
+                            <option value="">— Select —</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                          </select>
+                        </F>
+                        {ch.usCitizen === "no" && (
+                          <F><Lbl t="Country of Citizenship" /><input value={ch.countryOfCitizenship || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, countryOfCitizenship: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                        )}
                       </Row>
                       <Row cols={2}>
                         <F><Lbl t="Street Address" /><input value={ch.addressLine1} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, addressLine1: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
