@@ -120,6 +120,56 @@ const MailLink = ({ email }) => email
   ? <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(email)}`} target="_blank" rel="noreferrer" style={{ color: "#2563eb", textDecoration: "none" }} onMouseEnter={e => e.target.style.textDecoration="underline"} onMouseLeave={e => e.target.style.textDecoration="none"}>{email}</a>
   : null;
 
+const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState(value || "");
+  const ref = useRef(null);
+  useEffect(() => { setQuery(value || ""); }, [value]);
+  useEffect(() => {
+    const handler = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+  const filtered = query.trim()
+    ? options.filter(o => o.toLowerCase().includes(query.trim().toLowerCase()))
+    : options;
+  const handleSelect = (opt) => { setQuery(opt); onChange(opt); setOpen(false); };
+  const handleBlur = () => {
+    setTimeout(() => {
+      setOpen(false);
+      if (onBlur) onBlur(query.trim());
+      if (query.trim() && query.trim() !== value) onChange(query.trim());
+    }, 150);
+  };
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <input
+        value={query}
+        onChange={e => { setQuery(e.target.value); onChange(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        onBlur={handleBlur}
+        placeholder={placeholder || "Type or select…"}
+        autoComplete="off"
+        data-lpignore="true"
+        style={style}
+      />
+      {open && filtered.length > 0 && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 9000, background: "#1a1f2b", border: "1px solid #3a4155", borderRadius: 8, marginTop: 2, maxHeight: 220, overflowY: "auto", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}>
+          {filtered.map(opt => (
+            <div
+              key={opt}
+              onMouseDown={() => handleSelect(opt)}
+              style={{ padding: "9px 14px", fontSize: 13, color: "#e8ecf2", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #272d3d" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#2563eb"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >{opt}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const fmtPhone = (r) => {
   const d = r.replace(/\D/g, "").slice(0, 10);
   if (!d.length) return "";
@@ -3705,20 +3755,13 @@ export default function App() {
                 </F>
                 <F>
                   <Lbl t="Institution / Held At" />
-                  {(() => {
-                    const isKnown = allInstitutions.includes(a.institution);
-                    const selectVal = a.institution === "" ? "" : isKnown ? a.institution : "__other__";
-                    return (<>
-                      <select data-lpignore="true" value={selectVal} onChange={e => { if (e.target.value === "__other__") syncAcctIncome(a, "institution", " "); else syncAcctIncome(a, "institution", e.target.value); }} style={IS}>
-                        <option value="">— Select —</option>
-                        {allInstitutions.map(n => <option key={n} value={n}>{n}</option>)}
-                        <option value="__other__">Other (type below)</option>
-                      </select>
-                      {selectVal === "__other__" && (
-                        <input value={a.institution.trim()} onChange={e => syncAcctIncome(a, "institution", e.target.value)} onBlur={e => addCustomInstitution(e.target.value)} style={{ ...IS, marginTop: 6 }} autoComplete="off" data-lpignore="true" placeholder="Enter institution name…" />
-                      )}
-                    </>);
-                  })()}
+                  <SmartCombo
+                    value={a.institution}
+                    options={allInstitutions}
+                    onChange={v => syncAcctIncome(a, "institution", v)}
+                    onBlur={v => addCustomInstitution(v)}
+                    style={IS}
+                  />
                 </F>
               </Row>
               <Row cols={2}>
