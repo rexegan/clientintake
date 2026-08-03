@@ -3629,8 +3629,18 @@ export default function App() {
                 <F><Lbl t="Monthly Payment" /><input value={r.monthlyPmt} onChange={e => updRE(r.id, "monthlyPmt", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Property Taxes (Annual)" /><input value={r.propertyTaxes} onChange={e => updRE(r.id, "propertyTaxes", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={2}>
+              <Row cols={3}>
                 <F><Lbl t="Insurance (Annual)" /><input value={r.insurance} onChange={e => updRE(r.id, "insurance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Total Annual Taxes & Insurance" />
+                  <div style={{ ...IS, background: "#f2f4f7", color: INK, fontWeight: 700, display: "flex", alignItems: "center" }}>
+                    {(() => {
+                      const tax = parseInt((r.propertyTaxes || "").replace(/[^0-9]/g, "") || 0);
+                      const ins = parseInt((r.insurance || "").replace(/[^0-9]/g, "") || 0);
+                      return (tax || ins) ? "$" + (tax + ins).toLocaleString() : "—";
+                    })()}
+                  </div>
+                </F>
                 <F>
                   <Lbl t="Does Pmt Include Taxes & Ins?" />
                   <select data-lpignore="true" value={r.pmtIncludesTaxIns || ""} onChange={e => updRE(r.id, "pmtIncludesTaxIns", e.target.value || null)} style={IS}>
