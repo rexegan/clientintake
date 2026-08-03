@@ -2210,7 +2210,7 @@ export default function App() {
             <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setCN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={4}>
-            <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} /></F>
+            <F><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></F>
             <F><Lbl t="SSN" /><input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F>
               <Lbl t="Gender" />
@@ -2456,7 +2456,7 @@ export default function App() {
                 <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setSN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={3}>
-                <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} /></F>
+                <F><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact /></F>
                 <F><Lbl t="SSN" /><input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Gender" />
@@ -2636,7 +2636,7 @@ export default function App() {
                     <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
                   <Row cols={3}>
-                    <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} /></F>
+                    <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} compact /></F>
                     <F>
                       <Lbl t="Gender" />
                       <select data-lpignore="true" value={ch.gender || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, gender: e.target.value } : x))} style={IS}>
@@ -2779,7 +2779,7 @@ export default function App() {
                 <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={4}>
-                <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} /></F>
+                <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} compact /></F>
                 <F>
                   <Lbl t="Gender" />
                   <select data-lpignore="true" value={b.gender || ""} onChange={e => updBene(b.id, "gender", e.target.value)} style={IS}>
