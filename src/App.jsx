@@ -117,7 +117,7 @@ function DatePicker({ value, onChange, label, futureYears = 0, compact = false }
 }
 
 const MailLink = ({ email }) => email
-  ? <a href={`mailto:${email}`} style={{ color: "#2563eb", textDecoration: "none" }} onMouseEnter={e => e.target.style.textDecoration="underline"} onMouseLeave={e => e.target.style.textDecoration="none"}>{email}</a>
+  ? <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(email)}`} target="_blank" rel="noreferrer" style={{ color: "#2563eb", textDecoration: "none" }} onMouseEnter={e => e.target.style.textDecoration="underline"} onMouseLeave={e => e.target.style.textDecoration="none"}>{email}</a>
   : null;
 
 const fmtPhone = (r) => {
