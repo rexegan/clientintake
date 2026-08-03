@@ -2829,24 +2829,24 @@ export default function App() {
                     <F><Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                     <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
-                  <Row cols={3}>
-                    <F><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} compact /></F>
-                    <F>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                    <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} compact /></div>
+                    <div style={{ flexShrink: 0 }}>
                       <Lbl t="Gender" />
-                      <select data-lpignore="true" value={ch.gender || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, gender: e.target.value } : x))} style={IS}>
+                      <select data-lpignore="true" value={ch.gender || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, gender: e.target.value } : x))} style={{ ...IS, width: 106 }}>
                         <option value="">— Select —</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                       </select>
-                    </F>
-                    <F>
+                    </div>
+                    <div style={{ flexShrink: 0 }}>
                       <Lbl t="Beneficiary?" />
-                      <select data-lpignore="true" value={ch.isBeneficiary ? "yes" : "no"} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: e.target.value === "yes" } : x))} style={IS}>
+                      <select data-lpignore="true" value={ch.isBeneficiary ? "yes" : "no"} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, isBeneficiary: e.target.value === "yes" } : x))} style={{ ...IS, width: 88 }}>
                         <option value="no">No</option>
                         <option value="yes">Yes</option>
                       </select>
-                    </F>
-                  </Row>
+                    </div>
+                  </div>
                   {ch.isBeneficiary && (
                     <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 12 }}>Beneficiary Information</div>
