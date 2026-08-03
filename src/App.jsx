@@ -3024,6 +3024,9 @@ export default function App() {
               </div>
             </F>
           </Row>
+          <Row cols={1}>
+            <F><Lbl t="Work Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
           <div style={{ marginBottom: 8 }}>
             <Lbl t="ZIP / City / State" />
             <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
@@ -3032,9 +3035,6 @@ export default function App() {
               <StateSelect value={clientEmp.workState} onChange={setCE("workState")} />
             </div>
           </div>
-          <Row cols={1}>
-            <F><Lbl t="Work Street Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
 
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
@@ -3129,6 +3129,9 @@ export default function App() {
                   </div>
                 </F>
               </Row>
+              <Row cols={1}>
+                <F><Lbl t="Work Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
               <div style={{ marginBottom: 8 }}>
                 <Lbl t="ZIP / City / State" />
                 <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
@@ -3137,9 +3140,6 @@ export default function App() {
                   <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} />
                 </div>
               </div>
-              <Row cols={1}>
-                <F><Lbl t="Work Street Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
                 <Row cols={2}>
