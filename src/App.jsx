@@ -3715,19 +3715,20 @@ export default function App() {
                 </F>
                 <F>
                   <Lbl t="Institution / Held At" />
-                  <input
-                    list={`inst-list-${a.id}`}
-                    value={a.institution}
-                    onChange={e => syncAcctIncome(a, "institution", e.target.value)}
-                    onBlur={e => addCustomInstitution(e.target.value)}
-                    style={IS}
-                    autoComplete="off"
-                    data-lpignore="true"
-                    placeholder="Type or select…"
-                  />
-                  <datalist id={`inst-list-${a.id}`}>
-                    {allInstitutions.map(n => <option key={n} value={n} />)}
-                  </datalist>
+                  {(() => {
+                    const isKnown = allInstitutions.includes(a.institution);
+                    const selectVal = a.institution === "" ? "" : isKnown ? a.institution : "__other__";
+                    return (<>
+                      <select data-lpignore="true" value={selectVal} onChange={e => { if (e.target.value === "__other__") syncAcctIncome(a, "institution", " "); else syncAcctIncome(a, "institution", e.target.value); }} style={IS}>
+                        <option value="">— Select —</option>
+                        {allInstitutions.map(n => <option key={n} value={n}>{n}</option>)}
+                        <option value="__other__">Other (type below)</option>
+                      </select>
+                      {selectVal === "__other__" && (
+                        <input value={a.institution.trim()} onChange={e => syncAcctIncome(a, "institution", e.target.value)} onBlur={e => addCustomInstitution(e.target.value)} style={{ ...IS, marginTop: 6 }} autoComplete="off" data-lpignore="true" placeholder="Enter institution name…" />
+                      )}
+                    </>);
+                  })()}
                 </F>
               </Row>
               <Row cols={2}>
