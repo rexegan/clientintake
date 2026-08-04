@@ -4962,9 +4962,20 @@ export default function App() {
 
             const fillAndDownload = async (doc) => {
               setAppFillStatus(p => ({ ...p, [doc.id]: "filling" }));
+              const existingPdfBytes = await fetch(doc.dataUrl).then(r => r.arrayBuffer());
+              // Some carrier PDFs (e.g. Jackson National) have malformed internal structures
+              // that cause pdf-lib to throw during load. Fall back to downloading the original.
+              let pdfDoc = null;
+              try { pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true, throwOnInvalidObject: false }); } catch { pdfDoc = null; }
+              if (!pdfDoc) {
+                const blob = new Blob([existingPdfBytes], { type: "application/pdf" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = url; a.download = doc.name; a.click();
+                URL.revokeObjectURL(url);
+                setAppFillStatus(p => ({ ...p, [doc.id]: "downloaded original (PDF not fillable)" }));
+                return;
+              }
               try {
-                const existingPdfBytes = await fetch(doc.dataUrl).then(r => r.arrayBuffer());
-                const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true, throwOnInvalidObject: false });
                 let form = null;
                 try { form = pdfDoc.getForm(); } catch { form = null; }
                 let fields = [];
