@@ -2612,44 +2612,6 @@ export default function App() {
               </Row>
             </div>
           )}
-          {/* ── OWN OR RENT ── */}
-          <Sec t="Personal Property" />
-          <Row cols={2}>
-            <F>
-              <Lbl t="Own or Rent?" />
-              <select value={homeOwnership.ownOrRent || ""} onChange={e => setHomeOwnership(p => ({ ...p, ownOrRent: e.target.value || null }))} style={IS}>
-                <option value="">— Select —</option>
-                <option value="own">Own</option>
-                <option value="rent">Rent</option>
-              </select>
-            </F>
-          </Row>
-          {homeOwnership.ownOrRent === "own" && (<>
-            <Row cols={3}>
-              <F>
-                <Lbl t="Mortgage Company" />
-                <SmartCombo value={homeOwnership.mortgageCompany} onChange={v => setHomeOwnership(p => ({ ...p, mortgageCompany: v }))} onBlur={v => addCustomMortgageCo(v)} options={allMortgageCos} placeholder="Type or select..." style={IS} />
-              </F>
-              <F><Lbl t="Mortgage Balance" /><input value={homeOwnership.mortgageBalance} onChange={e => setHomeOwnership(p => ({ ...p, mortgageBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-              <F><Lbl t="Monthly Payment" /><input value={homeOwnership.monthlyPayment} onChange={e => setHomeOwnership(p => ({ ...p, monthlyPayment: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            </Row>
-            <Row cols={3}>
-              <F><Lbl t="Interest Rate" /><input value={homeOwnership.interestRate} onChange={e => setHomeOwnership(p => ({ ...p, interestRate: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6.5%" /></F>
-              <F><DatePicker label="Loan Origination Date" value={homeOwnership.loanOriginationDate} onChange={v => setHomeOwnership(p => ({ ...p, loanOriginationDate: v }))} /></F>
-              <F><Lbl t="Loan Number" /><input value={homeOwnership.loanNumber} onChange={e => setHomeOwnership(p => ({ ...p, loanNumber: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            </Row>
-            <Row cols={3}>
-              <F><Lbl t="Annual Property Taxes" /><input value={homeOwnership.annualPropertyTaxes || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualPropertyTaxes: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-              <F><Lbl t="Annual Insurance" /><input value={homeOwnership.annualInsurance || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualInsurance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            </Row>
-          </>)}
-          {homeOwnership.ownOrRent === "rent" && (
-            <Row cols={3}>
-              <F><Lbl t="Monthly Rent" /><input value={homeOwnership.monthlyRent} onChange={e => setHomeOwnership(p => ({ ...p, monthlyRent: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-              <F><Lbl t="Landlord Name" /><input value={homeOwnership.landlordName} onChange={e => setHomeOwnership(p => ({ ...p, landlordName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              <F><Lbl t="Landlord Phone" /><input value={homeOwnership.landlordPhone} onChange={e => setHomeOwnership(p => ({ ...p, landlordPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            </Row>
-          )}
           <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
@@ -3633,6 +3595,45 @@ export default function App() {
 
         {/* ── REAL ESTATE ── */}
         <Panel title="Real Estate" id="section-realestate">
+          {/* ── OWN OR RENT ── */}
+          <Sec t="Personal Property" />
+          <Row cols={2}>
+            <F>
+              <Lbl t="Own or Rent?" />
+              <select value={homeOwnership.ownOrRent || ""} onChange={e => setHomeOwnership(p => ({ ...p, ownOrRent: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="own">Own</option>
+                <option value="rent">Rent</option>
+              </select>
+            </F>
+          </Row>
+          {homeOwnership.ownOrRent === "own" && (<>
+            <Row cols={3}>
+              <F>
+                <Lbl t="Mortgage Company" />
+                <SmartCombo value={homeOwnership.mortgageCompany} onChange={v => setHomeOwnership(p => ({ ...p, mortgageCompany: v }))} onBlur={v => addCustomMortgageCo(v)} options={allMortgageCos} placeholder="Type or select..." style={IS} />
+              </F>
+              <F><Lbl t="Mortgage Balance" /><input value={homeOwnership.mortgageBalance} onChange={e => setHomeOwnership(p => ({ ...p, mortgageBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Monthly Payment" /><input value={homeOwnership.monthlyPayment} onChange={e => setHomeOwnership(p => ({ ...p, monthlyPayment: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
+            <Row cols={3}>
+              <F><Lbl t="Interest Rate" /><input value={homeOwnership.interestRate} onChange={e => setHomeOwnership(p => ({ ...p, interestRate: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6.5%" /></F>
+              <F><DatePicker label="Loan Origination Date" value={homeOwnership.loanOriginationDate} onChange={v => setHomeOwnership(p => ({ ...p, loanOriginationDate: v }))} /></F>
+              <F><Lbl t="Loan Number" /><input value={homeOwnership.loanNumber} onChange={e => setHomeOwnership(p => ({ ...p, loanNumber: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
+            <Row cols={3}>
+              <F><Lbl t="Annual Property Taxes" /><input value={homeOwnership.annualPropertyTaxes || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualPropertyTaxes: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+              <F><Lbl t="Annual Insurance" /><input value={homeOwnership.annualInsurance || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualInsurance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            </Row>
+          </>)}
+          {homeOwnership.ownOrRent === "rent" && (
+            <Row cols={3}>
+              <F><Lbl t="Monthly Rent" /><input value={homeOwnership.monthlyRent} onChange={e => setHomeOwnership(p => ({ ...p, monthlyRent: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Landlord Name" /><input value={homeOwnership.landlordName} onChange={e => setHomeOwnership(p => ({ ...p, landlordName: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              <F><Lbl t="Landlord Phone" /><input value={homeOwnership.landlordPhone} onChange={e => setHomeOwnership(p => ({ ...p, landlordPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            </Row>
+          )}
+          <Sec t="Properties" />
           {realEstate.map((r, i) => (
             <div key={r.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -4866,10 +4867,14 @@ export default function App() {
               }
             });
 
-            // CE alert
-            if (advisorInfo.ceCurrent === "No") {
-              alerts.push({ sev: "warning", title: "Continuing Education — Not Current", body: "CE is marked as not current. Complete required insurance and/or securities continuing education credits to maintain licensing eligibility." });
-            }
+            // CE alert — fire for any state where CE is marked No
+            (advisorInfo.licensedStates || []).forEach(raw => {
+              const entry = typeof raw === "string" ? { state: raw } : raw;
+              if (entry.ceCurrent === "No") {
+                const stateLabel = US_STATES.find(([a]) => a === entry.state)?.[1] || entry.state;
+                alerts.push({ sev: "warning", title: `Continuing Education Not Current — ${entry.state}`, body: `CE is marked not current for ${stateLabel}. Complete required continuing education credits to maintain licensing eligibility in this state.` });
+              }
+            });
 
             if (alerts.length === 0) {
               return (
@@ -5200,20 +5205,8 @@ export default function App() {
           <Sec t="Insurance License" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
             <F style={{ flex: "none" }}>
-              <Lbl t="Insurance License Number" />
-              <input value={advisorInfo.insuranceLicense || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, insuranceLicense: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" />
-            </F>
-            <F style={{ flex: "none" }}>
               <Lbl t="NPN Number" />
               <input value={advisorInfo.npn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, npn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 110 }} autoComplete="new-password" data-lpignore="true" />
-            </F>
-            <F style={{ flex: "none" }}>
-              <Lbl t="CE Current" />
-              <select value={advisorInfo.ceCurrent || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, ceCurrent: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 100 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
             </F>
           </div>
           <div style={{ marginBottom: 12 }}>
@@ -5253,6 +5246,16 @@ export default function App() {
                       autoComplete="new-password"
                       data-lpignore="true"
                     />
+                    <select
+                      value={entry.ceCurrent || ""}
+                      onChange={e => { const val = e.target.value; setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "", licenseNumber: "", ceCurrent: "" } : x; return s.state === entry.state ? { ...s, ceCurrent: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                      style={{ ...IS, width: 100, fontSize: 12, padding: "4px 8px", background: "#fff" }}
+                      data-lpignore="true"
+                    >
+                      <option value="">CE?</option>
+                      <option value="Yes">CE ✓</option>
+                      <option value="No">CE ✗</option>
+                    </select>
                     <button onClick={() => setAdvisorInfo(p => { const updated = (p.licensedStates || []).filter(x => (typeof x === "string" ? x : x.state) !== entry.state); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
                   </div>
                 );
