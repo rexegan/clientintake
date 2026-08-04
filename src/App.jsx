@@ -2334,7 +2334,7 @@ export default function App() {
               </select>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 12 }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
             <div style={{ flex: "none" }}>
               <Lbl t="Email Addresses" />
               {clientEmails.map((em, i) => (
