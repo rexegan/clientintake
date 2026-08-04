@@ -214,7 +214,7 @@ const emptyClient = {
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
   knownSinceMonth:"", knownSinceDay:"", knownSinceYear:"",
   tcLastName:"", tcFirstName:"", tcMiddleInitial:"",
-  tcAddress:"", tcCity:"", tcState:"", tcZip:"", tcCountry:"",
+  tcAddress:"", tcCity:"", tcState:"", tcZip:"", tcCountry:"USA",
   tcRelationship:"", tcHomePhone:"", tcCell:"", tcEmail:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
@@ -330,6 +330,29 @@ const US_STATES = [
   ["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"],
   ["DC","District of Columbia"],
 ];
+
+const COUNTRIES = [
+  "USA","Afghanistan","Albania","Algeria","Andorra","Angola","Antigua & Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan",
+  "Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi",
+  "Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (Brazzaville)","Congo (Kinshasa)","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic",
+  "Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia",
+  "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
+  "Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan",
+  "Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg",
+  "Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar",
+  "Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway",
+  "Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar",
+  "Romania","Russia","Rwanda","Saint Kitts & Nevis","Saint Lucia","Saint Vincent & the Grenadines","Samoa","San Marino","Sao Tome & Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+  "Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu",
+  "Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe",
+];
+
+const CountrySelect = ({ value, onChange, style }) => (
+  <select data-lpignore="true" value={value || ""} onChange={onChange} style={style || IS}>
+    <option value="">— Select —</option>
+    {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+  </select>
+);
 
 const StateSelect = ({ value, onChange }) => (
   <select data-lpignore="true" value={value || ""} onChange={onChange} style={{ ...IS, width: 240 }}>
@@ -2417,18 +2440,18 @@ export default function App() {
           <Row cols={1}>
             <F><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, maxWidth: 360 }} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <Row cols={3}>
+          <Row cols={1}>
             <F><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F>
+          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 180px" }}><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 170px" }}>
               <Lbl t="State" />
-              <StateSelect value={client.tcState || ""} onChange={v => setClient(p => ({ ...p, tcState: v }))} style={IS} />
+              <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ ...IS, width: 170 }} />
             </F>
-          </Row>
-          <Row cols={2}>
-            <F><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 100 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Country" /><input value={client.tcCountry || ""} onChange={setC("tcCountry")} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="USA" /></F>
-          </Row>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
+          </div>
 
           <Sec t="Citizenship" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
@@ -2462,7 +2485,7 @@ export default function App() {
             {client.usCitizen === "no" && (
               <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
                 <Lbl t="Country of Citizenship" />
-                <input value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" />
+                <CountrySelect value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} />
               </div>
             )}
           </div>
@@ -2738,7 +2761,7 @@ export default function App() {
                 {spouse.usCitizen === "no" && (
                   <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
                     <Lbl t="Country of Citizenship" />
-                    <input value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" />
+                    <CountrySelect value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} />
                   </div>
                 )}
               </div>
@@ -2958,7 +2981,7 @@ export default function App() {
                           </select>
                         </F>
                         {ch.usCitizen === "no" && (
-                          <F><Lbl t="Country of Citizenship" /><input value={ch.countryOfCitizenship || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, countryOfCitizenship: e.target.value } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                          <F><Lbl t="Country of Citizenship" /><CountrySelect value={ch.countryOfCitizenship || ""} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, countryOfCitizenship: e.target.value } : x))} /></F>
                         )}
                       </Row>
                       <Row cols={2}>
