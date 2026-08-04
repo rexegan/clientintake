@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { PDFDocument } from "pdf-lib";
 
 const PAGE_BG = "#f4f6f9";
 const NAV     = "#ffffff";
@@ -4928,7 +4929,6 @@ export default function App() {
             const fillAndDownload = async (doc) => {
               setAppFillStatus(p => ({ ...p, [doc.id]: "filling" }));
               try {
-                const { PDFDocument } = await import("pdf-lib");
                 const existingPdfBytes = await fetch(doc.dataUrl).then(r => r.arrayBuffer());
                 const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true });
                 const form = pdfDoc.getForm();
