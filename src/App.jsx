@@ -2535,8 +2535,7 @@ export default function App() {
             <Row cols={3}>
               <F>
                 <Lbl t="Mortgage Company" />
-                <input list="mortgage-co-list-home" value={homeOwnership.mortgageCompany} onChange={e => setHomeOwnership(p => ({ ...p, mortgageCompany: e.target.value }))} onBlur={e => addCustomMortgageCo(e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Type or select..." />
-                <datalist id="mortgage-co-list-home">{allMortgageCos.map(c => <option key={c} value={c} />)}</datalist>
+                <SmartCombo value={homeOwnership.mortgageCompany} onChange={v => setHomeOwnership(p => ({ ...p, mortgageCompany: v }))} onBlur={v => addCustomMortgageCo(v)} options={allMortgageCos} placeholder="Type or select..." style={IS} />
               </F>
               <F><Lbl t="Mortgage Balance" /><input value={homeOwnership.mortgageBalance} onChange={e => setHomeOwnership(p => ({ ...p, mortgageBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               <F><Lbl t="Monthly Payment" /><input value={homeOwnership.monthlyPayment} onChange={e => setHomeOwnership(p => ({ ...p, monthlyPayment: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
@@ -3642,8 +3641,7 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Mortgage Company" />
-                  <input list={`mortgage-co-list-${r.id}`} value={r.mortgageCompany} onChange={e => updRE(r.id, "mortgageCompany", e.target.value)} onBlur={e => addCustomMortgageCo(e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Type or select..." />
-                  <datalist id={`mortgage-co-list-${r.id}`}>{allMortgageCos.map(c => <option key={c} value={c} />)}</datalist>
+                  <SmartCombo value={r.mortgageCompany} onChange={v => updRE(r.id, "mortgageCompany", v)} onBlur={v => addCustomMortgageCo(v)} options={allMortgageCos} placeholder="Type or select..." style={IS} />
                 </F>
                 <F><DatePicker label="Origination Date" value={r.originationDate} onChange={v => updRE(r.id, "originationDate", v)} /></F>
               </Row>
