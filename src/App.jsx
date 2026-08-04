@@ -5174,16 +5174,30 @@ export default function App() {
           </div>
 
           <Sec t="Insurance Licensing" />
-          <Row cols={2}>
-            <F><Lbl t="Insurance License Number" /><input value={advisorInfo.insuranceLicense || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, insuranceLicense: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="NPN Number" /><input value={advisorInfo.npn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, npn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "none" }}>
+              <Lbl t="Insurance License Number" />
+              <input value={advisorInfo.insuranceLicense || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, insuranceLicense: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" />
+            </F>
+            <F style={{ flex: "none" }}>
+              <Lbl t="NPN Number" />
+              <input value={advisorInfo.npn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, npn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 110 }} autoComplete="new-password" data-lpignore="true" />
+            </F>
+            <F style={{ flex: "none" }}>
+              <Lbl t="CE Current" />
+              <select value={advisorInfo.ceCurrent || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, ceCurrent: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 100 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </F>
+          </div>
           <div style={{ marginBottom: 12 }}>
             <Lbl t="Licensed States" />
             <div style={{ marginBottom: 8 }}>
               <select
                 value=""
-                onChange={e => { const v = e.target.value; if (v && !(advisorInfo.licensedStates || []).includes(v)) setAdvisorInfo(p => { const n = { ...p, licensedStates: [...(p.licensedStates || []), v].sort() }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                onChange={e => { const v = e.target.value; if (!v) return; const cur = (advisorInfo.licensedStates || []).map(x => typeof x === "string" ? { state: x, renewalDate: "" } : x); if (!cur.find(x => x.state === v)) { const next = [...cur, { state: v, renewalDate: "" }].sort((a, b) => a.state.localeCompare(b.state)); setAdvisorInfo(p => { const n = { ...p, licensedStates: next }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); } }}
                 style={{ ...IS, width: 200 }}
                 data-lpignore="true"
               >
@@ -5191,13 +5205,26 @@ export default function App() {
                 {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
               </select>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {(advisorInfo.licensedStates || []).map(st => (
-                <div key={st} style={{ display: "flex", alignItems: "center", gap: 10, background: "#e0e7ff", borderRadius: 7, padding: "6px 12px", width: "fit-content" }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#3730a3" }}>{US_STATES.find(([a]) => a === st)?.[1] ? `${st} — ${US_STATES.find(([a]) => a === st)[1]}` : st}</span>
-                  <button onClick={() => setAdvisorInfo(p => { const n = { ...p, licensedStates: p.licensedStates.filter(s => s !== st) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
-                </div>
-              ))}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {(advisorInfo.licensedStates || []).map(raw => {
+                const entry = typeof raw === "string" ? { state: raw, renewalDate: "" } : raw;
+                const fullName = US_STATES.find(([a]) => a === entry.state)?.[1] || "";
+                return (
+                  <div key={entry.state} style={{ display: "flex", alignItems: "center", gap: 10, background: "#e0e7ff", borderRadius: 7, padding: "6px 12px" }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#3730a3", minWidth: 160 }}>{entry.state}{fullName ? ` — ${fullName}` : ""}</span>
+                    <span style={{ fontSize: 12, color: "#4338ca", whiteSpace: "nowrap" }}>Renewal:</span>
+                    <input
+                      value={entry.renewalDate || ""}
+                      onChange={e => { const val = e.target.value; setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "" } : x; return s.state === entry.state ? { ...s, renewalDate: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                      placeholder="MM/DD/YYYY"
+                      style={{ ...IS, width: 120, fontSize: 12, padding: "4px 8px", background: "#fff" }}
+                      autoComplete="new-password"
+                      data-lpignore="true"
+                    />
+                    <button onClick={() => setAdvisorInfo(p => { const updated = (p.licensedStates || []).filter(x => (typeof x === "string" ? x : x.state) !== entry.state); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div style={{ marginTop: 10, background: "#f5f3ff", border: "1px solid #ddd6fe", borderRadius: 9, padding: "10px 14px", fontSize: 12, color: "#6d28d9" }}>
