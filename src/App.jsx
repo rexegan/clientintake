@@ -5174,30 +5174,32 @@ export default function App() {
           </div>
 
           <Sec t="Insurance Licensing" />
-          <Row cols={3}>
+          <Row cols={2}>
             <F><Lbl t="Insurance License Number" /><input value={advisorInfo.insuranceLicense || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, insuranceLicense: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="NPN Number" /><input value={advisorInfo.npn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, npn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F>
-              <Lbl t="Licensed States" />
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
-                {(advisorInfo.licensedStates || []).map(st => (
-                  <span key={st} style={{ background: "#e0e7ff", color: "#3730a3", borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
-                    {st}
-                    <button onClick={() => setAdvisorInfo(p => { const n = { ...p, licensedStates: p.licensedStates.filter(s => s !== st) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 13, padding: 0, lineHeight: 1 }}>×</button>
-                  </span>
-                ))}
-                <select
-                  value=""
-                  onChange={e => { const v = e.target.value; if (v && !(advisorInfo.licensedStates || []).includes(v)) setAdvisorInfo(p => { const n = { ...p, licensedStates: [...(p.licensedStates || []), v].sort() }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
-                  style={{ ...IS, width: 130 }}
-                  data-lpignore="true"
-                >
-                  <option value="">+ Add State</option>
-                  {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
-                </select>
-              </div>
-            </F>
           </Row>
+          <div style={{ marginBottom: 12 }}>
+            <Lbl t="Licensed States" />
+            <div style={{ marginBottom: 8 }}>
+              <select
+                value=""
+                onChange={e => { const v = e.target.value; if (v && !(advisorInfo.licensedStates || []).includes(v)) setAdvisorInfo(p => { const n = { ...p, licensedStates: [...(p.licensedStates || []), v].sort() }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                style={{ ...IS, width: 200 }}
+                data-lpignore="true"
+              >
+                <option value="">+ Add State</option>
+                {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
+              </select>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {(advisorInfo.licensedStates || []).map(st => (
+                <div key={st} style={{ display: "flex", alignItems: "center", gap: 10, background: "#e0e7ff", borderRadius: 7, padding: "6px 12px", width: "fit-content" }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#3730a3" }}>{US_STATES.find(([a]) => a === st)?.[1] ? `${st} — ${US_STATES.find(([a]) => a === st)[1]}` : st}</span>
+                  <button onClick={() => setAdvisorInfo(p => { const n = { ...p, licensedStates: p.licensedStates.filter(s => s !== st) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
+                </div>
+              ))}
+            </div>
+          </div>
           <div style={{ marginTop: 10, background: "#f5f3ff", border: "1px solid #ddd6fe", borderRadius: 9, padding: "10px 14px", fontSize: 12, color: "#6d28d9" }}>
             This information is saved to your browser and used to pre-populate carrier applications. It is not tied to any individual client record.
           </div>
