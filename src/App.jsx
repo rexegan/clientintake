@@ -5174,12 +5174,15 @@ export default function App() {
                     <button onClick={() => setAdvisorInfo(p => { const n = { ...p, licensedStates: p.licensedStates.filter(s => s !== st) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 13, padding: 0, lineHeight: 1 }}>×</button>
                   </span>
                 ))}
-                <StateSelect
+                <select
                   value=""
-                  onChange={v => { if (v && !(advisorInfo.licensedStates || []).includes(v)) setAdvisorInfo(p => { const n = { ...p, licensedStates: [...(p.licensedStates || []), v].sort() }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
-                  style={{ ...IS, width: 100 }}
-                  placeholder="+ Add State"
-                />
+                  onChange={e => { const v = e.target.value; if (v && !(advisorInfo.licensedStates || []).includes(v)) setAdvisorInfo(p => { const n = { ...p, licensedStates: [...(p.licensedStates || []), v].sort() }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                  style={{ ...IS, width: 130 }}
+                  data-lpignore="true"
+                >
+                  <option value="">+ Add State</option>
+                  {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
+                </select>
               </div>
             </F>
           </Row>
