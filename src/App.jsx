@@ -212,7 +212,9 @@ const emptyClient = {
   usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
   knownSinceMonth:"", knownSinceDay:"", knownSinceYear:"",
-  trustedContactName:"", trustedContactPhone:"",
+  tcLastName:"", tcFirstName:"", tcMiddleInitial:"",
+  tcAddress:"", tcCity:"", tcState:"", tcZip:"", tcCountry:"",
+  tcRelationship:"", tcHomePhone:"", tcCell:"", tcEmail:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"", inServiceTransfer:"" };
@@ -2385,15 +2387,41 @@ export default function App() {
               <Lbl t="Home Phone" />
               <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
             </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Trusted Contact Name" />
-              <input value={client.trustedContactName || ""} onChange={e => setClient(p => ({ ...p, trustedContactName: e.target.value }))} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" placeholder="Full name" />
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Trusted Contact Phone" />
-              <input value={client.trustedContactPhone || ""} onChange={e => setClient(p => ({ ...p, trustedContactPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-            </div>
           </div>
+
+          <Sec t="Trusted Contact" />
+          <Row cols={3}>
+            <F><Lbl t="Last Name" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 70 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F>
+              <Lbl t="Relationship" />
+              <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={IS}>
+                <option value="">— Select —</option>
+                <option>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option>
+                <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
+              </select>
+            </F>
+            <F><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={1}>
+            <F><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, maxWidth: 360 }} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="State" />
+              <StateSelect value={client.tcState || ""} onChange={v => setClient(p => ({ ...p, tcState: v }))} style={IS} />
+            </F>
+          </Row>
+          <Row cols={2}>
+            <F><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={setC("tcZip")} style={{ ...IS, width: 100 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Country" /><input value={client.tcCountry || ""} onChange={setC("tcCountry")} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="USA" /></F>
+          </Row>
 
           <Sec t="Citizenship" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
