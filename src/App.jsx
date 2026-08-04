@@ -4964,9 +4964,10 @@ export default function App() {
               setAppFillStatus(p => ({ ...p, [doc.id]: "filling" }));
               try {
                 const existingPdfBytes = await fetch(doc.dataUrl).then(r => r.arrayBuffer());
-                const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true });
+                const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true, throwOnInvalidObject: false });
                 const form = pdfDoc.getForm();
-                const fields = form.getFields();
+                let fields = [];
+                try { fields = form.getFields(); } catch { fields = []; }
                 const clientData = buildClientData();
 
                 // Common field name patterns across carriers
@@ -4999,7 +5000,8 @@ export default function App() {
 
                 let filled = 0;
                 for (const field of fields) {
-                  const rawName = field.getName().toLowerCase().replace(/[\s\-\.\(\)\/]/g, "_");
+                  let rawName;
+                  try { rawName = field.getName().toLowerCase().replace(/[\s\-\.\(\)\/]/g, "_"); } catch { continue; }
                   // Try to fill every text field — match against aliases first, fall back to best-guess
                   let matched = false;
                   for (const [dataKey, aliases] of Object.entries(FIELD_MAP)) {
