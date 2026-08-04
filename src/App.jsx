@@ -5197,7 +5197,7 @@ export default function App() {
             <F style={{ flex: "0 0 140px" }}><Lbl t="Branch ID Number" /><input value={advisorInfo.branchId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, branchId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
 
-          <Sec t="Insurance Licensing" />
+          <Sec t="Insurance License" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
             <F style={{ flex: "none" }}>
               <Lbl t="Insurance License Number" />
@@ -5236,10 +5236,18 @@ export default function App() {
                 return (
                   <div key={entry.state} style={{ display: "flex", alignItems: "center", gap: 10, background: "#e0e7ff", borderRadius: 7, padding: "6px 12px" }}>
                     <span style={{ fontSize: 13, fontWeight: 600, color: "#3730a3", minWidth: 160 }}>{entry.state}{fullName ? ` — ${fullName}` : ""}</span>
+                    <input
+                      value={entry.licenseNumber || ""}
+                      onChange={e => { const val = e.target.value; setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "", licenseNumber: "" } : x; return s.state === entry.state ? { ...s, licenseNumber: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                      placeholder="License #"
+                      style={{ ...IS, width: 130, fontSize: 12, padding: "4px 8px", background: "#fff" }}
+                      autoComplete="new-password"
+                      data-lpignore="true"
+                    />
                     <span style={{ fontSize: 12, color: "#4338ca", whiteSpace: "nowrap" }}>Renewal:</span>
                     <input
                       value={entry.renewalDate || ""}
-                      onChange={e => { const val = e.target.value; setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "" } : x; return s.state === entry.state ? { ...s, renewalDate: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                      onChange={e => { const val = e.target.value; setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "", licenseNumber: "" } : x; return s.state === entry.state ? { ...s, renewalDate: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
                       placeholder="MM/DD/YYYY"
                       style={{ ...IS, width: 120, fontSize: 12, padding: "4px 8px", background: "#fff" }}
                       autoComplete="new-password"
