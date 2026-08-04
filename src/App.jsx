@@ -3776,24 +3776,13 @@ export default function App() {
                   <F>
                     <Lbl t="Expected Date of Event" />
                     <input
-                      list={`opt-date-list-${a.id}`}
                       value={a.optTimeframe || ""}
                       onChange={e => updAcct(a.id, "optTimeframe", e.target.value)}
                       style={IS}
-                      autoComplete="off"
+                      autoComplete="new-password"
                       data-lpignore="true"
-                      placeholder="Type or pick a quarter…"
+                      placeholder="e.g. Jan 2027, Q3 2026…"
                     />
-                    <datalist id={`opt-date-list-${a.id}`}>
-                      {(() => {
-                        const yr = new Date().getFullYear();
-                        const opts = [];
-                        for (let y = yr; y <= yr + 4; y++) {
-                          opts.push(`Q1 ${y}`, `Q2 ${y}`, `Q3 ${y}`, `Q4 ${y}`);
-                        }
-                        return opts.map(o => <option key={o} value={o} />);
-                      })()}
-                    </datalist>
                   </F>
                 </Row>
               )}
