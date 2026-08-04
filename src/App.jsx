@@ -210,6 +210,7 @@ const emptyClient = {
   hasPOBox: null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"",
   usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"",
   dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"",
+  knownSinceMonth:"", knownSinceDay:"", knownSinceYear:"",
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"", inServiceTransfer:"" };
@@ -2338,16 +2339,32 @@ export default function App() {
                 <option value="work">Work</option>
                 <option value="spouse">Spouse</option>
               </select>
-              <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
+              <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: "0 1 240px", minWidth: 0 }} autoComplete="new-password" data-lpignore="true" />
               {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
               {clientEmails.length > 1 && (
                 <button onClick={() => showConfirm("Remove this email?", () => setClientEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
               )}
             </div>
           ))}
-          <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer" }}>
-            + Add Email
-          </button>
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginTop: 4, marginBottom: 12 }}>
+            <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer", alignSelf: "center" }}>
+              + Add Email
+            </button>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Known Client Since" />
+              <div style={{ display: "flex", gap: 6 }}>
+                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 108 }} data-lpignore="true">
+                  <option value="">Month</option>
+                  {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
+                </select>
+                <select value={client.knownSinceDay || ""} onChange={setC("knownSinceDay")} style={{ ...IS, width: 72 }} data-lpignore="true">
+                  <option value="">Day</option>
+                  {Array.from({ length: 31 }, (_, i) => <option key={i + 1} value={String(i + 1).padStart(2, "0")}>{i + 1}</option>)}
+                </select>
+                <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+              </div>
+            </div>
+          </div>
           <Row cols={2}>
             <F><Lbl t="Cell Phone" /><input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
