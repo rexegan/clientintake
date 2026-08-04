@@ -2330,26 +2330,35 @@ export default function App() {
               </select>
             </div>
           </div>
-          <Lbl t="Email Addresses" />
-          {clientEmails.map((em, i) => (
-            <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
-              <select data-lpignore="true" value={em.tag} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, tag: e.target.value } : x))} style={{ ...IS, width: 130, flex: "none" }}>
-                <option value="personal">Personal</option>
-                <option value="home">Home</option>
-                <option value="work">Work</option>
-                <option value="spouse">Spouse</option>
-              </select>
-              <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: "0 1 240px", minWidth: 0 }} autoComplete="new-password" data-lpignore="true" />
-              {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
-              {clientEmails.length > 1 && (
-                <button onClick={() => showConfirm("Remove this email?", () => setClientEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
-              )}
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 12 }}>
+            <div style={{ flex: "none" }}>
+              <Lbl t="Email Addresses" />
+              {clientEmails.map((em, i) => (
+                <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
+                  <select data-lpignore="true" value={em.tag} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, tag: e.target.value } : x))} style={{ ...IS, width: 110, flex: "none" }}>
+                    <option value="personal">Personal</option>
+                    <option value="home">Home</option>
+                    <option value="work">Work</option>
+                    <option value="spouse">Spouse</option>
+                  </select>
+                  <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, width: 180, flex: "none" }} autoComplete="new-password" data-lpignore="true" />
+                  {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
+                  {clientEmails.length > 1 && (
+                    <button onClick={() => showConfirm("Remove this email?", () => setClientEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
+                  )}
+                </div>
+              ))}
+              <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 10px", fontSize: 13, cursor: "pointer" }}>
+                + Add Email
+              </button>
             </div>
-          ))}
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginTop: 4, marginBottom: 12 }}>
-            <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer", alignSelf: "center" }}>
-              + Add Email
-            </button>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="# of Dependents" />
+              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 80 }}>
+                <option value="">—</option>
+                {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
+              </select>
+            </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Known Client Since" />
               <div style={{ display: "flex", gap: 6 }}>
@@ -2370,7 +2379,7 @@ export default function App() {
             <F><Lbl t="Home Phone" /><input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
 
-          <Sec t="Citizenship & Dependents" />
+          <Sec t="Citizenship" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Type of ID" />
@@ -2405,13 +2414,6 @@ export default function App() {
                 <input value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" />
               </div>
             )}
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="# of Dependents" />
-              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 72 }}>
-                <option value="">—</option>
-                {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
-              </select>
-            </div>
           </div>
 
           {(() => {
@@ -2653,7 +2655,7 @@ export default function App() {
                 <F><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
 
-              <Sec t="Citizenship & Dependents" />
+              <Sec t="Citizenship" />
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Type of ID" />
@@ -2688,13 +2690,6 @@ export default function App() {
                     <input value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} style={IS} autoComplete="new-password" data-lpignore="true" />
                   </div>
                 )}
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="# of Dependents" />
-                  <select data-lpignore="true" value={spouse.numDependents || ""} onChange={setS("numDependents")} style={{ ...IS, width: 72 }}>
-                    <option value="">—</option>
-                    {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
-                  </select>
-                </div>
               </div>
 
               {(() => {
