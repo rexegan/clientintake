@@ -5174,8 +5174,9 @@ export default function App() {
           </div>
 
           <Sec t="Insurance Licensing" />
-          <Row cols={2}>
+          <Row cols={3}>
             <F><Lbl t="Insurance License Number" /><input value={advisorInfo.insuranceLicense || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, insuranceLicense: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="NPN Number" /><input value={advisorInfo.npn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, npn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F>
               <Lbl t="Licensed States" />
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
