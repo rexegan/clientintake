@@ -4847,6 +4847,30 @@ export default function App() {
               alerts.push({ sev: "info", title: "No Driver's License on File", body: "Client has vehicle(s) recorded but no driver's license information has been entered." });
             }
 
+            // Advisor license renewal alerts
+            const licStates = (advisorInfo.licensedStates || []).map(x => typeof x === "string" ? { state: x, renewalDate: "" } : x);
+            licStates.forEach(entry => {
+              const exp = parseDate(entry.renewalDate);
+              if (!exp) return;
+              const days = daysUntil(exp);
+              const stateLabel = US_STATES.find(([a]) => a === entry.state)?.[1] || entry.state;
+              const title = `Insurance License Renewal — ${entry.state}`;
+              if (days < 0) {
+                alerts.push({ sev: "danger", title, body: `${stateLabel} insurance license expired ${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} ago on ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}. Renew immediately to stay licensed.` });
+              } else if (days <= 30) {
+                alerts.push({ sev: "danger", title, body: `${stateLabel} insurance license expires in ${days} day${days !== 1 ? "s" : ""} on ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}. Renew now.` });
+              } else if (days <= 90) {
+                alerts.push({ sev: "warning", title, body: `${stateLabel} insurance license expires in ${days} days on ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}. Begin renewal process.` });
+              } else if (days <= 180) {
+                alerts.push({ sev: "info", title, body: `${stateLabel} insurance license expires ${exp.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})} (${days} days away). Plan renewal.` });
+              }
+            });
+
+            // CE alert
+            if (advisorInfo.ceCurrent === "No") {
+              alerts.push({ sev: "warning", title: "Continuing Education — Not Current", body: "CE is marked as not current. Complete required insurance and/or securities continuing education credits to maintain licensing eligibility." });
+            }
+
             if (alerts.length === 0) {
               return (
                 <div style={{ textAlign: "center", padding: "32px 16px", color: MUTED }}>
