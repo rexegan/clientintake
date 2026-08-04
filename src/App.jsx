@@ -2412,7 +2412,7 @@ export default function App() {
             </F>
           </Row>
           <Row cols={2}>
-            <F><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={setC("tcZip")} style={{ ...IS, width: 100 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 100 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Country" /><input value={client.tcCountry || ""} onChange={setC("tcCountry")} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="USA" /></F>
           </Row>
 
