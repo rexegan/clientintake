@@ -4321,12 +4321,10 @@ export default function App() {
         <Panel title="Estate Planning" id="section-inheritance">
           {inheritances.map((inh, i) => (
             <div key={inh.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Inheritance {i + 1}</div>
-                <button onClick={() => showConfirm("Remove this inheritance record?", () => delInh(inh.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                {inheritances.length > 1 && <button onClick={() => showConfirm("Remove this inheritance record?", () => delInh(inh.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>}
               </div>
-
-              <Sec t="Inheritance" />
               <Row cols={3}>
                 <F>
                   <Lbl t="Expecting an Inheritance?" />
