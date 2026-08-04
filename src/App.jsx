@@ -2370,10 +2370,6 @@ export default function App() {
                   <option value="">Month</option>
                   {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
                 </select>
-                <select value={client.knownSinceDay || ""} onChange={setC("knownSinceDay")} style={{ ...IS, width: 72 }} data-lpignore="true">
-                  <option value="">Day</option>
-                  {Array.from({ length: 31 }, (_, i) => <option key={i + 1} value={String(i + 1).padStart(2, "0")}>{i + 1}</option>)}
-                </select>
                 <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
               </div>
             </div>
