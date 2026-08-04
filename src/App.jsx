@@ -5119,7 +5119,7 @@ export default function App() {
           </Row>
           <Row cols={3}>
             <F><DatePicker label="Date of Birth" value={advisorInfo.dob || ""} onChange={v => setAdvisorInfo(p => { const n = { ...p, dob: v }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} /></F>
-            <F><Lbl t="Social Security Number" /><input value={advisorInfo.ssn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, ssn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
+            <F><Lbl t="Social Security Number" /><input value={advisorInfo.ssn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, ssn: fmtSSN(e.target.value) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
             <F><Lbl t="Office Phone" /><input value={advisorInfo.officePhone || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, officePhone: fmtPhone(e.target.value) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={1}>
@@ -5132,12 +5132,28 @@ export default function App() {
           </Row>
 
           <Sec t="Broker / Dealer Information" />
-          <Row cols={2}>
+          <Row cols={1}>
             <F><Lbl t="Broker Dealer Name" /><input value={advisorInfo.bdName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="BD Home Office" /><input value={advisorInfo.bdHomeOffice || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdHomeOffice: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
+          <Row cols={1}>
+            <F><Lbl t="BD Home Office Address" /><input value={advisorInfo.bdHomeOffice || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdHomeOffice: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "0 0 110px" }}>
+              <Lbl t="ZIP" />
+              <input value={advisorInfo.bdZip || ""} onChange={e => { const z = fmtZip(e.target.value); setAdvisorInfo(p => { const n = { ...p, bdZip: z }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); lookupZip(z, (city, state) => setAdvisorInfo(p => { const n = { ...p, bdCity: city, bdState: state }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" />
+            </F>
+            <F style={{ flex: "0 0 200px" }}>
+              <Lbl t="City" />
+              <input value={advisorInfo.bdCity || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdCity: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" />
+            </F>
+            <F style={{ flex: "0 0 180px" }}>
+              <Lbl t="State" />
+              <StateSelect value={advisorInfo.bdState || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdState: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 180 }} />
+            </F>
+          </div>
           <Row cols={3}>
-            <F><Lbl t="BD ID Number" /><input value={advisorInfo.bdId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="BD Rep Number" /><input value={advisorInfo.bdId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="BD CRD Number" /><input value={advisorInfo.bdCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Advisor CRD Number" /><input value={advisorInfo.advisorCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, advisorCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
