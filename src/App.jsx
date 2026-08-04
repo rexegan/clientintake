@@ -2228,8 +2228,11 @@ export default function App() {
           </div>
           {/* Row 2: subtitle left, buttons far right */}
           <div style={{ display: "flex", alignItems: "flex-start", marginTop: 6 }}>
-            <span style={{ flex: 1, fontSize: 14, color: MUTED }}>
-              Russell Wealth Group · Confidential · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+            <span style={{ flex: 1, fontSize: 14, color: MUTED, lineHeight: 1.6 }}>
+              Russell Wealth Group · Confidential
+              <br />
+              <span style={{ fontWeight: 500, color: INK, marginRight: 10 }}>{new Date().toLocaleDateString("en-US", { weekday: "long" })}</span>
+              <span>{new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
             </span>
             {/* Button group */}
             <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexShrink: 0, marginLeft: 16 }}>
