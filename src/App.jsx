@@ -278,25 +278,22 @@ const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", ow
 
 const DEFAULT_INSTITUTIONS = ["Allianz","American Equity","American Funds","Ameritas","Athene","Bank of America","Chase / JPMorgan","Edward Jones","Empower","Equitable","F&G","Fidelity","Franklin Templeton","Global Atlantic","Jackson Nat'l","John Hancock","Lincoln Financial","MassMutual","Merrill Lynch","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","North American","Northwestern Mutual","Pacific Life","Principal","Protective Life","Prudential","Raymond James","Sammons / Midland","Schwab","Security Benefit","Symetra","T. Rowe Price","TIAA","Transamerica","Vanguard","Voya","Wells Fargo"];
 
-const ACCOUNT_TYPES = [
-  "401(k)","403(b)","457(b)",
-  "Alternative Investments (Illiquid)",
-  "Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)",
-  "Bonds (Individual)",
-  "CD","Checking / Savings",
-  "HSA",
-  "Life Insurance (Cash Value)",
-  "Money Market",
-  "Mutual Funds",
-  "Non-Qualified Brokerage",
-  "Pension / Defined Benefit",
-  "Roth 401(k)","Roth IRA",
-  "SEP IRA","SIMPLE IRA",
-  "529 / Education",
-  "Stocks (Individual)",
-  "Traditional IRA","Trust Account",
-  "Other",
+const ACCOUNT_TYPE_GROUPS = [
+  { group: "Cash & Cash Equivalents — Liquid Cash",      types: ["Checking","Savings","Money Market","CD"] },
+  { group: "Mutual Funds — Investment Funds",            types: ["Mutual Fund (Equity)","Mutual Fund (Bond)","Mutual Fund (Balanced)","Mutual Fund (Index)"] },
+  { group: "ETFs — Exchange-Traded Funds",               types: ["ETF (Stock)","ETF (Bond)"] },
+  { group: "Stocks — Individual Stocks",                 types: ["Stocks (Individual)"] },
+  { group: "Bonds — Fixed-Income Securities",            types: ["Bonds (Treasury)","Bonds (Municipal)","Bonds (Corporate)"] },
+  { group: "Annuities — Insurance-Based Investments",    types: ["Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)"] },
+  { group: "Retirement Accounts — Tax-Advantaged",       types: ["Traditional IRA","Roth IRA","401(k)","Roth 401(k)","403(b)","457(b)","SEP IRA","SIMPLE IRA","HSA","529 / Education","Pension / Defined Benefit"] },
+  { group: "Real Estate — Real Property",                types: ["Personal Residence","Rental Property","Land / Lot"] },
+  { group: "Alternative Investments — Non-Traditional",  types: ["Private Equity","REITs","Oil & Gas","Storage Funds","Non-Qualified Brokerage","Trust Account"] },
+  { group: "Business Interests — Ownership",             types: ["LLC Interest","Partnership Interest","Corporate Shares"] },
+  { group: "Insurance — Asset Value Only",               types: ["Life Insurance (Cash Value)"] },
+  { group: "Personal Property — Optional",               types: ["Vehicle","Collectibles","Jewelry"] },
+  { group: "Other",                                      types: ["Other"] },
 ];
+const ACCOUNT_TYPES = ACCOUNT_TYPE_GROUPS.flatMap(g => g.types);
 
 const INCOME_TYPES = [
   "Account Withdrawal",
@@ -3831,7 +3828,11 @@ export default function App() {
                   <Lbl t="Account Type" />
                   <select data-lpignore="true" value={a.type} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
-                    {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    {ACCOUNT_TYPE_GROUPS.map(g => (
+                      <optgroup key={g.group} label={g.group}>
+                        {g.types.map(t => <option key={t} value={t}>{t}</option>)}
+                      </optgroup>
+                    ))}
                   </select>
                 </F>
                 <F>
