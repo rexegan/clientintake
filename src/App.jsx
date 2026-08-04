@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PDFTextField, PDFCheckBox, PDFDropdown, PDFRadioGroup } from "pdf-lib";
 
 const PAGE_BG = "#f4f6f9";
 const NAV     = "#ffffff";
@@ -4965,19 +4965,41 @@ export default function App() {
 
                 let filled = 0;
                 for (const field of fields) {
-                  const rawName = field.getName().toLowerCase().replace(/[\s\-\.]/g, "_");
+                  const rawName = field.getName().toLowerCase().replace(/[\s\-\.\(\)\/]/g, "_");
+                  // Try to fill every text field — match against aliases first, fall back to best-guess
+                  let matched = false;
                   for (const [dataKey, aliases] of Object.entries(FIELD_MAP)) {
                     if (aliases.some(a => rawName.includes(a)) && clientData[dataKey]) {
                       try {
-                        if (field.constructor.name === "PDFTextField") {
+                        if (field instanceof PDFTextField) {
                           field.setText(String(clientData[dataKey]));
                           filled++;
-                        } else if (field.constructor.name === "PDFCheckBox" && typeof clientData[dataKey] === "boolean") {
+                        } else if (field instanceof PDFCheckBox && typeof clientData[dataKey] === "boolean") {
                           clientData[dataKey] ? field.check() : field.uncheck();
                           filled++;
+                        } else if (field instanceof PDFDropdown) {
+                          const opts = field.getOptions();
+                          const val = String(clientData[dataKey]);
+                          const match = opts.find(o => o.toLowerCase() === val.toLowerCase());
+                          if (match) { field.select(match); filled++; }
+                        } else if (field instanceof PDFRadioGroup) {
+                          const opts = field.getOptions();
+                          const val = String(clientData[dataKey]).toLowerCase();
+                          const match = opts.find(o => o.toLowerCase() === val || o.toLowerCase().startsWith(val[0]));
+                          if (match) { field.select(match); filled++; }
                         }
                       } catch {}
+                      matched = true;
                       break;
+                    }
+                  }
+                  // If no alias matched but it's a text field, try filling by partial field name similarity
+                  if (!matched && field instanceof PDFTextField) {
+                    for (const [dataKey, aliases] of Object.entries(FIELD_MAP)) {
+                      if (clientData[dataKey] && aliases.some(a => a.split("_").some(part => part.length > 2 && rawName.includes(part)))) {
+                        try { field.setText(String(clientData[dataKey])); filled++; } catch {}
+                        break;
+                      }
                     }
                   }
                 }
