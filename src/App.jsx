@@ -5155,11 +5155,12 @@ export default function App() {
               <StateSelect value={advisorInfo.bdState || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdState: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 180 }} />
             </F>
           </div>
-          <Row cols={3}>
-            <F><Lbl t="BD Rep Number" /><input value={advisorInfo.bdId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="BD CRD Number" /><input value={advisorInfo.bdCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Advisor CRD Number" /><input value={advisorInfo.advisorCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, advisorCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "0 0 140px" }}><Lbl t="BD Rep Number" /><input value={advisorInfo.bdId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 140px" }}><Lbl t="BD CRD Number" /><input value={advisorInfo.bdCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 140px" }}><Lbl t="Advisor CRD Number" /><input value={advisorInfo.advisorCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, advisorCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 140px" }}><Lbl t="Branch ID Number" /><input value={advisorInfo.branchId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, branchId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" /></F>
+          </div>
 
           <Sec t="Insurance Licensing" />
           <Row cols={2}>
