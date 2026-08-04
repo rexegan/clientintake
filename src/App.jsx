@@ -4835,6 +4835,8 @@ export default function App() {
               info:    { border: "#93c5fd", bg: "#eff6ff", icon: "🔵", label: "Heads Up" },
             };
             const order = { danger: 0, warning: 1, info: 2 };
+            const activAlerts = alerts.filter(al => !localStorage.getItem(`rwg_alert_dismissed_${al.title.replace(/\s/g,"_")}`));
+            alerts.length = 0; activAlerts.forEach(a => alerts.push(a));
             alerts.sort((a, b) => order[a.sev] - order[b.sev]);
 
             return alerts.map((al, i) => {
@@ -4845,6 +4847,10 @@ export default function App() {
                     <span style={{ fontSize: 16 }}>{ss.icon}</span>
                     <span style={{ fontSize: 13, fontWeight: 700, color: INK, flex: 1 }}>{al.title}</span>
                     <span style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, fontWeight: 600 }}>{ss.label}</span>
+                    <button
+                      onClick={() => { const k = `rwg_alert_dismissed_${al.title.replace(/\s/g,"_")}`; localStorage.setItem(k, "1"); setClient(p => ({ ...p })); }}
+                      style={{ fontSize: 11, background: "#fff", border: "1px solid #d1d5db", borderRadius: 6, padding: "3px 10px", cursor: "pointer", color: MUTED, fontWeight: 500, whiteSpace: "nowrap" }}
+                    >Remove</button>
                   </div>
                   <div style={{ fontSize: 13, color: "#4b5563", paddingLeft: 24 }}>{al.body}</div>
                 </div>
@@ -5044,28 +5050,6 @@ export default function App() {
                       <div style={{ fontSize: 11, color: MUTED }}>Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}</div>
                     </div>
                     <button onClick={() => removeDoc(doc.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontSize: 12, marginLeft: 8 }}>Remove</button>
-                  </div>
-
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
-                    <div style={{ flex: "1 1 180px" }}>
-                      <Lbl t="Carrier" />
-                      <select value={doc.carrier || ""} onChange={e => updateDoc(doc.id, "carrier", e.target.value)} style={IS} data-lpignore="true">
-                        <option value="">— Select Carrier —</option>
-                        {CARRIERS.map(c => <option key={c}>{c}</option>)}
-                      </select>
-                    </div>
-                    <div style={{ flex: "1 1 220px" }}>
-                      <Lbl t="Product / Application Type" />
-                      <select value={doc.productType || ""} onChange={e => updateDoc(doc.id, "productType", e.target.value)} style={IS} data-lpignore="true">
-                        <option value="">— Select Type —</option>
-                        {PRODUCT_TYPES.map(p => <option key={p}>{p}</option>)}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: 10 }}>
-                    <Lbl t="Notes" />
-                    <input value={doc.notes || ""} onChange={e => updateDoc(doc.id, "notes", e.target.value)} style={IS} placeholder="e.g. $250,000 FIA — 10-yr surrender" data-lpignore="true" autoComplete="new-password" />
                   </div>
 
                   <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
