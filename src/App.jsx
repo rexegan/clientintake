@@ -2231,7 +2231,7 @@ export default function App() {
             <span style={{ flex: 1, fontSize: 14, color: MUTED, lineHeight: 1.6 }}>
               Russell Wealth Group · Confidential
               <br />
-              <span style={{ fontWeight: 500, color: INK, marginRight: 10 }}>{new Date().toLocaleDateString("en-US", { weekday: "long" })}</span>
+              <span style={{ marginRight: 6 }}>{new Date().toLocaleDateString("en-US", { weekday: "long" })}</span>
               <span>{new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
             </span>
             {/* Button group */}
