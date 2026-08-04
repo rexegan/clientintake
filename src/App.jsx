@@ -2617,10 +2617,10 @@ export default function App() {
 
         {/* ── FAMILY ── */}
         <Panel title="Family" id="section-family">
-          <Row cols={2}>
-            <F>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "none" }}>
               <Lbl t="Marital Status" />
-              <select data-lpignore="true" value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={IS}>
+              <select data-lpignore="true" value={hasSpouse || ""} onChange={e => setHasSpouse(e.target.value || null)} style={{ ...IS, width: 162 }}>
                 <option value="">— Select —</option>
                 <option value="married">Married</option>
                 <option value="single">Single</option>
@@ -2630,19 +2630,19 @@ export default function App() {
                 <option value="domestic_partner">Domestic Partner</option>
               </select>
             </F>
-            <F>
+            <F style={{ flex: "none" }}>
               <Lbl t="Children?" />
               <select data-lpignore="true" value={hasChildren || ""} onChange={e => {
                 setHasChildren(e.target.value || null);
                 if (e.target.value === "yes" && children.length === 0) setChildren([{ ...emptyChild, id: Date.now() }]);
                 if (e.target.value === "no") setChildren([]);
-              }} style={IS}>
+              }} style={{ ...IS, width: 110 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
             </F>
-          </Row>
+          </div>
 
           {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
@@ -2676,7 +2676,7 @@ export default function App() {
                     <option value="work">Work</option>
                     <option value="spouse">Spouse</option>
                   </select>
-                  <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />
+                  <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, width: 220, flex: "none" }} autoComplete="new-password" data-lpignore="true" />
                   {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
                   {spouseEmails.length > 1 && (
                     <button onClick={() => showConfirm("Remove this email?", () => setSpouseEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
@@ -2686,10 +2686,10 @@ export default function App() {
               <button onClick={() => setSpouseEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 16px", fontSize: 13, cursor: "pointer" }}>
                 + Add Email
               </button>
-              <Row cols={2}>
-                <F><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+                <F style={{ flex: "none" }}><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "none" }}><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              </div>
 
               <Sec t="Citizenship" />
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
