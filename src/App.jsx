@@ -5016,7 +5016,7 @@ export default function App() {
                   firstName:        ["first_name","firstname","first name","fname","owner_first","applicant_first","insured_first","given_name"],
                   middleName:       ["middle_name","middlename","middle_initial","mi","mname"],
                   lastName:         ["last_name","lastname","last name","lname","owner_last","applicant_last","insured_last","surname","family_name"],
-                  dob:              ["dob","date_of_birth","birth_date","birthdate","dateofbirth","owner_dob","insured_dob","applicant_dob"],
+                  // dob intentionally omitted — never auto-fill dates
                   ssn:              ["ssn","social_security","social_security_number","tax_id","tin","owner_ssn","insured_ssn"],
                   gender:           ["gender","sex","owner_gender","insured_gender","applicant_sex"],
                   cell:             ["cell","cell_phone","mobile","mobile_phone","phone","phone_number","daytime_phone"],
@@ -5031,7 +5031,7 @@ export default function App() {
                   occupation:       ["occupation","job_title","position","profession"],
                   spouseFirstName:  ["spouse_first","co_owner_first","joint_first","spouse_given_name"],
                   spouseLastName:   ["spouse_last","co_owner_last","joint_last","spouse_surname"],
-                  spouseDob:        ["spouse_dob","co_owner_dob","joint_dob"],
+                  // spouseDob intentionally omitted — never auto-fill dates
                   spouseSsn:        ["spouse_ssn","co_owner_ssn","joint_ssn"],
                   bene1FirstName:   ["bene1_first","beneficiary_first","primary_bene_first","beneficiary_1_first"],
                   bene1LastName:    ["bene1_last","beneficiary_last","primary_bene_last","beneficiary_1_last"],
@@ -5043,6 +5043,8 @@ export default function App() {
                 for (const field of fields) {
                   let rawName;
                   try { rawName = field.getName().toLowerCase().replace(/[\s\-\.\(\)\/]/g, "_"); } catch { continue; }
+                  // Never fill date fields
+                  if (/date|dob|birth|expir|issue|effective|inception|maturity/.test(rawName)) continue;
                   // Try to fill every text field — match against aliases first, fall back to best-guess
                   let matched = false;
                   for (const [dataKey, aliases] of Object.entries(FIELD_MAP)) {
