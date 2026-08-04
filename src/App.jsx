@@ -492,6 +492,7 @@ const SECTION_META = {
   "section-toolbox":    { color: "#64748b", bg: "#f1f3f6", icon: <IcSvg><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/><path d="M3 16h18"/></IcSvg> },
   "section-alerts":     { color: "#ef4444", bg: "#fef2f2", icon: <IcSvg><path d="M10.3 3.5L2.1 17A2 2 0 0 0 3.8 20h16.4a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><circle cx="12" cy="17" r="1"/></IcSvg> },
   "section-apps":       { color: "#0d9488", bg: "#f0fdfa", icon: <IcSvg><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IcSvg> },
+  "section-advisor":    { color: "#7c3aed", bg: "#f5f3ff", icon: <IcSvg><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></IcSvg> },
 };
 
 const IconChip = ({ id, size = 28 }) => {
@@ -1643,6 +1644,8 @@ export default function App() {
   const [uploads, setUploads] = useState({});
   const [appDocs, setAppDocs] = useState(() => JSON.parse(localStorage.getItem("rwg_app_docs") || "[]"));
   const [appFillStatus, setAppFillStatus] = useState({});
+  const [advisorInfo, setAdvisorInfo] = useState(() => JSON.parse(localStorage.getItem("rwg_advisor_info") || "{}"));
+  const setAdv = f => field => e => setAdvisorInfo(p => { const n = { ...p, [field]: typeof e === "string" ? e : e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; });
   const [clientDlImage, setClientDlImage] = useState(null);
   const [spouseDlImage, setSpouseDlImage] = useState(null);
   const handleDlImageUpload = (setter) => (e) => {
@@ -1709,6 +1712,7 @@ export default function App() {
     ["section-toolbox",    () => "Client Toolbox"],
     ["section-alerts",     () => "Alerts"],
     ["section-apps",       () => "Applications / Docs"],
+    ["section-advisor",    () => "Advisor / Broker Info"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
     const sid = sessionStorage.getItem("rwg_activeClientId");
@@ -2177,6 +2181,7 @@ export default function App() {
             ["section-toolbox",    "Client Toolbox"],
             ["section-alerts",     "Alerts"],
             ["section-apps",       "Applications / Docs"],
+            ["section-advisor",    "Advisor / Broker Info"],
           ].map(([id, label]) => {
             const ts = sectionUpdatedAt[id];
             return (
@@ -5077,6 +5082,65 @@ export default function App() {
               </div>
             </>);
           })()}
+        </Panel>
+
+        {/* ── ADVISOR / BROKER INFO ── */}
+        <Panel title="Advisor / Broker Info" id="section-advisor">
+          <Sec t="Investment Professional" />
+          <Row cols={3}>
+            <F><Lbl t="First Name" /><input value={advisorInfo.firstName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, firstName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Middle Initial" /><input value={advisorInfo.middleInitial || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, middleInitial: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 70 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Last Name" /><input value={advisorInfo.lastName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, lastName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F><DatePicker label="Date of Birth" value={advisorInfo.dob || ""} onChange={v => setAdvisorInfo(p => { const n = { ...p, dob: v }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} /></F>
+            <F><Lbl t="Social Security Number" /><input value={advisorInfo.ssn || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, ssn: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="XXX-XX-XXXX" /></F>
+            <F><Lbl t="Office Phone" /><input value={advisorInfo.officePhone || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, officePhone: fmtPhone(e.target.value) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={1}>
+            <F><Lbl t="Office Address" /><input value={advisorInfo.officeAddress || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, officeAddress: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="City" /><input value={advisorInfo.officeCity || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, officeCity: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="State" /><StateSelect value={advisorInfo.officeState || ""} onChange={v => setAdvisorInfo(p => { const n = { ...p, officeState: v }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} /></F>
+            <F><Lbl t="ZIP" /><input value={advisorInfo.officeZip || ""} onChange={e => { const z = fmtZip(e.target.value); setAdvisorInfo(p => { const n = { ...p, officeZip: z }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); lookupZip(z, (city, state) => setAdvisorInfo(p => { const n = { ...p, officeCity: city, officeState: state }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })); }} style={{ ...IS, width: 100 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+
+          <Sec t="Broker / Dealer Information" />
+          <Row cols={2}>
+            <F><Lbl t="Broker Dealer Name" /><input value={advisorInfo.bdName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="BD Home Office" /><input value={advisorInfo.bdHomeOffice || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdHomeOffice: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="BD ID Number" /><input value={advisorInfo.bdId || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdId: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="BD CRD Number" /><input value={advisorInfo.bdCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, bdCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Advisor CRD Number" /><input value={advisorInfo.advisorCrd || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, advisorCrd: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+
+          <Sec t="Insurance Licensing" />
+          <Row cols={2}>
+            <F><Lbl t="Insurance License Number" /><input value={advisorInfo.insuranceLicense || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, insuranceLicense: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F>
+              <Lbl t="Licensed States" />
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                {(advisorInfo.licensedStates || []).map(st => (
+                  <span key={st} style={{ background: "#e0e7ff", color: "#3730a3", borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                    {st}
+                    <button onClick={() => setAdvisorInfo(p => { const n = { ...p, licensedStates: p.licensedStates.filter(s => s !== st) }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ background: "none", border: "none", cursor: "pointer", color: "#6366f1", fontSize: 13, padding: 0, lineHeight: 1 }}>×</button>
+                  </span>
+                ))}
+                <StateSelect
+                  value=""
+                  onChange={v => { if (v && !(advisorInfo.licensedStates || []).includes(v)) setAdvisorInfo(p => { const n = { ...p, licensedStates: [...(p.licensedStates || []), v].sort() }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                  style={{ ...IS, width: 100 }}
+                  placeholder="+ Add State"
+                />
+              </div>
+            </F>
+          </Row>
+          <div style={{ marginTop: 10, background: "#f5f3ff", border: "1px solid #ddd6fe", borderRadius: 9, padding: "10px 14px", fontSize: 12, color: "#6d28d9" }}>
+            This information is saved to your browser and used to pre-populate carrier applications. It is not tied to any individual client record.
+          </div>
         </Panel>
 
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
