@@ -5242,7 +5242,7 @@ export default function App() {
                     <span style={{ fontSize: 12, color: "#4338ca", whiteSpace: "nowrap" }}>Renewal:</span>
                     <input
                       value={entry.renewalDate || ""}
-                      onChange={e => { const val = e.target.value; setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "", licenseNumber: "" } : x; return s.state === entry.state ? { ...s, renewalDate: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
+                      onChange={e => { const val = fmtDOB(e.target.value); setAdvisorInfo(p => { const updated = (p.licensedStates || []).map(x => { const s = typeof x === "string" ? { state: x, renewalDate: "", licenseNumber: "" } : x; return s.state === entry.state ? { ...s, renewalDate: val } : s; }); const n = { ...p, licensedStates: updated }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; }); }}
                       placeholder="MM/DD/YYYY"
                       style={{ ...IS, width: 120, fontSize: 12, padding: "4px 8px", background: "#fff" }}
                       autoComplete="new-password"
