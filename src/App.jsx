@@ -4965,9 +4965,10 @@ export default function App() {
               try {
                 const existingPdfBytes = await fetch(doc.dataUrl).then(r => r.arrayBuffer());
                 const pdfDoc = await PDFDocument.load(existingPdfBytes, { ignoreEncryption: true, throwOnInvalidObject: false });
-                const form = pdfDoc.getForm();
+                let form = null;
+                try { form = pdfDoc.getForm(); } catch { form = null; }
                 let fields = [];
-                try { fields = form.getFields(); } catch { fields = []; }
+                if (form) { try { fields = form.getFields(); } catch { fields = []; } }
                 const clientData = buildClientData();
 
                 // Common field name patterns across carriers
@@ -5040,7 +5041,9 @@ export default function App() {
                   }
                 }
 
-                const pdfBytes = await pdfDoc.save();
+                let pdfBytes;
+                try { pdfBytes = await pdfDoc.save(); }
+                catch { pdfBytes = await pdfDoc.save({ useObjectStreams: false }); }
                 const blob = new Blob([pdfBytes], { type: "application/pdf" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
