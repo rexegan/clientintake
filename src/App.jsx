@@ -5083,19 +5083,34 @@ export default function App() {
                   }
                 }
 
-                let pdfBytes;
-                try { pdfBytes = await pdfDoc.save(); }
-                catch { pdfBytes = await pdfDoc.save({ useObjectStreams: false }); }
-                const blob = new Blob([pdfBytes], { type: "application/pdf" });
+                let pdfBytes = null;
+                try { pdfBytes = await pdfDoc.save(); } catch { /* try fallback */ }
+                if (!pdfBytes) { try { pdfBytes = await pdfDoc.save({ useObjectStreams: false }); } catch { /* give up on modified */ } }
+
+                // If save failed entirely, fall back to downloading the original unmodified PDF
+                const finalBytes = pdfBytes || existingPdfBytes;
+                const finalName = pdfBytes ? `FILLED_${doc.name}` : doc.name;
+                const finalStatus = pdfBytes ? `filled ${filled} field${filled !== 1 ? "s" : ""}` : "downloaded original (PDF could not be saved)";
+
+                const blob = new Blob([finalBytes], { type: "application/pdf" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `FILLED_${doc.name}`;
+                a.download = finalName;
                 a.click();
                 URL.revokeObjectURL(url);
-                setAppFillStatus(p => ({ ...p, [doc.id]: `filled ${filled} field${filled !== 1 ? "s" : ""}` }));
+                setAppFillStatus(p => ({ ...p, [doc.id]: finalStatus }));
               } catch (err) {
-                setAppFillStatus(p => ({ ...p, [doc.id]: "error: " + err.message }));
+                // Last-resort fallback — download original rather than showing an error
+                try {
+                  const blob = new Blob([existingPdfBytes], { type: "application/pdf" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = doc.name; a.click();
+                  URL.revokeObjectURL(url);
+                  setAppFillStatus(p => ({ ...p, [doc.id]: "downloaded original (PDF not fillable)" }));
+                } catch {
+                  setAppFillStatus(p => ({ ...p, [doc.id]: "error: " + err.message }));
+                }
               }
             };
 
