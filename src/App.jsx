@@ -153,8 +153,9 @@ const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) =>
         placeholder={placeholder || "Type or select…"}
         autoComplete="off"
         data-lpignore="true"
-        style={style}
+        style={{ ...style, paddingRight: 30 }}
       />
+      <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: 11, color: "#697180", lineHeight: 1 }}>▾</span>
       {open && filtered.length > 0 && (
         <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 9000, background: "#1a1f2b", border: "1px solid #3a4155", borderRadius: 8, marginTop: 2, maxHeight: 220, overflowY: "auto", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}>
           {filtered.map(opt => (
