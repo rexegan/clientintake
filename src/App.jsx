@@ -516,6 +516,7 @@ const SECTION_META = {
   "section-alerts":     { color: "#ef4444", bg: "#fef2f2", icon: <IcSvg><path d="M10.3 3.5L2.1 17A2 2 0 0 0 3.8 20h16.4a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><circle cx="12" cy="17" r="1"/></IcSvg> },
   "section-apps":       { color: "#0d9488", bg: "#f0fdfa", icon: <IcSvg><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IcSvg> },
   "section-advisor":    { color: "#7c3aed", bg: "#f5f3ff", icon: <IcSvg><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></IcSvg> },
+  "section-followup":   { color: "#0891b2", bg: "#ecfeff", icon: <IcSvg><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></IcSvg> },
 };
 
 const IconChip = ({ id, size = 28 }) => {
@@ -1642,6 +1643,12 @@ export default function App() {
   const delInh = id => setInheritances(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyInheritance, id: Date.now() }]; });
   const updInh = (id, f, v) => setInheritances(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
+  const emptyFollowUp = { task: "", who: "", when: "", how: "", why: "", status: "open", notes: "" };
+  const [followUps, setFollowUps] = useState([{ ...emptyFollowUp, id: Date.now() }]);
+  const addFollowUp = () => setFollowUps(p => [...p, { ...emptyFollowUp, id: Date.now() }]);
+  const delFollowUp = id => setFollowUps(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyFollowUp, id: Date.now() }]; });
+  const updFollowUp = (id, f, v) => setFollowUps(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
+
   const VAULT_CATEGORIES = [
     "Investment Statements",
     "Voided Check",
@@ -1733,6 +1740,7 @@ export default function App() {
     ["section-inheritance",() => "Estate Planning"],
     ["section-suitability",() => "Suitability"],
     ["section-toolbox",    () => "Client Toolbox"],
+    ["section-followup",   () => "Follow Up"],
     ["section-alerts",     () => "Alerts"],
     ["section-apps",       () => "Applications / Docs"],
     ["section-advisor",    () => "Advisor / Broker Info"],
@@ -1812,8 +1820,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability]);
+    beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -1871,6 +1879,7 @@ export default function App() {
     setNwState(record.nwState || { ...emptyNwState });
     setInheritances(record.inheritances || (record.inheritance ? [{ ...record.inheritance, id: 1 }] : [{ ...emptyInheritance, id: 1 }]));
     setVaults(record.vaults || []);
+    setFollowUps(record.followUps || [{ ...emptyFollowUp, id: Date.now() }]);
     setUploads(record.uploads || {});
     setClientDlImage(record.clientDlImage || null);
     setSpouseDlImage(record.spouseDlImage || null);
@@ -2056,6 +2065,7 @@ export default function App() {
     setNwState({ ...emptyNwState });
     setInheritances([{ ...emptyInheritance, id: 1 }]);
     setVaults([]);
+    setFollowUps([{ ...emptyFollowUp, id: Date.now() }]);
     setActiveClient(null);
     setSubmitted(false);
     setSectionUpdatedAt({});
@@ -2202,6 +2212,7 @@ export default function App() {
             ["section-inheritance", "Estate Planning"],
             ["section-suitability", "Suitability"],
             ["section-toolbox",    "Client Toolbox"],
+            ["section-followup",   "Follow Up"],
             ["section-alerts",     "Alerts"],
             ["section-apps",       "Applications / Docs"],
             ["section-advisor",    "Advisor / Broker Info"],
@@ -4752,6 +4763,92 @@ export default function App() {
               </div>
             );
           })}
+        </Panel>
+
+        <Panel title="Follow Up" id="section-followup">
+          {followUps.map((fu, i) => (
+            <div key={fu.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Task / Trade {i + 1}</div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <select value={fu.status} onChange={e => updFollowUp(fu.id, "status", e.target.value)} style={{ ...IS, width: 120, fontSize: 12, padding: "4px 10px", background: fu.status === "completed" ? "#dcfce7" : fu.status === "pending" ? "#fef9c3" : "#fff", color: fu.status === "completed" ? "#166534" : fu.status === "pending" ? "#854d0e" : INK }}>
+                    <option value="open">Open</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  {followUps.length > 1 && <button onClick={() => showConfirm("Remove this follow-up?", () => delFollowUp(fu.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>}
+                </div>
+              </div>
+              <Row cols={1}>
+                <F><Lbl t="Task / Trade Description" /><input value={fu.task} onChange={e => updFollowUp(fu.id, "task", e.target.value)} style={IS} placeholder="Describe the task or trade…" autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+                <F style={{ flex: "0 0 180px" }}>
+                  <Lbl t="Who" />
+                  <select value={fu.who} onChange={e => updFollowUp(fu.id, "who", e.target.value)} style={{ ...IS, width: 180 }}>
+                    <option value="">— Select —</option>
+                    <option>Advisor</option>
+                    <option>Client</option>
+                    <option>Spouse / Co-Client</option>
+                    <option>Office Staff</option>
+                    <option>Attorney</option>
+                    <option>CPA / Accountant</option>
+                    <option>Insurance Company</option>
+                    <option>Broker Dealer</option>
+                    <option>Custodian</option>
+                    <option>Other</option>
+                  </select>
+                </F>
+                <F style={{ flex: "0 0 150px" }}>
+                  <Lbl t="When" />
+                  <input value={fu.when} onChange={e => updFollowUp(fu.id, "when", fmtDOB(e.target.value))} style={{ ...IS, width: 150 }} placeholder="MM/DD/YYYY" inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+                </F>
+                <F style={{ flex: "0 0 190px" }}>
+                  <Lbl t="How" />
+                  <select value={fu.how} onChange={e => updFollowUp(fu.id, "how", e.target.value)} style={{ ...IS, width: 190 }}>
+                    <option value="">— Select —</option>
+                    <option>Phone Call</option>
+                    <option>Email</option>
+                    <option>In-Person Meeting</option>
+                    <option>Video Call</option>
+                    <option>Text Message</option>
+                    <option>Mail / Letter</option>
+                    <option>Client Portal</option>
+                    <option>Other</option>
+                  </select>
+                </F>
+                <F style={{ flex: "1 1 200px" }}>
+                  <Lbl t="Why" />
+                  <select value={fu.why} onChange={e => updFollowUp(fu.id, "why", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option>Account Review</option>
+                    <option>Trade / Transaction</option>
+                    <option>Application / New Business</option>
+                    <option>Policy Review</option>
+                    <option>Beneficiary Update</option>
+                    <option>Address / Contact Update</option>
+                    <option>RMD Planning</option>
+                    <option>Estate Planning</option>
+                    <option>Suitability Review</option>
+                    <option>Document Request</option>
+                    <option>License / Compliance</option>
+                    <option>Transfer / Rollover</option>
+                    <option>Annual Review</option>
+                    <option>Client-Initiated Request</option>
+                    <option>General Follow-Up</option>
+                    <option>Other</option>
+                  </select>
+                </F>
+              </div>
+              <Row cols={1}>
+                <F><Lbl t="Notes" /><textarea value={fu.notes} onChange={e => updFollowUp(fu.id, "notes", e.target.value)} style={{ ...IS, minHeight: 72, resize: "vertical" }} placeholder="Additional details…" /></F>
+              </Row>
+            </div>
+          ))}
+          <button onClick={addFollowUp} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
+            + Add Follow Up
+          </button>
         </Panel>
 
         <Panel title="Alerts" id="section-alerts">
