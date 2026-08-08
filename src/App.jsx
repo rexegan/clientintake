@@ -2657,7 +2657,10 @@ export default function App() {
 
           {["married","domestic_partner"].includes(hasSpouse) && (
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Spouse Details</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK }}>Spouse Details</div>
+                <button onClick={() => setClient(p => ({ ...p, tcFirstName: spouse.firstName || "", tcMiddleInitial: (spouse.middleName || "").charAt(0), tcLastName: spouse.lastName || "", tcCell: spouse.cell || "", tcHomePhone: spouse.homePhone || "", tcEmail: spouseEmails[0]?.address || "", tcRelationship: "Spouse" }))} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy to Trusted Contact</button>
+              </div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setSN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setSN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
