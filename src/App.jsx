@@ -2254,7 +2254,7 @@ export default function App() {
           </button>
         </div>
 
-        <div className="main-col" style={{ maxWidth: 940, margin: "0 auto", padding: "28px 28px 44px" }}>
+        <div className="main-col" style={{ maxWidth: 940, padding: "28px 28px 44px" }}>
 
         <div style={{ marginBottom: 16 }}>
           {/* Row 1: title only */}
