@@ -2431,11 +2431,11 @@ export default function App() {
           </div>
 
           <Sec t="Trusted Contact" />
-          <Row cols={3}>
-            <F><Lbl t="Last Name" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 70 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "1 1 180px" }}><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 100px" }}><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 100 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "1 1 180px" }}><Lbl t="Last Name" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </div>
           <Row cols={3}>
             <F>
               <Lbl t="Relationship" />
