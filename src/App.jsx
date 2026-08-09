@@ -5254,12 +5254,8 @@ export default function App() {
                 <option value="">— Select —</option>
                 <option>Christian — Protestant</option>
                 <option>Christian — Catholic</option>
-                <option>Christian — Non-Denominational</option>
+                <option>Christian — Non-Dnom.</option>
                 <option>Jewish</option>
-                <option>Muslim</option>
-                <option>Hindu</option>
-                <option>Buddhist</option>
-                <option>Mormon / LDS</option>
                 <option>Atheist / Agnostic</option>
                 <option>Spiritual / Non-Religious</option>
                 <option>Other</option>
