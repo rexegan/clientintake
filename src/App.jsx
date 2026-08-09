@@ -3675,7 +3675,7 @@ export default function App() {
           <Row cols={2}>
             <F>
               <Lbl t="Own or Rent?" />
-              <select value={homeOwnership.ownOrRent || ""} onChange={e => setHomeOwnership(p => ({ ...p, ownOrRent: e.target.value || null }))} style={IS}>
+              <select value={homeOwnership.ownOrRent || ""} onChange={e => setHomeOwnership(p => ({ ...p, ownOrRent: e.target.value || null }))} style={{ ...IS, width: 90 }}>
                 <option value="">— Select —</option>
                 <option value="own">Own</option>
                 <option value="rent">Rent</option>
