@@ -1811,7 +1811,6 @@ export default function App() {
   const [quickViewPanelOpen, setQuickViewPanelOpen] = useState(false);
   const QV_SECTIONS = [
     ["section-profile",    () => recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
-    ["section-preferences",() => "Client Preferences"],
     ["section-family",     () => "Family"],
     ["section-bene",       () => "Beneficiaries"],
     ["section-employment", () => "Employment"],
@@ -1827,6 +1826,7 @@ export default function App() {
     ["section-toolbox",    () => "Advisor Toolbox"],
     ["section-followup",   () => "Follow Up"],
     ["section-alerts",     () => "Alerts"],
+    ["section-preferences",() => "Client Preferences"],
     ["section-apps",       () => "Applications / Docs"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
@@ -1842,7 +1842,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-preferences","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-apps"];
+    const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-preferences","section-apps"];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
     }, { threshold: 0, rootMargin: "-20% 0px -70% 0px" });
@@ -2303,7 +2303,6 @@ export default function App() {
           </div>
           {[
             ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
-            ["section-preferences","Client Preferences"],
             ["section-family",    "Family"],
             ["section-bene",      "Beneficiaries"],
             ["section-employment","Employment"],
@@ -2319,6 +2318,7 @@ export default function App() {
             ["section-toolbox",    "Advisor Toolbox"],
             ["section-followup",   "Follow Up"],
             ["section-alerts",     "Alerts"],
+            ["section-preferences","Client Preferences"],
             ["section-apps",       "Applications / Docs"],
           ].map(([id, label]) => {
             const ts = sectionUpdatedAt[id];
@@ -2751,79 +2751,6 @@ export default function App() {
           })()}
 
           <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
-        </Panel>
-
-        {/* ── FAMILY ── */}
-        <Panel title="Client Preferences" id="section-preferences">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Meeting Time Preference" />
-              <select value={client.meetingTimePref || ""} onChange={setC("meetingTimePref")} style={{ ...IS, width: 180 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Late Afternoon</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Meeting Location Preference" />
-              <select value={client.meetingLocPref || ""} onChange={setC("meetingLocPref")} style={{ ...IS, width: 180 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Office</option>
-                <option>Home</option>
-                <option>Restaurant</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Religious Preference" />
-              <select value={client.religiousPref || ""} onChange={setC("religiousPref")} style={{ ...IS, width: 190 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Christian — Protestant</option>
-                <option>Christian — Catholic</option>
-                <option>Christian — Non-Denominational</option>
-                <option>Jewish</option>
-                <option>Muslim</option>
-                <option>Hindu</option>
-                <option>Buddhist</option>
-                <option>Mormon / LDS</option>
-                <option>Atheist / Agnostic</option>
-                <option>Spiritual / Non-Religious</option>
-                <option>Other</option>
-                <option>Prefer Not to Say</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Political Preference" />
-              <select value={client.politicalPref || ""} onChange={setC("politicalPref")} style={{ ...IS, width: 170 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Republican</option>
-                <option>Democrat</option>
-                <option>Independent</option>
-                <option>Libertarian</option>
-                <option>Green Party</option>
-                <option>Other</option>
-                <option>Prefer Not to Say</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Referred From" />
-              <select value={client.referredFrom || ""} onChange={setC("referredFrom")} style={{ ...IS, width: 200 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Existing Client</option>
-                <option>Family Member</option>
-                <option>Friend / Colleague</option>
-                <option>Attorney Referral</option>
-                <option>CPA / Accountant Referral</option>
-                <option>Social Media</option>
-                <option>Website / Online Search</option>
-                <option>Seminar / Event</option>
-                <option>Radio / TV</option>
-                <option>Print / Advertisement</option>
-                <option>Other</option>
-              </select>
-            </div>
-          </div>
         </Panel>
 
         <Panel title="Family" id="section-family">
@@ -5297,6 +5224,94 @@ export default function App() {
               );
             });
           })()}
+        </Panel>
+
+        {/* ── CLIENT PREFERENCES ── */}
+        <Panel title="Client Preferences" id="section-preferences">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Meeting Time Preference" />
+              <select value={client.meetingTimePref || ""} onChange={setC("meetingTimePref")} style={{ ...IS, width: 180 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Morning</option>
+                <option>Afternoon</option>
+                <option>Late Afternoon</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Meeting Location Preference" />
+              <select value={client.meetingLocPref || ""} onChange={setC("meetingLocPref")} style={{ ...IS, width: 180 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Office</option>
+                <option>Home</option>
+                <option>Restaurant</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Religious Preference" />
+              <select value={client.religiousPref || ""} onChange={setC("religiousPref")} style={{ ...IS, width: 190 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Christian — Protestant</option>
+                <option>Christian — Catholic</option>
+                <option>Christian — Non-Denominational</option>
+                <option>Jewish</option>
+                <option>Muslim</option>
+                <option>Hindu</option>
+                <option>Buddhist</option>
+                <option>Mormon / LDS</option>
+                <option>Atheist / Agnostic</option>
+                <option>Spiritual / Non-Religious</option>
+                <option>Other</option>
+                <option>Prefer Not to Say</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Political Preference" />
+              <select value={client.politicalPref || ""} onChange={setC("politicalPref")} style={{ ...IS, width: 170 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Republican</option>
+                <option>Democrat</option>
+                <option>Independent</option>
+                <option>Libertarian</option>
+                <option>Green Party</option>
+                <option>Other</option>
+                <option>Prefer Not to Say</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Referred From" />
+              <select value={client.referredFrom || ""} onChange={setC("referredFrom")} style={{ ...IS, width: 200 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Existing Client</option>
+                <option>Family Member</option>
+                <option>Friend / Colleague</option>
+                <option>Attorney Referral</option>
+                <option>CPA / Accountant Referral</option>
+                <option>Social Media</option>
+                <option>Website / Online Search</option>
+                <option>Seminar / Event</option>
+                <option>Radio / TV</option>
+                <option>Print / Advertisement</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Referred By (Name)" />
+              <input value={client.referredByName || ""} onChange={setC("referredByName")} style={{ ...IS, width: 200 }} placeholder="Enter name..." autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <DatePicker label="Date Referred" value={client.referredDate || ""} onChange={v => setClient(p => ({ ...p, referredDate: v }))} compact />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Thank You Note Sent?" />
+              <select value={client.referralThankYouSent || ""} onChange={setC("referralThankYouSent")} style={{ ...IS, width: 100 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
         </Panel>
 
         {/* ── APPLICATIONS / DOCUMENTS ── */}
