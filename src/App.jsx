@@ -347,6 +347,45 @@ const COUNTRIES = [
   "Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe",
 ];
 
+const DropDown = ({ value, onChange, options, style, placeholder = "— Select —" }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+  const chosen = options.find(o => (o.value !== undefined ? o.value : o) === value);
+  const label = chosen ? (chosen.label || chosen) : "";
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{ ...style, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", userSelect: "none" }}
+      >
+        <span style={{ color: label ? "inherit" : "#9aa3af" }}>{label || placeholder}</span>
+        <span style={{ fontSize: 10, marginLeft: 6, opacity: 0.5 }}>▾</span>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 9999, background: "#fff", border: "1px solid #cfd5de", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", minWidth: "100%", maxHeight: 260, overflowY: "auto", marginTop: 2 }}>
+          {options.map((o, i) => {
+            const v = o.value !== undefined ? o.value : o;
+            const l = o.label || o;
+            return (
+              <div key={i} onMouseDown={() => { onChange(v); setOpen(false); }}
+                style={{ padding: "8px 14px", fontSize: 13.5, cursor: "pointer", background: v === value ? "#f0f4ff" : "transparent", color: v === value ? "#2f3a4a" : "#151b28", fontWeight: v === value ? 600 : 400 }}
+                onMouseEnter={e => e.currentTarget.style.background = "#f4f6f9"}
+                onMouseLeave={e => e.currentTarget.style.background = v === value ? "#f0f4ff" : "transparent"}
+              >{l || <span style={{ color: "#9aa3af" }}>{placeholder}</span>}</div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CountrySelect = ({ value, onChange, style }) => (
   <select data-lpignore="true" value={value || ""} onChange={onChange} style={style || IS}>
     <option value="">— Select —</option>
@@ -4801,22 +4840,27 @@ export default function App() {
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
                 <F style={{ flex: "1 1 200px" }}>
                   <Lbl t="Who" />
-                  <select value={fu.who} onChange={e => updFollowUp(fu.id, "who", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option>Advisor</option>
-                    <option>Client</option>
-                    <option>Spouse / Co-Client</option>
-                    <option>Office Staff</option>
-                    <option>Attorney</option>
-                    <option>CPA / Accountant</option>
-                    <option>Insurance Company</option>
-                    <option>Broker Dealer</option>
-                    <option>Custodian</option>
-                    {savedClients.map(r => {
-                      const name = [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ");
-                      return name ? <option key={r.id} value={name}>{name}</option> : null;
-                    })}
-                  </select>
+                  <DropDown
+                    value={fu.who}
+                    onChange={v => updFollowUp(fu.id, "who", v)}
+                    style={IS}
+                    options={[
+                      { value: "", label: "" },
+                      { value: "Advisor", label: "Advisor" },
+                      { value: "Client", label: "Client" },
+                      { value: "Spouse / Co-Client", label: "Spouse / Co-Client" },
+                      { value: "Office Staff", label: "Office Staff" },
+                      { value: "Attorney", label: "Attorney" },
+                      { value: "CPA / Accountant", label: "CPA / Accountant" },
+                      { value: "Insurance Company", label: "Insurance Company" },
+                      { value: "Broker Dealer", label: "Broker Dealer" },
+                      { value: "Custodian", label: "Custodian" },
+                      ...savedClients.flatMap(r => {
+                        const name = [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ");
+                        return name ? [{ value: name, label: name }] : [];
+                      }),
+                    ]}
+                  />
                 </F>
                 <F style={{ flex: "0 0 150px" }}>
                   <Lbl t="When" />
