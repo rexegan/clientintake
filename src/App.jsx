@@ -2539,6 +2539,15 @@ export default function App() {
                 <option>Washington Commanders</option>
               </select>
             </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Favorite Ice Cream" />
+              <select value={client.favIceCream || ""} onChange={setC("favIceCream")} style={{ ...IS, width: 150 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Chocolate</option>
+                <option>Strawberry</option>
+                <option>Vanilla</option>
+              </select>
+            </div>
           </div>
 
           <Sec t="Home Address" />
