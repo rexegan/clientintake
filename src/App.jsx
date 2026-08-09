@@ -4952,27 +4952,22 @@ export default function App() {
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
                 <F style={{ flex: "1 1 200px" }}>
                   <Lbl t="Who" />
-                  <DropDown
-                    value={fu.who}
-                    onChange={v => updFollowUp(fu.id, "who", v)}
-                    style={IS}
-                    options={[
-                      { value: "", label: "" },
-                      { value: "Advisor", label: "Advisor" },
-                      { value: "Client", label: "Client" },
-                      { value: "Spouse / Co-Client", label: "Spouse / Co-Client" },
-                      { value: "Office Staff", label: "Office Staff" },
-                      { value: "Attorney", label: "Attorney" },
-                      { value: "CPA / Accountant", label: "CPA / Accountant" },
-                      { value: "Insurance Company", label: "Insurance Company" },
-                      { value: "Broker Dealer", label: "Broker Dealer" },
-                      { value: "Custodian", label: "Custodian" },
-                      ...savedClients.flatMap(r => {
-                        const name = [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ");
-                        return name ? [{ value: name, label: name }] : [];
-                      }),
-                    ]}
-                  />
+                  <select value={fu.who} onChange={e => updFollowUp(fu.id, "who", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option>Advisor</option>
+                    <option>Client</option>
+                    <option>Spouse / Co-Client</option>
+                    <option>Office Staff</option>
+                    <option>Attorney</option>
+                    <option>CPA / Accountant</option>
+                    <option>Insurance Company</option>
+                    <option>Broker Dealer</option>
+                    <option>Custodian</option>
+                    {savedClients.map(r => {
+                      const name = [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ");
+                      return name ? <option key={r.id} value={name}>{name}</option> : null;
+                    })}
+                  </select>
                 </F>
                 <F style={{ flex: "0 0 150px" }}>
                   <Lbl t="When" />
