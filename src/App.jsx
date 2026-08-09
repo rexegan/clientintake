@@ -357,7 +357,7 @@ const DropDown = ({ value, onChange, options, style, placeholder = "â€” Select â
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
   const chosen = options.find(o => (o.value !== undefined ? o.value : o) === value);
-  const label = chosen ? (chosen.label || chosen) : "";
+  const label = chosen ? (chosen.label != null ? chosen.label : String(chosen)) : "";
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <div
