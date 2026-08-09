@@ -1794,6 +1794,7 @@ export default function App() {
   const markSection = id => setSectionUpdatedAt(s => ({ ...s, [id]: new Date() }));
 
   const [activeSection, setActiveSection] = useState("section-profile");
+  const sideRailRef = useRef(null);
   useEffect(() => {
     const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-apps"];
     const observer = new IntersectionObserver(entries => {
@@ -1804,6 +1805,12 @@ export default function App() {
     }, 300);
     return () => { clearTimeout(timer); observer.disconnect(); };
   }, [view]);
+
+  useEffect(() => {
+    if (!sideRailRef.current || !activeSection) return;
+    const btn = sideRailRef.current.querySelector(`[data-section="${activeSection}"]`);
+    if (btn) btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [activeSection]);
 
   const setActiveClient = (id) => {
     if (id == null) { sessionStorage.removeItem("rwg_activeClientId"); }
@@ -2238,7 +2245,7 @@ export default function App() {
       <div style={{ display: "flex", alignItems: "stretch" }}>
 
         {/* ── SIDEBAR ── */}
-        <aside className="side-rail" style={{ width: 226, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 10px" }}>
+        <aside ref={sideRailRef} className="side-rail" style={{ width: 226, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 10px" }}>
           <div style={{ padding: "8px 6px 14px" }}>
             <BrandLockup mark={42} />
             <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</div>
@@ -2275,6 +2282,7 @@ export default function App() {
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
                 className="side-nav"
+                data-section={id}
                 style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", textAlign: "left", background: activeSection === id ? "rgba(47,58,74,0.13)" : "transparent", border: "none", color: activeSection === id ? INK : "#39414f", borderRadius: 9, padding: "5px 6px", marginBottom: 1, fontSize: 12.5, fontWeight: activeSection === id ? 700 : 500, cursor: "pointer", lineHeight: 1.3 }}
               >
                 <IconChip id={id} size={22} />
