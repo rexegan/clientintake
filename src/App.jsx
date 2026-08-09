@@ -2487,6 +2487,79 @@ export default function App() {
             </div>
           </div>
 
+          <Sec t="Home Address" />
+          <Row cols={2}>
+            <F><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F>
+              <Lbl t="ZIP" />
+              <input
+                value={client.zip}
+                onChange={e => {
+                  const z = fmtZip(e.target.value);
+                  setClient(p => ({ ...p, zip: z }));
+                  lookupZip(z, (city, state) => setClient(p => ({ ...p, city, state })));
+                }}
+                maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+              />
+            </F>
+            <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="State" /><StateSelect value={client.state} onChange={setC("state")} /></F>
+          </Row>
+
+          <div className="rg" style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "0 16px" }}>
+            <F>
+              <Lbl t="PO Box?" />
+              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            <F>
+              <Lbl t="Preferred Mailing Address" />
+              <select data-lpignore="true" value={client.preferredMailing || ""} onChange={e => setClient(p => ({ ...p, preferredMailing: e.target.value || "" }))} style={IS}>
+                <option value="">— Select —</option>
+                <option value="physical">Physical Address</option>
+                <option value="pobox">P.O. Box</option>
+              </select>
+            </F>
+          </div>
+          {client.hasPOBox === "yes" && (
+            <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
+              <Row cols={2}>
+                <F>
+                  <Lbl t="PO Box Number" />
+                  <input
+                    value={client.poBox}
+                    onChange={setC("poBox")}
+                    onBlur={e => setClient(p => ({ ...p, poBox: fmtPOBox(e.target.value) }))}
+                    style={IS} autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
+                <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              <Row cols={2}>
+                <F>
+                  <Lbl t="ZIP" />
+                  <input
+                    value={client.poBoxZip}
+                    onChange={e => {
+                      const z = fmtZip(e.target.value);
+                      setClient(p => ({ ...p, poBoxZip: z }));
+                      lookupZip(z, (city, state) => setClient(p => ({ ...p, poBoxCity: city, poBoxState: state })));
+                    }}
+                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
+                  />
+                </F>
+                <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
+              </Row>
+            </div>
+          )}
+
           <Sec t="Trusted Contact" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
             <F style={{ flex: "1 1 180px" }}><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2608,78 +2681,6 @@ export default function App() {
             </>);
           })()}
 
-          <Sec t="Home Address" />
-          <Row cols={2}>
-            <F><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <Row cols={3}>
-            <F>
-              <Lbl t="ZIP" />
-              <input
-                value={client.zip}
-                onChange={e => {
-                  const z = fmtZip(e.target.value);
-                  setClient(p => ({ ...p, zip: z }));
-                  lookupZip(z, (city, state) => setClient(p => ({ ...p, city, state })));
-                }}
-                maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
-              />
-            </F>
-            <F><Lbl t="City" /><input value={client.city} onChange={setC("city")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="State" /><StateSelect value={client.state} onChange={setC("state")} /></F>
-          </Row>
-
-          <div className="rg" style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "0 16px" }}>
-            <F>
-              <Lbl t="PO Box?" />
-              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={IS}>
-                <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </F>
-            <F>
-              <Lbl t="Preferred Mailing Address" />
-              <select data-lpignore="true" value={client.preferredMailing || ""} onChange={e => setClient(p => ({ ...p, preferredMailing: e.target.value || "" }))} style={IS}>
-                <option value="">— Select —</option>
-                <option value="physical">Physical Address</option>
-                <option value="pobox">P.O. Box</option>
-              </select>
-            </F>
-          </div>
-          {client.hasPOBox === "yes" && (
-            <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
-              <Row cols={2}>
-                <F>
-                  <Lbl t="PO Box Number" />
-                  <input
-                    value={client.poBox}
-                    onChange={setC("poBox")}
-                    onBlur={e => setClient(p => ({ ...p, poBox: fmtPOBox(e.target.value) }))}
-                    style={IS} autoComplete="new-password" data-lpignore="true"
-                  />
-                </F>
-                <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Row cols={2}>
-                <F>
-                  <Lbl t="ZIP" />
-                  <input
-                    value={client.poBoxZip}
-                    onChange={e => {
-                      const z = fmtZip(e.target.value);
-                      setClient(p => ({ ...p, poBoxZip: z }));
-                      lookupZip(z, (city, state) => setClient(p => ({ ...p, poBoxCity: city, poBoxState: state })));
-                    }}
-                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
-                  />
-                </F>
-                <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
-              </Row>
-            </div>
-          )}
           <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
