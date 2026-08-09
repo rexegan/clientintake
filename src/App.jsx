@@ -3062,25 +3062,28 @@ export default function App() {
                 <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={4}>
-                <F><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} compact /></F>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12, alignItems: "flex-end" }}>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} compact /></div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Gender" />
-                  <select data-lpignore="true" value={b.gender || ""} onChange={e => updBene(b.id, "gender", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={b.gender || ""} onChange={e => updBene(b.id, "gender", e.target.value)} style={{ ...IS, width: 100 }}>
                     <option value="">— Select —</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
-                </F>
-                <F><Lbl t="SSN" /><input value={b.ssn} onChange={e => updBene(b.id, "ssn", fmtSSN(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="SSN" />
+                  <input value={b.ssn} onChange={e => updBene(b.id, "ssn", fmtSSN(e.target.value))} style={{ ...IS, width: 132 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Relationship" />
-                  <select data-lpignore="true" value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={b.relationship} onChange={e => updBene(b.id, "relationship", e.target.value)} style={{ ...IS, width: 172 }}>
                     <option value="">— Select —</option>
                     {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
               <Row cols={2}>
                 <F><Lbl t="Email Address" /><div style={{ display: "flex", gap: 6, alignItems: "center" }}><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />{b.email && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(b.email)}`} target="_blank" rel="noreferrer" title="Send email" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16, flexShrink: 0 }}>✉</a>}</div></F>
                 <F>
