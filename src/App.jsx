@@ -4981,9 +4981,9 @@ export default function App() {
                   return (
                     <div style={{ paddingLeft: 12 }}>
                       <div style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
-                        <div style={{ width: 200, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who</div>
-                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Mo</div>
-                        <div style={{ width: 62, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Day</div>
+                        <div style={{ width: 200, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Who</div>
+                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "left" }}>Month</div>
+                        <div style={{ width: 62, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "left" }}>Day</div>
                         <div style={{ width: 64, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Year</div>
                         <div style={{ width: 172, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>How / Follow-Up</div>
                         <div style={{ width: 28 }} />
@@ -5005,7 +5005,7 @@ export default function App() {
                               {MONTHS.map((m, idx) => <option key={m} value={String(idx+1).padStart(2,"0")}>{m}</option>)}
                             </select>
                             <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 62, flexShrink: 0 }} data-lpignore="true">
-                              <option value="">D</option>
+                              <option value="">Day</option>
                               {Array.from({ length: daysInMo }, (_, idx) => { const v = String(idx+1).padStart(2,"0"); return <option key={v} value={v}>{idx+1}</option>; })}
                             </select>
                             <input value={wYy} onChange={e => setWhen(wMm, wDd, e.target.value.replace(/\D/g,"").slice(0,4))} placeholder="Year" inputMode="numeric" maxLength={4} style={{ ...IS, width: 64, flexShrink: 0 }} autoComplete="new-password" data-lpignore="true" />
