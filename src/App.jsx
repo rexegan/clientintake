@@ -581,6 +581,7 @@ const IcSvg = ({ children }) => (
 
 const SECTION_META = {
   "section-profile":    { color: "#3b82f6", bg: "#eef4ff", icon: <IcSvg><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></IcSvg> },
+  "section-preferences":{ color: "#0d9488", bg: "#f0fdfa", icon: <IcSvg><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></IcSvg> },
   "section-family":     { color: "#8b5cf6", bg: "#f3efff", icon: <IcSvg><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6"/><path d="M17.8 14.6a6.5 6.5 0 0 1 3.7 5.4"/></IcSvg> },
   "section-bene":       { color: "#ec4899", bg: "#fdeef6", icon: <IcSvg><path d="M12 20.5S4 15.5 3 10.5a4.8 4.8 0 0 1 9-2.4 4.8 4.8 0 0 1 9 2.4c-1 5-9 10-9 10z"/></IcSvg> },
   "section-employment": { color: "#f59e0b", bg: "#fdf3e3", icon: <IcSvg><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></IcSvg> },
@@ -1810,6 +1811,7 @@ export default function App() {
   const [quickViewPanelOpen, setQuickViewPanelOpen] = useState(false);
   const QV_SECTIONS = [
     ["section-profile",    () => recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
+    ["section-preferences",() => "Client Preferences"],
     ["section-family",     () => "Family"],
     ["section-bene",       () => "Beneficiaries"],
     ["section-employment", () => "Employment"],
@@ -1840,7 +1842,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-apps"];
+    const ids = ["section-profile","section-preferences","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-apps"];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
     }, { threshold: 0, rootMargin: "-20% 0px -70% 0px" });
@@ -1902,6 +1904,7 @@ export default function App() {
 
   // Track last-updated timestamps per sidebar section
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-profile"); }, [client, clientEmails]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-preferences"); }, [client]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-family"); }, [hasSpouse, spouse, spouseEmails, hasChildren, children]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-bene"); }, [beneficiaries]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-employment"); }, [clientEmp, spouseEmp]);
@@ -2300,6 +2303,7 @@ export default function App() {
           </div>
           {[
             ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
+            ["section-preferences","Client Preferences"],
             ["section-family",    "Family"],
             ["section-bene",      "Beneficiaries"],
             ["section-employment","Employment"],
@@ -2750,6 +2754,78 @@ export default function App() {
         </Panel>
 
         {/* ── FAMILY ── */}
+        <Panel title="Client Preferences" id="section-preferences">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Meeting Time Preference" />
+              <select value={client.meetingTimePref || ""} onChange={setC("meetingTimePref")} style={{ ...IS, width: 180 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Morning</option>
+                <option>Afternoon</option>
+                <option>Late Afternoon</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Meeting Location Preference" />
+              <select value={client.meetingLocPref || ""} onChange={setC("meetingLocPref")} style={{ ...IS, width: 180 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Office</option>
+                <option>Home</option>
+                <option>Restaurant</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Religious Preference" />
+              <select value={client.religiousPref || ""} onChange={setC("religiousPref")} style={{ ...IS, width: 190 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Christian — Protestant</option>
+                <option>Christian — Catholic</option>
+                <option>Christian — Non-Denominational</option>
+                <option>Jewish</option>
+                <option>Muslim</option>
+                <option>Hindu</option>
+                <option>Buddhist</option>
+                <option>Mormon / LDS</option>
+                <option>Atheist / Agnostic</option>
+                <option>Spiritual / Non-Religious</option>
+                <option>Other</option>
+                <option>Prefer Not to Say</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Political Preference" />
+              <select value={client.politicalPref || ""} onChange={setC("politicalPref")} style={{ ...IS, width: 170 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Republican</option>
+                <option>Democrat</option>
+                <option>Independent</option>
+                <option>Libertarian</option>
+                <option>Green Party</option>
+                <option>Other</option>
+                <option>Prefer Not to Say</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Referred From" />
+              <select value={client.referredFrom || ""} onChange={setC("referredFrom")} style={{ ...IS, width: 200 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Existing Client</option>
+                <option>Family Member</option>
+                <option>Friend / Colleague</option>
+                <option>Attorney Referral</option>
+                <option>CPA / Accountant Referral</option>
+                <option>Social Media</option>
+                <option>Website / Online Search</option>
+                <option>Seminar / Event</option>
+                <option>Radio / TV</option>
+                <option>Print / Advertisement</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </Panel>
+
         <Panel title="Family" id="section-family">
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
             <F style={{ flex: "none" }}>
