@@ -1671,6 +1671,7 @@ export default function App() {
   const [spouseEmails, setSpouseEmails] = useState([{ id: 1, tag: "personal", address: "" }]);
   const [clientEmp, setClientEmp] = useState({ ...emptyEmployer });
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
+  const [empView, setEmpView] = useState("client");
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
@@ -2996,7 +2997,7 @@ export default function App() {
               ↑ Child beneficiaries added in Family section &nbsp;·&nbsp; Additional beneficiaries below
             </div>
           )}
-          {beneficiaries.filter(b => b.firstName || b.lastName || b.relationship || b.percentage).map((b, i) => {
+          {beneficiaries.map((b, i) => {
             const childBeneCount = children.filter(c => c.isBeneficiary).length;
             const beneNum = childBeneCount + i + 1;
             return (
@@ -3148,11 +3149,15 @@ export default function App() {
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment" id="section-employment">
           {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>
-              {client.firstName || "Client"}
+            <div style={{ marginBottom: 14 }}>
+              <Lbl t="Employee" />
+              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+                <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+              </select>
             </div>
           )}
-          <Row cols={2}>
+          {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><Row cols={2}>
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
@@ -3286,12 +3291,10 @@ export default function App() {
               </>
             )}
           </div>
+          </>}
 
-          {["married","domestic_partner"].includes(hasSpouse) && (
+          {["married","domestic_partner"].includes(hasSpouse) && empView === "spouse" && (
             <>
-              <div style={{ borderTop: "1px solid " + BORDER, marginTop: 18, paddingTop: 14 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>{spouse.firstName || "Spouse"}</div>
-              </div>
               <Row cols={2}>
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
