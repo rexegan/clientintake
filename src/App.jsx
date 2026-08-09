@@ -1725,7 +1725,8 @@ export default function App() {
   const delInh = id => setInheritances(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyInheritance, id: Date.now() }]; });
   const updInh = (id, f, v) => setInheritances(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
-  const emptyFollowUp = { task: "", who: [], when: "", how: "", why: "", status: "open", notes: "" };
+  const emptyFollowUp = { task: "", who: [], why: "", status: "open", notes: "" };
+  const emptyWho = { name: "", when: "", how: "" };
   const [followUps, setFollowUps] = useState([{ ...emptyFollowUp, id: Date.now() }]);
   const addFollowUp = () => setFollowUps(p => [...p, { ...emptyFollowUp, id: Date.now() }]);
   const delFollowUp = id => setFollowUps(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyFollowUp, id: Date.now() }]; });
@@ -4968,49 +4969,54 @@ export default function App() {
                   </select>
                 </F>
               </Row>
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
-                <F style={{ flex: "1 1 240px" }}>
-                  <Lbl t="Who" />
-                  {(() => {
-                    const whoList = Array.isArray(fu.who) ? fu.who : (fu.who ? [fu.who] : [""]);
-                    const whoOptions = ["Advisor","Client","Spouse / Co-Client","Office Staff","Attorney","CPA / Accountant","Insurance Company","Broker Dealer","Custodian",
-                      ...savedClients.map(r => [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ")).filter(Boolean)];
-                    return (
+              <div style={{ marginBottom: 12 }}>
+                {(() => {
+                  const rawWho = fu.who;
+                  const whoList = Array.isArray(rawWho)
+                    ? (rawWho.length === 0 ? [{ ...emptyWho }] : rawWho.map(w => typeof w === "string" ? { name: w, when: fu.when || "", how: fu.how || "" } : w))
+                    : (rawWho ? [{ name: rawWho, when: fu.when || "", how: fu.how || "" }] : [{ ...emptyWho }]);
+                  const whoOptions = ["Advisor","Client","Spouse / Co-Client","Office Staff","Attorney","CPA / Accountant","Insurance Company","Broker Dealer","Custodian",
+                    ...savedClients.map(r => [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ")).filter(Boolean)];
+                  const updWho = (wi, field, val) => { const next = whoList.map((w, j) => j === wi ? { ...w, [field]: val } : w); updFollowUp(fu.id, "who", next); };
+                  return (
+                    <div>
+                      <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
+                        <div style={{ flex: "1 1 180px", fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who</div>
+                        <div style={{ flex: "0 0 220px", fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>When</div>
+                        <div style={{ flex: "0 0 190px", fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>How / Follow-Up</div>
+                        <div style={{ width: 28 }} />
+                      </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                         {whoList.map((w, wi) => (
-                          <div key={wi} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                            <select value={w} onChange={e => { const next = [...whoList]; next[wi] = e.target.value; updFollowUp(fu.id, "who", next); }} style={{ ...IS, flex: 1 }} data-lpignore="true">
+                          <div key={wi} style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                            <select value={w.name || ""} onChange={e => updWho(wi, "name", e.target.value)} style={{ ...IS, flex: "1 1 180px" }} data-lpignore="true">
                               <option value="">— Select —</option>
                               {whoOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                            </select>
+                            <div style={{ flex: "0 0 220px" }}>
+                              <DatePicker value={w.when || ""} onChange={v => updWho(wi, "when", v)} compact />
+                            </div>
+                            <select value={w.how || ""} onChange={e => updWho(wi, "how", e.target.value)} style={{ ...IS, flex: "0 0 190px" }} data-lpignore="true">
+                              <option value="">— Select —</option>
+                              <option>Phone Call</option>
+                              <option>Email</option>
+                              <option>In-Person Meeting</option>
+                              <option>Video Call</option>
+                              <option>Text Message</option>
+                              <option>Mail / Letter</option>
+                              <option>Client Portal</option>
+                              <option>Other</option>
                             </select>
                             {whoList.length > 1 && (
                               <button onClick={() => updFollowUp(fu.id, "who", whoList.filter((_, j) => j !== wi))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
                             )}
                           </div>
                         ))}
-                        <button onClick={() => updFollowUp(fu.id, "who", [...whoList, ""])} style={{ background: "transparent", border: "1px dashed #b8c0cb", color: INK, borderRadius: 6, padding: "4px 12px", fontSize: 12, cursor: "pointer", width: "fit-content" }}>+ Add Who</button>
                       </div>
-                    );
-                  })()}
-                </F>
-                <F style={{ flex: "0 0 150px" }}>
-                  <Lbl t="When" />
-                  <input value={fu.when} onChange={e => updFollowUp(fu.id, "when", fmtDOB(e.target.value))} style={{ ...IS, width: 150 }} placeholder="MM/DD/YYYY" inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-                </F>
-                <F style={{ flex: "0 0 190px" }}>
-                  <Lbl t="How / Follow-Up" />
-                  <select value={fu.how} onChange={e => updFollowUp(fu.id, "how", e.target.value)} style={{ ...IS, width: 190 }}>
-                    <option value="">— Select —</option>
-                    <option>Phone Call</option>
-                    <option>Email</option>
-                    <option>In-Person Meeting</option>
-                    <option>Video Call</option>
-                    <option>Text Message</option>
-                    <option>Mail / Letter</option>
-                    <option>Client Portal</option>
-                    <option>Other</option>
-                  </select>
-                </F>
+                      <button onClick={() => updFollowUp(fu.id, "who", [...whoList, { ...emptyWho }])} style={{ background: "transparent", border: "1px dashed #b8c0cb", color: INK, borderRadius: 6, padding: "4px 14px", fontSize: 12, cursor: "pointer", marginTop: 6 }}>+ Add Who</button>
+                    </div>
+                  );
+                })()}
               </div>
               <Row cols={1}>
                 <F><Lbl t="Why" /><textarea value={fu.why} onChange={e => updFollowUp(fu.id, "why", e.target.value)} style={{ ...IS, minHeight: 60, resize: "vertical" }} placeholder="Reason for this task or action…" /></F>
