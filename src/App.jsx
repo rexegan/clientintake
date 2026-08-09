@@ -4982,10 +4982,10 @@ export default function App() {
                     <div style={{ paddingLeft: 12 }}>
                       <div style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
                         <div style={{ width: 200, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Who</div>
-                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "left" }}>Month</div>
-                        <div style={{ width: 62, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "left" }}>Day</div>
-                        <div style={{ width: 64, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Year</div>
-                        <div style={{ width: 172, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>How / Follow-Up</div>
+                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Month</div>
+                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Day</div>
+                        <div style={{ width: 64, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Year</div>
+                        <div style={{ width: 172, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>How / Follow-Up</div>
                         <div style={{ width: 28 }} />
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -5004,7 +5004,7 @@ export default function App() {
                               <option value="">Mo</option>
                               {MONTHS.map((m, idx) => <option key={m} value={String(idx+1).padStart(2,"0")}>{m}</option>)}
                             </select>
-                            <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 62, flexShrink: 0 }} data-lpignore="true">
+                            <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 72, flexShrink: 0 }} data-lpignore="true">
                               <option value="">Day</option>
                               {Array.from({ length: daysInMo }, (_, idx) => { const v = String(idx+1).padStart(2,"0"); return <option key={v} value={v}>{idx+1}</option>; })}
                             </select>
