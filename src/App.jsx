@@ -174,6 +174,48 @@ const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) =>
   );
 };
 
+const GroupedSelect = ({ value, onChange, groups, placeholder = "— Select —", style }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+  const allTypes = groups.flatMap(g => g.types);
+  const label = allTypes.includes(value) ? value : placeholder;
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <div onClick={() => setOpen(o => !o)} style={{ ...style, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", userSelect: "none" }}>
+        <span style={{ color: value ? (style?.color || "#000") : "#9aa3af" }}>{label}</span>
+        <span style={{ fontSize: 11, color: "#697180", marginLeft: 8, flexShrink: 0 }}>{open ? "▴" : "▾"}</span>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 3px)", left: 0, right: 0, zIndex: 9100, background: "#fff", border: "1px solid #cfd5de", borderRadius: 10, boxShadow: "0 6px 20px rgba(0,0,0,0.13)", maxHeight: 280, overflowY: "auto" }}>
+          <div onMouseDown={() => { onChange(""); setOpen(false); }} style={{ padding: "8px 12px", fontSize: 13, color: "#9aa3af", cursor: "pointer", borderBottom: "1px solid #eee" }}
+            onMouseEnter={e => e.currentTarget.style.background = "#f4f6f9"} onMouseLeave={e => e.currentTarget.style.background = ""}>
+            {placeholder}
+          </div>
+          {groups.map(g => (
+            <div key={g.group}>
+              <div style={{ padding: "6px 12px 4px", fontSize: 11, fontWeight: 700, color: "#fff", background: "#2f3a4a", letterSpacing: "0.04em", textTransform: "uppercase" }}>{g.group}</div>
+              {g.types.map(t => (
+                <div key={t} onMouseDown={() => { onChange(t); setOpen(false); }}
+                  style={{ padding: "8px 12px 8px 20px", fontSize: 13, color: "#151b28", cursor: "pointer", background: value === t ? "#eef4ff" : "", fontWeight: value === t ? 600 : 400, borderBottom: "1px solid #f0f2f5" }}
+                  onMouseEnter={e => e.currentTarget.style.background = value === t ? "#eef4ff" : "#f4f6f9"}
+                  onMouseLeave={e => e.currentTarget.style.background = value === t ? "#eef4ff" : ""}>
+                  {t}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const fmtPhone = (r) => {
   const d = r.replace(/\D/g, "").slice(0, 10);
   if (!d.length) return "";
@@ -3886,14 +3928,7 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Account Type" />
-                  <select data-lpignore="true" value={a.type} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    {ACCOUNT_TYPE_GROUPS.map(g => (
-                      <optgroup key={g.group} label={g.group}>
-                        {g.types.map(t => <option key={t} value={t}>{t}</option>)}
-                      </optgroup>
-                    ))}
-                  </select>
+                  <GroupedSelect value={a.type} onChange={v => updAcct(a.id, "type", v)} groups={ACCOUNT_TYPE_GROUPS} style={IS} />
                 </F>
                 <F>
                   <Lbl t="Institution / Held At" />
