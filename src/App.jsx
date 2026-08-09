@@ -4784,7 +4784,7 @@ export default function App() {
           {followUps.map((fu, i) => (
             <div key={fu.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Task / Trade {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Task / Action {i + 1}</div>
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   <select value={fu.status} onChange={e => updFollowUp(fu.id, "status", e.target.value)} style={{ ...IS, width: 120, fontSize: 12, padding: "4px 10px", background: fu.status === "completed" ? "#dcfce7" : fu.status === "pending" ? "#fef9c3" : "#fff", color: fu.status === "completed" ? "#166534" : fu.status === "pending" ? "#854d0e" : INK }}>
                     <option value="open">Open</option>
@@ -4796,31 +4796,42 @@ export default function App() {
                 </div>
               </div>
               <Row cols={1}>
-                <F><Lbl t="Task / Trade Description" /><input value={fu.task} onChange={e => updFollowUp(fu.id, "task", e.target.value)} style={IS} placeholder="Describe the task or trade…" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Task / Action Description" /><input value={fu.task} onChange={e => updFollowUp(fu.id, "task", e.target.value)} style={IS} placeholder="Describe the task or action…" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
-                <F style={{ flex: "0 0 180px" }}>
+                <F style={{ flex: "1 1 200px" }}>
                   <Lbl t="Who" />
-                  <select value={fu.who} onChange={e => updFollowUp(fu.id, "who", e.target.value)} style={{ ...IS, width: 180 }}>
-                    <option value="">— Select —</option>
-                    <option>Advisor</option>
-                    <option>Client</option>
-                    <option>Spouse / Co-Client</option>
-                    <option>Office Staff</option>
-                    <option>Attorney</option>
-                    <option>CPA / Accountant</option>
-                    <option>Insurance Company</option>
-                    <option>Broker Dealer</option>
-                    <option>Custodian</option>
-                    <option>Other</option>
-                  </select>
+                  <input
+                    list={`who-list-${fu.id}`}
+                    value={fu.who}
+                    onChange={e => updFollowUp(fu.id, "who", e.target.value)}
+                    style={IS}
+                    placeholder="Type or select…"
+                    autoComplete="new-password"
+                    data-lpignore="true"
+                  />
+                  <datalist id={`who-list-${fu.id}`}>
+                    <option value="Advisor" />
+                    <option value="Client" />
+                    <option value="Spouse / Co-Client" />
+                    <option value="Office Staff" />
+                    <option value="Attorney" />
+                    <option value="CPA / Accountant" />
+                    <option value="Insurance Company" />
+                    <option value="Broker Dealer" />
+                    <option value="Custodian" />
+                    {savedClients.map(r => {
+                      const name = [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ");
+                      return name ? <option key={r.id} value={name} /> : null;
+                    })}
+                  </datalist>
                 </F>
                 <F style={{ flex: "0 0 150px" }}>
                   <Lbl t="When" />
                   <input value={fu.when} onChange={e => updFollowUp(fu.id, "when", fmtDOB(e.target.value))} style={{ ...IS, width: 150 }} placeholder="MM/DD/YYYY" inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
                 </F>
                 <F style={{ flex: "0 0 190px" }}>
-                  <Lbl t="How" />
+                  <Lbl t="How / Follow-Up" />
                   <select value={fu.how} onChange={e => updFollowUp(fu.id, "how", e.target.value)} style={{ ...IS, width: 190 }}>
                     <option value="">— Select —</option>
                     <option>Phone Call</option>
@@ -4833,31 +4844,12 @@ export default function App() {
                     <option>Other</option>
                   </select>
                 </F>
-                <F style={{ flex: "1 1 200px" }}>
-                  <Lbl t="Why" />
-                  <select value={fu.why} onChange={e => updFollowUp(fu.id, "why", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option>Account Review</option>
-                    <option>Trade / Transaction</option>
-                    <option>Application / New Business</option>
-                    <option>Policy Review</option>
-                    <option>Beneficiary Update</option>
-                    <option>Address / Contact Update</option>
-                    <option>RMD Planning</option>
-                    <option>Estate Planning</option>
-                    <option>Suitability Review</option>
-                    <option>Document Request</option>
-                    <option>License / Compliance</option>
-                    <option>Transfer / Rollover</option>
-                    <option>Annual Review</option>
-                    <option>Client-Initiated Request</option>
-                    <option>General Follow-Up</option>
-                    <option>Other</option>
-                  </select>
-                </F>
               </div>
               <Row cols={1}>
-                <F><Lbl t="Notes" /><textarea value={fu.notes} onChange={e => updFollowUp(fu.id, "notes", e.target.value)} style={{ ...IS, minHeight: 72, resize: "vertical" }} placeholder="Additional details…" /></F>
+                <F><Lbl t="Why" /><textarea value={fu.why} onChange={e => updFollowUp(fu.id, "why", e.target.value)} style={{ ...IS, minHeight: 60, resize: "vertical" }} placeholder="Reason for this task or action…" /></F>
+              </Row>
+              <Row cols={1}>
+                <F><Lbl t="What" /><textarea value={fu.notes} onChange={e => updFollowUp(fu.id, "notes", e.target.value)} style={{ ...IS, minHeight: 72, resize: "vertical" }} placeholder="What needs to happen…" /></F>
               </Row>
             </div>
           ))}
