@@ -371,7 +371,7 @@ const DropDown = ({ value, onChange, options, style, placeholder = "â€” Select â
         <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 9999, background: "#fff", border: "1px solid #cfd5de", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", minWidth: "100%", maxHeight: 260, overflowY: "auto", marginTop: 2 }}>
           {options.map((o, i) => {
             const v = o.value !== undefined ? o.value : o;
-            const l = o.label || o;
+            const l = o.label != null ? o.label : String(o);
             return (
               <div key={i} onMouseDown={() => { onChange(v); setOpen(false); }}
                 style={{ padding: "8px 14px", fontSize: 13.5, cursor: "pointer", background: v === value ? "#f0f4ff" : "transparent", color: v === value ? "#2f3a4a" : "#151b28", fontWeight: v === value ? 600 : 400 }}
