@@ -4979,11 +4979,11 @@ export default function App() {
                     ...savedClients.map(r => [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ")).filter(Boolean)];
                   const updWho = (wi, field, val) => { const next = whoList.map((w, j) => j === wi ? { ...w, [field]: val } : w); updFollowUp(fu.id, "who", next); };
                   return (
-                    <div>
+                    <div style={{ paddingLeft: 12 }}>
                       <div style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
-                        <div style={{ width: 178, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who</div>
+                        <div style={{ width: 200, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who</div>
                         <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Mo</div>
-                        <div style={{ width: 52, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Day</div>
+                        <div style={{ width: 62, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Day</div>
                         <div style={{ width: 64, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Year</div>
                         <div style={{ width: 172, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>How / Follow-Up</div>
                         <div style={{ width: 28 }} />
@@ -4996,7 +4996,7 @@ export default function App() {
                           const daysInMo = wMm && wYy ? new Date(parseInt(wYy), parseInt(wMm), 0).getDate() : 31;
                           return (
                           <div key={wi} style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                            <select value={w.name || ""} onChange={e => updWho(wi, "name", e.target.value)} style={{ ...IS, width: 178, flexShrink: 0 }} data-lpignore="true">
+                            <select value={w.name || ""} onChange={e => updWho(wi, "name", e.target.value)} style={{ ...IS, width: 200, flexShrink: 0 }} data-lpignore="true">
                               <option value="">— Select —</option>
                               {whoOptions.map(o => <option key={o} value={o}>{o}</option>)}
                             </select>
@@ -5004,7 +5004,7 @@ export default function App() {
                               <option value="">Mo</option>
                               {MONTHS.map((m, idx) => <option key={m} value={String(idx+1).padStart(2,"0")}>{m}</option>)}
                             </select>
-                            <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 52, flexShrink: 0 }} data-lpignore="true">
+                            <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 62, flexShrink: 0 }} data-lpignore="true">
                               <option value="">D</option>
                               {Array.from({ length: daysInMo }, (_, idx) => { const v = String(idx+1).padStart(2,"0"); return <option key={v} value={v}>{idx+1}</option>; })}
                             </select>
