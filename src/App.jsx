@@ -5230,7 +5230,7 @@ export default function App() {
         <Panel title="Client Preferences" id="section-preferences">
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="Meeting Time Preference" />
+              <Lbl t="Meeting Preference" />
               <select value={client.meetingTimePref || ""} onChange={setC("meetingTimePref")} style={{ ...IS, width: 180 }} data-lpignore="true">
                 <option value="">— Select —</option>
                 <option>Morning</option>
@@ -5239,7 +5239,7 @@ export default function App() {
               </select>
             </div>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="Meeting Location Preference" />
+              <Lbl t="Location Preference" />
               <select value={client.meetingLocPref || ""} onChange={setC("meetingLocPref")} style={{ ...IS, width: 180 }} data-lpignore="true">
                 <option value="">— Select —</option>
                 <option>Office</option>
@@ -5301,7 +5301,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Thank You Note Sent?" />
-              <select value={client.referralThankYouSent || ""} onChange={setC("referralThankYouSent")} style={{ ...IS, width: 100 }} data-lpignore="true">
+              <select value={client.referralThankYouSent || ""} onChange={setC("referralThankYouSent")} style={{ ...IS, width: 120 }} data-lpignore="true">
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
