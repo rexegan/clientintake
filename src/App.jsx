@@ -2238,7 +2238,7 @@ export default function App() {
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
                 className="side-nav"
-                style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", textAlign: "left", background: activeSection === id ? "rgba(47,58,74,0.13)" : "transparent", border: "none", color: activeSection === id ? INK : "#39414f", borderRadius: 9, padding: "5px 6px", marginBottom: 1, fontSize: 12.5, fontWeight: activeSection === id ? 700 : 500, cursor: "pointer", lineHeight: 1.3, boxShadow: activeSection === id ? "inset 3px 0 0 " + ACCENT : "none" }}
+                style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", textAlign: "left", background: activeSection === id ? "rgba(47,58,74,0.13)" : "transparent", border: "none", color: activeSection === id ? INK : "#39414f", borderRadius: 9, padding: "5px 6px", marginBottom: 1, fontSize: 12.5, fontWeight: activeSection === id ? 700 : 500, cursor: "pointer", lineHeight: 1.3 }}
               >
                 <IconChip id={id} size={22} />
                 <span style={{ flex: 1 }}>{label}</span>
