@@ -4801,30 +4801,22 @@ export default function App() {
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
                 <F style={{ flex: "1 1 200px" }}>
                   <Lbl t="Who" />
-                  <input
-                    list={`who-list-${fu.id}`}
-                    value={fu.who}
-                    onChange={e => updFollowUp(fu.id, "who", e.target.value)}
-                    style={IS}
-                    placeholder="Type or select…"
-                    autoComplete="new-password"
-                    data-lpignore="true"
-                  />
-                  <datalist id={`who-list-${fu.id}`}>
-                    <option value="Advisor" />
-                    <option value="Client" />
-                    <option value="Spouse / Co-Client" />
-                    <option value="Office Staff" />
-                    <option value="Attorney" />
-                    <option value="CPA / Accountant" />
-                    <option value="Insurance Company" />
-                    <option value="Broker Dealer" />
-                    <option value="Custodian" />
+                  <select value={fu.who} onChange={e => updFollowUp(fu.id, "who", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option>Advisor</option>
+                    <option>Client</option>
+                    <option>Spouse / Co-Client</option>
+                    <option>Office Staff</option>
+                    <option>Attorney</option>
+                    <option>CPA / Accountant</option>
+                    <option>Insurance Company</option>
+                    <option>Broker Dealer</option>
+                    <option>Custodian</option>
                     {savedClients.map(r => {
                       const name = [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ");
-                      return name ? <option key={r.id} value={name} /> : null;
+                      return name ? <option key={r.id} value={name}>{name}</option> : null;
                     })}
-                  </datalist>
+                  </select>
                 </F>
                 <F style={{ flex: "0 0 150px" }}>
                   <Lbl t="When" />
