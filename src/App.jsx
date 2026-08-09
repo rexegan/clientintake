@@ -2609,18 +2609,20 @@ export default function App() {
             <F style={{ flex: "0 0 100px" }}><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 100 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "1 1 180px" }}><Lbl t="Last Name" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
-          <Row cols={3}>
-            <F>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            <F style={{ flex: "0 0 160px" }}>
               <Lbl t="Relationship" />
-              <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={IS}>
+              <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={{ ...IS, width: 160 }}>
                 <option value="">— Select —</option>
                 <option>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option>
                 <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
               </select>
             </F>
-            <F><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 150px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
+            <F style={{ flex: "0 0 auto" }}><DatePicker label="Date of Birth" value={client.tcDOB || ""} onChange={v => setClient(p => ({ ...p, tcDOB: v }))} compact /></F>
+          </div>
           <Row cols={1}>
             <F><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, maxWidth: 360 }} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
