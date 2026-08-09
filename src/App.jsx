@@ -1755,6 +1755,18 @@ export default function App() {
   const sectionMounted = useRef(false);
   const markSection = id => setSectionUpdatedAt(s => ({ ...s, [id]: new Date() }));
 
+  const [activeSection, setActiveSection] = useState("section-profile");
+  useEffect(() => {
+    const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-apps","section-advisor"];
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
+    }, { threshold: 0, rootMargin: "-20% 0px -70% 0px" });
+    const timer = setTimeout(() => {
+      ids.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
+    }, 300);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [view]);
+
   const setActiveClient = (id) => {
     if (id == null) { sessionStorage.removeItem("rwg_activeClientId"); }
     else { sessionStorage.setItem("rwg_activeClientId", String(id)); }
@@ -2226,7 +2238,7 @@ export default function App() {
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
                 className="side-nav"
-                style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", textAlign: "left", background: "transparent", border: "none", color: "#39414f", borderRadius: 9, padding: "5px 6px", marginBottom: 1, fontSize: 12.5, fontWeight: 500, cursor: "pointer", lineHeight: 1.3 }}
+                style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", textAlign: "left", background: activeSection === id ? "rgba(47,58,74,0.13)" : "transparent", border: "none", color: activeSection === id ? INK : "#39414f", borderRadius: 9, padding: "5px 6px", marginBottom: 1, fontSize: 12.5, fontWeight: activeSection === id ? 700 : 500, cursor: "pointer", lineHeight: 1.3, boxShadow: activeSection === id ? "inset 3px 0 0 " + ACCENT : "none" }}
               >
                 <IconChip id={id} size={22} />
                 <span style={{ flex: 1 }}>{label}</span>
