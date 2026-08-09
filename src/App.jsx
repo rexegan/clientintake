@@ -3621,7 +3621,14 @@ export default function App() {
             <Row cols={3}>
               <F>
                 <Lbl t="Mortgage Company" />
-                <SmartCombo value={homeOwnership.mortgageCompany} onChange={v => setHomeOwnership(p => ({ ...p, mortgageCompany: v }))} onBlur={v => addCustomMortgageCo(v)} options={allMortgageCos} placeholder="Type or select..." style={IS} />
+                <select value={allMortgageCos.includes(homeOwnership.mortgageCompany) ? homeOwnership.mortgageCompany : homeOwnership.mortgageCompany ? "__other__" : ""} onChange={e => setHomeOwnership(p => ({ ...p, mortgageCompany: e.target.value === "__other__" ? "__other__" : e.target.value }))} style={IS} data-lpignore="true">
+                  <option value="">— Select —</option>
+                  {allMortgageCos.map(co => <option key={co} value={co}>{co}</option>)}
+                  <option value="__other__">Other (type below)</option>
+                </select>
+                {(!allMortgageCos.includes(homeOwnership.mortgageCompany) && homeOwnership.mortgageCompany) && (
+                  <input value={homeOwnership.mortgageCompany === "__other__" ? "" : homeOwnership.mortgageCompany} onChange={e => setHomeOwnership(p => ({ ...p, mortgageCompany: e.target.value }))} onBlur={e => addCustomMortgageCo(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter mortgage company name" autoComplete="new-password" data-lpignore="true" />
+                )}
               </F>
               <F><Lbl t="Mortgage Balance" /><input value={homeOwnership.mortgageBalance} onChange={e => setHomeOwnership(p => ({ ...p, mortgageBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               <F><Lbl t="Monthly Payment" /><input value={homeOwnership.monthlyPayment} onChange={e => setHomeOwnership(p => ({ ...p, monthlyPayment: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
@@ -3736,7 +3743,14 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Mortgage Company" />
-                  <SmartCombo value={r.mortgageCompany} onChange={v => updRE(r.id, "mortgageCompany", v)} onBlur={v => addCustomMortgageCo(v)} options={allMortgageCos} placeholder="Type or select..." style={IS} />
+                  <select value={allMortgageCos.includes(r.mortgageCompany) ? r.mortgageCompany : r.mortgageCompany ? "__other__" : ""} onChange={e => updRE(r.id, "mortgageCompany", e.target.value === "__other__" ? "__other__" : e.target.value)} style={IS} data-lpignore="true">
+                    <option value="">— Select —</option>
+                    {allMortgageCos.map(co => <option key={co} value={co}>{co}</option>)}
+                    <option value="__other__">Other (type below)</option>
+                  </select>
+                  {(!allMortgageCos.includes(r.mortgageCompany) && r.mortgageCompany) && (
+                    <input value={r.mortgageCompany === "__other__" ? "" : r.mortgageCompany} onChange={e => updRE(r.id, "mortgageCompany", e.target.value)} onBlur={e => addCustomMortgageCo(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter mortgage company name" autoComplete="new-password" data-lpignore="true" />
+                  )}
                 </F>
                 <F><DatePicker label="Origination Date" value={r.originationDate} onChange={v => updRE(r.id, "originationDate", v)} /></F>
               </Row>
