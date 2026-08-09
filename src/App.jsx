@@ -3055,7 +3055,7 @@ export default function App() {
                     <option value="contingent">Contingent</option>
                   </select>
                 </div>
-                <button onClick={() => showConfirm("Remove this beneficiary?", () => delBene(b.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                <button onClick={() => delBene(b.id)} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
                 <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
