@@ -4980,23 +4980,36 @@ export default function App() {
                   const updWho = (wi, field, val) => { const next = whoList.map((w, j) => j === wi ? { ...w, [field]: val } : w); updFollowUp(fu.id, "who", next); };
                   return (
                     <div>
-                      <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-                        <div style={{ flex: "1 1 180px", fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who</div>
-                        <div style={{ flex: "0 0 220px", fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>When</div>
-                        <div style={{ flex: "0 0 190px", fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>How / Follow-Up</div>
+                      <div style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
+                        <div style={{ width: 178, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who</div>
+                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Mo</div>
+                        <div style={{ width: 52, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Day</div>
+                        <div style={{ width: 64, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Year</div>
+                        <div style={{ width: 172, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>How / Follow-Up</div>
                         <div style={{ width: 28 }} />
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        {whoList.map((w, wi) => (
-                          <div key={wi} style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                            <select value={w.name || ""} onChange={e => updWho(wi, "name", e.target.value)} style={{ ...IS, flex: "1 1 180px" }} data-lpignore="true">
+                        {whoList.map((w, wi) => {
+                          const wParts = (w.when || "").split("/");
+                          const wMm = wParts[0] || ""; const wDd = wParts[1] || ""; const wYy = wParts[2] || "";
+                          const setWhen = (mm, dd, yy) => updWho(wi, "when", (mm || dd || yy) ? `${mm}/${dd}/${yy}` : "");
+                          const daysInMo = wMm && wYy ? new Date(parseInt(wYy), parseInt(wMm), 0).getDate() : 31;
+                          return (
+                          <div key={wi} style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                            <select value={w.name || ""} onChange={e => updWho(wi, "name", e.target.value)} style={{ ...IS, width: 178, flexShrink: 0 }} data-lpignore="true">
                               <option value="">— Select —</option>
                               {whoOptions.map(o => <option key={o} value={o}>{o}</option>)}
                             </select>
-                            <div style={{ flex: "0 0 220px" }}>
-                              <DatePicker value={w.when || ""} onChange={v => updWho(wi, "when", v)} compact />
-                            </div>
-                            <select value={w.how || ""} onChange={e => updWho(wi, "how", e.target.value)} style={{ ...IS, flex: "0 0 190px" }} data-lpignore="true">
+                            <select value={wMm} onChange={e => setWhen(e.target.value, wDd, wYy)} style={{ ...IS, width: 72, flexShrink: 0 }} data-lpignore="true">
+                              <option value="">Mo</option>
+                              {MONTHS.map((m, idx) => <option key={m} value={String(idx+1).padStart(2,"0")}>{m}</option>)}
+                            </select>
+                            <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 52, flexShrink: 0 }} data-lpignore="true">
+                              <option value="">D</option>
+                              {Array.from({ length: daysInMo }, (_, idx) => { const v = String(idx+1).padStart(2,"0"); return <option key={v} value={v}>{idx+1}</option>; })}
+                            </select>
+                            <input value={wYy} onChange={e => setWhen(wMm, wDd, e.target.value.replace(/\D/g,"").slice(0,4))} placeholder="Year" inputMode="numeric" maxLength={4} style={{ ...IS, width: 64, flexShrink: 0 }} autoComplete="new-password" data-lpignore="true" />
+                            <select value={w.how || ""} onChange={e => updWho(wi, "how", e.target.value)} style={{ ...IS, width: 172, flexShrink: 0 }} data-lpignore="true">
                               <option value="">— Select —</option>
                               <option>Phone Call</option>
                               <option>Email</option>
@@ -5011,7 +5024,7 @@ export default function App() {
                               <button onClick={() => updFollowUp(fu.id, "who", whoList.filter((_, j) => j !== wi))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
                             )}
                           </div>
-                        ))}
+                        ); })}
                       </div>
                       <button onClick={() => updFollowUp(fu.id, "who", [...whoList, { ...emptyWho }])} style={{ background: "transparent", border: "1px dashed #b8c0cb", color: INK, borderRadius: 6, padding: "4px 14px", fontSize: 12, cursor: "pointer", marginTop: 6 }}>+ Add Who</button>
                     </div>
