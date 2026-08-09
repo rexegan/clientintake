@@ -3668,7 +3668,10 @@ export default function App() {
         {/* ── REAL ESTATE ── */}
         <Panel title="Real Estate" id="section-realestate">
           {/* ── OWN OR RENT ── */}
-          <Sec t="Personal Property" />
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13.5, fontWeight: 600, color: INK, borderBottom: "1px solid " + BORDER, paddingBottom: 7, marginTop: 24, marginBottom: 8 }}>
+            <span>Personal Property</span>
+            <button onClick={() => setHomeOwnership(p => ({ ...p, address: client.addressLine1, address2: client.addressLine2, city: client.city, state: client.state, zip: client.zip }))} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
+          </div>
           <Row cols={2}>
             <F>
               <Lbl t="Own or Rent?" />
@@ -3678,6 +3681,15 @@ export default function App() {
                 <option value="rent">Rent</option>
               </select>
             </F>
+          </Row>
+          <Row cols={2}>
+            <F><Lbl t="Street Address" /><input value={homeOwnership.address || ""} onChange={e => setHomeOwnership(p => ({ ...p, address: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Apt / Suite (optional)" /><input value={homeOwnership.address2 || ""} onChange={e => setHomeOwnership(p => ({ ...p, address2: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="ZIP" /><input value={homeOwnership.zip || ""} onChange={e => { const z = fmtZip(e.target.value); setHomeOwnership(p => ({ ...p, zip: z })); lookupZip(z, (city, state) => setHomeOwnership(p => ({ ...p, city, state }))); }} maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="City" /><input value={homeOwnership.city || ""} onChange={e => setHomeOwnership(p => ({ ...p, city: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="State" /><StateSelect value={homeOwnership.state || ""} onChange={e => setHomeOwnership(p => ({ ...p, state: e.target.value }))} /></F>
           </Row>
           {homeOwnership.ownOrRent === "own" && (<>
             <Row cols={3}>
