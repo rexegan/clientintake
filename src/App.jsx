@@ -3721,7 +3721,10 @@ export default function App() {
           {realEstate.map((r, i) => (
             <div key={r.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Property {i + 1}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Property {i + 1}</span>
+                  <button onClick={() => { updRE(r.id, "address", client.addressLine1); updRE(r.id, "addressLine2", client.addressLine2); updRE(r.id, "city", client.city); updRE(r.id, "state", client.state); updRE(r.id, "zip", client.zip); }} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
+                </div>
                 {realEstate.length > 1 && (
                   <button onClick={() => showConfirm("Remove this property?", () => delRE(r.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
@@ -3739,13 +3742,8 @@ export default function App() {
                   <input value={r.descriptionNote || ""} onChange={e => updRE(r.id, "descriptionNote", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Enter description…" />
                 </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, marginBottom: 4 }}>
+              <div style={{ marginTop: 8, marginBottom: 4 }}>
                 <Lbl t="Property Address" />
-                {r.description === "Personal Residence" && (
-                  <button onClick={() => { updRE(r.id, "address", client.addressLine1); updRE(r.id, "addressLine2", client.addressLine2); updRE(r.id, "city", client.city); updRE(r.id, "state", client.state); updRE(r.id, "zip", client.zip); }} style={{ background: INPUT_BG, border: "1px solid " + BORDER, color: INK, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 12 }}>
-                    Copy Client Address?
-                  </button>
-                )}
               </div>
               <Row cols={2}>
                 <F><Lbl t="Street Address" /><input value={r.address} onChange={e => updRE(r.id, "address", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
