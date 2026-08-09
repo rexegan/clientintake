@@ -2529,6 +2529,16 @@ export default function App() {
               <Lbl t="Home Phone" />
               <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
             </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Favorite NFL East Team" />
+              <select value={client.nflEastTeam || ""} onChange={setC("nflEastTeam")} style={{ ...IS, width: 200 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option>Dallas Cowboys</option>
+                <option>New York Giants</option>
+                <option>Philadelphia Eagles</option>
+                <option>Washington Commanders</option>
+              </select>
+            </div>
           </div>
 
           <Sec t="Home Address" />
