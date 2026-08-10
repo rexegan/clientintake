@@ -1726,7 +1726,8 @@ export default function App() {
   const delInh = id => setInheritances(p => { const n = p.filter(x => x.id !== id); return n.length ? n : [{ ...emptyInheritance, id: Date.now() }]; });
   const updInh = (id, f, v) => setInheritances(p => p.map(x => x.id === id ? { ...x, [f]: v } : x));
 
-  const emptyFollowUp = { task: "", who: [], why: "", status: "open", notes: "" };
+  const emptyCallSheet = { fromCompany: "", fromPhone: "", fromAccountNum: "", fromRepName: "", fromRepPhone: "", toCompany: "", toPhone: "", toAccountNum: "", toRepName: "", toRepPhone: "", transferType: "", transferAmount: "", additionalNotes: "" };
+  const emptyFollowUp = { task: "", who: [], why: "", status: "open", notes: "", callSheet: { ...emptyCallSheet } };
   const emptyWho = { name: "", when: "", how: "" };
   const [followUps, setFollowUps] = useState([{ ...emptyFollowUp, id: Date.now() }]);
   const addFollowUp = () => setFollowUps(p => [...p, { ...emptyFollowUp, id: Date.now() }]);
@@ -4987,10 +4988,87 @@ export default function App() {
                     <option>Update Contact Information</option>
                     <option>Account Opening / Setup</option>
                     <option>Wire / ACH Transfer</option>
+                    <option>Call Sheet</option>
                     <option>Other</option>
                   </select>
                 </F>
               </Row>
+              {fu.task === "Call Sheet" && (() => {
+                const cs = fu.callSheet || emptyCallSheet;
+                const updCs = (f, v) => updFollowUp(fu.id, "callSheet", { ...cs, [f]: v });
+                const csInput = (field, placeholder, width) => (
+                  <input value={cs[field] || ""} onChange={e => updCs(field, e.target.value)} style={{ ...IS, width }} placeholder={placeholder} autoComplete="new-password" data-lpignore="true" />
+                );
+                const csIS = { ...IS, width: "100%" };
+                const SectionHdr = ({ label, color }) => (
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", background: color, borderRadius: 6, padding: "4px 10px", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 8 }}>{label}</div>
+                );
+                return (
+                  <div style={{ background: "#fff", border: "1.5px solid #2f3a4a", borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: INK, marginBottom: 12, letterSpacing: "0.02em" }}>Call Sheet</div>
+                    {/* Client Info — auto-filled from profile */}
+                    <SectionHdr label="Client" color="#2f3a4a" />
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Client Name" />
+                        <input value={[client.firstName, client.lastName].filter(Boolean).join(" ") || ""} readOnly style={{ ...IS, width: 200, background: "#f4f6f9", color: MUTED }} />
+                      </div>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Social Security #" />
+                        <input value={client.ssn || ""} readOnly style={{ ...IS, width: 140, background: "#f4f6f9", color: MUTED }} placeholder="—" />
+                      </div>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Date of Birth" />
+                        <input value={client.dob || ""} readOnly style={{ ...IS, width: 120, background: "#f4f6f9", color: MUTED }} placeholder="—" />
+                      </div>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Cell Phone" />
+                        <input value={client.cell || ""} readOnly style={{ ...IS, width: 140, background: "#f4f6f9", color: MUTED }} placeholder="—" />
+                      </div>
+                    </div>
+                    {/* FROM */}
+                    <SectionHdr label="Money Coming From" color="#0e7490" />
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+                      <div style={{ flexShrink: 0, flex: "1 1 180px" }}><Lbl t="Company Name" />{csInput("fromCompany", "e.g. Edward Jones", 200)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Company Phone" />{csInput("fromPhone", "(___) ___-____", 150)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Account Number" />{csInput("fromAccountNum", "", 160)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Name" />{csInput("fromRepName", "", 160)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Phone" />{csInput("fromRepPhone", "(___) ___-____", 150)}</div>
+                    </div>
+                    {/* TO */}
+                    <SectionHdr label="Money Going To" color="#166534" />
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+                      <div style={{ flexShrink: 0, flex: "1 1 180px" }}><Lbl t="Company Name" />{csInput("toCompany", "e.g. Empower", 200)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Company Phone" />{csInput("toPhone", "(___) ___-____", 150)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Account Number" />{csInput("toAccountNum", "", 160)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Name" />{csInput("toRepName", "", 160)}</div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Phone" />{csInput("toRepPhone", "(___) ___-____", 150)}</div>
+                    </div>
+                    {/* Transfer details */}
+                    <SectionHdr label="Transfer Details" color="#6d28d9" />
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Transfer Type" />
+                        <select value={cs.transferType || ""} onChange={e => updCs("transferType", e.target.value)} style={{ ...IS, width: 200 }} data-lpignore="true">
+                          <option value="">— Select —</option>
+                          <option>Full Transfer</option>
+                          <option>Partial Transfer</option>
+                          <option>Direct Rollover</option>
+                          <option>Indirect Rollover</option>
+                          <option>In-Kind Transfer</option>
+                          <option>Wire Transfer</option>
+                          <option>ACH Transfer</option>
+                        </select>
+                      </div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Amount (if partial)" />{csInput("transferAmount", "$0.00", 140)}</div>
+                      <div style={{ flex: "1 1 220px" }}>
+                        <Lbl t="Notes" />
+                        <input value={cs.additionalNotes || ""} onChange={e => updCs("additionalNotes", e.target.value)} style={{ ...IS, width: "100%" }} placeholder="Any additional call notes…" autoComplete="new-password" data-lpignore="true" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
               <div style={{ marginBottom: 12 }}>
                 {(() => {
                   const rawWho = fu.who;
