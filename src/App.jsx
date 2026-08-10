@@ -3230,7 +3230,7 @@ export default function App() {
           </div>
           {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><Row cols={2}>
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Occupation" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <div style={{ marginBottom: 8 }}>
             <DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} compact />
@@ -3368,7 +3368,7 @@ export default function App() {
             <>
               <Row cols={2}>
                 <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Occupation / Title" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Occupation" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <div style={{ marginBottom: 8 }}>
                 <DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} compact />
