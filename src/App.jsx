@@ -3219,15 +3219,15 @@ export default function App() {
 
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment" id="section-employment">
-          {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ marginBottom: 14 }}>
-              <Lbl t="Employee" />
-              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
-                <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+          <div style={{ marginBottom: 14 }}>
+            <Lbl t="Employee" />
+            <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+              <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+              {["married","domestic_partner"].includes(hasSpouse) && (
                 <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-              </select>
-            </div>
-          )}
+              )}
+            </select>
+          </div>
           {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><Row cols={2}>
             <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Occupation / Title" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
