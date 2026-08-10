@@ -84,14 +84,14 @@ function DatePicker({ value, onChange, label, futureYears = 0, compact = false }
     <>
       {label && <Lbl t={label} />}
       <div style={{ display: "flex", gap: 6, width: compact ? "fit-content" : "100%", flexWrap: "wrap" }}>
-        <select className="sel-compact" data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, flex: compact ? "none" : "1.25 1 0%", width: compact ? 108 : undefined, minWidth: compact ? undefined : 64 }}>
+        <select className="sel-compact" data-lpignore="true" value={mm} onChange={e => set(e.target.value, dd, yyyy)} style={{ ...sel, flex: compact ? "none" : "1.25 1 0%", width: compact ? 72 : undefined, minWidth: compact ? undefined : 64 }}>
           <option value="">Mo</option>
           {MONTHS.map((m, i) => {
             const v = String(i + 1).padStart(2, "0");
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: compact ? "none" : "1 1 0%", width: compact ? 68 : undefined, minWidth: compact ? undefined : 56 }}>
+        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: compact ? "none" : "1 1 0%", width: compact ? 58 : undefined, minWidth: compact ? undefined : 56 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -2460,12 +2460,12 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="SSN" />
+              <Lbl t="Social Security Number" />
               <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Gender" />
-              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 106 }}>
+              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 90 }}>
                 <option value="">— Select —</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -2473,7 +2473,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Marital Status" />
-              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 168 }}>
+              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 158 }}>
                 <option value="">— Select —</option>
                 <option value="Single">Single</option>
                 <option value="Married">Married</option>
