@@ -353,7 +353,14 @@ const INCOME_TYPES = [
   "Withdrawal — Q",
 ];
 
-const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"", futureIncome:"", futureIncomeDate:"" };
+const INCOME_SOURCES = [
+  "Employer — W-2","Self-Employed","1099 — Contract / Freelance","Social Security","Pension",
+  "TMRS (Texas Municipal Retirement)","TRS (Teacher Retirement System)","FERS (Federal Employee Retirement)",
+  "CSRS (Civil Service Retirement)","Military Retirement","Railroad Retirement","State / Government Pension",
+  "Annuity","Rental / Real Estate","Investment / Dividends","Trust Distribution","Inheritance",
+  "Alimony / Child Support","Disability Income","Other",
+];
+const emptyIncome      = { type:"", source:"", amount:"", frequency:"", owner:"client", institution:"", futureIncome:"", futureIncomeDate:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", designationType:"primary", email:"", phone:"", usCitizen:"", countryOfCitizenship:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", designationType:"primary", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 // Backward-compat: old records used `type:"Primary"/"Contingent"`, new ones use `designationType`
@@ -3489,17 +3496,24 @@ export default function App() {
           {incomes.map((inc, i) => (
             <div key={inc.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income Source {i + 1}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income {i + 1}</div>
                 {incomes.length > 1 && (
                   <button onClick={() => showConfirm("Remove this income source?", () => delIncome(inc.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
-              <Row cols={3}>
+              <Row cols={2}>
                 <F>
                   <Lbl t="Income Type" />
                   <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
                     <option value="">— Select —</option>
                     {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Source" />
+                  <select data-lpignore="true" value={inc.source || ""} onChange={e => updIncome(inc.id, "source", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    {INCOME_SOURCES.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </F>
                 <F>
@@ -3569,7 +3583,7 @@ export default function App() {
             </div>
           ))}
           <button onClick={addIncome} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
-            + Add Income Source
+            + Add Income
           </button>
           {(() => {
             const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; const mult = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52 }[inc.frequency] || 1; return raw * mult; };
