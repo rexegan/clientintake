@@ -91,7 +91,7 @@ function DatePicker({ value, onChange, label, futureYears = 0, compact = false }
             return <option key={v} value={v}>{m}</option>;
           })}
         </select>
-        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: compact ? "none" : "1 1 0%", width: compact ? 58 : undefined, minWidth: compact ? undefined : 56 }}>
+        <select className="sel-compact" data-lpignore="true" value={dd} onChange={e => set(mm, e.target.value, yyyy)} style={{ ...sel, flex: compact ? "none" : "1 1 0%", width: compact ? 66 : undefined, minWidth: compact ? undefined : 56 }}>
           <option value="">Day</option>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const v = String(i + 1).padStart(2, "0");
@@ -3568,7 +3568,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 4 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Future Income?" />
-                  <select value={inc.futureIncome || ""} onChange={e => updIncome(inc.id, "futureIncome", e.target.value)} style={{ ...IS, width: 90 }} data-lpignore="true">
+                  <select value={inc.futureIncome || ""} onChange={e => updIncome(inc.id, "futureIncome", e.target.value)} style={{ ...IS, width: 120 }} data-lpignore="true">
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
