@@ -5011,23 +5011,15 @@ export default function App() {
                   {followUps.length > 1 && <button onClick={() => showConfirm("Remove this follow-up?", () => delFollowUp(fu.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>}
                 </div>
               </div>
-              {(() => {
-                const TASKS = ["Schedule Annual Review","Review Portfolio / Allocation","Send / Follow Up on Paperwork","Beneficiary Update","RMD / Distribution","Rollover / Transfer Funds","Insurance Review","Estate Planning Review","Tax Documents / 1099s","Social Security Planning","Medicare / Benefits Review","Update Contact Information","Account Opening / Setup","Wire / ACH Transfer","Call Sheet","Other"];
-                const [taskOpen, setTaskOpen] = fu._taskOpen !== undefined
-                  ? [fu._taskOpen, v => updFollowUp(fu.id, "_taskOpen", v)]
-                  : [false, () => {}];
-                return (
-                  <div style={{ marginBottom: 12 }}>
-                    <Lbl t="Task / Action" />
-                    <TaskDropdown
-                      value={fu.task}
-                      onChange={v => updFollowUp(fu.id, "task", v)}
-                      options={TASKS}
-                      placeholder="— Select Task —"
-                    />
-                  </div>
-                );
-              })()}
+              <div style={{ marginBottom: 12 }}>
+                <Lbl t="Task / Action" />
+                <TaskDropdown
+                  value={fu.task}
+                  onChange={v => updFollowUp(fu.id, "task", v)}
+                  options={["Schedule Annual Review","Review Portfolio / Allocation","Send / Follow Up on Paperwork","Beneficiary Update","RMD / Distribution","Rollover / Transfer Funds","Insurance Review","Estate Planning Review","Tax Documents / 1099s","Social Security Planning","Medicare / Benefits Review","Update Contact Information","Account Opening / Setup","Wire / ACH Transfer","Call Sheet","Other"]}
+                  placeholder="— Select Task —"
+                />
+              </div>
               {fu.task === "Call Sheet" && (() => {
                 const cs = fu.callSheet || emptyCallSheet;
                 const updCs = (f, v) => updFollowUp(fu.id, "callSheet", { ...cs, [f]: v });
