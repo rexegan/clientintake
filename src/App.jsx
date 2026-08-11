@@ -742,8 +742,9 @@ function ClientReport({ data, onClose }) {
     { label: "Other / Unclassified", val: otherAcctVal },
   ].filter(r => r.val > 0);
 
-  // ── INCOME ──
-  const annualIncome = incomes.reduce((s, inc) => s + toAnnual(inc.amount, inc.frequency), 0);
+  // ── INCOME ── (exclude future income from all calculations/reports)
+  const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
+  const annualIncome = activeIncomes.reduce((s, inc) => s + toAnnual(inc.amount, inc.frequency), 0);
   const annExpRaw = parseDollar(annualExpenses.amount) * ((annualExpenses.frequency === "monthly") ? 12 : 1);
   const surplusDeficit = annualIncome - annExpRaw;
 
@@ -905,7 +906,7 @@ function ClientReport({ data, onClose }) {
               <table style={s.table}>
                 <thead><tr><th style={s.th}>Annual Income &amp; Expenses</th><th style={{ ...s.th, textAlign: "right" }}>Amount</th><th style={{ ...s.th, textAlign: "right" }}>%</th></tr></thead>
                 <tbody>
-                  {incomes.filter(i => i.type).map((inc, i) => {
+                  {activeIncomes.filter(i => i.type).map((inc, i) => {
                     const ann = toAnnual(inc.amount, inc.frequency);
                     const pct = annualIncome > 0 ? (ann/annualIncome*100).toFixed(1) : "0.0";
                     return <tr key={i}><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>{inc.type + (inc.owner === "spouse" ? ` (${spouseName})` : inc.owner === "joint" ? " (Joint)" : "")}</td><td style={s.tdr}>{fmt(ann)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td></tr>;
@@ -1061,7 +1062,7 @@ function ClientReport({ data, onClose }) {
 
           {/* ── INCOME ── */}
           <div style={s.sectionHead}>Income Summary</div>
-          {incomes.filter(i => i.type).length > 0 ? (
+          {activeIncomes.filter(i => i.type).length > 0 ? (
             <table style={s.table}>
               <thead>
                 <tr>
@@ -1075,7 +1076,7 @@ function ClientReport({ data, onClose }) {
                 </tr>
               </thead>
               <tbody>
-                {incomes.filter(i => i.type).map((inc, i) => {
+                {activeIncomes.filter(i => i.type).map((inc, i) => {
                   const ann = toAnnual(inc.amount, inc.frequency);
                   const pct = annualIncome > 0 ? (ann / annualIncome * 100).toFixed(1) : "0.0";
                   return (
@@ -1506,7 +1507,7 @@ function SummaryReview({ data, onClose }) {
           {/* Income */}
           <SH title="Income" />
           <Tbl cols={["Source / Type", "Owner", "Amount", "Frequency", "Start Date"]}
-            rows={incomes.filter(i => i.source || i.type).map(inc => [inc.source || inc.type, inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client"), inc.amount, inc.frequency, inc.startDate])}
+            rows={activeIncomes.filter(i => i.source || i.type).map(inc => [inc.source || inc.type, inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client"), inc.amount, inc.frequency, inc.startDate])}
             emptyMsg="No income recorded." />
 
           {/* Real Estate */}
@@ -3587,9 +3588,9 @@ export default function App() {
           </button>
           {(() => {
             const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; const mult = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52 }[inc.frequency] || 1; return raw * mult; };
-            const clientAnnual = incomes.filter(i => (i.owner || "client") === "client").reduce((s, i) => s + toAnnual(i), 0);
-            const spouseAnnual = incomes.filter(i => i.owner === "spouse").reduce((s, i) => s + toAnnual(i), 0);
-            const jointAnnual = incomes.filter(i => i.owner === "joint").reduce((s, i) => s + toAnnual(i), 0);
+            const clientAnnual = activeIncomes.filter(i => (i.owner || "client") === "client").reduce((s, i) => s + toAnnual(i), 0);
+            const spouseAnnual = activeIncomes.filter(i => i.owner === "spouse").reduce((s, i) => s + toAnnual(i), 0);
+            const jointAnnual = activeIncomes.filter(i => i.owner === "joint").reduce((s, i) => s + toAnnual(i), 0);
             const totalAnnual = clientAnnual + spouseAnnual + jointAnnual;
             if (!totalAnnual) return null;
             const married = ["married","domestic_partner"].includes(hasSpouse);
@@ -5813,9 +5814,9 @@ export default function App() {
         }
 
         if (id === "section-income") {
-          const totalAnnual = incomes.reduce((s, inc) => s + toAnn(inc.amount, inc.frequency), 0);
+          const totalAnnual = activeIncomes.reduce((s, inc) => s + toAnn(inc.amount, inc.frequency), 0);
           return <Tbl cols={["Source / Type","Owner","Amount","Frequency","Annual"]}
-            rows={incomes.filter(inc => inc.source || inc.type || inc.amount).map(inc => [
+            rows={activeIncomes.filter(inc => inc.source || inc.type || inc.amount).map(inc => [
               inc.source || inc.type, ownerName(inc.owner), inc.amount,
               inc.frequency ? inc.frequency.charAt(0).toUpperCase() + inc.frequency.slice(1) : "",
               fmtN(toAnn(inc.amount, inc.frequency)),
