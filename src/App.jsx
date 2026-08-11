@@ -353,7 +353,7 @@ const INCOME_TYPES = [
   "Withdrawal — Q",
 ];
 
-const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"" };
+const emptyIncome      = { type:"", amount:"", frequency:"", owner:"client", institution:"", futureIncome:"", futureIncomeDate:"" };
 const emptyChild       = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", isBeneficiary: false, ssn:"", relationship:"Child", percentage:"", designationType:"primary", email:"", phone:"", usCitizen:"", countryOfCitizenship:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"" };
 const emptyBeneficiary = { firstName:"", middleName:"", lastName:"", dob:"", gender:"", ssn:"", relationship:"", percentage:"", designationType:"primary", email:"", addressSource:"manual", addressLine1:"", city:"", state:"", zip:"" };
 // Backward-compat: old records used `type:"Primary"/"Contingent"`, new ones use `designationType`
@@ -3551,6 +3551,21 @@ export default function App() {
                   </F>
                 </Row>
               )}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 4 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Future Income?" />
+                  <select value={inc.futureIncome || ""} onChange={e => updIncome(inc.id, "futureIncome", e.target.value)} style={{ ...IS, width: 90 }} data-lpignore="true">
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                {inc.futureIncome === "yes" && (
+                  <div style={{ flexShrink: 0 }}>
+                    <DatePicker label="Future Income Start Date" value={inc.futureIncomeDate || ""} onChange={v => updIncome(inc.id, "futureIncomeDate", v)} compact />
+                  </div>
+                )}
+              </div>
             </div>
           ))}
           <button onClick={addIncome} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
