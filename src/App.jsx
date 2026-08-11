@@ -174,6 +174,37 @@ const SmartCombo = ({ value, onChange, onBlur, options, placeholder, style }) =>
   );
 };
 
+const TaskDropdown = ({ value, onChange, options, placeholder = "— Select —" }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+  return (
+    <div ref={ref} style={{ position: "relative", width: 240 }}>
+      <div onClick={() => setOpen(o => !o)} style={{ ...IS, width: 240, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", userSelect: "none" }}>
+        <span style={{ color: value ? "#000" : "#9aa3af", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value || placeholder}</span>
+        <span style={{ fontSize: 11, color: "#697180", marginLeft: 8, flexShrink: 0 }}>{open ? "▴" : "▾"}</span>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 3px)", left: 0, width: 240, zIndex: 9200, background: "#fff", border: "1px solid #cfd5de", borderRadius: 10, boxShadow: "0 6px 20px rgba(0,0,0,0.13)", maxHeight: 280, overflowY: "auto" }}>
+          {options.map(t => (
+            <div key={t} onMouseDown={() => { onChange(t); setOpen(false); }}
+              style={{ padding: "8px 14px", fontSize: 13, color: "#151b28", cursor: "pointer", background: value === t ? "#eef4ff" : "", fontWeight: value === t ? 600 : 400, whiteSpace: "nowrap" }}
+              onMouseEnter={e => e.currentTarget.style.background = value === t ? "#eef4ff" : "#f4f6f9"}
+              onMouseLeave={e => e.currentTarget.style.background = value === t ? "#eef4ff" : ""}>
+              {t}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const GroupedSelect = ({ value, onChange, groups, placeholder = "— Select —", style }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -4980,30 +5011,23 @@ export default function App() {
                   {followUps.length > 1 && <button onClick={() => showConfirm("Remove this follow-up?", () => delFollowUp(fu.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>}
                 </div>
               </div>
-              <Row cols={1}>
-                <F>
-                  <Lbl t="Task / Action" />
-                  <select value={fu.task} onChange={e => updFollowUp(fu.id, "task", e.target.value)} style={IS} data-lpignore="true">
-                    <option value="">— Select Task —</option>
-                    <option>Schedule Annual Review</option>
-                    <option>Review Portfolio / Allocation</option>
-                    <option>Send / Follow Up on Paperwork</option>
-                    <option>Beneficiary Update</option>
-                    <option>RMD / Distribution</option>
-                    <option>Rollover / Transfer Funds</option>
-                    <option>Insurance Review</option>
-                    <option>Estate Planning Review</option>
-                    <option>Tax Documents / 1099s</option>
-                    <option>Social Security Planning</option>
-                    <option>Medicare / Benefits Review</option>
-                    <option>Update Contact Information</option>
-                    <option>Account Opening / Setup</option>
-                    <option>Wire / ACH Transfer</option>
-                    <option>Call Sheet</option>
-                    <option>Other</option>
-                  </select>
-                </F>
-              </Row>
+              {(() => {
+                const TASKS = ["Schedule Annual Review","Review Portfolio / Allocation","Send / Follow Up on Paperwork","Beneficiary Update","RMD / Distribution","Rollover / Transfer Funds","Insurance Review","Estate Planning Review","Tax Documents / 1099s","Social Security Planning","Medicare / Benefits Review","Update Contact Information","Account Opening / Setup","Wire / ACH Transfer","Call Sheet","Other"];
+                const [taskOpen, setTaskOpen] = fu._taskOpen !== undefined
+                  ? [fu._taskOpen, v => updFollowUp(fu.id, "_taskOpen", v)]
+                  : [false, () => {}];
+                return (
+                  <div style={{ marginBottom: 12 }}>
+                    <Lbl t="Task / Action" />
+                    <TaskDropdown
+                      value={fu.task}
+                      onChange={v => updFollowUp(fu.id, "task", v)}
+                      options={TASKS}
+                      placeholder="— Select Task —"
+                    />
+                  </div>
+                );
+              })()}
               {fu.task === "Call Sheet" && (() => {
                 const cs = fu.callSheet || emptyCallSheet;
                 const updCs = (f, v) => updFollowUp(fu.id, "callSheet", { ...cs, [f]: v });
