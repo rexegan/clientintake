@@ -2465,7 +2465,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Gender" />
-              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 90 }}>
+              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 105 }}>
                 <option value="">— Select —</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
