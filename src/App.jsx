@@ -2935,19 +2935,19 @@ export default function App() {
                 const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
                 return (<>
                   <Sec t={meta.title} />
-                  <Row cols={3}>
-                    <F><Lbl t={meta.numLbl} /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                    <F style={{ flex: "0 0 120px" }}><Lbl t={meta.numLbl} /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={{ ...IS, width: 120 }} autoComplete="new-password" data-lpignore="true" /></F>
                     {meta.locType === "state"
-                      ? <F><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} /></F>
+                      ? <F style={{ flex: "0 0 200px" }}><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} style={{ ...IS, width: 200 }} /></F>
                       : meta.locType !== "none"
-                        ? <F><Lbl t={locLabel} /><input value={spouse.dlState} onChange={setS("dlState")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                        : <F />}
-                    <F><Lbl t="Issuer Name" /><input value={spouse.dlIssuerName} onChange={setS("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                  </Row>
-                  <Row cols={2}>
-                    <F><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} /></F>
-                    <F><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} /></F>
-                  </Row>
+                        ? <F style={{ flex: "0 0 200px" }}><Lbl t={locLabel} /><input value={spouse.dlState} onChange={setS("dlState")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
+                        : null}
+                    <F style={{ flex: "0 0 100px" }}><Lbl t="Issuer Name" /><input value={spouse.dlIssuerName} onChange={setS("dlIssuerName")} style={{ ...IS, width: 100 }} autoComplete="new-password" data-lpignore="true" /></F>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
+                    <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={56} yearW={62} /></div>
+                    <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={56} yearW={62} /></div>
+                  </div>
                   <div style={{ marginTop: 10, marginBottom: 4 }}>
                     <Lbl t={meta.title + " Image"} />
                     {spouseDlImage ? (
