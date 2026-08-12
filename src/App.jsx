@@ -2538,7 +2538,7 @@ export default function App() {
                     <option value="work">Work</option>
                     <option value="spouse">Spouse</option>
                   </select>
-                  <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, width: 180, flex: "none" }} autoComplete="new-password" data-lpignore="true" />
+                  <input value={em.address} onChange={e => setClientEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, width: 240, flex: "none" }} autoComplete="new-password" data-lpignore="true" />
                   {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
                   {clientEmails.length > 1 && (
                     <button onClick={() => showConfirm("Remove this email?", () => setClientEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
@@ -2549,18 +2549,18 @@ export default function App() {
                 + Add Email
               </button>
             </div>
-            <div style={{ flexShrink: 0 }}>
+            <div style={{ flexShrink: 0, marginLeft: 16 }}>
               <Lbl t="# of Dependents" />
-              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 80 }}>
+              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 62 }}>
                 <option value="">—</option>
                 {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
               </select>
             </div>
-            <div style={{ flexShrink: 0 }}>
+            <div style={{ flexShrink: 0, marginLeft: 16 }}>
               <Lbl t="Known Client Since" />
               <div style={{ display: "flex", gap: 6 }}>
-                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 108 }} data-lpignore="true">
-                  <option value="">Month</option>
+                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 76 }} data-lpignore="true">
+                  <option value="">Mo</option>
                   {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
                 </select>
                 <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
