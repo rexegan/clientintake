@@ -634,6 +634,7 @@ const SECTION_META = {
   "section-suitability":{ color: "#7c3aed", bg: "#f3effe", icon: <IcSvg><path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z"/><path d="M12 8v4l3 3"/></IcSvg> },
   "section-toolbox":    { color: "#64748b", bg: "#f1f3f6", icon: <IcSvg><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/><path d="M3 16h18"/></IcSvg> },
   "section-alerts":     { color: "#ef4444", bg: "#fef2f2", icon: <IcSvg><path d="M10.3 3.5L2.1 17A2 2 0 0 0 3.8 20h16.4a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><circle cx="12" cy="17" r="1"/></IcSvg> },
+  "section-importantdates": { color: "#d97706", bg: "#fffbeb", icon: <IcSvg><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></IcSvg> },
   "section-apps":       { color: "#0d9488", bg: "#f0fdfa", icon: <IcSvg><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IcSvg> },
   "section-advisor":    { color: "#7c3aed", bg: "#f5f3ff", icon: <IcSvg><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></IcSvg> },
   "section-followup":   { color: "#0891b2", bg: "#ecfeff", icon: <IcSvg><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></IcSvg> },
@@ -1757,6 +1758,7 @@ export default function App() {
   const [empView, setEmpView] = useState("client");
   const [idView, setIdView] = useState("client");
   const [tcCopyAddr, setTcCopyAddr] = useState("");
+  const [importantDates, setImportantDates] = useState({ anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
@@ -1871,6 +1873,7 @@ export default function App() {
     ["section-followup",   () => "Follow Up"],
     ["section-alerts",     () => "Alerts"],
     ["section-preferences",() => "Client Preferences"],
+    ["section-importantdates",() => "Important Dates / Info"],
     ["section-apps",       () => "Applications / Docs"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
@@ -1886,7 +1889,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-preferences","section-apps"];
+    const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
     }, { threshold: 0, rootMargin: "-20% 0px -70% 0px" });
@@ -1949,6 +1952,7 @@ export default function App() {
   // Track last-updated timestamps per sidebar section
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-profile"); }, [client, clientEmails]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-preferences"); }, [client]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-importantdates"); }, [importantDates]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-family"); }, [hasSpouse, spouse, spouseEmails, hasChildren, children]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-bene"); }, [beneficiaries]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-employment"); }, [clientEmp, spouseEmp]);
@@ -1968,8 +1972,8 @@ export default function App() {
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
-    beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps]);
+    beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates,
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -2028,6 +2032,7 @@ export default function App() {
     setInheritances(record.inheritances || (record.inheritance ? [{ ...record.inheritance, id: 1 }] : [{ ...emptyInheritance, id: 1 }]));
     setVaults(record.vaults || []);
     setFollowUps(record.followUps || [{ ...emptyFollowUp, id: Date.now() }]);
+    setImportantDates(record.importantDates || { anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
     setUploads(record.uploads || {});
     setClientDlImage(record.clientDlImage || null);
     setSpouseDlImage(record.spouseDlImage || null);
@@ -2214,6 +2219,7 @@ export default function App() {
     setInheritances([{ ...emptyInheritance, id: 1 }]);
     setVaults([]);
     setFollowUps([{ ...emptyFollowUp, id: Date.now() }]);
+    setImportantDates({ anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
     setActiveClient(null);
     setSubmitted(false);
     setSectionUpdatedAt({});
@@ -2363,6 +2369,7 @@ export default function App() {
             ["section-followup",   "Follow Up"],
             ["section-alerts",     "Alerts"],
             ["section-preferences","Client Preferences"],
+            ["section-importantdates","Important Dates / Info"],
             ["section-apps",       "Applications / Docs"],
           ].map(([id, label]) => {
             const ts = sectionUpdatedAt[id];
@@ -5394,6 +5401,90 @@ export default function App() {
               </select>
             </div>
           </div>
+        </Panel>
+
+        {/* ── IMPORTANT DATES / INFO ── */}
+        <Panel title="Important Dates / Info" id="section-importantdates">
+
+          {/* Auto-populated birthdays */}
+          <Sec t="Birthdays" />
+          <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "12px 16px", marginBottom: 14 }}>
+            {[
+              { label: [client.firstName, client.lastName].filter(Boolean).join(" ") || "Client", dob: client.dob },
+              ...(["married","domestic_partner"].includes(hasSpouse) ? [{ label: [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse", dob: spouse.dob }] : []),
+              ...children.map((ch, i) => ({ label: [ch.firstName, ch.lastName].filter(Boolean).join(" ") || `Child ${i+1}`, dob: ch.dob })),
+            ].map(({ label, dob }, idx) => (
+              <div key={idx} style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: INK, minWidth: 180 }}>{label}</span>
+                <span style={{ fontSize: 13, color: dob ? INK : MUTED }}>{dob || "—"}</span>
+              </div>
+            ))}
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 6 }}>Populated from Client Profile &amp; Family sections</div>
+          </div>
+
+          {/* Key dates */}
+          <Sec t="Key Dates" />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 14, alignItems: "flex-end" }}>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Wedding Anniversary" value={importantDates.anniversary} onChange={v => setImportantDates(p => ({ ...p, anniversary: v }))} compact /></div>
+            <div style={{ flexShrink: 0 }}><DatePicker label="First Meeting with Advisor" value={importantDates.firstMeeting} onChange={v => setImportantDates(p => ({ ...p, firstMeeting: v }))} compact /></div>
+          </div>
+
+          {/* Portfolio Reviews */}
+          <Sec t="Portfolio Reviews" />
+          {importantDates.portfolioReviews.map((r, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8, flexWrap: "wrap" }}>
+              <div style={{ flexShrink: 0 }}><DatePicker label={`Review ${i+1} Date`} value={r.date} onChange={v => setImportantDates(p => ({ ...p, portfolioReviews: p.portfolioReviews.map((x,j) => j===i ? {...x,date:v} : x) }))} compact /></div>
+              <div style={{ flex: "1 1 200px" }}>
+                <Lbl t="Notes" />
+                <input value={r.notes} onChange={e => setImportantDates(p => ({ ...p, portfolioReviews: p.portfolioReviews.map((x,j) => j===i ? {...x,notes:e.target.value} : x) }))} style={{ ...IS, width: "100%" }} autoComplete="off" data-lpignore="true" />
+              </div>
+              <button onClick={() => setImportantDates(p => ({ ...p, portfolioReviews: p.portfolioReviews.filter((_,j) => j!==i) }))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
+            </div>
+          ))}
+          <button onClick={() => setImportantDates(p => ({ ...p, portfolioReviews: [...p.portfolioReviews, { date:"", notes:"" }] }))} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}>+ Add Portfolio Review</button>
+
+          {/* RMDs */}
+          <Sec t="RMDs" />
+          {importantDates.rmdDates.map((r, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8, flexWrap: "wrap" }}>
+              <div style={{ flexShrink: 0 }}><DatePicker label={`RMD ${i+1} Date`} value={r.date} onChange={v => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,date:v} : x) }))} compact /></div>
+              <div style={{ flex: "0 0 180px" }}>
+                <Lbl t="Account / Owner" />
+                <input value={r.account} onChange={e => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,account:e.target.value} : x) }))} style={{ ...IS, width: 180 }} autoComplete="off" data-lpignore="true" />
+              </div>
+              <button onClick={() => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.filter((_,j) => j!==i) }))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
+            </div>
+          ))}
+          <button onClick={() => setImportantDates(p => ({ ...p, rmdDates: [...p.rmdDates, { date:"", account:"" }] }))} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}>+ Add RMD Date</button>
+
+          {/* Policy & Annuity Renewal Dates */}
+          <Sec t="Policy & Annuity Renewal Dates" />
+          {importantDates.renewalDates.map((r, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8, flexWrap: "wrap" }}>
+              <div style={{ flexShrink: 0 }}><DatePicker label={`Renewal ${i+1} Date`} value={r.date} onChange={v => setImportantDates(p => ({ ...p, renewalDates: p.renewalDates.map((x,j) => j===i ? {...x,date:v} : x) }))} compact /></div>
+              <div style={{ flex: "1 1 200px" }}>
+                <Lbl t="Policy / Carrier" />
+                <input value={r.policy} onChange={e => setImportantDates(p => ({ ...p, renewalDates: p.renewalDates.map((x,j) => j===i ? {...x,policy:e.target.value} : x) }))} style={{ ...IS, width: "100%" }} autoComplete="off" data-lpignore="true" />
+              </div>
+              <button onClick={() => setImportantDates(p => ({ ...p, renewalDates: p.renewalDates.filter((_,j) => j!==i) }))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
+            </div>
+          ))}
+          <button onClick={() => setImportantDates(p => ({ ...p, renewalDates: [...p.renewalDates, { date:"", policy:"" }] }))} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}>+ Add Renewal Date</button>
+
+          {/* Family Notes */}
+          <Sec t="Family Notes" />
+          <div style={{ marginBottom: 8 }}>
+            <Lbl t="Notes — illnesses, updates, important family details" />
+            <textarea
+              value={importantDates.familyNotes}
+              onChange={e => setImportantDates(p => ({ ...p, familyNotes: e.target.value }))}
+              rows={6}
+              style={{ ...IS, width: "100%", resize: "vertical", fontFamily: "inherit", lineHeight: 1.55 }}
+              placeholder="Add any important notes about the family here — health updates, life events, unique details…"
+              data-lpignore="true"
+            />
+          </div>
+
         </Panel>
 
         {/* ── APPLICATIONS / DOCUMENTS ── */}
