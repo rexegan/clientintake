@@ -2675,7 +2675,7 @@ export default function App() {
           <Row cols={1}>
             <F><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, maxWidth: 360 }} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, marginTop: 18 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: INK }}>Copy Client Address?</span>
             <select value={tcCopyAddr} onChange={e => { setTcCopyAddr(e.target.value); if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); }} style={{ ...IS, width: 120 }}>
               <option value="">— Select —</option>
