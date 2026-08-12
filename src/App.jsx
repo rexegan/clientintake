@@ -2578,10 +2578,10 @@ export default function App() {
           </div>
 
           <Sec t="Home Address" />
-          <Row cols={2}>
-            <F><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <F style={{ flex: "0 0 320px" }}><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 140px" }}><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
+          </div>
           <Row cols={3}>
             <F>
               <Lbl t="ZIP" />
