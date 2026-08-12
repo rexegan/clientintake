@@ -3274,37 +3274,14 @@ export default function App() {
               )}
             </select>
           </div>
-          {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><Row cols={2}>
-            <F><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Occupation" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <div style={{ marginBottom: 8 }}>
-            <DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} compact />
+          {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
-          <Row cols={4}>
-            <F><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F>
-              <Lbl t="Pay Frequency" />
-              <select data-lpignore="true" value={clientEmp.payFrequency || ""} onChange={e => setClientEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
-                <option value="">— Select —</option>
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">Bi-Weekly</option>
-                <option value="bimonthly">Bi-Monthly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </F>
-            <F><Lbl t="Compensation" /><input value={clientEmp.compensation || ""} onChange={e => setClientEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F>
-              <Lbl t="Annual" />
-              <div style={{ ...IS, background: "#f2f4f7", color: MUTED, display: "flex", alignItems: "center" }}>
-                {(() => {
-                  const amt = parseInt((clientEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
-                  const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[clientEmp.payFrequency] || 0;
-                  return amt && mult ? "$" + (amt * mult).toLocaleString() : "—";
-                })()}
-              </div>
-            </F>
-          </Row>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} compact /></div>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+          </div>
           <Row cols={1}>
             <F><Lbl t="Work Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
@@ -3412,37 +3389,14 @@ export default function App() {
 
           {["married","domestic_partner"].includes(hasSpouse) && empView === "spouse" && (
             <>
-              <Row cols={2}>
-                <F><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Occupation" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <div style={{ marginBottom: 8 }}>
-                <DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} compact />
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
               </div>
-              <Row cols={4}>
-                <F><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
-                  <Lbl t="Pay Frequency" />
-                  <select data-lpignore="true" value={spouseEmp.payFrequency || ""} onChange={e => setSpouseEmp(p => ({ ...p, payFrequency: e.target.value || null }))} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="biweekly">Bi-Weekly</option>
-                    <option value="bimonthly">Bi-Monthly</option>
-                    <option value="monthly">Monthly</option>
-                  </select>
-                </F>
-                <F><Lbl t="Compensation" /><input value={spouseEmp.compensation || ""} onChange={e => setSpouseEmp(p => ({ ...p, compensation: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
-                  <Lbl t="Annual" />
-                  <div style={{ ...IS, background: "#f2f4f7", color: MUTED, display: "flex", alignItems: "center" }}>
-                    {(() => {
-                      const amt = parseInt((spouseEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
-                      const mult = { weekly: 52, biweekly: 26, bimonthly: 24, monthly: 12 }[spouseEmp.payFrequency] || 0;
-                      return amt && mult ? "$" + (amt * mult).toLocaleString() : "—";
-                    })()}
-                  </div>
-                </F>
-              </Row>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} compact /></div>
+                <F style={{ flex: "0 0 160px" }}><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              </div>
               <Row cols={1}>
                 <F><Lbl t="Work Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
