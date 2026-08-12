@@ -1755,6 +1755,7 @@ export default function App() {
   const [clientEmp, setClientEmp] = useState({ ...emptyEmployer });
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
   const [empView, setEmpView] = useState("client");
+  const [idView, setIdView] = useState("client");
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
@@ -2675,7 +2676,7 @@ export default function App() {
           </Row>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: INK }}>Copy Client Address?</span>
-            <select onChange={e => { if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); e.target.value = ""; }} defaultValue="" style={{ ...IS, width: 100 }}>
+            <select onChange={e => { if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); e.target.value = ""; }} defaultValue="" style={{ ...IS, width: 120 }}>
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
@@ -2695,10 +2696,19 @@ export default function App() {
           </div>
 
           <Sec t="Citizenship" />
+          {["married","domestic_partner"].includes(hasSpouse) && (
+            <div style={{ marginBottom: 12 }}>
+              <Lbl t="Person" />
+              <select value={idView} onChange={e => setIdView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+                <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+              </select>
+            </div>
+          )}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Type of ID" />
-              <select data-lpignore="true" value={client.idType || ""} onChange={setC("idType")} style={{ ...IS, width: 188 }}>
+              <select data-lpignore="true" value={idView === "spouse" ? (spouse.idType || "") : (client.idType || "")} onChange={idView === "spouse" ? setS("idType") : setC("idType")} style={{ ...IS, width: 188 }}>
                 <option value="">— Select —</option>
                 <option>Driver's License</option>
                 <option>Passport</option>
@@ -2717,21 +2727,27 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="US Citizen?" />
-              <select data-lpignore="true" value={client.usCitizen || ""} onChange={setC("usCitizen")} style={{ ...IS, width: 88 }}>
+              <select data-lpignore="true" value={(idView === "spouse" ? spouse : client).usCitizen || ""} onChange={idView === "spouse" ? setS("usCitizen") : setC("usCitizen")} style={{ ...IS, width: 88 }}>
                 <option value="">—</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
             </div>
-            {client.usCitizen === "no" && (
+            {(idView === "spouse" ? spouse : client).usCitizen === "no" && (
               <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
                 <Lbl t="Country of Citizenship" />
-                <CountrySelect value={client.countryOfCitizenship || ""} onChange={setC("countryOfCitizenship")} />
+                <CountrySelect value={(idView === "spouse" ? spouse : client).countryOfCitizenship || ""} onChange={idView === "spouse" ? setS("countryOfCitizenship") : setC("countryOfCitizenship")} />
               </div>
             )}
           </div>
 
           {(() => {
+            const idPerson = idView === "spouse" ? spouse : client;
+            const setIdPerson = idView === "spouse" ? setSpouse : setClient;
+            const setIdField = idView === "spouse" ? setS : setC;
+            const dlImage = idView === "spouse" ? spouseDlImage : clientDlImage;
+            const setDlImage = idView === "spouse" ? setSpouseDlImage : setClientDlImage;
+            const imageAlt = idView === "spouse" ? "Spouse ID" : "Client ID";
             const idMeta = {
               "Driver's License":               { title: "Driver's License",            numLbl: "License Number",       locType: "state" },
               "State-Issued ID":                { title: "State-Issued ID",              numLbl: "ID Number",            locType: "state" },
@@ -2747,34 +2763,34 @@ export default function App() {
               "Social Security Card":           { title: "Social Security Card",         numLbl: "SSN",                  locType: "none" },
               "Other Government-Issued ID":     { title: "Government-Issued ID",         numLbl: "ID Number",            locType: "authority" },
             };
-            const meta = idMeta[client.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
+            const meta = idMeta[idPerson.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
             const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
             return (<>
               <Sec t={meta.title} />
               <Row cols={3}>
-                <F><Lbl t={meta.numLbl} /><input value={client.dlNumber} onChange={setC("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 {meta.locType === "state"
-                  ? <F><Lbl t="Issuing State" /><StateSelect value={client.dlState} onChange={setC("dlState")} /></F>
+                  ? <F><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} /></F>
                   : meta.locType !== "none"
-                    ? <F><Lbl t={locLabel} /><input value={client.dlState} onChange={setC("dlState")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    ? <F><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                     : <F />}
-                <F><Lbl t="Issuer Name" /><input value={client.dlIssuerName} onChange={setC("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <Row cols={2}>
-                <F><DatePicker label="Issue Date" value={client.dlIssueDate} onChange={v => setClient(p => ({ ...p, dlIssueDate: v }))} /></F>
-                <F><DatePicker label="Expiration Date" futureYears={10} value={client.dlExpDate} onChange={v => setClient(p => ({ ...p, dlExpDate: v }))} /></F>
+                <F><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} /></F>
+                <F><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} /></F>
               </Row>
               <div style={{ marginTop: 10, marginBottom: 4 }}>
                 <Lbl t={meta.title + " Image"} />
-                {clientDlImage ? (
+                {dlImage ? (
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
-                    <img src={clientDlImage} alt="Client ID" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
-                    <button onClick={() => setClientDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+                    <img src={dlImage} alt={imageAlt} style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                    <button onClick={() => setDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
                   </div>
                 ) : (
                   <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
                     📎 Upload {meta.title} Image
-                    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setClientDlImage)} />
+                    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setDlImage)} />
                   </label>
                 )}
               </div>
