@@ -1360,6 +1360,7 @@ function SummaryReview({ data, onClose }) {
     nwState = {}, annualExpenses = { amount: "", frequency: "monthly" },
     inheritances = [], vaults = [], recordType = "client",
   } = data;
+  const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
 
   const P = "'DM Sans', 'Segoe UI', system-ui, sans-serif";
   const NAVY = "#414f62";
@@ -1755,6 +1756,7 @@ export default function App() {
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
   const [empView, setEmpView] = useState("client");
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
+  const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
   const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", notes: "" };
