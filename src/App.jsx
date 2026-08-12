@@ -5343,7 +5343,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Religious Preference" />
-              <select value={client.religiousPref || ""} onChange={setC("religiousPref")} style={{ ...IS, width: 190 }} data-lpignore="true">
+              <select value={client.religiousPref || ""} onChange={setC("religiousPref")} style={{ ...IS, width: 220 }} data-lpignore="true">
                 <option value="">— Select —</option>
                 <option>Christian — Protestant</option>
                 <option>Christian — Catholic</option>
