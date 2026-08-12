@@ -1756,6 +1756,7 @@ export default function App() {
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
   const [empView, setEmpView] = useState("client");
   const [idView, setIdView] = useState("client");
+  const [tcCopyAddr, setTcCopyAddr] = useState("");
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
@@ -2676,7 +2677,7 @@ export default function App() {
           </Row>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: INK }}>Copy Client Address?</span>
-            <select onChange={e => { if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); e.target.value = ""; }} defaultValue="" style={{ ...IS, width: 120 }}>
+            <select value={tcCopyAddr} onChange={e => { setTcCopyAddr(e.target.value); if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); }} style={{ ...IS, width: 120 }}>
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
