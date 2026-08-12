@@ -2514,7 +2514,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Marital Status" />
-              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 158 }}>
+              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 175 }}>
                 <option value="">— Select —</option>
                 <option value="Single">Single</option>
                 <option value="Married">Married</option>
