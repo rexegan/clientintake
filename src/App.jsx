@@ -1873,7 +1873,7 @@ export default function App() {
     ["section-followup",   () => "Follow Up"],
     ["section-alerts",     () => "Alerts"],
     ["section-preferences",() => "Client Preferences"],
-    ["section-importantdates",() => "Important Dates / Info"],
+    ["section-importantdates",() => "Important Dates / Information"],
     ["section-apps",       () => "Applications / Docs"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
@@ -2369,7 +2369,7 @@ export default function App() {
             ["section-followup",   "Follow Up"],
             ["section-alerts",     "Alerts"],
             ["section-preferences","Client Preferences"],
-            ["section-importantdates","Important Dates / Info"],
+            ["section-importantdates","Important Dates / Information"],
             ["section-apps",       "Applications / Docs"],
           ].map(([id, label]) => {
             const ts = sectionUpdatedAt[id];
@@ -5404,7 +5404,7 @@ export default function App() {
         </Panel>
 
         {/* ── IMPORTANT DATES / INFO ── */}
-        <Panel title="Important Dates / Info" id="section-importantdates">
+        <Panel title="Important Dates / Information" id="section-importantdates">
 
           {/* Auto-populated birthdays */}
           <Sec t="Birthdays" />
