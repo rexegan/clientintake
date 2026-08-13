@@ -4005,10 +4005,10 @@ export default function App() {
                 <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
-              <Row cols={1}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <F style={{ flex: "0 0 180px" }}>
                   <Lbl t="Transactions?" />
-                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => toggleAcctRmd(a, e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => toggleAcctRmd(a, e.target.value)} style={{ ...IS, width: 180 }}>
                     <option value="">— Select —</option>
                     <option value="Contributions">Contributions</option>
                     <option value="Withdrawals">Withdrawals</option>
@@ -4017,24 +4017,22 @@ export default function App() {
                     <option value="Other">Other</option>
                   </select>
                 </F>
-              </Row>
-              {INCOME_LINKED_TYPES.includes(a.hasRmdOrContrib) && (
-                <Row cols={2}>
-                  <F>
+                {(INCOME_LINKED_TYPES.includes(a.hasRmdOrContrib) || a.hasRmdOrContrib === "Contributions") && (<>
+                  <F style={{ flex: "0 0 140px" }}>
                     <Lbl t="Amount" />
-                    <input value={a.rmdContribAmount || ""} onChange={e => syncAcctIncome(a, "rmdContribAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
+                    <input value={a.rmdContribAmount || ""} onChange={e => syncAcctIncome(a, "rmdContribAmount", fmtDollar(e.target.value))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
                   </F>
-                  <F>
+                  <F style={{ flex: "0 0 130px" }}>
                     <Lbl t="Frequency" />
-                    <select data-lpignore="true" value={a.rmdContribFrequency || ""} onChange={e => syncAcctIncome(a, "rmdContribFrequency", e.target.value)} style={IS}>
+                    <select data-lpignore="true" value={a.rmdContribFrequency || ""} onChange={e => syncAcctIncome(a, "rmdContribFrequency", e.target.value)} style={{ ...IS, width: 130 }}>
                       <option value="">— Select —</option>
                       <option value="monthly">Monthly</option>
                       <option value="quarterly">Quarterly</option>
                       <option value="annual">Annual</option>
                     </select>
                   </F>
-                </Row>
-              )}
+                </>)}
+              </div>
             </div>
           ))}
           {accounts.some(a => a.balance) && (
