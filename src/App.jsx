@@ -1726,6 +1726,10 @@ function SummaryReview({ data, onClose }) {
   );
 }
 
+// Static account-type sets — defined at module level so they're always in scope
+const CASH_TYPES_M  = new Set(["CD", "Checking / Savings", "Money Market"]);
+const QUAL_TYPES_M  = new Set(["401(k)","403(b)","457(b)","Traditional IRA","Roth IRA","Roth 401(k)","SEP IRA","SIMPLE IRA","Pension / Defined Benefit","HSA"]);
+
 export default function App() {
   const [view, setView] = useState("form");
   const [confirmState, setConfirmState] = useState({ open: false, message: "", confirmLabel: "Confirm", onConfirm: null });
@@ -5450,7 +5454,7 @@ export default function App() {
               { value: `${client.firstName} ${client.lastName}`.trim(), label: `${client.firstName} ${client.lastName}`.trim() },
               ...(hasSpouse ? [{ value: `${spouse.firstName} ${spouse.lastName}`.trim(), label: `${spouse.firstName} ${spouse.lastName}`.trim() }] : []),
             ].filter(o => o.value.trim());
-            const qualAccounts = accounts.filter(a => QUAL_TYPES.has(a.type));
+            const qualAccounts = accounts.filter(a => QUAL_TYPES_M.has(a.type));
             return (
               <>
                 {importantDates.rmdDates.map((r, i) => (
