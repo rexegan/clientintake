@@ -2515,12 +2515,22 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
             <div style={{ flexShrink: 0 }}>
+              <Lbl t="Known Client Since" />
+              <div style={{ display: "flex", gap: 6 }}>
+                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 76 }} data-lpignore="true">
+                  <option value="">Mo</option>
+                  {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
+                </select>
+                <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+              </div>
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Social Security Number" />
               <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Gender" />
-              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 95 }}>
+              <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 108 }}>
                 <option value="">— Select —</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -2568,16 +2578,6 @@ export default function App() {
                 <option value="">—</option>
                 {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
               </select>
-            </div>
-            <div style={{ flexShrink: 0, marginLeft: 16 }}>
-              <Lbl t="Known Client Since" />
-              <div style={{ display: "flex", gap: 6 }}>
-                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 76 }} data-lpignore="true">
-                  <option value="">Mo</option>
-                  {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
-                </select>
-                <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-              </div>
             </div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
