@@ -2556,6 +2556,14 @@ export default function App() {
                 <option value="Domestic Partner">Domestic Partner</option>
               </select>
             </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Cell Phone" />
+              <input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Home Phone" />
+              <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
           </div>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
             <div style={{ flex: "none" }}>
@@ -2580,17 +2588,6 @@ export default function App() {
               </button>
             </div>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Cell Phone" />
-              <input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Home Phone" />
-              <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-            </div>
-          </div>
-
           <Sec t="Home Address" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 320px" }}><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
