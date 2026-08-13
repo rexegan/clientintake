@@ -2704,35 +2704,17 @@ export default function App() {
           </div>
 
           <Sec t="Citizenship" />
-          {["married","domestic_partner"].includes(hasSpouse) && (
-            <div style={{ marginBottom: 12 }}>
-              <Lbl t="Person" />
-              <select value={idView} onChange={e => setIdView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
-                <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-              </select>
-            </div>
-          )}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Type of ID" />
-              <select data-lpignore="true" value={idView === "spouse" ? (spouse.idType || "") : (client.idType || "")} onChange={idView === "spouse" ? setS("idType") : setC("idType")} style={{ ...IS, width: 188 }}>
-                <option value="">— Select —</option>
-                <option>Driver's License</option>
-                <option>Passport</option>
-                <option>Passport Card</option>
-                <option>State-Issued ID</option>
-                <option>Military ID</option>
-                <option>U.S. Permanent Resident Card (Green Card)</option>
-                <option>Employment Authorization Card (EAD)</option>
-                <option>Tribal ID</option>
-                <option>Veteran's ID Card</option>
-                <option>Federal Government Employee ID</option>
-                <option>Social Security Card</option>
-                <option>Birth Certificate</option>
-                <option>Other Government-Issued ID</option>
-              </select>
-            </div>
+          {/* Row 1: Person picker + US Citizen (+ Country if non-US) */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            {["married","domestic_partner"].includes(hasSpouse) && (
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="Person" />
+                <select value={idView} onChange={e => setIdView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+                  <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                  <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                </select>
+              </div>
+            )}
             <div style={{ flexShrink: 0 }}>
               <Lbl t="US Citizen?" />
               <select data-lpignore="true" value={(idView === "spouse" ? spouse : client).usCitizen || ""} onChange={idView === "spouse" ? setS("usCitizen") : setC("usCitizen")} style={{ ...IS, width: 88 }}>
@@ -2774,13 +2756,32 @@ export default function App() {
             const meta = idMeta[idPerson.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
             const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
             return (<>
-              <Sec t={meta.title} />
+              {/* Row 2: Type of ID + License Number + Issuing State + Issuer Name */}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <F style={{ flex: "0 0 180px" }}><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Type of ID" />
+                  <select data-lpignore="true" value={idPerson.idType || ""} onChange={setIdField("idType")} style={{ ...IS, width: 188 }}>
+                    <option value="">— Select —</option>
+                    <option>Driver's License</option>
+                    <option>Passport</option>
+                    <option>Passport Card</option>
+                    <option>State-Issued ID</option>
+                    <option>Military ID</option>
+                    <option>U.S. Permanent Resident Card (Green Card)</option>
+                    <option>Employment Authorization Card (EAD)</option>
+                    <option>Tribal ID</option>
+                    <option>Veteran's ID Card</option>
+                    <option>Federal Government Employee ID</option>
+                    <option>Social Security Card</option>
+                    <option>Birth Certificate</option>
+                    <option>Other Government-Issued ID</option>
+                  </select>
+                </div>
+                <F style={{ flex: "0 0 130px" }}><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={{ ...IS, width: 130 }} autoComplete="new-password" data-lpignore="true" /></F>
                 {meta.locType === "state"
-                  ? <F style={{ flex: "0 0 200px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 200 }} /></F>
+                  ? <F style={{ flex: "0 0 160px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 160 }} /></F>
                   : meta.locType !== "none"
-                    ? <F style={{ flex: "0 0 200px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
+                    ? <F style={{ flex: "0 0 160px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" /></F>
                     : null}
                 <F style={{ flex: "0 0 100px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 100 }} autoComplete="new-password" data-lpignore="true" /></F>
               </div>
