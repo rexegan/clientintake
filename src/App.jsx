@@ -1759,6 +1759,7 @@ export default function App() {
   const [idView, setIdView] = useState("client");
   const [tcCopyAddr, setTcCopyAddr] = useState("");
   const [importantDates, setImportantDates] = useState({ anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
+  // rmdDates shape: { date:"", owner:"", linkedAcctId:"" }
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
@@ -5444,17 +5445,38 @@ export default function App() {
 
           {/* RMDs */}
           <Sec t="RMDs" />
-          {importantDates.rmdDates.map((r, i) => (
-            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8, flexWrap: "wrap" }}>
-              <div style={{ flexShrink: 0 }}><DatePicker label={`RMD ${i+1} Date`} value={r.date} onChange={v => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,date:v} : x) }))} compact /></div>
-              <div style={{ flex: "0 0 180px" }}>
-                <Lbl t="Account / Owner" />
-                <input value={r.account} onChange={e => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,account:e.target.value} : x) }))} style={{ ...IS, width: 180 }} autoComplete="off" data-lpignore="true" />
-              </div>
-              <button onClick={() => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.filter((_,j) => j!==i) }))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
-            </div>
-          ))}
-          <button onClick={() => setImportantDates(p => ({ ...p, rmdDates: [...p.rmdDates, { date:"", account:"" }] }))} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}>+ Add RMD Date</button>
+          {(() => {
+            const rmdOwnerOptions = [
+              { value: `${client.firstName} ${client.lastName}`.trim(), label: `${client.firstName} ${client.lastName}`.trim() },
+              ...(hasSpouse ? [{ value: `${spouse.firstName} ${spouse.lastName}`.trim(), label: `${spouse.firstName} ${spouse.lastName}`.trim() }] : []),
+            ].filter(o => o.value.trim());
+            const qualAccounts = accounts.filter(a => QUAL_TYPES.has(a.type));
+            return (
+              <>
+                {importantDates.rmdDates.map((r, i) => (
+                  <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8, flexWrap: "wrap" }}>
+                    <div style={{ flexShrink: 0 }}><DatePicker label={`RMD ${i+1} Date`} value={r.date} onChange={v => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,date:v} : x) }))} compact /></div>
+                    <div style={{ flex: "0 0 160px" }}>
+                      <Lbl t="Owner" />
+                      <select value={r.owner || ""} onChange={e => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,owner:e.target.value} : x) }))} style={{ ...IS, width: 160 }}>
+                        <option value="">— Select —</option>
+                        {rmdOwnerOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    <div style={{ flex: "0 0 220px" }}>
+                      <Lbl t="Account" />
+                      <select value={r.linkedAcctId || ""} onChange={e => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.map((x,j) => j===i ? {...x,linkedAcctId:e.target.value} : x) }))} style={{ ...IS, width: 220 }}>
+                        <option value="">— Select Account —</option>
+                        {qualAccounts.map(a => <option key={a.id} value={a.id}>{[a.institution, a.type, a.owner].filter(Boolean).join(" — ")}</option>)}
+                      </select>
+                    </div>
+                    <button onClick={() => setImportantDates(p => ({ ...p, rmdDates: p.rmdDates.filter((_,j) => j!==i) }))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
+                  </div>
+                ))}
+                <button onClick={() => setImportantDates(p => ({ ...p, rmdDates: [...p.rmdDates, { date:"", owner:"", linkedAcctId:"" }] }))} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}>+ Add RMD Date</button>
+              </>
+            );
+          })()}
 
           {/* Policy & Annuity Renewal Dates */}
           <Sec t="Policy & Annuity Renewal Dates" />
