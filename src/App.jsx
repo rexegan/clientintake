@@ -2529,7 +2529,7 @@ export default function App() {
               </div>
             </div>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="# of Dependents" />
+              <Lbl t="Dependents" />
               <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 62 }}>
                 <option value="">—</option>
                 {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
