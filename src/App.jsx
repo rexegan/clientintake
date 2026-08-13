@@ -2515,6 +2515,10 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
             <div style={{ flexShrink: 0 }}>
+              <Lbl t="Social Security Number" />
+              <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Known Client Since" />
               <div style={{ display: "flex", gap: 6 }}>
                 <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 76 }} data-lpignore="true">
@@ -2525,8 +2529,11 @@ export default function App() {
               </div>
             </div>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="Social Security Number" />
-              <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+              <Lbl t="# of Dependents" />
+              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 62 }}>
+                <option value="">—</option>
+                {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
+              </select>
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Gender" />
@@ -2571,13 +2578,6 @@ export default function App() {
               <button onClick={() => setClientEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 10px", fontSize: 13, cursor: "pointer" }}>
                 + Add Email
               </button>
-            </div>
-            <div style={{ flexShrink: 0, marginLeft: 16 }}>
-              <Lbl t="# of Dependents" />
-              <select data-lpignore="true" value={client.numDependents || ""} onChange={setC("numDependents")} style={{ ...IS, width: 62 }}>
-                <option value="">—</option>
-                {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
-              </select>
             </div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
