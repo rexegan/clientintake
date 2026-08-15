@@ -510,7 +510,8 @@ function ConfirmDialog({ message, confirmLabel = "Confirm", onConfirm, onCancel 
   );
 }
 
-function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfirm, currentName, currentType }) {
+function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfirm, onExport, onImport, currentName, currentType }) {
+  const importRef = useRef(null);
   return (
     <div style={{ background: PAGE_BG, minHeight: "100vh", color: INK }}>
       <div style={{ background: NAV, borderBottom: "1px solid " + BORDER, padding: "20px 24px" }}>
@@ -521,9 +522,14 @@ function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfir
               Russell Wealth Group · {clients.length} record{clients.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <button onClick={onBack} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>
-            {currentName ? `← Return to ${currentName}` : "← New Intake"}
-          </button>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+            <input ref={importRef} type="file" accept=".json" style={{ display: "none" }} onChange={e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => { onImport(ev.target.result); }; r.readAsText(f); } e.target.value = ""; }} />
+            <button onClick={() => importRef.current?.click()} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 8, padding: "10px 18px", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>⬆ Import Backup</button>
+            <button onClick={onExport} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 8, padding: "10px 18px", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>⬇ Export Backup</button>
+            <button onClick={onBack} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>
+              {currentName ? `← Return to ${currentName}` : "← New Intake"}
+            </button>
+          </div>
         </div>
       </div>
       <div style={{ maxWidth: 860, margin: "0 auto", padding: 24 }}>
@@ -2290,6 +2296,39 @@ export default function App() {
         onConfirm={showConfirm}
         currentName={[client.firstName, client.lastName].filter(Boolean).join(" ") || null}
         currentType={recordType}
+        onExport={() => {
+          const data = JSON.stringify(savedClients, null, 2);
+          const blob = new Blob([data], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `rwg-clients-backup-${new Date().toISOString().slice(0,10)}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }}
+        onImport={(text) => {
+          try {
+            const imported = JSON.parse(text);
+            if (!Array.isArray(imported)) throw new Error("Invalid format");
+            showConfirm(
+              `Import ${imported.length} record(s)? Existing records with the same ID will be updated; new records will be added.`,
+              () => {
+                const merged = [...savedClients];
+                imported.forEach(rec => {
+                  const idx = merged.findIndex(r => r.id === rec.id);
+                  if (idx >= 0) merged[idx] = rec;
+                  else merged.unshift(rec);
+                });
+                localStorage.setItem("rwg_clients", JSON.stringify(merged));
+                setSavedClients(merged);
+                showToast(`${imported.length} record(s) imported successfully.`, SUCCESS);
+              },
+              "Import"
+            );
+          } catch {
+            showToast("Import failed — file is not a valid backup.", DANGER);
+          }
+        }}
       />
       {confirmState.open && (
         <ConfirmDialog
