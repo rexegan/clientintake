@@ -1753,7 +1753,6 @@ export default function App() {
       ).forEach(el => el.remove());
       document.querySelectorAll('input').forEach(el => {
         el.setAttribute('data-lpignore', 'true');
-        el.setAttribute('data-1p-ignore', 'true');
       });
     };
     kill();
