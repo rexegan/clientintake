@@ -2660,7 +2660,7 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="PO Box?" />
-              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 100 }}>
+              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 120 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -2854,6 +2854,17 @@ export default function App() {
               </div>
             </>);
           })()}
+
+          {["married","domestic_partner"].includes(hasSpouse) && (
+            <button
+              onClick={() => setIdView(v => v === "spouse" ? "client" : "spouse")}
+              style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}
+            >
+              {idView === "spouse"
+                ? `← View ${[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}'s Citizenship`
+                : `+ Add / View ${[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}'s Citizenship`}
+            </button>
+          )}
 
           <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
