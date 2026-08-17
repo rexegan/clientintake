@@ -1868,6 +1868,7 @@ export default function App() {
   const [quickViewPanelOpen, setQuickViewPanelOpen] = useState(false);
   const QV_SECTIONS = [
     ["section-profile",    () => recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
+    ["section-citizenship", () => "Citizenship / Driver's Lic"],
     ["section-family",     () => "Family"],
     ["section-bene",       () => "Beneficiaries"],
     ["section-employment", () => "Employment"],
@@ -2397,6 +2398,7 @@ export default function App() {
           </div>
           {[
             ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
+            ["section-citizenship", "Citizenship / Driver's Lic"],
             ["section-family",    "Family"],
             ["section-bene",      "Beneficiaries"],
             ["section-employment","Employment"],
@@ -2752,6 +2754,7 @@ export default function App() {
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
           </div>
 
+          <div id="section-citizenship" style={{ scrollMarginTop: 80 }} />
           <Sec t="Citizenship" />
           {/* Row 1: Person picker + US Citizen (+ Country if non-US) */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
@@ -2835,8 +2838,8 @@ export default function App() {
                 <F style={{ flex: "0 0 100px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 100 }} autoComplete="new-password" data-lpignore="true" /></F>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={56} yearW={62} /></div>
-                <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={56} yearW={62} /></div>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
               </div>
               <div style={{ marginTop: 10, marginBottom: 4 }}>
                 <Lbl t={meta.title + " Image"} />
@@ -2946,93 +2949,6 @@ export default function App() {
                 <F style={{ flex: "none" }}><Lbl t="Cell Phone" /><input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F style={{ flex: "none" }}><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </div>
-
-              <Sec t="Citizenship" />
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", justifyContent: "flex-start", marginBottom: 12 }}>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Type of ID" />
-                  <select data-lpignore="true" value={spouse.idType || ""} onChange={setS("idType")} style={{ ...IS, width: 188 }}>
-                    <option value="">— Select —</option>
-                    <option>Driver's License</option>
-                    <option>Passport</option>
-                    <option>Passport Card</option>
-                    <option>State-Issued ID</option>
-                    <option>Military ID</option>
-                    <option>U.S. Permanent Resident Card (Green Card)</option>
-                    <option>Employment Authorization Card (EAD)</option>
-                    <option>Tribal ID</option>
-                    <option>Veteran's ID Card</option>
-                    <option>Federal Government Employee ID</option>
-                    <option>Social Security Card</option>
-                    <option>Birth Certificate</option>
-                    <option>Other Government-Issued ID</option>
-                  </select>
-                </div>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="US Citizen?" />
-                  <select data-lpignore="true" value={spouse.usCitizen || ""} onChange={setS("usCitizen")} style={{ ...IS, width: 88 }}>
-                    <option value="">—</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
-                {spouse.usCitizen === "no" && (
-                  <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
-                    <Lbl t="Country of Citizenship" />
-                    <CountrySelect value={spouse.countryOfCitizenship || ""} onChange={setS("countryOfCitizenship")} />
-                  </div>
-                )}
-              </div>
-
-              {(() => {
-                const idMeta = {
-                  "Driver's License":               { title: "Driver's License",            numLbl: "License Number",       locType: "state" },
-                  "State-Issued ID":                { title: "State-Issued ID",              numLbl: "ID Number",            locType: "state" },
-                  "Birth Certificate":              { title: "Birth Certificate",            numLbl: "Certificate Number",   locType: "state" },
-                  "Passport":                       { title: "Passport",                     numLbl: "Passport Number",      locType: "country" },
-                  "Passport Card":                  { title: "Passport Card",                numLbl: "Passport Card Number", locType: "country" },
-                  "U.S. Permanent Resident Card (Green Card)": { title: "Green Card",        numLbl: "Card Number",          locType: "country" },
-                  "Employment Authorization Card (EAD)":       { title: "EAD Card",          numLbl: "Card Number",          locType: "country" },
-                  "Military ID":                    { title: "Military ID",                  numLbl: "ID Number",            locType: "branch" },
-                  "Tribal ID":                      { title: "Tribal ID",                   numLbl: "ID Number",            locType: "authority" },
-                  "Veteran's ID Card":              { title: "Veteran's ID Card",            numLbl: "ID Number",            locType: "authority" },
-                  "Federal Government Employee ID": { title: "Federal Government Employee ID", numLbl: "ID Number",          locType: "authority" },
-                  "Social Security Card":           { title: "Social Security Card",         numLbl: "SSN",                  locType: "none" },
-                  "Other Government-Issued ID":     { title: "Government-Issued ID",         numLbl: "ID Number",            locType: "authority" },
-                };
-                const meta = idMeta[spouse.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
-                const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
-                return (<>
-                  <Sec t={meta.title} />
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                    <F style={{ flex: "0 0 120px" }}><Lbl t={meta.numLbl} /><input value={spouse.dlNumber} onChange={setS("dlNumber")} style={{ ...IS, width: 120 }} autoComplete="new-password" data-lpignore="true" /></F>
-                    {meta.locType === "state"
-                      ? <F style={{ flex: "0 0 200px" }}><Lbl t="Issuing State" /><StateSelect value={spouse.dlState} onChange={setS("dlState")} style={{ ...IS, width: 200 }} /></F>
-                      : meta.locType !== "none"
-                        ? <F style={{ flex: "0 0 200px" }}><Lbl t={locLabel} /><input value={spouse.dlState} onChange={setS("dlState")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
-                        : null}
-                    <F style={{ flex: "0 0 100px" }}><Lbl t="Issuer Name" /><input value={spouse.dlIssuerName} onChange={setS("dlIssuerName")} style={{ ...IS, width: 100 }} autoComplete="new-password" data-lpignore="true" /></F>
-                  </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
-                    <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={spouse.dlIssueDate} onChange={v => setSpouse(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={56} yearW={62} /></div>
-                    <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={spouse.dlExpDate} onChange={v => setSpouse(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={56} yearW={62} /></div>
-                  </div>
-                  <div style={{ marginTop: 10, marginBottom: 4 }}>
-                    <Lbl t={meta.title + " Image"} />
-                    {spouseDlImage ? (
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
-                        <img src={spouseDlImage} alt="Spouse ID" style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
-                        <button onClick={() => setSpouseDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
-                      </div>
-                    ) : (
-                      <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
-                        📎 Upload {meta.title} Image
-                        <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setSpouseDlImage)} />
-                      </label>
-                    )}
-                  </div>
-                </>);
-              })()}
 
             </div>
           )}
