@@ -2678,35 +2678,25 @@ export default function App() {
             </div>
           </div>
           {client.hasPOBox === "yes" && (
-            <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>PO Box Address</div>
-              <Row cols={2}>
-                <F>
-                  <Lbl t="PO Box Number" />
-                  <input
-                    value={client.poBox}
-                    onChange={setC("poBox")}
-                    onBlur={e => setClient(p => ({ ...p, poBox: fmtPOBox(e.target.value) }))}
-                    style={IS} autoComplete="new-password" data-lpignore="true"
-                  />
-                </F>
-                <F><Lbl t="City" /><input value={client.poBoxCity} onChange={setC("poBoxCity")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Row cols={2}>
-                <F>
+            <div style={{ marginTop: 10, borderTop: "1px solid " + BORDER, paddingTop: 10, marginBottom: 12 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="PO Box #" />
+                  <input value={client.poBox} onChange={setC("poBox")} onBlur={e => setClient(p => ({ ...p, poBox: fmtPOBox(e.target.value) }))} style={{ ...IS, width: 110 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="City" />
+                  <input value={client.poBoxCity} onChange={setC("poBoxCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="ZIP" />
-                  <input
-                    value={client.poBoxZip}
-                    onChange={e => {
-                      const z = fmtZip(e.target.value);
-                      setClient(p => ({ ...p, poBoxZip: z }));
-                      lookupZip(z, (city, state) => setClient(p => ({ ...p, poBoxCity: city, poBoxState: state })));
-                    }}
-                    maxLength={10} style={IS} autoComplete="new-password" data-lpignore="true"
-                  />
-                </F>
-                <F><Lbl t="State" /><StateSelect value={client.poBoxState} onChange={setC("poBoxState")} /></F>
-              </Row>
+                  <input value={client.poBoxZip} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, poBoxZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, poBoxCity: city, poBoxState: state }))); }} maxLength={10} style={{ ...IS, width: 108 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="State" />
+                  <StateSelect value={client.poBoxState} onChange={setC("poBoxState")} style={{ ...IS, width: 224 }} />
+                </div>
+              </div>
             </div>
           )}
 
