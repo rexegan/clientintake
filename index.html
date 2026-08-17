@@ -11,8 +11,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
     <style>
-      [data-lastpass-icon-root], [data-lastpass-root], [id*="lastpass"], [class*="lastpass"],
-      .lp-icon, div[data-lp-id] { display: none !important; }
+      /* Suppress LastPass and all password manager overlays */
+      [data-lastpass-icon-root], [data-lastpass-root], [data-lastpass-infield],
+      [id*="lastpass"], [class*="lastpass"], [id*="LastPass"], [class*="LastPass"],
+      .lp-icon, div[data-lp-id], [data-lp-id],
+      [id*="__lpform_"], [id*="__lp_"], [id*="lp-"], span.__lpignore,
+      div[style*="lastpass"], iframe[src*="lastpass"],
+      [data-dashlane-rid], [data-dashlane-label],
+      [data-1p-ignore], [data-bwi-id],
+      div[id^="kw-"], div[class^="kw-"] { display: none !important; }
+
+      input::-webkit-credentials-auto-fill-button,
+      input::-webkit-contacts-auto-fill-button,
+      input::-webkit-strong-password-auto-fill-button { display: none !important; visibility: hidden !important; }
     </style>
   </head>
   <body>

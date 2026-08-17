@@ -1741,6 +1741,25 @@ export default function App() {
   const [confirmState, setConfirmState] = useState({ open: false, message: "", confirmLabel: "Confirm", onConfirm: null });
   const showConfirm = (message, onConfirm, confirmLabel = "Confirm") => setConfirmState({ open: true, message, confirmLabel, onConfirm });
   const closeConfirm = () => setConfirmState(s => ({ ...s, open: false, onConfirm: null }));
+
+  // Aggressively remove LastPass injected DOM elements
+  useEffect(() => {
+    const kill = () => {
+      document.querySelectorAll(
+        '[data-lastpass-icon-root],[data-lastpass-root],[id*="lastpass"],[class*="lastpass"],' +
+        '[id*="LastPass"],[class*="LastPass"],[data-lp-id],[id*="__lpform_"],' +
+        'div[id^="kw-"],div[class^="kw-"],iframe[src*="lastpass"]'
+      ).forEach(el => el.remove());
+      document.querySelectorAll('input').forEach(el => {
+        el.setAttribute('data-lpignore', 'true');
+        el.setAttribute('data-1p-ignore', 'true');
+      });
+    };
+    kill();
+    const observer = new MutationObserver(kill);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
   const [savedClients, setSavedClients] = useState(
     () => JSON.parse(localStorage.getItem("rwg_clients") || "[]")
   );
