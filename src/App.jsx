@@ -625,6 +625,7 @@ const IcSvg = ({ children }) => (
 
 const SECTION_META = {
   "section-profile":    { color: "#3b82f6", bg: "#eef4ff", icon: <IcSvg><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></IcSvg> },
+  "section-citizenship":{ color: "#2563eb", bg: "#eff6ff", icon: <IcSvg><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><path d="M13 9h6M13 13h4"/></IcSvg> },
   "section-preferences":{ color: "#0d9488", bg: "#f0fdfa", icon: <IcSvg><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></IcSvg> },
   "section-family":     { color: "#8b5cf6", bg: "#f3efff", icon: <IcSvg><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6"/><path d="M17.8 14.6a6.5 6.5 0 0 1 3.7 5.4"/></IcSvg> },
   "section-bene":       { color: "#ec4899", bg: "#fdeef6", icon: <IcSvg><path d="M12 20.5S4 15.5 3 10.5a4.8 4.8 0 0 1 9-2.4 4.8 4.8 0 0 1 9 2.4c-1 5-9 10-9 10z"/></IcSvg> },
@@ -3929,37 +3930,49 @@ export default function App() {
                 )}
               </div>
               {/* Row 2: owner / NQ-Q / OPT / event / timeframe */}
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid " + BORDER }}>
-                <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
-                  <option value="">— Owner —</option>
-                  <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                  {["married","domestic_partner"].includes(hasSpouse) && (
-                    <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                  )}
-                  <option value="Joint">Joint (JNT)</option>
-                </select>
-                <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 150 }}>
-                  <option value="">— NQ or Q? —</option>
-                  <option value="Non-Qualified">Non-Qualified</option>
-                  <option value="Qualified">Qualified</option>
-                </select>
-                <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 115 }}>
-                  <option value="">— OPT? —</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
-                {a.hasOpt === "yes" && (
-                  <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, margin: 0, padding: "5px 32px 5px 10px", fontSize: 13, width: "auto", minWidth: 160 }}>
-                    <option value="">— Event? —</option>
-                    <option value="Retire">Retire</option>
-                    <option value="Sell Business">Sell Business</option>
-                    <option value="Sell Land">Sell Land</option>
-                    <option value="Inheritance">Inheritance</option>
-                    <option value="Settlement">Settlement</option>
-                    <option value="Divorce">Divorce</option>
-                    <option value="Death of Spouse">Death of Spouse</option>
-                    <option value="Other">Other</option>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 10, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid " + BORDER }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Owner" />
+                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 160 }}>
+                    <option value="">— Select —</option>
+                    <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                    <option value="Joint">Joint (JNT)</option>
                   </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="NQ or Q?" />
+                  <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, width: "auto", minWidth: 150 }}>
+                    <option value="">— Select —</option>
+                    <option value="Non-Qualified">Non-Qualified</option>
+                    <option value="Qualified">Qualified</option>
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Opportunity?" />
+                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, width: "auto", minWidth: 100 }}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                {a.hasOpt === "yes" && (
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Event" />
+                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, width: "auto", minWidth: 160 }}>
+                      <option value="">— Select —</option>
+                      <option value="Retire">Retire</option>
+                      <option value="Sell Business">Sell Business</option>
+                      <option value="Sell Land">Sell Land</option>
+                      <option value="Inheritance">Inheritance</option>
+                      <option value="Settlement">Settlement</option>
+                      <option value="Divorce">Divorce</option>
+                      <option value="Death of Spouse">Death of Spouse</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
                 )}
               </div>
               {a.hasOpt === "yes" && (
