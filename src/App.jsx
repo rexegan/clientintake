@@ -3259,16 +3259,16 @@ export default function App() {
 
         {/* ── EMPLOYMENT ── */}
         <Panel title="Employment" id="section-employment">
-          <div style={{ marginBottom: 14 }}>
-            <Lbl t="Employee" />
-            <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
-              <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-              {["married","domestic_partner"].includes(hasSpouse) && (
-                <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-              )}
-            </select>
-          </div>
           {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Employee" />
+              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+                <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                {["married","domestic_partner"].includes(hasSpouse) && (
+                  <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                )}
+              </select>
+            </div>
             <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
@@ -3290,41 +3290,41 @@ export default function App() {
 
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
-            <Row cols={2}>
-              <F>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
+              <div style={{ flexShrink: 0 }}>
                 <Lbl t="Has Retirement Plan?" />
-                <select data-lpignore="true" value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
+                <select data-lpignore="true" value={clientEmp.hasRetirement || ""} onChange={e => setClientEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={{ ...IS, width: 76 }}>
                   <option value="">— Select —</option>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
                 </select>
-              </F>
+              </div>
               {clientEmp.hasRetirement === "yes" && (
-                <F>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Type of Plan" />
-                  <select data-lpignore="true" value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
+                  <select data-lpignore="true" value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={{ ...IS, width: 210 }}>
                     <option value="">— Select —</option>
                     <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
                     <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
                     <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
                     <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
                   </select>
-                </F>
+                </div>
               )}
-            </Row>
+            </div>
             {clientEmp.hasRetirement === "yes" && (
               <>
-                <Row cols={2}>
-                  <F><Lbl t="Monthly Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-                  <F>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}><Lbl t="Monthly Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={{ ...IS, width: 240 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></div>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t="Employer Match %" />
-                    <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
+                    <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={{ ...IS, width: 170 }}>
                       <option value="">— Select —</option>
                       <option value="No Match">No Match</option>
                       {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                     </select>
-                  </F>
-                </Row>
+                  </div>
+                </div>
                 {(() => {
                   const matchNum = parseInt((clientEmp.matchPct || "").replace(/[^0-9]/g, "") || 0);
                   const compAmt = parseInt((clientEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
@@ -3352,11 +3352,11 @@ export default function App() {
                     </div>
                   );
                 })()}
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
-                  <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
-                  <div style={{ flex: "0 0 210px" }}>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                  <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={clientEmp.retirementBalance} onChange={e => setClientEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t="Custodian / Plan Sponsor" />
-                    <select data-lpignore="true" value={clientEmp.retirementCustodian || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
+                    <select data-lpignore="true" value={clientEmp.retirementCustodian || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={{ ...IS, width: 180 }}>
                       <option value="">— Select —</option>
                       <option>Fidelity</option><option>Empower</option><option>Vanguard</option><option>Schwab</option>
                       <option>T. Rowe Price</option><option>Principal</option><option>Prudential</option><option>Transamerica</option>
@@ -3367,9 +3367,9 @@ export default function App() {
                       <input value={clientEmp.retirementCustodianOther || ""} onChange={e => setClientEmp(p => ({ ...p, retirementCustodianOther: e.target.value }))} style={{ ...IS, marginTop: 6 }} placeholder="Specify custodian" autoComplete="new-password" data-lpignore="true" />
                     )}
                   </div>
-                  <div style={{ flex: "0 0 150px" }}>
-                    <Lbl t="In Service Transfer?" />
-                    <select value={clientEmp.inServiceTransfer || ""} onChange={e => setClientEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={IS} data-lpignore="true">
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="In Service Transfer Available?" />
+                    <select value={clientEmp.inServiceTransfer || ""} onChange={e => setClientEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={{ ...IS, width: 76 }} data-lpignore="true">
                       <option value="">— Select —</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -3384,6 +3384,13 @@ export default function App() {
           {["married","domestic_partner"].includes(hasSpouse) && empView === "spouse" && (
             <>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Employee" />
+                  <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+                    <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                  </select>
+                </div>
                 <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
                 <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
               </div>
@@ -3404,40 +3411,40 @@ export default function App() {
               </div>
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
-                <Row cols={2}>
-                  <F>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t="Has Retirement Plan?" />
-                    <select data-lpignore="true" value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={IS}>
+                    <select data-lpignore="true" value={spouseEmp.hasRetirement || ""} onChange={e => setSpouseEmp(p => ({ ...p, hasRetirement: e.target.value || null }))} style={{ ...IS, width: 76 }}>
                       <option value="">— Select —</option>
                       <option value="yes">Yes</option><option value="no">No</option>
                     </select>
-                  </F>
+                  </div>
                   {spouseEmp.hasRetirement === "yes" && (
-                    <F>
+                    <div style={{ flexShrink: 0 }}>
                       <Lbl t="Type of Plan" />
-                      <select data-lpignore="true" value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={IS}>
+                      <select data-lpignore="true" value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={{ ...IS, width: 210 }}>
                         <option value="">— Select —</option>
                         <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
-                    <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
-                    <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
-                    <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
+                        <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
+                        <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
+                        <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
                       </select>
-                    </F>
+                    </div>
                   )}
-                </Row>
+                </div>
                 {spouseEmp.hasRetirement === "yes" && (
                   <>
-                    <Row cols={2}>
-                      <F><Lbl t="Monthly Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-                      <F>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Monthly Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={{ ...IS, width: 240 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></div>
+                      <div style={{ flexShrink: 0 }}>
                         <Lbl t="Employer Match %" />
-                        <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={IS}>
+                        <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={{ ...IS, width: 170 }}>
                           <option value="">— Select —</option>
                           <option value="No Match">No Match</option>
                           {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                         </select>
-                      </F>
-                    </Row>
+                      </div>
+                    </div>
                     {(() => {
                       const matchNum = parseInt((spouseEmp.matchPct || "").replace(/[^0-9]/g, "") || 0);
                       const compAmt = parseInt((spouseEmp.compensation || "").replace(/[^0-9]/g, "") || 0);
@@ -3465,11 +3472,11 @@ export default function App() {
                         </div>
                       );
                     })()}
-                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
-                      <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
-                      <div style={{ flex: "0 0 210px" }}>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                      <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={spouseEmp.retirementBalance} onChange={e => setSpouseEmp(p => ({ ...p, retirementBalance: fmtDollar(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
+                      <div style={{ flexShrink: 0 }}>
                         <Lbl t="Custodian / Plan Sponsor" />
-                        <select data-lpignore="true" value={spouseEmp.retirementCustodian || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={IS}>
+                        <select data-lpignore="true" value={spouseEmp.retirementCustodian || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodian: e.target.value, retirementCustodianOther: "" }))} style={{ ...IS, width: 180 }}>
                           <option value="">— Select —</option>
                           <option>Fidelity</option><option>Empower</option><option>Vanguard</option><option>Schwab</option>
                           <option>T. Rowe Price</option><option>Principal</option><option>Prudential</option><option>Transamerica</option>
@@ -3480,9 +3487,9 @@ export default function App() {
                           <input value={spouseEmp.retirementCustodianOther || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementCustodianOther: e.target.value }))} style={{ ...IS, marginTop: 6 }} placeholder="Specify custodian" autoComplete="new-password" data-lpignore="true" />
                         )}
                       </div>
-                      <div style={{ flex: "0 0 150px" }}>
-                        <Lbl t="In Service Transfer?" />
-                        <select value={spouseEmp.inServiceTransfer || ""} onChange={e => setSpouseEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={IS} data-lpignore="true">
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="In Service Transfer Available?" />
+                        <select value={spouseEmp.inServiceTransfer || ""} onChange={e => setSpouseEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={{ ...IS, width: 76 }} data-lpignore="true">
                           <option value="">— Select —</option>
                           <option value="Yes">Yes</option>
                           <option value="No">No</option>
