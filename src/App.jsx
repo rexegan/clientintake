@@ -1868,7 +1868,7 @@ export default function App() {
   const [quickViewPanelOpen, setQuickViewPanelOpen] = useState(false);
   const QV_SECTIONS = [
     ["section-profile",    () => recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
-    ["section-citizenship", () => "Citizenship / Driver's Lic"],
+    ["section-citizenship", () => "Driver's License & Citizenship"],
     ["section-family",     () => "Family"],
     ["section-bene",       () => "Beneficiaries"],
     ["section-employment", () => "Employment"],
@@ -2398,7 +2398,7 @@ export default function App() {
           </div>
           {[
             ["section-profile",   recordType === "prospect" ? "Prospect Profile" : "Client Profile"],
-            ["section-citizenship", "Citizenship / Driver's Lic"],
+            ["section-citizenship", "Driver's License & Citizenship"],
             ["section-family",    "Family"],
             ["section-bene",      "Beneficiaries"],
             ["section-employment","Employment"],
@@ -2755,7 +2755,7 @@ export default function App() {
           </div>
 
           <div id="section-citizenship" style={{ scrollMarginTop: 80 }} />
-          <Sec t="Citizenship" />
+          <Sec t="Driver's License & Citizenship" />
           {/* Row 1: Person picker + US Citizen (+ Country if non-US) */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             {["married","domestic_partner"].includes(hasSpouse) && (
@@ -2831,11 +2831,11 @@ export default function App() {
                 </div>
                 <F style={{ flex: "0 0 130px" }}><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={{ ...IS, width: 130 }} autoComplete="new-password" data-lpignore="true" /></F>
                 {meta.locType === "state"
-                  ? <F style={{ flex: "0 0 160px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 160 }} /></F>
+                  ? <F style={{ flex: "0 0 196px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} /></F>
                   : meta.locType !== "none"
-                    ? <F style={{ flex: "0 0 160px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" /></F>
+                    ? <F style={{ flex: "0 0 196px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" /></F>
                     : null}
-                <F style={{ flex: "0 0 100px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 100 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" /></F>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
