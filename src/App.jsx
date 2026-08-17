@@ -3514,24 +3514,24 @@ export default function App() {
                   <button onClick={() => showConfirm("Remove this income source?", () => delIncome(inc.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
-              <Row cols={2}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Income Type" />
-                  <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={inc.type} onChange={e => updIncome(inc.id, "type", e.target.value)} style={{ ...IS, width: 220 }}>
                     <option value="">— Select —</option>
                     {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Source" />
-                  <select data-lpignore="true" value={inc.source || ""} onChange={e => updIncome(inc.id, "source", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={inc.source || ""} onChange={e => updIncome(inc.id, "source", e.target.value)} style={{ ...IS, width: 270 }}>
                     <option value="">— Select —</option>
                     {INCOME_SOURCES.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Frequency" />
-                  <select data-lpignore="true" value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={inc.frequency || ""} onChange={e => updIncome(inc.id, "frequency", e.target.value)} style={{ ...IS, width: 230 }}>
                     <option value="">— Select —</option>
                     <option value="annual">Annual</option>
                     <option value="monthly">Monthly</option>
@@ -3539,17 +3539,17 @@ export default function App() {
                     <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
                     <option value="weekly">Weekly</option>
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Belongs To" />
-                  <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)} style={{ ...IS, width: Math.max(120, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 8 + 28) }}>
                     <option value="">— Select —</option>
-                    <option value="client">{client.firstName || "Client"}</option>
-                    <option value="spouse">{spouse.firstName || "Spouse"}</option>
+                    <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
                     <option value="joint">Joint</option>
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
               {inc.linkedAcctId && (
                 <div style={{ background: "#eef4fb", border: "1px solid #b8d0ef", borderRadius: 8, padding: "10px 14px", marginBottom: 10, display: "flex", flexWrap: "wrap", gap: "6px 24px", alignItems: "center" }}>
                   <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3a5a8a", fontWeight: 700, width: "100%", marginBottom: 2 }}>Auto-linked from Investment / Bank Account</div>
@@ -3560,14 +3560,14 @@ export default function App() {
                 </div>
               )}
               {inc.frequency && (
-                <Row cols={2}>
-                  <F>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t={{ annual:"Annual Amount", monthly:"Monthly Amount", bimonthly:"Bi-Monthly Amount", biweekly:"Bi-Weekly Amount", weekly:"Weekly Amount" }[inc.frequency] || "Amount"} />
-                    <input value={inc.amount} onChange={e => updIncome(inc.id, "amount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-                  </F>
-                  <F>
+                    <input value={inc.amount} onChange={e => updIncome(inc.id, "amount", fmtDollar(e.target.value))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+                  </div>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t="Annual" />
-                    <div style={{ ...IS, background: NAV, color: INK, display: "flex", alignItems: "center" }}>
+                    <div style={{ ...IS, width: 140, background: NAV, color: INK, display: "flex", alignItems: "center" }}>
                       {(() => {
                         const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0);
                         if (!raw) return "—";
@@ -3575,16 +3575,16 @@ export default function App() {
                         return "$" + (inc.frequency === "annual" ? raw : raw * mult).toLocaleString();
                       })()}
                     </div>
-                  </F>
-                </Row>
+                  </div>
+                </div>
               )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 4 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Future Income?" />
-                  <select value={inc.futureIncome || ""} onChange={e => updIncome(inc.id, "futureIncome", e.target.value)} style={{ ...IS, width: 120 }} data-lpignore="true">
+                  <select value={inc.futureIncome || ""} onChange={e => updIncome(inc.id, "futureIncome", e.target.value)} style={{ ...IS, width: 100 }} data-lpignore="true">
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="current">Current</option>
                   </select>
                 </div>
                 {inc.futureIncome === "yes" && (
