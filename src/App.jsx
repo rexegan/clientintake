@@ -2652,7 +2652,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="State" />
-              <select data-lpignore="true" value={client.state || ""} onChange={setC("state")} style={{ ...IS, width: 196 }}>
+              <select data-lpignore="true" value={client.state || ""} onChange={setC("state")} style={{ ...IS, width: 224 }}>
                 <option value="">— Select —</option>
                 {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
               </select>
