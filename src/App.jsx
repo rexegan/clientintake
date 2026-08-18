@@ -2766,40 +2766,7 @@ export default function App() {
 
           <div id="section-citizenship" style={{ scrollMarginTop: 80 }} />
           <Sec t="Driver's License & Citizenship" />
-          {/* Row 1: Person picker + US Citizen (+ Country if non-US) */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            {["married","domestic_partner"].includes(hasSpouse) && (
-              <div style={{ flexShrink: 0 }}>
-                <Lbl t="Person" />
-                <select value={idView} onChange={e => setIdView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
-                  <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                  <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                </select>
-              </div>
-            )}
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="US Citizen?" />
-              <select data-lpignore="true" value={(idView === "spouse" ? spouse : client).usCitizen || ""} onChange={idView === "spouse" ? setS("usCitizen") : setC("usCitizen")} style={{ ...IS, width: 88 }}>
-                <option value="">—</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-            {(idView === "spouse" ? spouse : client).usCitizen === "no" && (
-              <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
-                <Lbl t="Country of Citizenship" />
-                <CountrySelect value={(idView === "spouse" ? spouse : client).countryOfCitizenship || ""} onChange={idView === "spouse" ? setS("countryOfCitizenship") : setC("countryOfCitizenship")} />
-              </div>
-            )}
-          </div>
-
           {(() => {
-            const idPerson = idView === "spouse" ? spouse : client;
-            const setIdPerson = idView === "spouse" ? setSpouse : setClient;
-            const setIdField = idView === "spouse" ? setS : setC;
-            const dlImage = idView === "spouse" ? spouseDlImage : clientDlImage;
-            const setDlImage = idView === "spouse" ? setSpouseDlImage : setClientDlImage;
-            const imageAlt = idView === "spouse" ? "Spouse ID" : "Client ID";
             const idMeta = {
               "Driver's License":               { title: "Driver's License",            numLbl: "License Number",       locType: "state" },
               "State-Issued ID":                { title: "State-Issued ID",              numLbl: "ID Number",            locType: "state" },
@@ -2815,69 +2782,105 @@ export default function App() {
               "Social Security Card":           { title: "Social Security Card",         numLbl: "SSN",                  locType: "none" },
               "Other Government-Issued ID":     { title: "Government-Issued ID",         numLbl: "ID Number",            locType: "authority" },
             };
-            const meta = idMeta[idPerson.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
-            const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
-            return (<>
-              {/* Row 2: Type of ID + License Number + Issuing State + Issuer Name */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Type of ID" />
-                  <select data-lpignore="true" value={idPerson.idType || ""} onChange={setIdField("idType")} style={{ ...IS, width: 188 }}>
-                    <option value="">— Select —</option>
-                    <option>Driver's License</option>
-                    <option>Passport</option>
-                    <option>Passport Card</option>
-                    <option>State-Issued ID</option>
-                    <option>Military ID</option>
-                    <option>U.S. Permanent Resident Card (Green Card)</option>
-                    <option>Employment Authorization Card (EAD)</option>
-                    <option>Tribal ID</option>
-                    <option>Veteran's ID Card</option>
-                    <option>Federal Government Employee ID</option>
-                    <option>Social Security Card</option>
-                    <option>Birth Certificate</option>
-                    <option>Other Government-Issued ID</option>
-                  </select>
-                </div>
-                <F style={{ flex: "0 0 130px" }}><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={{ ...IS, width: 130 }} autoComplete="new-password" data-lpignore="true" /></F>
-                {meta.locType === "state"
-                  ? <F style={{ flex: "0 0 196px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} /></F>
-                  : meta.locType !== "none"
-                    ? <F style={{ flex: "0 0 196px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" /></F>
-                    : null}
-                <F style={{ flex: "0 0 150px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" /></F>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
-                <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
-              </div>
-              <div style={{ marginTop: 10, marginBottom: 4 }}>
-                <Lbl t={meta.title + " Image"} />
-                {dlImage ? (
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
-                    <img src={dlImage} alt={imageAlt} style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
-                    <button onClick={() => setDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+            const marriedNow = ["married","domestic_partner"].includes(hasSpouse);
+            const showSpouseBlock = marriedNow && idView === "spouse";
+            const renderIdBlock = (view, isFirst) => {
+              const idPerson = view === "spouse" ? spouse : client;
+              const setIdPerson = view === "spouse" ? setSpouse : setClient;
+              const setIdField = view === "spouse" ? setS : setC;
+              const dlImage = view === "spouse" ? spouseDlImage : clientDlImage;
+              const setDlImage = view === "spouse" ? setSpouseDlImage : setClientDlImage;
+              const imageAlt = view === "spouse" ? "Spouse ID" : "Client ID";
+              const personName = view === "spouse"
+                ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"
+                : [client.firstName, client.lastName].filter(Boolean).join(" ") || "Client";
+              const meta = idMeta[idPerson.idType] || { title: "Driver's License", numLbl: "License Number", locType: "state" };
+              const locLabel = { state: "Issuing State", country: "Issuing Country", branch: "Branch of Service", authority: "Issuing Authority", none: null }[meta.locType];
+              return (<div key={view} style={view === "spouse" ? { marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 } : undefined}>
+                {/* Row 1: Person + US Citizen (+ Country if non-US) (+ Add Spouse? on client row) */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Person" />
+                    <input value={personName} readOnly style={{ ...IS, width: 200, background: "#f4f6f9", cursor: "default" }} data-lpignore="true" />
                   </div>
-                ) : (
-                  <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
-                    📎 Upload {meta.title} Image
-                    <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setDlImage)} />
-                  </label>
-                )}
-              </div>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="US Citizen?" />
+                    <select data-lpignore="true" value={idPerson.usCitizen || ""} onChange={setIdField("usCitizen")} style={{ ...IS, width: 88 }}>
+                      <option value="">—</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                  {idPerson.usCitizen === "no" && (
+                    <div style={{ flexShrink: 0, flex: "1 1 180px", maxWidth: 260 }}>
+                      <Lbl t="Country of Citizenship" />
+                      <CountrySelect value={idPerson.countryOfCitizenship || ""} onChange={setIdField("countryOfCitizenship")} />
+                    </div>
+                  )}
+                  {isFirst && marriedNow && (
+                    <div style={{ flexShrink: 0 }}>
+                      <Lbl t="Add Spouse?" />
+                      <select value={idView === "spouse" ? "yes" : "no"} onChange={e => setIdView(e.target.value === "yes" ? "spouse" : "client")} style={{ ...IS, width: 88 }} data-lpignore="true">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+                {/* Row 2: Type of ID + License Number + Issuing State + Issuer Name */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Type of ID" />
+                    <select data-lpignore="true" value={idPerson.idType || ""} onChange={setIdField("idType")} style={{ ...IS, width: 188 }}>
+                      <option value="">— Select —</option>
+                      <option>Driver's License</option>
+                      <option>Passport</option>
+                      <option>Passport Card</option>
+                      <option>State-Issued ID</option>
+                      <option>Military ID</option>
+                      <option>U.S. Permanent Resident Card (Green Card)</option>
+                      <option>Employment Authorization Card (EAD)</option>
+                      <option>Tribal ID</option>
+                      <option>Veteran's ID Card</option>
+                      <option>Federal Government Employee ID</option>
+                      <option>Social Security Card</option>
+                      <option>Birth Certificate</option>
+                      <option>Other Government-Issued ID</option>
+                    </select>
+                  </div>
+                  <F style={{ flex: "0 0 130px" }}><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={{ ...IS, width: 130 }} autoComplete="new-password" data-lpignore="true" /></F>
+                  {meta.locType === "state"
+                    ? <F style={{ flex: "0 0 196px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} /></F>
+                    : meta.locType !== "none"
+                      ? <F style={{ flex: "0 0 196px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" /></F>
+                      : null}
+                  <F style={{ flex: "0 0 150px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" /></F>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
+                  <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
+                </div>
+                <div style={{ marginTop: 10, marginBottom: 4 }}>
+                  <Lbl t={meta.title + " Image"} />
+                  {dlImage ? (
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
+                      <img src={dlImage} alt={imageAlt} style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                      <button onClick={() => setDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
+                    </div>
+                  ) : (
+                    <label style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 4, background: INPUT_BG, border: "1px dashed #aab0bb", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, color: MUTED, fontWeight: 500 }}>
+                      📎 Upload {meta.title} Image
+                      <input type="file" accept="image/*,application/pdf" style={{ display: "none" }} onChange={handleDlImageUpload(setDlImage)} />
+                    </label>
+                  )}
+                </div>
+              </div>);
+            };
+            return (<>
+              {renderIdBlock("client", true)}
+              {showSpouseBlock && renderIdBlock("spouse", false)}
             </>);
           })()}
-
-          {["married","domestic_partner"].includes(hasSpouse) && (
-            <button
-              onClick={() => setIdView(v => v === "spouse" ? "client" : "spouse")}
-              style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer", marginBottom: 14 }}
-            >
-              {idView === "spouse"
-                ? `← View ${[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}'s Citizenship`
-                : `+ Add / View ${[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}'s Citizenship`}
-            </button>
-          )}
 
           <FileUpload section="client_profile" files={uploads.client_profile || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
