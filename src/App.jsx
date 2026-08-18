@@ -3109,7 +3109,7 @@ export default function App() {
 
         {/* ── BENEFICIARIES ── */}
         <Panel title="Beneficiaries" id="section-bene">
-          {children.filter(ch => ch.isBeneficiary).map((ch, i) => (
+          {children.filter(ch => ch.isBeneficiary && getDesignType(ch) === "primary").map((ch, i) => (
             <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -3133,13 +3133,8 @@ export default function App() {
               </div>
             </div>
           ))}
-          {children.filter(ch => ch.isBeneficiary).length > 0 && (
-            <div style={{ fontSize: 11, color: INK, fontStyle: "italic", marginBottom: 14, textAlign: "center" }}>
-              ↑ Child beneficiaries added in Family section &nbsp;·&nbsp; Additional beneficiaries below
-            </div>
-          )}
-          {beneficiaries.map((b, i) => {
-            const childBeneCount = children.filter(c => c.isBeneficiary).length;
+          {[...beneficiaries].sort((a, z) => (getDesignType(a) === "primary" ? 0 : 1) - (getDesignType(z) === "primary" ? 0 : 1)).map((b, i) => {
+            const childBeneCount = children.filter(c => c.isBeneficiary && getDesignType(c) === "primary").length;
             const beneNum = childBeneCount + i + 1;
             return (
             <div key={b.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
@@ -3289,6 +3284,28 @@ export default function App() {
             </div>
             );
           })}
+          {children.filter(ch => ch.isBeneficiary && getDesignType(ch) === "contingent").map((ch) => (
+            <div key={ch.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Child Beneficiary — {ch.firstName} {ch.lastName}</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 5, padding: "3px 8px", border: "1px solid " + BORDER, background: "#fff", color: INK }}>Contingent</span>
+                </div>
+                <div style={{ fontSize: 11, color: INK, fontStyle: "italic" }}>Edit in Family section</div>
+              </div>
+              <div className="rg" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px 16px", fontSize: 13, color: INK }}>
+                {ch.firstName && <div><span style={{ color: INK }}>Name: </span>{ch.firstName} {ch.middleName} {ch.lastName}</div>}
+                {ch.dob && <div><span style={{ color: INK }}>DOB: </span>{ch.dob}</div>}
+                {ch.gender && <div><span style={{ color: INK }}>Gender: </span>{ch.gender}</div>}
+                {ch.ssn && <div><span style={{ color: INK }}>SSN: </span>{ch.ssn}</div>}
+                {ch.relationship && <div><span style={{ color: INK }}>Relationship: </span>{ch.relationship}</div>}
+                {ch.percentage && <div><span style={{ color: INK }}>% to Inherit: </span>{ch.percentage}</div>}
+                {ch.email && <div><span style={{ color: INK }}>Email: </span><MailLink email={ch.email} /></div>}
+                {ch.phone && <div><span style={{ color: INK }}>Phone: </span>{ch.phone}</div>}
+                {ch.addressLine1 && <div style={{ gridColumn: "span 2" }}><span style={{ color: INK }}>Address: </span>{ch.addressLine1}{ch.addressLine2 ? ", " + ch.addressLine2 : ""}{ch.city ? ", " + ch.city : ""}{ch.state ? ", " + ch.state : ""}{ch.zip ? " " + ch.zip : ""}</div>}
+              </div>
+            </div>
+          ))}
           {(() => {
             const allBenes = [
               ...children.filter(c => c.isBeneficiary).map(c => ({ ...c, _src: "child" })),
@@ -3327,7 +3344,7 @@ export default function App() {
           {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Employee" />
-              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: Math.max(120, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 8 + 32) }}>
+              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: Math.max(150, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 10 + 56) }}>
                 <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
                 {["married","domestic_partner"].includes(hasSpouse) && (
                   <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
@@ -3458,7 +3475,7 @@ export default function App() {
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Employee" />
-                  <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: Math.max(120, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 8 + 32) }}>
+                  <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: Math.max(150, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 10 + 56) }}>
                     <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
                     <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
                   </select>
