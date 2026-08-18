@@ -3327,7 +3327,7 @@ export default function App() {
           {(!["married","domestic_partner"].includes(hasSpouse) || empView === "client") && <><div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Employee" />
-              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+              <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: Math.max(120, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 8 + 32) }}>
                 <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
                 {["married","domestic_partner"].includes(hasSpouse) && (
                   <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
@@ -3341,14 +3341,21 @@ export default function App() {
             <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} compact /></div>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </div>
-          <Row cols={1}>
-            <F><Lbl t="Work Address" /><input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <div style={{ marginBottom: 8 }}>
-            <Lbl t="ZIP / City / State" />
-            <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
-              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" placeholder="ZIP" />
-              <input value={clientEmp.workCity} onChange={setCE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" placeholder="City" />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Work Address" />
+              <input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={{ ...IS, width: 320 }} autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="ZIP" />
+              <input value={clientEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setClientEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setClientEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="City" />
+              <input value={clientEmp.workCity} onChange={setCE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="State" />
               <StateSelect value={clientEmp.workState} onChange={setCE("workState")} />
             </div>
           </div>
@@ -3451,7 +3458,7 @@ export default function App() {
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Employee" />
-                  <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: "auto", minWidth: 200 }}>
+                  <select value={empView} onChange={e => setEmpView(e.target.value)} style={{ ...IS, width: Math.max(120, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 8 + 32) }}>
                     <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
                     <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
                   </select>
@@ -3463,14 +3470,21 @@ export default function App() {
                 <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} compact /></div>
                 <F style={{ flex: "0 0 160px" }}><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </div>
-              <Row cols={1}>
-                <F><Lbl t="Work Address" /><input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <div style={{ marginBottom: 8 }}>
-                <Lbl t="ZIP / City / State" />
-                <div style={{ display: "flex", gap: 6, width: "fit-content" }}>
-                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" placeholder="ZIP" />
-                  <input value={spouseEmp.workCity} onChange={setSE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" placeholder="City" />
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Work Address" />
+                  <input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={{ ...IS, width: 320 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="ZIP" />
+                  <input value={spouseEmp.workZip} onChange={e => { const z = fmtZip(e.target.value); setSpouseEmp(p => ({ ...p, workZip: z })); lookupZip(z, (city, state) => setSpouseEmp(p => ({ ...p, workCity: city, workState: state }))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="City" />
+                  <input value={spouseEmp.workCity} onChange={setSE("workCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="State" />
                   <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} />
                 </div>
               </div>
