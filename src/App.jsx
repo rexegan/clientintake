@@ -3151,6 +3151,38 @@ export default function App() {
                     <option value="primary">Primary</option>
                     <option value="contingent">Contingent</option>
                   </select>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: MUTED }}>Add Client or Spouse as Beneficiary?</span>
+                  <select data-lpignore="true" value={b.addClientSpouse || "no"} onChange={e => updBene(b.id, "addClientSpouse", e.target.value)}
+                    style={{ fontSize: 11, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", cursor: "pointer", background: "#fff", color: INK }}>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                  {b.addClientSpouse === "yes" && (
+                    <select data-lpignore="true" value="" onChange={e => {
+                      const who = e.target.value;
+                      if (!who) return;
+                      const src = who === "spouse" ? spouse : client;
+                      const email = who === "spouse"
+                        ? ((spouseEmails[0] && spouseEmails[0].address) || "")
+                        : ((clientEmails[0] && clientEmails[0].address) || "");
+                      setBeneficiaries(p => p.map(x => x.id === b.id ? {
+                        ...x,
+                        firstName: src.firstName || "", middleName: src.middleName || "", lastName: src.lastName || "",
+                        dob: src.dob || "", ssn: src.ssn || "", gender: src.gender || "",
+                        email,
+                        relationship: who === "spouse" ? "Spouse" : x.relationship,
+                        addressSource: "manual",
+                        addressLine1: client.addressLine1 || "", city: client.city || "", state: client.state || "", zip: client.zip || "",
+                      } : x));
+                    }}
+                      style={{ fontSize: 11, fontWeight: 700, border: "1px solid #c7d2fe", borderRadius: 5, padding: "3px 8px", cursor: "pointer", background: "#e0e7ff", color: "#3730a3" }}>
+                      <option value="">— Fill From —</option>
+                      <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                      {["married","domestic_partner"].includes(hasSpouse) && (
+                        <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                      )}
+                    </select>
+                  )}
                 </div>
                 <button onClick={() => showConfirm("Remove this beneficiary?", () => delBene(b.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
