@@ -2963,6 +2963,35 @@ export default function App() {
                 <F style={{ flex: "none" }}><Lbl t="Home Phone" /><input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </div>
 
+              <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Client Details</div>
+                <Row cols={3}>
+                  <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Middle Name" /><input value={client.middleName || ""} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                </Row>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                  <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="SSN" />
+                    <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+                  </div>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Gender" />
+                    <select data-lpignore="true" value={client.gender || ""} onChange={setC("gender")} style={{ ...IS, width: 106 }}>
+                      <option value="">— Select —</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <F style={{ flex: "none" }}>
+                    <Lbl t="Email Address" />
+                    <input value={(clientEmails[0] && clientEmails[0].address) || ""} onChange={e => setClientEmails(p => p.length ? p.map((x, i) => i === 0 ? { ...x, address: e.target.value } : x) : [{ id: Date.now(), tag: "personal", address: e.target.value }])} type="email" style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" />
+                  </F>
+                  <F style={{ flex: "none" }}><Lbl t="Cell Phone" /><input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                </div>
+              </div>
+
             </div>
           )}
 
