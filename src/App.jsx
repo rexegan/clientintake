@@ -473,8 +473,8 @@ const CountrySelect = ({ value, onChange, style }) => (
   </select>
 );
 
-const StateSelect = ({ value, onChange }) => (
-  <select data-lpignore="true" value={value || ""} onChange={onChange} style={{ ...IS, width: 240 }}>
+const StateSelect = ({ value, onChange, style }) => (
+  <select data-lpignore="true" value={value || ""} onChange={onChange} style={{ ...IS, width: 240, ...style }}>
     <option value="">— Select —</option>
     {US_STATES.map(([abbr, name]) => (
       <option key={abbr} value={abbr}>{abbr} — {name}</option>
@@ -3363,7 +3363,7 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Work Address" />
-              <input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={{ ...IS, width: 320 }} autoComplete="new-password" data-lpignore="true" />
+              <input value={clientEmp.workAddress} onChange={setCE("workAddress")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" />
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="ZIP" />
@@ -3375,7 +3375,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="State" />
-              <StateSelect value={clientEmp.workState} onChange={setCE("workState")} />
+              <StateSelect value={clientEmp.workState} onChange={setCE("workState")} style={{ width: 210 }} />
             </div>
           </div>
 
@@ -3492,7 +3492,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Work Address" />
-                  <input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={{ ...IS, width: 320 }} autoComplete="new-password" data-lpignore="true" />
+                  <input value={spouseEmp.workAddress} onChange={setSE("workAddress")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" />
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="ZIP" />
@@ -3504,7 +3504,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="State" />
-                  <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} />
+                  <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} style={{ width: 210 }} />
                 </div>
               </div>
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
