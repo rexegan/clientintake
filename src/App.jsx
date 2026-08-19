@@ -3645,18 +3645,7 @@ export default function App() {
                     <option value="weekly">Weekly</option>
                   </select>
                 </div>
-              </div>
-              {inc.linkedAcctId && (
-                <div style={{ background: "#eef4fb", border: "1px solid #b8d0ef", borderRadius: 8, padding: "10px 14px", marginBottom: 10, display: "flex", flexWrap: "wrap", gap: "6px 24px", alignItems: "center" }}>
-                  <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3a5a8a", fontWeight: 700, width: "100%", marginBottom: 2 }}>Auto-linked from Investment / Bank Account</div>
-                  {inc.accountType && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Account Type: </span><strong>{inc.accountType}</strong></div>}
-                  {inc.institution && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Institution: </span><strong>{inc.institution}</strong></div>}
-                  {inc.txType && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Transaction: </span><strong>{inc.txType}</strong></div>}
-                  <div style={{ fontSize: 11, color: MUTED, width: "100%", marginTop: 2 }}>Edit amount and frequency below — changes sync back automatically.</div>
-                </div>
-              )}
-              {inc.frequency && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                {inc.frequency && (<>
                   <div style={{ flexShrink: 0 }}>
                     <Lbl t={{ annual:"Annual Amount", monthly:"Monthly Amount", bimonthly:"Bi-Monthly Amount", biweekly:"Bi-Weekly Amount", weekly:"Weekly Amount" }[inc.frequency] || "Amount"} />
                     <input value={inc.amount} onChange={e => updIncome(inc.id, "amount", fmtDollar(e.target.value))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
@@ -3672,6 +3661,15 @@ export default function App() {
                       })()}
                     </div>
                   </div>
+                </>)}
+              </div>
+              {inc.linkedAcctId && (
+                <div style={{ background: "#eef4fb", border: "1px solid #b8d0ef", borderRadius: 8, padding: "10px 14px", marginBottom: 10, display: "flex", flexWrap: "wrap", gap: "6px 24px", alignItems: "center" }}>
+                  <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3a5a8a", fontWeight: 700, width: "100%", marginBottom: 2 }}>Auto-linked from Investment / Bank Account</div>
+                  {inc.accountType && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Account Type: </span><strong>{inc.accountType}</strong></div>}
+                  {inc.institution && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Institution: </span><strong>{inc.institution}</strong></div>}
+                  {inc.txType && <div style={{ fontSize: 13, color: INK }}><span style={{ color: MUTED, fontSize: 11 }}>Transaction: </span><strong>{inc.txType}</strong></div>}
+                  <div style={{ fontSize: 11, color: MUTED, width: "100%", marginTop: 2 }}>Edit amount and frequency below — changes sync back automatically.</div>
                 </div>
               )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 4 }}>
