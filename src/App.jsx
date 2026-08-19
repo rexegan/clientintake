@@ -2668,10 +2668,8 @@ export default function App() {
             <F style={{ flex: "0 0 128px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 118px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 118 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
             <F style={{ flex: "0 0 auto" }}><DatePicker label="Date of Birth" value={client.tcDOB || ""} onChange={v => setClient(p => ({ ...p, tcDOB: v }))} compact monthW={76} dayW={66} yearW={68} /></F>
+            <F style={{ flex: "0 0 270px" }}><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, width: 270 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
-          <Row cols={1}>
-            <F><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, maxWidth: 360 }} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, marginTop: 18 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: INK }}>Copy Client Address?</span>
             <select value={tcCopyAddr} onChange={e => { setTcCopyAddr(e.target.value); if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); }} style={{ ...IS, width: 120 }}>
