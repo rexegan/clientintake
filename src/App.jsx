@@ -3681,9 +3681,10 @@ export default function App() {
           </button>
           {(() => {
             const toAnnual = inc => { const raw = parseInt((inc.amount || "").replace(/[^0-9]/g, "") || 0); if (!raw || !inc.frequency) return 0; const mult = { annual:1, monthly:12, bimonthly:24, biweekly:26, weekly:52 }[inc.frequency] || 1; return raw * mult; };
-            const clientAnnual = activeIncomes.filter(i => (i.owner || "client") === "client").reduce((s, i) => s + toAnnual(i), 0);
-            const spouseAnnual = activeIncomes.filter(i => i.owner === "spouse").reduce((s, i) => s + toAnnual(i), 0);
-            const jointAnnual = activeIncomes.filter(i => i.owner === "joint").reduce((s, i) => s + toAnnual(i), 0);
+            const ownerOf = i => (i.owner || "client").toLowerCase();
+            const clientAnnual = activeIncomes.filter(i => ownerOf(i) !== "spouse" && ownerOf(i) !== "joint").reduce((s, i) => s + toAnnual(i), 0);
+            const spouseAnnual = activeIncomes.filter(i => ownerOf(i) === "spouse").reduce((s, i) => s + toAnnual(i), 0);
+            const jointAnnual = activeIncomes.filter(i => ownerOf(i) === "joint").reduce((s, i) => s + toAnnual(i), 0);
             const totalAnnual = clientAnnual + spouseAnnual + jointAnnual;
             if (!totalAnnual) return null;
             const married = ["married","domestic_partner"].includes(hasSpouse);
