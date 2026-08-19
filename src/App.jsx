@@ -2855,8 +2855,6 @@ export default function App() {
                       ? <F style={{ flex: "0 0 196px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" /></F>
                       : null}
                   <F style={{ flex: "0 0 150px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" /></F>
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end", marginBottom: 12 }}>
                   <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
                   <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
                 </div>
