@@ -2696,7 +2696,14 @@ export default function App() {
           <Sec t="Home Address" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 320px" }}><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 140px" }}><Lbl t="Apt / Suite (optional)" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 140px" }}><Lbl t="Apt / Suite" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 224px" }}>
+              <Lbl t="State" />
+              <select data-lpignore="true" value={client.state || ""} onChange={setC("state")} style={{ ...IS, width: 224 }}>
+                <option value="">— Select —</option>
+                {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
+              </select>
+            </F>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
@@ -2713,13 +2720,6 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="City" /><input value={client.city} onChange={setC("city")} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" />
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="State" />
-              <select data-lpignore="true" value={client.state || ""} onChange={setC("state")} style={{ ...IS, width: 224 }}>
-                <option value="">— Select —</option>
-                {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
-              </select>
             </div>
           </div>
 
