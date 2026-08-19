@@ -3225,8 +3225,9 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              <Lbl t="Address" />
-              <select data-lpignore="true" value={b.addressSource || "manual"} onChange={e => {
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5 }}>
+                <span style={{ fontSize: 13, fontWeight: 500, color: MUTED }}>Address</span>
+                <select data-lpignore="true" value={b.addressSource || "manual"} onChange={e => {
                 const src = e.target.value;
                 if (src === "client") {
                   updBene(b.id, "addressSource", "client");
@@ -3243,11 +3244,12 @@ export default function App() {
                 } else {
                   updBene(b.id, "addressSource", "manual");
                 }
-              }} style={IS}>
+              }} style={{ fontSize: 11, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", cursor: "pointer", background: "#fff", color: INK }}>
                 <option value="manual">Enter Manually</option>
                 <option value="client">Same as {client.firstName || "Client"}</option>
                 {["married","domestic_partner"].includes(hasSpouse) && <option value="spouse">Same as {spouse.firstName || "Spouse"}</option>}
-              </select>
+                </select>
+              </div>
               {(() => {
                 const src = b.addressSource || "manual";
                 const addrLine = src !== "manual" ? client.addressLine1 : b.addressLine1;
