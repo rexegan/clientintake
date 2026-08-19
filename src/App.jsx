@@ -1869,6 +1869,16 @@ export default function App() {
     setCustomInstitutions(updated);
     localStorage.setItem("rwg_institutions", JSON.stringify(updated));
   };
+  const DEFAULT_PROPERTY_TYPES = ["Personal Residence"];
+  const [customPropertyTypes, setCustomPropertyTypes] = useState(() => JSON.parse(localStorage.getItem("rwg_property_types") || "[]").filter(c => DEFAULT_PROPERTY_TYPES.includes(c) ? false : c.trim().length > 0));
+  const allPropertyTypes = [...DEFAULT_PROPERTY_TYPES, ...customPropertyTypes.filter(c => !DEFAULT_PROPERTY_TYPES.includes(c))];
+  const addCustomPropertyType = (val) => {
+    const trimmed = val.trim();
+    if (!trimmed || DEFAULT_PROPERTY_TYPES.includes(trimmed) || customPropertyTypes.includes(trimmed)) return;
+    const updated = [...customPropertyTypes, trimmed].sort((a, b) => a.localeCompare(b));
+    setCustomPropertyTypes(updated);
+    localStorage.setItem("rwg_property_types", JSON.stringify(updated));
+  };
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
@@ -3774,16 +3784,27 @@ export default function App() {
             <span>Personal Property</span>
             <button onClick={() => setHomeOwnership(p => ({ ...p, address: client.addressLine1, address2: client.addressLine2, city: client.city, state: client.state, zip: client.zip }))} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
           </div>
-          <Row cols={2}>
-            <F>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flex: "0 0 220px" }}>
+              <Lbl t="Property Type" />
+              <SmartCombo
+                value={homeOwnership.propertyType || ""}
+                options={allPropertyTypes}
+                onChange={v => setHomeOwnership(p => ({ ...p, propertyType: v }))}
+                onBlur={v => addCustomPropertyType(v)}
+                style={{ ...IS, width: 220 }}
+                placeholder="Personal Residence"
+              />
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Own or Rent?" />
               <select value={homeOwnership.ownOrRent || ""} onChange={e => setHomeOwnership(p => ({ ...p, ownOrRent: e.target.value || null }))} style={{ ...IS, width: 90 }}>
                 <option value="">— Select —</option>
                 <option value="own">Own</option>
                 <option value="rent">Rent</option>
               </select>
-            </F>
-          </Row>
+            </div>
+          </div>
           <Row cols={2}>
             <F><Lbl t="Street Address" /><input value={homeOwnership.address || ""} onChange={e => setHomeOwnership(p => ({ ...p, address: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="Apt / Suite (optional)" /><input value={homeOwnership.address2 || ""} onChange={e => setHomeOwnership(p => ({ ...p, address2: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
