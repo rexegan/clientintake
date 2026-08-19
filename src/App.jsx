@@ -2678,15 +2678,13 @@ export default function App() {
               <option value="no">No</option>
             </select>
           </div>
-          <Row cols={1}>
-            <F><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <F style={{ flex: "0 0 170px" }}><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 170 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 180px" }}><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 170px" }}>
+            <F style={{ flex: "0 0 224px" }}>
               <Lbl t="State" />
-              <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ ...IS, width: 170 }} />
+              <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 224 }} />
             </F>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
           </div>
