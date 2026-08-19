@@ -3188,7 +3188,7 @@ export default function App() {
                 <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} compact /></div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Gender" />
-                  <select data-lpignore="true" value={b.gender || ""} onChange={e => updBene(b.id, "gender", e.target.value)} style={{ ...IS, width: 100 }}>
+                  <select data-lpignore="true" value={b.gender || ""} onChange={e => updBene(b.id, "gender", e.target.value)} style={{ ...IS, width: 124 }}>
                     <option value="">— Select —</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
