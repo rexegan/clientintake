@@ -2664,9 +2664,9 @@ export default function App() {
             </F>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 150px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 150px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 140px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 140 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
+            <F style={{ flex: "0 0 128px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 128px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 118px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 118 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
             <F style={{ flex: "0 0 auto" }}><DatePicker label="Date of Birth" value={client.tcDOB || ""} onChange={v => setClient(p => ({ ...p, tcDOB: v }))} compact monthW={76} dayW={66} yearW={68} /></F>
           </div>
           <Row cols={1}>
