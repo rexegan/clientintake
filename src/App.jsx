@@ -3605,7 +3605,16 @@ export default function App() {
           {incomes.map((inc, i) => (
             <div key={inc.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income {i + 1}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Income {i + 1}</div>
+                  <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)}
+                    style={{ fontSize: 11, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "3px 8px", cursor: "pointer", background: "#fff", color: INK }}>
+                    <option value="">— Belongs To —</option>
+                    <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    <option value="joint">Joint</option>
+                  </select>
+                </div>
                 {incomes.length > 1 && (
                   <button onClick={() => showConfirm("Remove this income source?", () => delIncome(inc.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
@@ -3634,15 +3643,6 @@ export default function App() {
                     <option value="bimonthly">Bi-Monthly (twice/month)</option>
                     <option value="biweekly">Bi-Weekly (every 2 weeks)</option>
                     <option value="weekly">Weekly</option>
-                  </select>
-                </div>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Belongs To" />
-                  <select data-lpignore="true" value={inc.owner || "client"} onChange={e => updIncome(inc.id, "owner", e.target.value)} style={{ ...IS, width: Math.max(120, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 8 + 28) }}>
-                    <option value="">— Select —</option>
-                    <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    <option value="joint">Joint</option>
                   </select>
                 </div>
               </div>
