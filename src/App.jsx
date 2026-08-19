@@ -3205,22 +3205,26 @@ export default function App() {
                     {RELATIONSHIP_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
-              </div>
-              <Row cols={2}>
-                <F><Lbl t="Email Address" /><div style={{ display: "flex", gap: 6, alignItems: "center" }}><input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={{ ...IS, flex: 1 }} autoComplete="new-password" data-lpignore="true" />{b.email && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(b.email)}`} target="_blank" rel="noreferrer" title="Send email" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16, flexShrink: 0 }}>✉</a>}</div></F>
-                <F>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Email Address" />
+                  <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                    <input value={b.email} onChange={e => updBene(b.id, "email", e.target.value)} type="email" style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" />
+                    {b.email && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(b.email)}`} target="_blank" rel="noreferrer" title="Send email" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16, flexShrink: 0 }}>✉</a>}
+                  </div>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t={`% to Inherit (${getDesignType(b) === "primary" ? "Primary" : "Contingent"})`} />
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <input
                       value={(b.percentage || "").replace("%", "")}
                       onChange={e => { const raw = e.target.value.replace(/[^0-9.]/g, ""); updBene(b.id, "percentage", raw); }}
                       onBlur={e => { const n = parseFloat(e.target.value); if (!isNaN(n)) updBene(b.id, "percentage", Math.min(100, Math.max(0, n)) + "%"); else if (!e.target.value) updBene(b.id, "percentage", ""); }}
-                      style={{ ...IS, width: "100%" }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0"
+                      style={{ ...IS, width: 90 }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0"
                     />
                     <span style={{ color: INK, fontSize: 15, whiteSpace: "nowrap" }}>%</span>
                   </div>
-                </F>
-              </Row>
+                </div>
+              </div>
               <Lbl t="Address" />
               <select data-lpignore="true" value={b.addressSource || "manual"} onChange={e => {
                 const src = e.target.value;
