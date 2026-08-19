@@ -2856,7 +2856,7 @@ export default function App() {
                       : null}
                   <F style={{ flex: "0 0 150px" }}><Lbl t="Issuer Name" /><input value={idPerson.dlIssuerName || ""} onChange={setIdField("dlIssuerName")} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" /></F>
                   <div style={{ flexShrink: 0 }}><DatePicker label="Issue Date" value={idPerson.dlIssueDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlIssueDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
-                  <div style={{ flexShrink: 0 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
+                  <div style={{ flexShrink: 0, marginLeft: 20 }}><DatePicker label="Expiration Date" futureYears={10} value={idPerson.dlExpDate || ""} onChange={v => setIdPerson(p => ({ ...p, dlExpDate: v }))} compact monthW={72} dayW={66} yearW={62} /></div>
                 </div>
                 <div style={{ marginTop: 10, marginBottom: 4 }}>
                   <Lbl t={meta.title + " Image"} />
