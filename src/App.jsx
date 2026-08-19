@@ -3353,10 +3353,8 @@ export default function App() {
             </div>
             <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={clientEmp.employer} onChange={setCE("employer")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={clientEmp.occupation} onChange={setCE("occupation")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
-          </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
             <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={clientEmp.startDate} onChange={v => setClientEmp(p => ({ ...p, startDate: v }))} compact /></div>
-            <F style={{ flex: "0 0 160px" }}><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 145px" }}><Lbl t="Work Phone" /><input value={clientEmp.workPhone} onChange={e => setClientEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 145 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
             <div style={{ flexShrink: 0 }}>
@@ -3373,7 +3371,7 @@ export default function App() {
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="State" />
-              <StateSelect value={clientEmp.workState} onChange={setCE("workState")} style={{ width: 210 }} />
+              <StateSelect value={clientEmp.workState} onChange={setCE("workState")} style={{ width: 224 }} />
             </div>
           </div>
 
@@ -3391,7 +3389,7 @@ export default function App() {
               {clientEmp.hasRetirement === "yes" && (
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Type of Plan" />
-                  <select data-lpignore="true" value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={{ ...IS, width: 210 }}>
+                  <select data-lpignore="true" value={clientEmp.retirementType || ""} onChange={e => setClientEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={{ ...IS, width: 245 }}>
                     <option value="">— Select —</option>
                     <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
                     <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
@@ -3482,10 +3480,8 @@ export default function App() {
                 </div>
                 <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={spouseEmp.employer} onChange={setSE("employer")} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
                 <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={spouseEmp.occupation} onChange={setSE("occupation")} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
-              </div>
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
                 <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={spouseEmp.startDate} onChange={v => setSpouseEmp(p => ({ ...p, startDate: v }))} compact /></div>
-                <F style={{ flex: "0 0 160px" }}><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 145px" }}><Lbl t="Work Phone" /><input value={spouseEmp.workPhone} onChange={e => setSpouseEmp(p => ({ ...p, workPhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 145 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
                 <div style={{ flexShrink: 0 }}>
@@ -3502,7 +3498,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="State" />
-                  <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} style={{ width: 210 }} />
+                  <StateSelect value={spouseEmp.workState} onChange={setSE("workState")} style={{ width: 224 }} />
                 </div>
               </div>
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14 }}>
@@ -3518,7 +3514,7 @@ export default function App() {
                   {spouseEmp.hasRetirement === "yes" && (
                     <div style={{ flexShrink: 0 }}>
                       <Lbl t="Type of Plan" />
-                      <select data-lpignore="true" value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={{ ...IS, width: 210 }}>
+                      <select data-lpignore="true" value={spouseEmp.retirementType || ""} onChange={e => setSpouseEmp(p => ({ ...p, retirementType: e.target.value || null }))} style={{ ...IS, width: 245 }}>
                         <option value="">— Select —</option>
                         <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
                         <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
