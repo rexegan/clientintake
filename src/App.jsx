@@ -1869,6 +1869,14 @@ export default function App() {
     setCustomInstitutions(updated);
     localStorage.setItem("rwg_institutions", JSON.stringify(updated));
   };
+  const [customPropertyDescs, setCustomPropertyDescs] = useState(() => JSON.parse(localStorage.getItem("rwg_property_descs") || "[]").filter(c => c.trim().length > 0));
+  const addCustomPropertyDesc = (val) => {
+    const trimmed = val.trim();
+    if (!trimmed || customPropertyDescs.includes(trimmed)) return;
+    const updated = [...customPropertyDescs, trimmed].sort((a, b) => a.localeCompare(b));
+    setCustomPropertyDescs(updated);
+    localStorage.setItem("rwg_property_descs", JSON.stringify(updated));
+  };
   const DEFAULT_PROPERTY_TYPES = ["Personal Residence"];
   const [customPropertyTypes, setCustomPropertyTypes] = useState(() => JSON.parse(localStorage.getItem("rwg_property_types") || "[]").filter(c => DEFAULT_PROPERTY_TYPES.includes(c) ? false : c.trim().length > 0));
   const allPropertyTypes = [...DEFAULT_PROPERTY_TYPES, ...customPropertyTypes.filter(c => !DEFAULT_PROPERTY_TYPES.includes(c))];
@@ -3782,7 +3790,7 @@ export default function App() {
           {/* ── OWN OR RENT ── */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13.5, fontWeight: 600, color: INK, borderBottom: "1px solid " + BORDER, paddingBottom: 7, marginTop: 24, marginBottom: 8 }}>
             <span>Personal Property</span>
-            <button onClick={() => setHomeOwnership(p => ({ ...p, address: client.addressLine1, address2: client.addressLine2, city: client.city, state: client.state, zip: client.zip }))} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
+            <button onClick={() => setHomeOwnership(p => ({ ...p, address: client.addressLine1 || client.address || "", address2: client.addressLine2 || "", city: client.city || "", state: client.state || "", zip: client.zip || "" }))} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flex: "0 0 220px" }}>
@@ -3803,6 +3811,17 @@ export default function App() {
                 <option value="own">Own</option>
                 <option value="rent">Rent</option>
               </select>
+            </div>
+            <div style={{ flex: "0 0 280px" }}>
+              <Lbl t="Description" />
+              <SmartCombo
+                value={homeOwnership.description || ""}
+                options={customPropertyDescs}
+                onChange={v => setHomeOwnership(p => ({ ...p, description: v }))}
+                onBlur={v => addCustomPropertyDesc(v)}
+                style={{ ...IS, width: 280 }}
+                placeholder="e.g. 3 bed / 2 bath, homestead"
+              />
             </div>
           </div>
           <Row cols={2}>
@@ -3853,7 +3872,7 @@ export default function App() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Property {i + 1}</span>
-                  <button onClick={() => { updRE(r.id, "address", client.addressLine1); updRE(r.id, "addressLine2", client.addressLine2); updRE(r.id, "city", client.city); updRE(r.id, "state", client.state); updRE(r.id, "zip", client.zip); }} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
+                  <button onClick={() => { updRE(r.id, "address", client.addressLine1 || client.address || ""); updRE(r.id, "addressLine2", client.addressLine2 || ""); updRE(r.id, "city", client.city || ""); updRE(r.id, "state", client.state || ""); updRE(r.id, "zip", client.zip || ""); }} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy Home Address</button>
                 </div>
                 {realEstate.length > 1 && (
                   <button onClick={() => showConfirm("Remove this property?", () => delRE(r.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
