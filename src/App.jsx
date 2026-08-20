@@ -2710,12 +2710,21 @@ export default function App() {
           <Sec t="Home Address" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 320px" }}><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 140px" }}><Lbl t="Apt / Suite" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 224px" }}>
-              <Lbl t="State" />
-              <select data-lpignore="true" value={client.state || ""} onChange={setC("state")} style={{ ...IS, width: 224 }}>
+            <F style={{ flex: "0 0 112px" }}><Lbl t="Apt / Suite" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 120px" }}>
+              <Lbl t="PO Box?" />
+              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 120 }}>
                 <option value="">— Select —</option>
-                {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
+            <F style={{ flex: "0 0 180px" }}>
+              <Lbl t="Preferred Mailing Address" />
+              <select data-lpignore="true" value={client.preferredMailing || ""} onChange={e => setClient(p => ({ ...p, preferredMailing: e.target.value || "" }))} style={{ ...IS, width: 180 }}>
+                <option value="">— Select —</option>
+                <option value="physical">Physical Address</option>
+                <option value="pobox">P.O. Box</option>
               </select>
             </F>
           </div>
@@ -2735,23 +2744,11 @@ export default function App() {
             <div style={{ flexShrink: 0 }}>
               <Lbl t="City" /><input value={client.city} onChange={setC("city")} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" />
             </div>
-          </div>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="PO Box?" />
-              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 120 }}>
+              <Lbl t="State" />
+              <select data-lpignore="true" value={client.state || ""} onChange={setC("state")} style={{ ...IS, width: 224 }}>
                 <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Preferred Mailing Address" />
-              <select data-lpignore="true" value={client.preferredMailing || ""} onChange={e => setClient(p => ({ ...p, preferredMailing: e.target.value || "" }))} style={{ ...IS, width: 180 }}>
-                <option value="">— Select —</option>
-                <option value="physical">Physical Address</option>
-                <option value="pobox">P.O. Box</option>
+                {US_STATES.map(([abbr, name]) => <option key={abbr} value={abbr}>{abbr} — {name}</option>)}
               </select>
             </div>
           </div>
