@@ -1785,6 +1785,7 @@ export default function App() {
   const [clientEmp, setClientEmp] = useState({ ...emptyEmployer });
   const [spouseEmp, setSpouseEmp] = useState({ ...emptyEmployer });
   const [empView, setEmpView] = useState("client");
+  const [extraEmps, setExtraEmps] = useState([]);
   const [idView, setIdView] = useState("client");
   const [tcCopyAddr, setTcCopyAddr] = useState("");
   const [importantDates, setImportantDates] = useState({ anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
@@ -1966,6 +1967,9 @@ export default function App() {
   const setCN = f => e => setClient(p => ({ ...p, [f]: capName(e.target.value) }));
   const setSN = f => e => setSpouse(p => ({ ...p, [f]: capName(e.target.value) }));
   const setCE = f => e => setClientEmp(p => ({ ...p, [f]: e.target.value }));
+  const addExtraEmp = () => setExtraEmps(p => [...p, { ...emptyEmployer, id: Date.now(), owner: empView }]);
+  const updExtraEmp = (id, f, v) => setExtraEmps(p => p.map(r => r.id === id ? { ...r, [f]: v } : r));
+  const removeExtraEmp = (id) => showConfirm("Are you sure you're ready to delete this employment record?", () => setExtraEmps(p => p.filter(r => r.id !== id)), "Delete");
   const setSE = f => e => setSpouseEmp(p => ({ ...p, [f]: e.target.value }));
 
   const saveClient = (record) => {
@@ -2004,7 +2008,7 @@ export default function App() {
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-importantdates"); }, [importantDates]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-family"); }, [hasSpouse, spouse, spouseEmails, hasChildren, children]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-bene"); }, [beneficiaries]);
-  useEffect(() => { if (!sectionMounted.current) return; markSection("section-employment"); }, [clientEmp, spouseEmp]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-employment"); }, [clientEmp, spouseEmp, extraEmps]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-income"); }, [incomes]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-realestate"); }, [realEstate, homeOwnership]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-accounts"); }, [accounts]);
@@ -2020,9 +2024,9 @@ export default function App() {
   const buildSnapshot = useCallback(() => ({
     client, spouse, hasSpouse, hasChildren, children,
     clientEmails, spouseEmails,
-    clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
+    clientEmp, spouseEmp, extraEmps, incomes, autos, realEstate, accounts,
     beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, extraEmps, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -2066,6 +2070,7 @@ export default function App() {
     setChildren(record.children || []);
     setClientEmp(record.clientEmp || { ...emptyEmployer });
     setSpouseEmp(record.spouseEmp || { ...emptyEmployer });
+    setExtraEmps(record.extraEmps || []);
     setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
     setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
     setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
@@ -2250,7 +2255,7 @@ export default function App() {
     setClient({ ...emptyClient }); setSpouse({ ...emptySpouse });
     setClientEmails([{ id: 1, tag: "personal", address: "" }]);
     setSpouseEmails([{ id: 1, tag: "personal", address: "" }]);
-    setClientEmp({ ...emptyEmployer }); setSpouseEmp({ ...emptyEmployer });
+    setClientEmp({ ...emptyEmployer }); setSpouseEmp({ ...emptyEmployer }); setExtraEmps([]);
     setIncomes([{ ...emptyIncome, id: 1 }]);
     setAutos([{ ...emptyAuto, id: 1 }]);
     setRealEstate([{ ...emptyRealEstate, id: 1 }]);
@@ -2294,6 +2299,7 @@ export default function App() {
           setChildren(record.children || []);
           setClientEmp(record.clientEmp || { ...emptyEmployer });
           setSpouseEmp(record.spouseEmp || { ...emptyEmployer });
+          setExtraEmps(record.extraEmps || []);
           setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
           setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
           setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
@@ -3674,6 +3680,89 @@ export default function App() {
             </>);
           })()}
           <FileUpload section="employment" files={uploads.employment || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
+
+          {extraEmps.filter(r => r.owner === empView).map((r, i) => (
+            <div key={r.id} style={{ marginTop: 16, border: "1px solid " + BORDER, borderRadius: 10, padding: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK }}>Additional Employment Record {i + 1}</div>
+                <button onClick={() => removeExtraEmp(r.id)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 12px", fontSize: 12, fontWeight: 600, color: "#b3261e", cursor: "pointer" }}>✕ Delete</button>
+              </div>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={r.employer} onChange={e => updExtraEmp(r.id, "employer", e.target.value)} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={r.occupation} onChange={e => updExtraEmp(r.id, "occupation", e.target.value)} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={r.startDate} onChange={v => updExtraEmp(r.id, "startDate", v)} compact /></div>
+                <F style={{ flex: "0 0 145px" }}><Lbl t="Work Phone" /><input value={r.workPhone} onChange={e => updExtraEmp(r.id, "workPhone", fmtPhone(e.target.value))} style={{ ...IS, width: 145 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Work Address" />
+                  <input value={r.workAddress} onChange={e => updExtraEmp(r.id, "workAddress", e.target.value)} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="ZIP" />
+                  <input value={r.workZip} onChange={e => { const z = fmtZip(e.target.value); updExtraEmp(r.id, "workZip", z); lookupZip(z, (city, state) => setExtraEmps(p => p.map(x => x.id === r.id ? { ...x, workCity: city, workState: state } : x))); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="City" />
+                  <input value={r.workCity} onChange={e => updExtraEmp(r.id, "workCity", e.target.value)} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="State" />
+                  <StateSelect value={r.workState} onChange={e => updExtraEmp(r.id, "workState", e.target.value)} style={{ width: 224 }} />
+                </div>
+              </div>
+              <div style={{ marginTop: 14, borderTop: "1px solid " + BORDER, paddingTop: 12 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Employer Retirement Plan</div>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end" }}>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Has Retirement Plan?" />
+                    <select data-lpignore="true" value={r.hasRetirement || ""} onChange={e => updExtraEmp(r.id, "hasRetirement", e.target.value || null)} style={{ ...IS, width: 76 }}>
+                      <option value="">— Select —</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                  {r.hasRetirement === "yes" && (
+                    <>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Type of Plan" />
+                        <select data-lpignore="true" value={r.retirementType || ""} onChange={e => updExtraEmp(r.id, "retirementType", e.target.value || null)} style={{ ...IS, width: 245 }}>
+                          <option value="">— Select —</option>
+                          <option>401(k)</option><option>Roth 401(k)</option><option>403(b)</option><option>Roth 403(b)</option>
+                          <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
+                          <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
+                          <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
+                        </select>
+                      </div>
+                      <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={r.retirementBalance} onChange={e => updExtraEmp(r.id, "retirementBalance", fmtDollar(e.target.value))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Custodian / Plan Sponsor" />
+                        <select data-lpignore="true" value={r.retirementCustodian || ""} onChange={e => updExtraEmp(r.id, "retirementCustodian", e.target.value)} style={{ ...IS, width: 180 }}>
+                          <option value="">— Select —</option>
+                          <option>Fidelity</option><option>Empower</option><option>Vanguard</option><option>Schwab</option>
+                          <option>T. Rowe Price</option><option>Principal</option><option>Prudential</option><option>Transamerica</option>
+                          <option>Lincoln Financial</option><option>John Hancock</option><option>Nationwide</option><option>MassMutual</option>
+                          <option>Ameritas</option><option>TIAA</option><option>PEBA / State Plan</option><option>Other</option>
+                        </select>
+                      </div>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="In Service Transfer Available?" />
+                        <select value={r.inServiceTransfer || ""} onChange={e => updExtraEmp(r.id, "inServiceTransfer", e.target.value)} style={{ ...IS, width: 76 }} data-lpignore="true">
+                          <option value="">— Select —</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div style={{ marginTop: 14 }}>
+            <button onClick={addExtraEmp} style={{ background: "none", border: "1px dashed " + BORDER, borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, color: BRAND_NAVY, cursor: "pointer" }}>+ Add Another Employment Record</button>
+          </div>
         </Panel>
 
         {/* ── ANNUAL INCOME ── */}
