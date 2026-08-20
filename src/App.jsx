@@ -2736,10 +2736,10 @@ export default function App() {
           <Sec t="Home Address" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 320px" }}><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 112px" }}><Lbl t="Apt / Suite" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 120px" }}>
+            <F style={{ flex: "0 0 78px" }}><Lbl t="Apt / Suite" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 92px" }}>
               <Lbl t="PO Box?" />
-              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 120 }}>
+              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 92 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -2768,7 +2768,7 @@ export default function App() {
               />
             </div>
             <div style={{ flexShrink: 0 }}>
-              <Lbl t="City" /><input value={client.city} onChange={setC("city")} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" />
+              <Lbl t="City" /><input value={client.city} onChange={setC("city")} style={{ ...IS, width: 144 }} autoComplete="new-password" data-lpignore="true" />
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="State" />
