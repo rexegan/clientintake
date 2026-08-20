@@ -3608,6 +3608,51 @@ export default function App() {
               </div>
             </>
           )}
+          {(() => {
+            const isSpouseView = ["married","domestic_partner"].includes(hasSpouse) && empView === "spouse";
+            const emp = isSpouseView ? spouseEmp : clientEmp;
+            const setEmp = isSpouseView ? setSpouseEmp : setClientEmp;
+            const jobs = emp.extraJobs || [];
+            const updJob = (id, f, v) => setEmp(p => ({ ...p, extraJobs: (p.extraJobs || []).map(j => j.id === id ? { ...j, [f]: v } : j) }));
+            const delJob = (id) => setEmp(p => ({ ...p, extraJobs: (p.extraJobs || []).filter(j => j.id !== id) }));
+            return (<>
+              {jobs.map((j, i) => (
+                <div key={j.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginTop: 14, marginBottom: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Additional Employment {i + 1}</div>
+                    <button onClick={() => showConfirm("Remove this employment record?", () => delJob(j.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                    <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={j.employer || ""} onChange={e => updJob(j.id, "employer", e.target.value)} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={j.occupation || ""} onChange={e => updJob(j.id, "occupation", e.target.value)} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
+                    <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={j.startDate || ""} onChange={v => updJob(j.id, "startDate", v)} compact /></div>
+                    <F style={{ flex: "0 0 145px" }}><Lbl t="Work Phone" /><input value={j.workPhone || ""} onChange={e => updJob(j.id, "workPhone", fmtPhone(e.target.value))} style={{ ...IS, width: 145 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
+                    <div style={{ flexShrink: 0 }}>
+                      <Lbl t="Work Address" />
+                      <input value={j.workAddress || ""} onChange={e => updJob(j.id, "workAddress", e.target.value)} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" />
+                    </div>
+                    <div style={{ flexShrink: 0 }}>
+                      <Lbl t="ZIP" />
+                      <input value={j.workZip || ""} onChange={e => { const z = fmtZip(e.target.value); updJob(j.id, "workZip", z); lookupZip(z, (city, state) => { updJob(j.id, "workCity", city); updJob(j.id, "workState", state); }); }} maxLength={10} style={{ ...IS, width: 90 }} autoComplete="new-password" data-lpignore="true" />
+                    </div>
+                    <div style={{ flexShrink: 0 }}>
+                      <Lbl t="City" />
+                      <input value={j.workCity || ""} onChange={e => updJob(j.id, "workCity", e.target.value)} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+                    </div>
+                    <div style={{ flexShrink: 0 }}>
+                      <Lbl t="State" />
+                      <StateSelect value={j.workState || ""} onChange={e => updJob(j.id, "workState", e.target.value)} style={{ width: 224 }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button onClick={() => setEmp(p => ({ ...p, extraJobs: [...(p.extraJobs || []), { id: Date.now() }] }))} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%", marginTop: 14 }}>
+                + Add Another Employment Record
+              </button>
+            </>);
+          })()}
           <FileUpload section="employment" files={uploads.employment || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
