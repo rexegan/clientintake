@@ -2425,9 +2425,29 @@ export default function App() {
 
         {/* ── SIDEBAR ── */}
         <aside ref={sideRailRef} className="side-rail" style={{ width: 226, flexShrink: 0, background: NAV, borderRight: "1px solid " + BORDER, position: "sticky", top: 0, height: "100vh", overflowY: "auto", boxSizing: "border-box", padding: "18px 10px" }}>
-          <div style={{ padding: "8px 6px 14px" }}>
+          <div style={{ padding: "0 6px 10px" }}>
             <BrandLockup mark={42} />
-            <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 7 }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</div>
+            <div style={{ textAlign: "center", fontSize: 11, color: MUTED, marginTop: 5 }}>{recordType === "prospect" ? "Prospect Intake" : "Client Intake"}</div>
+            {(() => {
+              const married = ["married","domestic_partner"].includes(hasSpouse);
+              const cFirst = (client.firstName || "").trim();
+              const cLast = (client.lastName || "").trim();
+              const sFirst = (spouse.firstName || "").trim();
+              const sLast = (spouse.lastName || "").trim();
+              let names = "";
+              if (cFirst || cLast) {
+                if (married && sFirst) {
+                  names = (sLast && sLast !== cLast)
+                    ? `${cFirst} ${cLast} & ${sFirst} ${sLast}`
+                    : `${cFirst} & ${sFirst} ${cLast}`;
+                } else {
+                  names = `${cFirst} ${cLast}`.trim();
+                }
+              }
+              return names ? (
+                <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: INK, marginTop: 6 }}>{names}</div>
+              ) : null;
+            })()}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 4 }}>
             <span style={{ fontSize: 10, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em" }}>Intake Sections</span>
