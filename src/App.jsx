@@ -2737,9 +2737,9 @@ export default function App() {
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 320px" }}><Lbl t="Street Address" /><input value={client.addressLine1} onChange={setC("addressLine1")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 78px" }}><Lbl t="Apt / Suite" /><input value={client.addressLine2} onChange={setC("addressLine2")} style={{ ...IS, width: "100%" }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 92px" }}>
+            <F style={{ flex: "0 0 114px" }}>
               <Lbl t="PO Box?" />
-              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 92 }}>
+              <select data-lpignore="true" value={client.hasPOBox || ""} onChange={e => setClient(p => ({ ...p, hasPOBox: e.target.value || null }))} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
