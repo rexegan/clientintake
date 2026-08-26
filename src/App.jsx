@@ -2693,7 +2693,7 @@ export default function App() {
             </div>
           </div>
 
-          <Sec t="Trusted Contact" />
+          <Sec t="Spouse" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "1 1 150px" }}><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 90px" }}><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 90 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2704,6 +2704,14 @@ export default function App() {
                 <option value="">— Select —</option>
                 <option>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option>
                 <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
+              </select>
+            </F>
+            <F style={{ flex: "0 0 92px" }}>
+              <Lbl t="Trusted Contact" />
+              <select data-lpignore="true" value={client.tcIsTrusted || ""} onChange={setC("tcIsTrusted")} style={{ ...IS, width: 92 }}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
               </select>
             </F>
           </div>
