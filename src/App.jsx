@@ -2615,9 +2615,9 @@ export default function App() {
             <F style={{ flex: "0 0 143px" }}><Lbl t="First" /><input value={client.firstName} onChange={setCN("firstName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 143px" }}><Lbl t="Middle" /><input value={client.middleName} onChange={setCN("middleName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 143px" }}><Lbl t="Last" /><input value={client.lastName} onChange={setCN("lastName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact monthW={62} dayW={54} yearW={62} /></div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Social Security Number" />
               <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
