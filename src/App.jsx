@@ -2661,6 +2661,7 @@ export default function App() {
               <Lbl t="State" />
               <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 224 }} />
             </F>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <F style={{ flex: "0 0 104px" }}>
@@ -2690,9 +2691,7 @@ export default function App() {
               </div>
             </>)}
           </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
-          </div>
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Cell Phone" />
