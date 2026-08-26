@@ -2652,12 +2652,12 @@ export default function App() {
               <input value={client.nickname || ""} onChange={setC("nickname")} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
             </div>
           </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end", marginLeft: 8 }}>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 210px" }}><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end", marginLeft: 8 }}>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 240px" }}>
               <Lbl t="State" />
               <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 240 }} />
