@@ -4150,14 +4150,14 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Mortgage Company" />
-                  <select value={allMortgageCos.includes(r.mortgageCompany) ? r.mortgageCompany : r.mortgageCompany ? "__other__" : ""} onChange={e => updRE(r.id, "mortgageCompany", e.target.value === "__other__" ? "__other__" : e.target.value)} style={IS} data-lpignore="true">
-                    <option value="">— Select —</option>
-                    {allMortgageCos.map(co => <option key={co} value={co}>{co}</option>)}
-                    <option value="__other__">Other (type below)</option>
-                  </select>
-                  {(!allMortgageCos.includes(r.mortgageCompany) && r.mortgageCompany) && (
-                    <input value={r.mortgageCompany === "__other__" ? "" : r.mortgageCompany} onChange={e => updRE(r.id, "mortgageCompany", e.target.value)} onBlur={e => addCustomMortgageCo(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter mortgage company name" autoComplete="new-password" data-lpignore="true" />
-                  )}
+                  <SmartCombo
+                    value={r.mortgageCompany === "__other__" ? "" : (r.mortgageCompany || "")}
+                    options={["N/A", ...allMortgageCos]}
+                    onChange={v => updRE(r.id, "mortgageCompany", v)}
+                    onBlur={v => { if (v && v !== "N/A") addCustomMortgageCo(v); }}
+                    style={IS}
+                    placeholder="Type or select mortgage company"
+                  />
                 </F>
                 <F><DatePicker label="Origination Date" value={r.originationDate} onChange={v => updRE(r.id, "originationDate", v)} /></F>
               </Row>
