@@ -2713,34 +2713,103 @@ export default function App() {
 
           <Sec t="Spouse" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "1 1 150px" }}><Lbl t="First" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 143px" }}><Lbl t="Middle" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "1 1 150px" }}><Lbl t="Last" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 122px" }}>
-              <Lbl t="Relationship" />
-              <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={{ ...IS, width: 122 }}>
-                <option value="">— Select —</option>
-                <option>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option>
-                <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
+            <F style={{ flex: "0 0 143px" }}><Lbl t="First" /><input value={spouse.firstName} onChange={setSN("firstName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 143px" }}><Lbl t="Middle" /><input value={spouse.middleName} onChange={setSN("middleName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 143px" }}><Lbl t="Last" /><input value={spouse.lastName} onChange={setSN("lastName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact monthW={74} dayW={54} yearW={62} /></div>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Social Security Number" />
+              <input value={spouse.ssn} onChange={e => setSpouse(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Known Client Since" />
+              <div style={{ display: "flex", gap: 6 }}>
+                <select value={spouse.knownSinceMonth || ""} onChange={setS("knownSinceMonth")} style={{ ...IS, width: 76 }} data-lpignore="true">
+                  <option value="">Mo</option>
+                  {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
+                </select>
+                <input value={spouse.knownSinceYear || ""} onChange={setS("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+              </div>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Dependents" />
+              <select data-lpignore="true" value={spouse.numDependents || ""} onChange={setS("numDependents")} style={{ ...IS, width: 62 }}>
+                <option value="">—</option>
+                {[0,1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={String(n)}>{n}</option>)}
               </select>
-            </F>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Gender" />
+              <select data-lpignore="true" value={spouse.gender || ""} onChange={setS("gender")} style={{ ...IS, width: 108 }}>
+                <option value="">— Select —</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Nickname" />
+              <input value={spouse.nickname || ""} onChange={setS("nickname")} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
+            </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 118px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 118 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
-            <F style={{ flex: "0 0 auto" }}><DatePicker label="Date of Birth" value={client.tcDOB || ""} onChange={v => setClient(p => ({ ...p, tcDOB: v }))} compact monthW={76} dayW={66} yearW={68} /></F>
-            <F style={{ flex: "0 0 114px" }}>
-              <Lbl t="Copy Client Address?" />
-              <select value={tcCopyAddr} onChange={e => { setTcCopyAddr(e.target.value); if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); }} style={{ ...IS, width: 114 }}>
-                <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </F>
-            <F style={{ flex: "0 0 230px" }}><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, width: 230 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 210px" }}><Lbl t="Mailing Address" /><input value={spouse.mailingAddress || ""} onChange={setS("mailingAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={spouse.mailingZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailingZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailingCity: city, mailingState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={spouse.mailingCity || ""} onChange={setS("mailingCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 128px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 128px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 240px" }}>
+              <Lbl t="State" />
+              <StateSelect value={spouse.mailingState || ""} onChange={e => setSpouse(p => ({ ...p, mailingState: e.target.value }))} style={{ width: 240 }} />
+            </F>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={spouse.mailingCountry || "USA"} onChange={e => setSpouse(p => ({ ...p, mailingCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Cell Phone" />
+              <input value={spouse.cell} onChange={e => setSpouse(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Home Phone" />
+              <input value={spouse.homePhone || ""} onChange={e => setSpouse(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Marital Status" />
+              <select data-lpignore="true" value={spouse.filingStatus || ""} onChange={setS("filingStatus")} style={{ ...IS, width: 165 }}>
+                <option value="">— Select —</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Separated">Separated</option>
+                <option value="Widowed">Widowed</option>
+                <option value="Widower">Widower</option>
+                <option value="Domestic Partner">Domestic Partner</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
+            <div style={{ flex: "none" }}>
+              <Lbl t="Email Addresses" />
+              {spouseEmails.map((em) => (
+                <div key={em.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
+                  <select data-lpignore="true" value={em.tag} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, tag: e.target.value } : x))} style={{ ...IS, width: 110, flex: "none" }}>
+                    <option value="personal">Personal</option>
+                    <option value="home">Home</option>
+                    <option value="work">Work</option>
+                    <option value="spouse">Spouse</option>
+                  </select>
+                  <input value={em.address} onChange={e => setSpouseEmails(p => p.map(x => x.id === em.id ? { ...x, address: e.target.value } : x))} type="email" placeholder="email@example.com" style={{ ...IS, width: 240, flex: "none" }} autoComplete="new-password" data-lpignore="true" />
+                  {em.address && <a href={`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(em.address)}`} target="_blank" rel="noreferrer" title="Send email" style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#e8f0fe", border: "1px solid #b3c8f5", borderRadius: 7, color: "#2563eb", textDecoration: "none", fontSize: 16 }}>✉</a>}
+                  {spouseEmails.length > 1 && (
+                    <button onClick={() => showConfirm("Remove this email?", () => setSpouseEmails(p => p.filter(x => x.id !== em.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 13, flex: "none" }}>✕</button>
+                  )}
+                </div>
+              ))}
+              <button onClick={() => setSpouseEmails(p => [...p, { id: Date.now(), tag: "personal", address: "" }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "6px 10px", fontSize: 13, cursor: "pointer" }}>
+                + Add Email
+              </button>
+            </div>
           </div>
 
           <Sec t="Home Address" />
