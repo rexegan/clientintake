@@ -2612,9 +2612,9 @@ export default function App() {
         {/* ── CLIENT PROFILE ── */}
         <Panel title={recordType === "prospect" ? "Prospect Profile" : "Client Profile"} id="section-profile">
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            <F style={{ flex: "0 0 210px" }}><Lbl t="First" /><input value={client.firstName} onChange={setCN("firstName")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 210px" }}><Lbl t="Middle" /><input value={client.middleName} onChange={setCN("middleName")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 210px" }}><Lbl t="Last" /><input value={client.lastName} onChange={setCN("lastName")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 168px" }}><Lbl t="First" /><input value={client.firstName} onChange={setCN("firstName")} style={{ ...IS, width: 168 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 168px" }}><Lbl t="Middle" /><input value={client.middleName} onChange={setCN("middleName")} style={{ ...IS, width: 168 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 168px" }}><Lbl t="Last" /><input value={client.lastName} onChange={setCN("lastName")} style={{ ...IS, width: 168 }} autoComplete="new-password" data-lpignore="true" /></F>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
