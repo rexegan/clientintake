@@ -2653,10 +2653,38 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 210px" }}><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 210px" }}><Lbl t="Physical Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 114px" }}>
+              <Lbl t="PO Box Pref?" />
+              <select data-lpignore="true" value={client.mailPoPref || ""} onChange={setC("mailPoPref")} style={{ ...IS, width: 114 }}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
           </div>
+          {client.mailPoPref === "yes" && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="PO Box #" />
+                <input value={client.mailPoBox || ""} onChange={setC("mailPoBox")} onBlur={e => setClient(p => ({ ...p, mailPoBox: fmtPOBox(e.target.value) }))} style={{ ...IS, width: 110 }} autoComplete="new-password" data-lpignore="true" />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="ZIP" />
+                <input value={client.mailPoZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, mailPoZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, mailPoCity: city, mailPoState: state }))); }} maxLength={10} style={{ ...IS, width: 108 }} autoComplete="new-password" data-lpignore="true" />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="City" />
+                <input value={client.mailPoCity || ""} onChange={setC("mailPoCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="State" />
+                <StateSelect value={client.mailPoState || ""} onChange={setC("mailPoState")} style={{ width: 240 }} />
+              </div>
+            </div>
+          )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 240px" }}>
               <Lbl t="State" />
@@ -2754,10 +2782,38 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 210px" }}><Lbl t="Mailing Address" /><input value={spouse.mailingAddress || ""} onChange={setS("mailingAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 210px" }}><Lbl t="Physical Address" /><input value={spouse.mailingAddress || ""} onChange={setS("mailingAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={spouse.mailingZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailingZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailingCity: city, mailingState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={spouse.mailingCity || ""} onChange={setS("mailingCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 114px" }}>
+              <Lbl t="PO Box Pref?" />
+              <select data-lpignore="true" value={spouse.mailPoPref || ""} onChange={setS("mailPoPref")} style={{ ...IS, width: 114 }}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
           </div>
+          {spouse.mailPoPref === "yes" && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="PO Box #" />
+                <input value={spouse.mailPoBox || ""} onChange={setS("mailPoBox")} onBlur={e => setSpouse(p => ({ ...p, mailPoBox: fmtPOBox(e.target.value) }))} style={{ ...IS, width: 110 }} autoComplete="new-password" data-lpignore="true" />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="ZIP" />
+                <input value={spouse.mailPoZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailPoZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailPoCity: city, mailPoState: state }))); }} maxLength={10} style={{ ...IS, width: 108 }} autoComplete="new-password" data-lpignore="true" />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="City" />
+                <input value={spouse.mailPoCity || ""} onChange={setS("mailPoCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="State" />
+                <StateSelect value={spouse.mailPoState || ""} onChange={setS("mailPoState")} style={{ width: 240 }} />
+              </div>
+            </div>
+          )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 240px" }}>
               <Lbl t="State" />
