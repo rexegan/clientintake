@@ -2714,7 +2714,7 @@ export default function App() {
           <Sec t="Spouse" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "1 1 150px" }}><Lbl t="First" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 90px" }}><Lbl t="Middle" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 90 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 143px" }}><Lbl t="Middle" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "1 1 150px" }}><Lbl t="Last" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 122px" }}>
               <Lbl t="Relationship" />
