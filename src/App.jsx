@@ -2615,7 +2615,7 @@ export default function App() {
             <F style={{ flex: "0 0 143px" }}><Lbl t="First" /><input value={client.firstName} onChange={setCN("firstName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 143px" }}><Lbl t="Middle" /><input value={client.middleName} onChange={setCN("middleName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 143px" }}><Lbl t="Last" /><input value={client.lastName} onChange={setCN("lastName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact monthW={62} dayW={54} yearW={62} /></div>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact monthW={74} dayW={54} yearW={62} /></div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
@@ -2716,8 +2716,6 @@ export default function App() {
             </F>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 128px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 128px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 118px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 118 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
             <F style={{ flex: "0 0 auto" }}><DatePicker label="Date of Birth" value={client.tcDOB || ""} onChange={v => setClient(p => ({ ...p, tcDOB: v }))} compact monthW={76} dayW={66} yearW={68} /></F>
             <F style={{ flex: "0 0 114px" }}>
@@ -2739,6 +2737,10 @@ export default function App() {
               <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 208 }} />
             </F>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <F style={{ flex: "0 0 128px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 128px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
           </div>
 
           <Sec t="Home Address" />
