@@ -2782,16 +2782,20 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 210px" }}><Lbl t="Physical Address" /><input value={spouse.mailingAddress || ""} onChange={setS("mailingAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={spouse.mailingZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailingZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailingCity: city, mailingState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={spouse.mailingCity || ""} onChange={setS("mailingCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 114px" }}>
+            <F style={{ flex: "0 0 104px" }}>
               <Lbl t="PO Box Pref?" />
-              <select data-lpignore="true" value={spouse.mailPoPref || ""} onChange={setS("mailPoPref")} style={{ ...IS, width: 114 }}>
+              <select data-lpignore="true" value={spouse.mailPoPref || ""} onChange={setS("mailPoPref")} style={{ ...IS, width: 104 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
+            </F>
+            <F style={{ flex: "0 0 210px" }}><Lbl t="Physical Address" /><input value={spouse.mailingAddress || ""} onChange={setS("mailingAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={spouse.mailingZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailingZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailingCity: city, mailingState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={spouse.mailingCity || ""} onChange={setS("mailingCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 224px" }}>
+              <Lbl t="State" />
+              <StateSelect value={spouse.mailingState || ""} onChange={e => setSpouse(p => ({ ...p, mailingState: e.target.value }))} style={{ width: 224 }} />
             </F>
             <F style={{ flex: "0 0 114px" }}>
               <Lbl t="Copy Client Address" />
@@ -2828,10 +2832,6 @@ export default function App() {
             </div>
           )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 240px" }}>
-              <Lbl t="State" />
-              <StateSelect value={spouse.mailingState || ""} onChange={e => setSpouse(p => ({ ...p, mailingState: e.target.value }))} style={{ width: 240 }} />
-            </F>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={spouse.mailingCountry || "USA"} onChange={e => setSpouse(p => ({ ...p, mailingCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
