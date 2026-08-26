@@ -2612,9 +2612,9 @@ export default function App() {
         {/* ── CLIENT PROFILE ── */}
         <Panel title={recordType === "prospect" ? "Prospect Profile" : "Client Profile"} id="section-profile">
           <Row cols={3}>
-            <F><Lbl t="First Name" /><input value={client.firstName} onChange={setCN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Middle Name" /><input value={client.middleName} onChange={setCN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setCN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="First" /><input value={client.firstName} onChange={setCN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Middle" /><input value={client.middleName} onChange={setCN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Last" /><input value={client.lastName} onChange={setCN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
@@ -2695,9 +2695,9 @@ export default function App() {
 
           <Sec t="Spouse" />
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "1 1 150px" }}><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 90px" }}><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 90 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "1 1 150px" }}><Lbl t="Last Name" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "1 1 150px" }}><Lbl t="First" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 90px" }}><Lbl t="Middle" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 90 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "1 1 150px" }}><Lbl t="Last" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 122px" }}>
               <Lbl t="Relationship" />
               <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={{ ...IS, width: 122 }}>
@@ -2960,9 +2960,9 @@ export default function App() {
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 6 }}>Client Details</div>
               <Row cols={3}>
-                <F><Lbl t="First Name" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Middle Name" /><input value={client.middleName || ""} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Last Name" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="First" /><input value={client.firstName} onChange={setC("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Middle" /><input value={client.middleName || ""} onChange={setC("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Last" /><input value={client.lastName} onChange={setC("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact /></div>
@@ -2991,9 +2991,9 @@ export default function App() {
                   <button onClick={() => { setSpouse(p => ({ ...p, ...(client.tcFirstName && { firstName: client.tcFirstName }), ...(client.tcLastName && { lastName: client.tcLastName }), ...(client.tcMiddleInitial && { middleName: client.tcMiddleInitial }), ...(client.tcCell && { cell: client.tcCell }), ...(client.tcHomePhone && { homePhone: client.tcHomePhone }) })); if (client.tcEmail) setSpouseEmails([{ address: client.tcEmail }]); }} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy from Trusted Contact</button>
                 </div>
                 <Row cols={3}>
-                  <F><Lbl t="First Name" /><input value={spouse.firstName} onChange={setSN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                  <F><Lbl t="Middle Name" /><input value={spouse.middleName} onChange={setSN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                  <F><Lbl t="Last Name" /><input value={spouse.lastName} onChange={setSN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="First" /><input value={spouse.firstName} onChange={setSN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Middle" /><input value={spouse.middleName} onChange={setSN("middleName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Last" /><input value={spouse.lastName} onChange={setSN("lastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 </Row>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                   <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact /></div>
@@ -3052,9 +3052,9 @@ export default function App() {
                     </div>
                   </div>
                   <Row cols={3}>
-                    <F><Lbl t="First Name" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                    <F><Lbl t="Middle Name" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                    <F><Lbl t="Last Name" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F><Lbl t="First" /><input value={ch.firstName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, firstName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F><Lbl t="Middle" /><input value={ch.middleName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, middleName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F><Lbl t="Last" /><input value={ch.lastName} onChange={e => setChildren(p => p.map(x => x.id === ch.id ? { ...x, lastName: capName(e.target.value) } : x))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                     <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={ch.dob} onChange={v => setChildren(p => p.map(x => x.id === ch.id ? { ...x, dob: v } : x))} compact /></div>
@@ -3225,9 +3225,9 @@ export default function App() {
                 <button onClick={() => showConfirm("Remove this beneficiary?", () => delBene(b.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <Row cols={3}>
-                <F><Lbl t="First Name" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Middle Name" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Last Name" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="First" /><input value={b.firstName} onChange={e => updBene(b.id, "firstName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Middle" /><input value={b.middleName} onChange={e => updBene(b.id, "middleName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Last" /><input value={b.lastName} onChange={e => updBene(b.id, "lastName", capName(e.target.value))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12, alignItems: "flex-end" }}>
                 <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={b.dob} onChange={v => updBene(b.id, "dob", v)} compact /></div>
@@ -5071,9 +5071,9 @@ export default function App() {
 
           <Sec t="Investment Professional" />
           <Row cols={3}>
-            <F><Lbl t="First Name" /><input value={advisorInfo.firstName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, firstName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Middle Initial" /><input value={advisorInfo.middleInitial || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, middleInitial: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 70 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Last Name" /><input value={advisorInfo.lastName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, lastName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="First" /><input value={advisorInfo.firstName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, firstName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Middle" /><input value={advisorInfo.middleInitial || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, middleInitial: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={{ ...IS, width: 70 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Last" /><input value={advisorInfo.lastName || ""} onChange={e => setAdvisorInfo(p => { const n = { ...p, lastName: e.target.value }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
           <Row cols={3}>
             <F><DatePicker label="Date of Birth" value={advisorInfo.dob || ""} onChange={v => setAdvisorInfo(p => { const n = { ...p, dob: v }; localStorage.setItem("rwg_advisor_info", JSON.stringify(n)); return n; })} /></F>
