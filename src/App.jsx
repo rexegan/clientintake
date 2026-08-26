@@ -1787,6 +1787,7 @@ export default function App() {
   const [empView, setEmpView] = useState("client");
   const [extraEmps, setExtraEmps] = useState([]);
   const [idView, setIdView] = useState("client");
+  const [idPrimary, setIdPrimary] = useState("client");
   const [tcCopyAddr, setTcCopyAddr] = useState("");
   const [importantDates, setImportantDates] = useState({ anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
   // rmdDates shape: { date:"", owner:"", linkedAcctId:"" }
@@ -2973,7 +2974,13 @@ export default function App() {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                   <div style={{ flexShrink: 0 }}>
                     <Lbl t="Person" />
-                    <input value={personName} readOnly style={{ ...IS, width: 200, background: "#f4f6f9", cursor: "default" }} data-lpignore="true" />
+                    <select value={view} onChange={e => {
+                      const val = e.target.value;
+                      setIdPrimary(isFirst ? val : (val === "client" ? "spouse" : "client"));
+                    }} style={{ ...IS, width: 200 }} data-lpignore="true">
+                      <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                      {marriedNow && <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>}
+                    </select>
                   </div>
                   <div style={{ flexShrink: 0 }}>
                     <Lbl t="US Citizen?" />
@@ -3047,8 +3054,8 @@ export default function App() {
               </div>);
             };
             return (<>
-              {renderIdBlock("client", true)}
-              {showSpouseBlock && renderIdBlock("spouse", false)}
+              {renderIdBlock(idPrimary, true)}
+              {showSpouseBlock && renderIdBlock(idPrimary === "client" ? "spouse" : "client", false)}
             </>);
           })()}
 
