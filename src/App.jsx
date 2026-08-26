@@ -2662,8 +2662,6 @@ export default function App() {
               <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 224 }} />
             </F>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <F style={{ flex: "0 0 104px" }}>
               <Lbl t="PO Box Pref?" />
               <select data-lpignore="true" value={client.mailPoPref || ""} onChange={setC("mailPoPref")} style={{ ...IS, width: 104 }}>
@@ -2672,6 +2670,8 @@ export default function App() {
                 <option value="no">No</option>
               </select>
             </F>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             {client.mailPoPref === "yes" && (<>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="PO Box #" />
@@ -2687,7 +2687,7 @@ export default function App() {
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="State" />
-                <StateSelect value={client.mailPoState || ""} onChange={setC("mailPoState")} style={{ width: 240 }} />
+                <StateSelect value={client.mailPoState || ""} onChange={setC("mailPoState")} style={{ width: 224 }} />
               </div>
             </>)}
           </div>
