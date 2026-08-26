@@ -4675,9 +4675,29 @@ export default function App() {
                     </select>
                   </F>
                 )}
-                <F><Lbl t="Insured" /><input value={p.insured} onChange={e => updLife(p.id, "insured", e.target.value)} style={IS} placeholder="Name of insured" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Owner" /><input value={p.owner} onChange={e => updLife(p.id, "owner", e.target.value)} style={IS} placeholder="Policy owner" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Insured" />
+                  <select data-lpignore="true" value={p.insured || ""} onChange={e => updLife(p.id, "insured", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
+                    <option value="">— Select —</option>
+                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Owner" />
+                  <select data-lpignore="true" value={p.owner || ""} onChange={e => updLife(p.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
+                    <option value="">— Select —</option>
+                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
+              </div>
               <Row cols={4}>
                 <F><Lbl t="Death Benefit" /><input value={p.deathBenefit} onChange={e => updLife(p.id, "deathBenefit", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Cash Value" /><input value={p.cashValue} onChange={e => updLife(p.id, "cashValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
