@@ -2793,6 +2793,19 @@ export default function App() {
                 <option value="no">No</option>
               </select>
             </F>
+            <F style={{ flex: "0 0 114px" }}>
+              <Lbl t="Copy Client Address" />
+              <select data-lpignore="true" value={spouse.copyClientAddr || ""} onChange={e => {
+                const v = e.target.value;
+                setSpouse(p => v === "yes"
+                  ? { ...p, copyClientAddr: v, mailingAddress: client.tcAddress || "", mailingZip: client.tcZip || "", mailingCity: client.tcCity || "", mailingState: client.tcState || "", mailingCountry: client.tcCountry || "USA" }
+                  : { ...p, copyClientAddr: v });
+              }} style={{ ...IS, width: 114 }}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
           </div>
           {spouse.mailPoPref === "yes" && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
