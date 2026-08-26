@@ -2660,6 +2660,18 @@ export default function App() {
                 <option value="Domestic Partner">Domestic Partner</option>
               </select>
             </div>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <F style={{ flex: "0 0 170px" }}><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 170 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <F style={{ flex: "0 0 208px" }}>
+              <Lbl t="State" />
+              <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 208 }} />
+            </F>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Cell Phone" />
               <input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
@@ -2727,16 +2739,6 @@ export default function App() {
               </select>
             </F>
             <F style={{ flex: "0 0 230px" }}><Lbl t="Email" /><input value={client.tcEmail || ""} onChange={setC("tcEmail")} type="email" style={{ ...IS, width: 230 }} autoComplete="new-password" data-lpignore="true" /></F>
-          </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 170px" }}><Lbl t="Mailing Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 170 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 110px" }}><Lbl t="ZIP" /><input value={client.tcZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, tcZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, tcCity: city, tcState: state }))); }} style={{ ...IS, width: 110 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 155px" }}><Lbl t="City" /><input value={client.tcCity || ""} onChange={setC("tcCity")} style={{ ...IS, width: 155 }} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 208px" }}>
-              <Lbl t="State" />
-              <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 208 }} />
-            </F>
-            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 128px" }}><Lbl t="Cell Phone" /><input value={client.tcCell || ""} onChange={e => setClient(p => ({ ...p, tcCell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
