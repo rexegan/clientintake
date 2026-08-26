@@ -4024,6 +4024,32 @@ export default function App() {
             <F><Lbl t="City" /><input value={homeOwnership.city || ""} onChange={e => setHomeOwnership(p => ({ ...p, city: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F><Lbl t="State" /><StateSelect value={homeOwnership.state || ""} onChange={e => setHomeOwnership(p => ({ ...p, state: e.target.value }))} /></F>
           </Row>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Zillow?" />
+              <select value={homeOwnership.hasZillow || ""} onChange={e => setHomeOwnership(p => ({ ...p, hasZillow: e.target.value || null }))} style={{ ...IS, width: 104 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            {homeOwnership.hasZillow === "yes" && (
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="Look Up on Zillow" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const addr = [homeOwnership.address, homeOwnership.city, homeOwnership.state, homeOwnership.zip].filter(Boolean).join(" ");
+                    const q = encodeURIComponent(addr || "");
+                    window.open("https://www.zillow.com/homes/" + q + "_rb/", "_blank");
+                  }}
+                  style={{ ...IS, width: 160, cursor: "pointer", textAlign: "center", background: "#006aff", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}
+                >
+                  Open Zillow ↗
+                </button>
+              </div>
+            )}
+          </div>
           {homeOwnership.ownOrRent === "own" && (<>
             <Row cols={3}>
               <F>
