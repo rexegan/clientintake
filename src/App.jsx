@@ -2916,7 +2916,7 @@ export default function App() {
                 {/* Row 1: Person + US Citizen (+ Country if non-US) (+ Add Spouse? on client row) */}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                   <div style={{ flexShrink: 0 }}>
-                    <Lbl t="Person" />
+                    <Lbl t={isFirst ? "Client or Spouse" : "Spouse or Client"} />
                     <select value={view} onChange={e => {
                       const val = e.target.value;
                       setIdPrimary(isFirst ? val : (val === "client" ? "spouse" : "client"));
