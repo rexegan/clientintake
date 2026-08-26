@@ -4276,6 +4276,7 @@ export default function App() {
                     <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, width: "auto", minWidth: 160 }}>
                       <option value="">— Select —</option>
                       <option value="Retire">Retire</option>
+                      <option value="In Service Transfer">In Service Transfer</option>
                       <option value="Sell Business">Sell Business</option>
                       <option value="Sell Land">Sell Land</option>
                       <option value="Inheritance">Inheritance</option>
