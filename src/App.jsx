@@ -2706,9 +2706,9 @@ export default function App() {
                 <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
               </select>
             </F>
-            <F style={{ flex: "0 0 92px" }}>
+            <F style={{ flex: "0 0 114px" }}>
               <Lbl t="Trusted Contact" />
-              <select data-lpignore="true" value={client.tcIsTrusted || ""} onChange={setC("tcIsTrusted")} style={{ ...IS, width: 92 }}>
+              <select data-lpignore="true" value={client.tcIsTrusted || ""} onChange={setC("tcIsTrusted")} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -2720,9 +2720,9 @@ export default function App() {
             <F style={{ flex: "0 0 128px" }}><Lbl t="Home Phone" /><input value={client.tcHomePhone || ""} onChange={e => setClient(p => ({ ...p, tcHomePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 118px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 118 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
             <F style={{ flex: "0 0 auto" }}><DatePicker label="Date of Birth" value={client.tcDOB || ""} onChange={v => setClient(p => ({ ...p, tcDOB: v }))} compact monthW={76} dayW={66} yearW={68} /></F>
-            <F style={{ flex: "0 0 92px" }}>
+            <F style={{ flex: "0 0 114px" }}>
               <Lbl t="Copy Client Address?" />
-              <select value={tcCopyAddr} onChange={e => { setTcCopyAddr(e.target.value); if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); }} style={{ ...IS, width: 92 }}>
+              <select value={tcCopyAddr} onChange={e => { setTcCopyAddr(e.target.value); if (e.target.value === "yes") setClient(p => ({ ...p, tcAddress: p.addressLine1 || "", tcCity: p.city || "", tcState: p.state || "", tcZip: p.zip || "", tcCountry: p.country || "USA" })); }} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
