@@ -2797,6 +2797,7 @@ export default function App() {
               <Lbl t="State" />
               <StateSelect value={spouse.mailingState || ""} onChange={e => setSpouse(p => ({ ...p, mailingState: e.target.value }))} style={{ width: 224 }} />
             </F>
+            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={spouse.mailingCountry || "USA"} onChange={e => setSpouse(p => ({ ...p, mailingCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
             <F style={{ flex: "0 0 114px" }}>
               <Lbl t="Copy Client Address" />
               <select data-lpignore="true" value={spouse.copyClientAddr || ""} onChange={e => {
@@ -2831,9 +2832,7 @@ export default function App() {
               </div>
             </div>
           )}
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
-            <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={spouse.mailingCountry || "USA"} onChange={e => setSpouse(p => ({ ...p, mailingCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
-          </div>
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Cell Phone" />
