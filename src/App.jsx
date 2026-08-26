@@ -1939,7 +1939,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
+    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
     }, { threshold: 0, rootMargin: "-20% 0px -70% 0px" });
@@ -2801,7 +2801,7 @@ export default function App() {
             </div>
           )}
 
-          <div id="section-citizenship" style={{ scrollMarginTop: 80 }} />
+          <div id="section-citizenship" style={{ scrollMarginTop: 80, height: 1 }} />
           <Sec t="Driver's License & Citizenship" />
           {(() => {
             const idMeta = {
