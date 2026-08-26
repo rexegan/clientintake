@@ -385,7 +385,7 @@ const INCOME_TYPES = [
 ];
 
 const INCOME_SOURCES = [
-  "Employer — W-2","Self-Employed","1099 — Contract / Freelance","Social Security","Pension",
+  "Employer","Self-Employed","1099 — Contract / Freelance","Social Security","Pension",
   "TMRS (Texas Municipal Retirement)","TRS (Teacher Retirement System)","FERS (Federal Employee Retirement)",
   "CSRS (Civil Service Retirement)","Military Retirement","Railroad Retirement","State / Government Pension",
   "Annuity","Rental / Real Estate","Investment / Dividends","Trust Distribution","Inheritance",
