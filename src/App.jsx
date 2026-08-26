@@ -2724,14 +2724,6 @@ export default function App() {
                 <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
               </select>
             </F>
-            <F style={{ flex: "0 0 104px" }}>
-              <Lbl t="Trusted Contact" />
-              <select data-lpignore="true" value={client.tcIsTrusted || ""} onChange={setC("tcIsTrusted")} style={{ ...IS, width: 104 }}>
-                <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </F>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 118px" }}><Lbl t="SSN" /><input value={client.tcSSN || ""} onChange={e => setClient(p => ({ ...p, tcSSN: fmtSSN(e.target.value) }))} style={{ ...IS, width: 118 }} inputMode="numeric" maxLength={11} autoComplete="new-password" data-lpignore="true" placeholder="___-__-____" /></F>
