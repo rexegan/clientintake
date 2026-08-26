@@ -2744,6 +2744,10 @@ export default function App() {
             <F style={{ flex: "0 0 143px" }}><Lbl t="First" /><input value={spouse.firstName} onChange={setSN("firstName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 143px" }}><Lbl t="Middle" /><input value={spouse.middleName} onChange={setSN("middleName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 143px" }}><Lbl t="Last" /><input value={spouse.lastName} onChange={setSN("lastName")} style={{ ...IS, width: 143 }} autoComplete="new-password" data-lpignore="true" /></F>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Nickname" />
+              <input value={spouse.nickname || ""} onChange={setS("nickname")} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
+            </div>
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact monthW={74} dayW={54} yearW={62} /></div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
@@ -2775,10 +2779,6 @@ export default function App() {
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Nickname" />
-              <input value={spouse.nickname || ""} onChange={setS("nickname")} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
