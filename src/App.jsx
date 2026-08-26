@@ -2698,17 +2698,17 @@ export default function App() {
             <F style={{ flex: "1 1 150px" }}><Lbl t="First Name" /><input value={client.tcFirstName || ""} onChange={setC("tcFirstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 90px" }}><Lbl t="Middle Initial" /><input value={client.tcMiddleInitial || ""} onChange={setC("tcMiddleInitial")} style={{ ...IS, width: 90 }} maxLength={2} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "1 1 150px" }}><Lbl t="Last Name" /><input value={client.tcLastName || ""} onChange={setC("tcLastName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-            <F style={{ flex: "0 0 160px" }}>
+            <F style={{ flex: "0 0 122px" }}>
               <Lbl t="Relationship" />
-              <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={{ ...IS, width: 160 }}>
+              <select data-lpignore="true" value={client.tcRelationship || ""} onChange={setC("tcRelationship")} style={{ ...IS, width: 122 }}>
                 <option value="">— Select —</option>
                 <option>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option>
                 <option>Friend</option><option>Attorney</option><option>Accountant</option><option>Other</option>
               </select>
             </F>
-            <F style={{ flex: "0 0 114px" }}>
+            <F style={{ flex: "0 0 104px" }}>
               <Lbl t="Trusted Contact" />
-              <select data-lpignore="true" value={client.tcIsTrusted || ""} onChange={setC("tcIsTrusted")} style={{ ...IS, width: 114 }}>
+              <select data-lpignore="true" value={client.tcIsTrusted || ""} onChange={setC("tcIsTrusted")} style={{ ...IS, width: 104 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
