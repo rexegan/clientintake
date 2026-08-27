@@ -292,6 +292,7 @@ const emptyClient = {
 };
 const emptySpouse = { firstName:"", middleName:"", lastName:"", dob:"", ssn:"", gender:"", cell:"", homePhone:"", email:"", usCitizen:"", countryOfCitizenship:"", numDependents:"", idType:"", dlNumber:"", dlState:"", dlIssuerName:"", dlIssueDate:"", dlExpDate:"", addressLine1:"", addressLine2:"", city:"", state:"", zip:"", hasPOBox:null, poBox:"", poBoxCity:"", poBoxState:"", poBoxZip:"", preferredMailing:"" };
 const emptyEmployer = { employer:"", occupation:"", startDate:"", workPhone:"", workAddress:"", workCity:"", workState:"", workZip:"", hasRetirement:null, retirementType:null, hasMatch:null, matchPct:"", contributionAmt:"", retirementBalance:"", retirementCustodian:"", inServiceTransfer:"" };
+const emptyDebt = { type:"", lender:"", balance:"", monthlyPayment:"", interestRate:"", notes:"" };
 const emptyAuto = { year:"", make:"", model:"", value:"", hasKbb:null, kbbMileage:"", kbbCondition:"", hasLoan:null, loanBalance:"", lender:"", interestRate:"", monthlyPayment:"" };
 const emptyLifePolicy = { carrier:"", policyType:"", insured:"", owner:"", deathBenefit:"", cashValue:"", premiumAmount:"", premiumFrequency:"monthly", policyNumber:"", issueDate:"", surrender:"" };
 const DEFAULT_MORTGAGE_COS = [
@@ -651,6 +652,7 @@ const SECTION_META = {
   "section-accounts":   { color: "#6366f1", bg: "#eeeffe", icon: <IcSvg><path d="M12 3L3 9h18z"/><path d="M5 12v6M10 12v6M14 12v6M19 12v6"/><path d="M3 21h18"/></IcSvg> },
   "section-wills":      { color: "#a16207", bg: "#f8f1e2", icon: <IcSvg><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></IcSvg> },
   "section-autos":      { color: "#ef4444", bg: "#fdeeee", icon: <IcSvg><path d="M5 16l1.6-4.8A2 2 0 0 1 8.5 10h7a2 2 0 0 1 1.9 1.2L19 16"/><rect x="3.5" y="16" width="17" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></IcSvg> },
+  "section-debts":      { color: "#dc2626", bg: "#fdeeee", icon: <IcSvg><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></IcSvg> },
   "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
   "section-networth":   { color: "#8b5cf6", bg: "#f0edfe", icon: <IcSvg><path d="M3 17l4-8 4 5 3-3 4 6"/><path d="M3 21h18"/></IcSvg> },
   "section-inheritance":{ color: "#0ea5e9", bg: "#e8f5fd", icon: <IcSvg><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></IcSvg> },
@@ -1809,6 +1811,7 @@ export default function App() {
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
   const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
+  const [debts, setDebts] = useState([]);
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
   const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", notes: "" };
   const [nwState, setNwState] = useState({ ...emptyNwState });
@@ -1955,7 +1958,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-life","section-networth","section-wills","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
+    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-debts","section-life","section-networth","section-wills","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -2042,6 +2045,7 @@ export default function App() {
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-accounts"); }, [accounts]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-wills"); }, [willsTrust, poas]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-autos"); }, [autos]);
+  useEffect(() => { if (!sectionMounted.current) return; markSection("section-debts"); }, [debts]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-life"); }, [lifePolicies]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-networth"); }, [nwState, annualExpenses]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-inheritance"); }, [inheritances, vaults]);
@@ -2053,7 +2057,7 @@ export default function App() {
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, extraEmps, incomes, autos, realEstate, accounts,
     beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, extraEmps, incomes, autos, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, extraEmps, incomes, autos, debts, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -2100,6 +2104,7 @@ export default function App() {
     setExtraEmps(record.extraEmps || []);
     setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
     setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
+    setDebts(record.debts || []);
     setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
     setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
     setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
@@ -2196,7 +2201,7 @@ export default function App() {
         savedAt: new Date().toISOString(),
         client, spouse, hasSpouse, hasChildren, children,
         clientEmails, spouseEmails,
-        clientEmp, spouseEmp, incomes, autos, realEstate, accounts,
+        clientEmp, spouseEmp, incomes, autos, debts, realEstate, accounts,
         beneficiaries, willsTrust, poas,
         clientDlImage, spouseDlImage,
       };
@@ -2329,6 +2334,7 @@ export default function App() {
           setExtraEmps(record.extraEmps || []);
           setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
           setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
+    setDebts(record.debts || []);
           setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
           setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
           setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
@@ -2496,6 +2502,7 @@ export default function App() {
             ["section-realestate","Real Estate"],
             ["section-accounts",  "Investment & Bank Acct"],
             ["section-autos",     "Automobiles"],
+            ["section-debts",     "Debt / Liabilities"],
             ["section-life",      "Life Insurance"],
             ["section-networth",  "Net Worth / Portfolio"],
             ["section-wills",     "Wills & Trust"],
@@ -4629,6 +4636,74 @@ export default function App() {
           <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
+        {/* ── DEBT / LIABILITIES ── */}
+        <Panel title="Debt / Liabilities" id="section-debts">
+          {(() => {
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const rows = [];
+            if (pd(homeOwnership.mortgageBalance)) rows.push(["Mortgage — Personal Residence", homeOwnership.mortgageCompany || "—", homeOwnership.mortgageBalance, homeOwnership.monthlyPayment || "—"]);
+            realEstate.forEach((r, i) => { if (pd(r.mortgageBalance)) rows.push([`Mortgage — Property ${i + 1}${r.description ? " (" + r.description + ")" : ""}`, r.mortgageCompany === "__other__" ? "—" : (r.mortgageCompany || "—"), r.mortgageBalance, r.monthlyPmt || "—"]); });
+            autos.forEach((a, i) => { if (pd(a.loanBalance)) rows.push([`Auto Loan — ${[a.year, a.make, a.model].filter(Boolean).join(" ") || "Vehicle " + (i + 1)}`, a.lender || "—", a.loanBalance, a.monthlyPayment || "—"]); });
+            return rows.length > 0 ? (
+              <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 14 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>Pulled from Real Estate & Automobiles</div>
+                {rows.map((r, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < rows.length - 1 ? "1px solid " + BORDER : "none" }}>
+                    <span style={{ flex: "1 1 240px", fontWeight: 600 }}>{r[0]}</span>
+                    <span style={{ flex: "1 1 160px" }}>{r[1]}</span>
+                    <span style={{ width: 110, textAlign: "right" }}>{r[2]}</span>
+                    <span style={{ width: 110, textAlign: "right", color: MUTED }}>{r[3]}/mo</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ fontSize: 13, color: MUTED, fontStyle: "italic", marginBottom: 12 }}>No mortgages or auto loans entered yet — they appear here automatically.</div>
+            );
+          })()}
+          {debts.map((d, i) => (
+            <div key={d.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Debt {i + 1}</div>
+                <button onClick={() => showConfirm("Remove this debt?", () => setDebts(p => p.filter(x => x.id !== d.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Type of Debt" />
+                  <select data-lpignore="true" value={d.type || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, type: e.target.value } : x))} style={{ ...IS, width: 180 }}>
+                    <option value="">— Select —</option>
+                    <option>Credit Card</option>
+                    <option>Home Equity Loan</option>
+                    <option>Student Loan</option>
+                    <option>Business Loan</option>
+                    <option>Personal Loan</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <F style={{ flex: "0 0 200px" }}><Lbl t="Lender / Description" /><input value={d.lender || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, lender: e.target.value } : x))} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 140px" }}><Lbl t="Balance" /><input value={d.balance || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, balance: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                <F style={{ flex: "0 0 140px" }}><Lbl t="Monthly Payment" /><input value={d.monthlyPayment || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, monthlyPayment: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                <F style={{ flex: "0 0 110px" }}><Lbl t="Interest Rate (%)" /><input value={d.interestRate || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, interestRate: e.target.value.replace(/[^0-9.]/g, "") } : x))} style={{ ...IS, width: 110 }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" /></F>
+              </div>
+            </div>
+          ))}
+          <button onClick={() => setDebts(p => [...p, { ...emptyDebt, id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
+            + Add Debt
+          </button>
+          {(() => {
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const total = pd(homeOwnership.mortgageBalance)
+              + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
+              + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
+              + debts.reduce((t, d) => t + pd(d.balance), 0);
+            return total > 0 ? (
+              <div style={{ background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Debt / Liabilities</span>
+                <span style={{ fontSize: 18, fontWeight: "bold", color: "#b3261e" }}>${total.toLocaleString()}</span>
+              </div>
+            ) : null;
+          })()}
+        </Panel>
+
         {/* ── LIFE INSURANCE ── */}
         <Panel title="Life Insurance" id="section-life">
           {lifePolicies.map((p, i) => (
@@ -4737,7 +4812,8 @@ export default function App() {
             const assets = acctTotal + reTotal + autoTotal;
             const liabilities = pd(homeOwnership.mortgageBalance)
               + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
-              + autos.reduce((t, a) => t + pd(a.loanBalance), 0);
+              + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
+              + debts.reduce((t, d) => t + pd(d.balance), 0);
             const netWorth = assets - liabilities;
             const liquid = acctTotal;
             const primaryEquity = realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
