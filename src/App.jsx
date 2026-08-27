@@ -4730,7 +4730,19 @@ export default function App() {
         <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
           <Sec t="Net Worth Summary" />
           <Row cols={3}>
-            <F><Lbl t="Total Assets (Est.)" /><input value={nwState.totalAssets} onChange={e => setNwState(p => ({ ...p, totalAssets: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F>
+              <Lbl t="Total Assets (Auto)" />
+              <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center", background: "#f2f4f7" }}>
+                {(() => {
+                  const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+                  const acct = accounts.reduce((t, a) => t + pd(a.balance), 0);
+                  const re = realEstate.reduce((t, r) => t + pd(r.marketValue), 0);
+                  const auto = autos.reduce((t, a) => t + pd(a.value), 0);
+                  const total = acct + re + auto;
+                  return total ? "$" + total.toLocaleString() : "—";
+                })()}
+              </div>
+            </F>
             <F><Lbl t="Total Liabilities (Est.)" /><input value={nwState.totalLiabilities} onChange={e => setNwState(p => ({ ...p, totalLiabilities: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
             <F>
               <Lbl t="Estimated Net Worth" />
