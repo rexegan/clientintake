@@ -2679,11 +2679,11 @@ export default function App() {
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="ZIP" />
-                <input value={client.mailPoZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, mailPoZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, mailPoCity: city, mailPoState: state }))); }} maxLength={10} style={{ ...IS, width: 108 }} autoComplete="new-password" data-lpignore="true" />
+                <input value={client.mailPoZip || ""} onChange={e => { const z = fmtZip(e.target.value); setClient(p => ({ ...p, mailPoZip: z })); lookupZip(z, (city, state) => setClient(p => ({ ...p, mailPoCity: city, mailPoState: state }))); }} maxLength={10} style={{ ...IS, width: 97 }} autoComplete="new-password" data-lpignore="true" />
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="City" />
-                <input value={client.mailPoCity || ""} onChange={setC("mailPoCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+                <input value={client.mailPoCity || ""} onChange={setC("mailPoCity")} style={{ ...IS, width: 144 }} autoComplete="new-password" data-lpignore="true" />
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="State" />
@@ -2820,15 +2820,15 @@ export default function App() {
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="ZIP" />
-                <input value={spouse.mailPoZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailPoZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailPoCity: city, mailPoState: state }))); }} maxLength={10} style={{ ...IS, width: 108 }} autoComplete="new-password" data-lpignore="true" />
+                <input value={spouse.mailPoZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailPoZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailPoCity: city, mailPoState: state }))); }} maxLength={10} style={{ ...IS, width: 97 }} autoComplete="new-password" data-lpignore="true" />
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="City" />
-                <input value={spouse.mailPoCity || ""} onChange={setS("mailPoCity")} style={{ ...IS, width: 160 }} autoComplete="new-password" data-lpignore="true" />
+                <input value={spouse.mailPoCity || ""} onChange={setS("mailPoCity")} style={{ ...IS, width: 144 }} autoComplete="new-password" data-lpignore="true" />
               </div>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="State" />
-                <StateSelect value={spouse.mailPoState || ""} onChange={setS("mailPoState")} style={{ width: 240 }} />
+                <StateSelect value={spouse.mailPoState || ""} onChange={setS("mailPoState")} style={{ width: 224 }} />
               </div>
             </div>
           )}
