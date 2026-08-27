@@ -4509,6 +4509,125 @@ export default function App() {
           <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
+        {/* ── AUTOMOBILES ── */}
+        <Panel title="Automobiles" id="section-autos">
+          {autos.map((a, i) => (
+            <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Vehicle {i + 1}</div>
+                {autos.length > 1 && (
+                  <button onClick={() => showConfirm("Remove this vehicle?", () => delAuto(a.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+                )}
+              </div>
+              <Row cols={4}>
+                <F><Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Make" />
+                  <select value={a.make} onChange={e => { updAuto(a.id, "make", e.target.value); updAuto(a.id, "model", ""); }} style={IS}>
+                    <option value="">— Select Make —</option>
+                    {Object.keys(AUTO_MODELS).sort().map(m => <option key={m} value={m}>{m}</option>)}
+                    <option value="Other">Other</option>
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Model" />
+                  {a.make && AUTO_MODELS[a.make] ? (
+                    <select value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS}>
+                      <option value="">— Select Model —</option>
+                      {AUTO_MODELS[a.make].map(m => <option key={m} value={m}>{m}</option>)}
+                      <option value="Other">Other</option>
+                    </select>
+                  ) : (
+                    <input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" placeholder={a.make ? "Type model…" : "Select make first"} />
+                  )}
+                </F>
+                <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              </Row>
+              {/* Row: Auto Loan? | Amount Owed | Financed With | Interest Rate */}
+              <Row cols={4}>
+                <F>
+                  <Lbl t="Auto Loan?" />
+                  <select value={a.hasLoan || ""} onChange={e => updAuto(a.id, "hasLoan", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No — Paid Off</option>
+                  </select>
+                </F>
+                {a.hasLoan === "yes" && (<>
+                  <F><Lbl t="Amount Owed" /><input value={a.loanBalance || ""} onChange={e => updAuto(a.id, "loanBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  <F>
+                    <Lbl t="Financed With" />
+                    <select value={a.lender || ""} onChange={e => updAuto(a.id, "lender", e.target.value)} style={IS}>
+                      <option value="">— Select Lender —</option>
+                      {["Ally Financial","AmeriCredit (GM Financial)","Bank of America","Capital One Auto Finance","CarMax Auto Finance","Chase Auto","Credit Acceptance Corp","DriveTime","Fifth Third Bank","Ford Motor Credit","Honda Financial Services","Hyundai Motor Finance","Kia Finance America","Navy Federal Credit Union","Nissan Motor Acceptance","Pentagon Federal Credit Union","Santander Consumer USA","TD Auto Finance","Toyota Financial Services","US Bank"].map(l => <option key={l} value={l}>{l}</option>)}
+                      <option value="Other">Other</option>
+                    </select>
+                  </F>
+                  <F>
+                    <Lbl t="Interest Rate" />
+                    <input value={a.interestRate || ""} onChange={e => updAuto(a.id, "interestRate", e.target.value.replace(/[^0-9.]/g, ""))} onBlur={e => { let v = e.target.value.replace(/[^0-9.]/g, ""); if (v && !v.endsWith("%")) v = v + "%"; updAuto(a.id, "interestRate", v); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0.00%" />
+                  </F>
+                </>)}
+              </Row>
+              {/* Row: Monthly Payment (if loan) | KBB? — always right of monthly payment */}
+              <Row cols={4}>
+                {a.hasLoan === "yes"
+                  ? <F><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  : <F />
+                }
+                <F>
+                  <Lbl t="KBB?" />
+                  <select value={a.hasKbb || ""} onChange={e => updAuto(a.id, "hasKbb", e.target.value || null)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </F>
+              </Row>
+              {/* Row: KBB details if yes */}
+              {a.hasKbb === "yes" && (
+                <Row cols={4}>
+                  <F>
+                    <Lbl t="Mileage" />
+                    <input value={a.kbbMileage || ""} onChange={e => updAuto(a.id, "kbbMileage", e.target.value.replace(/\D/g, ""))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="e.g. 45000" />
+                  </F>
+                  <F>
+                    <Lbl t="Condition" />
+                    <select value={a.kbbCondition || ""} onChange={e => updAuto(a.id, "kbbCondition", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="Excellent">Excellent</option>
+                      <option value="Very Good">Very Good</option>
+                      <option value="Good">Good</option>
+                      <option value="Fair">Fair</option>
+                      <option value="Poor">Poor</option>
+                    </select>
+                  </F>
+                  <F>
+                    <Lbl t="Open KBB" />
+                    <button type="button" onClick={() => {
+                      const make = (a.make || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                      const model = (a.model || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                      const year = a.year || "";
+                      const mileage = a.kbbMileage || "";
+                      const condition = (a.kbbCondition || "").toLowerCase().replace(/\s+/g, "-");
+                      let url = "https://www.kbb.com/" + make + "/" + model + "/" + year + "/";
+                      if (mileage) url += "?mileage=" + mileage;
+                      if (condition) url += (mileage ? "&" : "?") + "condition=" + condition;
+                      window.open(url, "_blank");
+                    }} style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}>
+                      Open KBB ↗
+                    </button>
+                  </F>
+                </Row>
+              )}
+            </div>
+          ))}
+          <button onClick={addAuto} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
+            + Add Vehicle
+          </button>
+          <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
+        </Panel>
+
         {/* ── WILLS & TRUST ── */}
         <Panel title="Wills & Trust" id="section-wills">
           <Row cols={3}>
@@ -4650,125 +4769,6 @@ export default function App() {
             <button onClick={addPoa} style={{ background: "none", border: "1px dashed " + BORDER, borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, color: BRAND_NAVY, cursor: "pointer" }}>+ Add Another POA</button>
           </div>
           <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
-        </Panel>
-
-        {/* ── AUTOMOBILES ── */}
-        <Panel title="Automobiles" id="section-autos">
-          {autos.map((a, i) => (
-            <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Vehicle {i + 1}</div>
-                {autos.length > 1 && (
-                  <button onClick={() => showConfirm("Remove this vehicle?", () => delAuto(a.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
-                )}
-              </div>
-              <Row cols={4}>
-                <F><Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
-                  <Lbl t="Make" />
-                  <select value={a.make} onChange={e => { updAuto(a.id, "make", e.target.value); updAuto(a.id, "model", ""); }} style={IS}>
-                    <option value="">— Select Make —</option>
-                    {Object.keys(AUTO_MODELS).sort().map(m => <option key={m} value={m}>{m}</option>)}
-                    <option value="Other">Other</option>
-                  </select>
-                </F>
-                <F>
-                  <Lbl t="Model" />
-                  {a.make && AUTO_MODELS[a.make] ? (
-                    <select value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS}>
-                      <option value="">— Select Model —</option>
-                      {AUTO_MODELS[a.make].map(m => <option key={m} value={m}>{m}</option>)}
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : (
-                    <input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" placeholder={a.make ? "Type model…" : "Select make first"} />
-                  )}
-                </F>
-                <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              {/* Row: Auto Loan? | Amount Owed | Financed With | Interest Rate */}
-              <Row cols={4}>
-                <F>
-                  <Lbl t="Auto Loan?" />
-                  <select value={a.hasLoan || ""} onChange={e => updAuto(a.id, "hasLoan", e.target.value || null)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No — Paid Off</option>
-                  </select>
-                </F>
-                {a.hasLoan === "yes" && (<>
-                  <F><Lbl t="Amount Owed" /><input value={a.loanBalance || ""} onChange={e => updAuto(a.id, "loanBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-                  <F>
-                    <Lbl t="Financed With" />
-                    <select value={a.lender || ""} onChange={e => updAuto(a.id, "lender", e.target.value)} style={IS}>
-                      <option value="">— Select Lender —</option>
-                      {["Ally Financial","AmeriCredit (GM Financial)","Bank of America","Capital One Auto Finance","CarMax Auto Finance","Chase Auto","Credit Acceptance Corp","DriveTime","Fifth Third Bank","Ford Motor Credit","Honda Financial Services","Hyundai Motor Finance","Kia Finance America","Navy Federal Credit Union","Nissan Motor Acceptance","Pentagon Federal Credit Union","Santander Consumer USA","TD Auto Finance","Toyota Financial Services","US Bank"].map(l => <option key={l} value={l}>{l}</option>)}
-                      <option value="Other">Other</option>
-                    </select>
-                  </F>
-                  <F>
-                    <Lbl t="Interest Rate" />
-                    <input value={a.interestRate || ""} onChange={e => updAuto(a.id, "interestRate", e.target.value.replace(/[^0-9.]/g, ""))} onBlur={e => { let v = e.target.value.replace(/[^0-9.]/g, ""); if (v && !v.endsWith("%")) v = v + "%"; updAuto(a.id, "interestRate", v); }} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" placeholder="0.00%" />
-                  </F>
-                </>)}
-              </Row>
-              {/* Row: Monthly Payment (if loan) | KBB? — always right of monthly payment */}
-              <Row cols={4}>
-                {a.hasLoan === "yes"
-                  ? <F><Lbl t="Monthly Payment" /><input value={a.monthlyPayment || ""} onChange={e => updAuto(a.id, "monthlyPayment", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-                  : <F />
-                }
-                <F>
-                  <Lbl t="KBB?" />
-                  <select value={a.hasKbb || ""} onChange={e => updAuto(a.id, "hasKbb", e.target.value || null)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </F>
-              </Row>
-              {/* Row: KBB details if yes */}
-              {a.hasKbb === "yes" && (
-                <Row cols={4}>
-                  <F>
-                    <Lbl t="Mileage" />
-                    <input value={a.kbbMileage || ""} onChange={e => updAuto(a.id, "kbbMileage", e.target.value.replace(/\D/g, ""))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="e.g. 45000" />
-                  </F>
-                  <F>
-                    <Lbl t="Condition" />
-                    <select value={a.kbbCondition || ""} onChange={e => updAuto(a.id, "kbbCondition", e.target.value)} style={IS}>
-                      <option value="">— Select —</option>
-                      <option value="Excellent">Excellent</option>
-                      <option value="Very Good">Very Good</option>
-                      <option value="Good">Good</option>
-                      <option value="Fair">Fair</option>
-                      <option value="Poor">Poor</option>
-                    </select>
-                  </F>
-                  <F>
-                    <Lbl t="Open KBB" />
-                    <button type="button" onClick={() => {
-                      const make = (a.make || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-                      const model = (a.model || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-                      const year = a.year || "";
-                      const mileage = a.kbbMileage || "";
-                      const condition = (a.kbbCondition || "").toLowerCase().replace(/\s+/g, "-");
-                      let url = "https://www.kbb.com/" + make + "/" + model + "/" + year + "/";
-                      if (mileage) url += "?mileage=" + mileage;
-                      if (condition) url += (mileage ? "&" : "?") + "condition=" + condition;
-                      window.open(url, "_blank");
-                    }} style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#003087", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}>
-                      Open KBB ↗
-                    </button>
-                  </F>
-                </Row>
-              )}
-            </div>
-          ))}
-          <button onClick={addAuto} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
-            + Add Vehicle
-          </button>
-          <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
         {/* ── LIFE INSURANCE ── */}
