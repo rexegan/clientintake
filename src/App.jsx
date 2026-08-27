@@ -2643,13 +2643,21 @@ export default function App() {
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flexShrink: 0 }}>
+              <Lbl t="Cell Phone" />
+              <input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Home Phone" />
+              <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Known Client Since" />
               <div style={{ display: "flex", gap: 6 }}>
-                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 76 }} data-lpignore="true">
+                <select value={client.knownSinceMonth || ""} onChange={setC("knownSinceMonth")} style={{ ...IS, width: 61 }} data-lpignore="true">
                   <option value="">Mo</option>
                   {MONTHS.map((m, i) => <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>)}
                 </select>
-                <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
+                <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 58 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
               </div>
             </div>
             <div style={{ flexShrink: 0 }}>
@@ -2706,14 +2714,6 @@ export default function App() {
           </div>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Cell Phone" />
-              <input value={client.cell} onChange={e => setClient(p => ({ ...p, cell: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Home Phone" />
-              <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-            </div>
           </div>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
             <div style={{ flex: "none" }}>
