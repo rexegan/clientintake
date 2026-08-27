@@ -4090,8 +4090,17 @@ export default function App() {
                 </button>
               </div>
             )}
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Mortgage?" />
+              <select value={homeOwnership.hasMortgage || ""} onChange={e => setHomeOwnership(p => ({ ...p, hasMortgage: e.target.value || null }))} style={{ ...IS, width: 114 }} data-lpignore="true">
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
           </div>
           {homeOwnership.ownOrRent === "own" && (<>
+            {homeOwnership.hasMortgage === "yes" && (<>
             <Row cols={3}>
               <F>
                 <Lbl t="Mortgage Company" />
@@ -4112,6 +4121,7 @@ export default function App() {
               <F><DatePicker label="Loan Origination Date" value={homeOwnership.loanOriginationDate} onChange={v => setHomeOwnership(p => ({ ...p, loanOriginationDate: v }))} /></F>
               <F><Lbl t="Loan Number" /><input value={homeOwnership.loanNumber} onChange={e => setHomeOwnership(p => ({ ...p, loanNumber: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
             </Row>
+            </>)}
             <Row cols={3}>
               <F><Lbl t="Annual Property Taxes" /><input value={homeOwnership.annualPropertyTaxes || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualPropertyTaxes: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
               <F><Lbl t="Annual Insurance" /><input value={homeOwnership.annualInsurance || ""} onChange={e => setHomeOwnership(p => ({ ...p, annualInsurance: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
