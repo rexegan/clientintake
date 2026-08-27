@@ -4392,19 +4392,19 @@ export default function App() {
             <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 10 }}>
               {accounts.map((a, i) => {
                 const ownerName = a.owner === "Joint"
-                  ? [[client.firstName, spouse.firstName].filter(Boolean).join(" & ") || "Joint", client.lastName].filter(Boolean).join(" ")
+                  ? ([client.firstName, spouse.firstName].filter(Boolean).join(" & ") || "Joint")
                   : a.owner === "Spouse"
-                    ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"
+                    ? (spouse.firstName || "Spouse")
                     : a.owner === "Client"
-                      ? [client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"
+                      ? (client.firstName || "Client")
                       : "—";
                 return (
-                  <div key={a.id} style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
-                    <span style={{ fontWeight: 600 }}>Account {i + 1}</span>
-                    <span>{ownerName}</span>
-                    <span>{a.type || "—"}</span>
-                    <span>{a.balance || "—"}</span>
-                    <span style={{ display: "flex", alignItems: "center", gap: 5, color: MUTED }}>OPP
+                  <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
+                    <span style={{ fontWeight: 600, width: 60, flexShrink: 0 }}>ACCT {i + 1}</span>
+                    <span style={{ width: 130, flexShrink: 0 }}>{ownerName}</span>
+                    <span style={{ width: 190, flexShrink: 0 }}>{a.type || "—"}</span>
+                    <span style={{ width: 100, flexShrink: 0, textAlign: "right" }}>{a.balance || "—"}</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 5, color: MUTED, marginLeft: "auto" }}>OPP
                       <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 6px", cursor: "pointer", background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
                         <option value="">—</option>
                         <option value="yes">Yes</option>
