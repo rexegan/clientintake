@@ -4310,6 +4310,7 @@ export default function App() {
                       <option value="">— Select —</option>
                       <option value="Retire">Retire</option>
                       <option value="In Service Transfer">In Service Transfer</option>
+                      <option value="Reposition Assets">Reposition Assets</option>
                       <option value="Sell Business">Sell Business</option>
                       <option value="Sell Land">Sell Land</option>
                       <option value="Inheritance">Inheritance</option>
@@ -4361,6 +4362,7 @@ export default function App() {
                   <Lbl t="Transactions?" />
                   <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => toggleAcctRmd(a, e.target.value)} style={{ ...IS, width: 180 }}>
                     <option value="">— Select —</option>
+                    <option value="None">None</option>
                     <option value="Contributions">Contributions</option>
                     <option value="Withdrawals">Withdrawals</option>
                     <option value="RMDs">RMDs</option>
@@ -4386,6 +4388,28 @@ export default function App() {
               </div>
             </div>
           ))}
+          {accounts.some(a => a.balance || a.type || a.owner) && (
+            <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 10 }}>
+              {accounts.map((a, i) => {
+                const ownerName = a.owner === "Joint"
+                  ? [[client.firstName, spouse.firstName].filter(Boolean).join(" & ") || "Joint", client.lastName].filter(Boolean).join(" ")
+                  : a.owner === "Spouse"
+                    ? [spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"
+                    : a.owner === "Client"
+                      ? [client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"
+                      : "—";
+                return (
+                  <div key={a.id} style={{ display: "flex", flexWrap: "wrap", gap: "4px 18px", alignItems: "center", fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
+                    <span style={{ fontWeight: 600, width: 78, flexShrink: 0 }}>Account {i + 1}</span>
+                    <span style={{ width: 170, flexShrink: 0 }}>{ownerName}</span>
+                    <span style={{ width: 200, flexShrink: 0 }}>{a.type || "—"}</span>
+                    <span style={{ width: 110, flexShrink: 0, textAlign: "right" }}>{a.balance || "—"}</span>
+                    <span style={{ color: MUTED }}>Opportunity: <strong style={{ color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>{a.hasOpt === "yes" ? "Yes" : a.hasOpt === "no" ? "No" : "—"}</strong></span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           {accounts.some(a => a.balance) && (
             <div style={{ background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Investment Assets</span>
