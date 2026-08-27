@@ -4398,7 +4398,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Industry" />
-                  <select data-lpignore="true" value={b.industry || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, industry: e.target.value } : x))} style={{ ...IS, width: 190 }}>
+                  <select data-lpignore="true" value={b.industry || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, industry: e.target.value } : x))} style={{ ...IS, width: 215 }}>
                     <option value="">— Select —</option>
                     <option>Agriculture / Ranching</option>
                     <option>Construction / Trades</option>
