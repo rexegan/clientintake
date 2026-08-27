@@ -1933,6 +1933,7 @@ export default function App() {
     ["section-autos",      () => "Autos"],
     ["section-life",       () => "Life Insurance"],
     ["section-networth",   () => "Net Worth / Portfolio"],
+    ["section-wills",      () => "Wills & Trust"],
     ["section-inheritance",() => "Estate Planning"],
     ["section-suitability",() => "Suitability"],
     ["section-followup",   () => "Follow Up"],
@@ -1954,7 +1955,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-wills","section-life","section-networth","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
+    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-life","section-networth","section-wills","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -2495,9 +2496,9 @@ export default function App() {
             ["section-realestate","Real Estate"],
             ["section-accounts",  "Investment & Bank Acct"],
             ["section-autos",     "Automobiles"],
-            ["section-wills",     "Wills & Trust"],
             ["section-life",      "Life Insurance"],
             ["section-networth",  "Net Worth / Portfolio"],
+            ["section-wills",     "Wills & Trust"],
             ["section-inheritance", "Estate Planning"],
             ["section-suitability", "Suitability"],
             ["section-followup",   "Follow Up"],
@@ -4628,6 +4629,148 @@ export default function App() {
           <FileUpload section="autos" files={uploads.autos || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
+        {/* ── LIFE INSURANCE ── */}
+        <Panel title="Life Insurance" id="section-life">
+          {lifePolicies.map((p, i) => (
+            <div key={p.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Policy {i + 1}</div>
+                <button onClick={() => showConfirm("Remove this policy?", () => delLife(p.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+              </div>
+              <Row cols={4}>
+                <F>
+                  <Lbl t="Carrier" />
+                  <select value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={IS}>
+                    <option value="">— Select Carrier —</option>
+                    {LIFE_CARRIERS.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </F>
+                <F>
+                  <Lbl t="Policy Type" />
+                  <select value={p.policyType} onChange={e => updLife(p.id, "policyType", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    <option value="Term">Term</option>
+                    <option value="Whole Life">Whole Life</option>
+                    <option value="Universal Life">Universal Life (UL)</option>
+                    <option value="Indexed Universal Life">Indexed Universal Life (IUL)</option>
+                    <option value="Variable Universal Life">Variable Universal Life (VUL)</option>
+                    <option value="Variable Life">Variable Life (VL)</option>
+                    <option value="Guaranteed UL">Guaranteed Universal Life (GUL)</option>
+                    <option value="Final Expense">Final Expense</option>
+                    <option value="Group Life">Group / Employer Life</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </F>
+                {p.policyType === "Term" && (
+                  <F>
+                    <Lbl t="Length of Term" />
+                    <select value={p.termLength || ""} onChange={e => updLife(p.id, "termLength", e.target.value)} style={IS}>
+                      <option value="">— Select —</option>
+                      <option value="5">5 Years</option>
+                      <option value="10">10 Years</option>
+                      <option value="15">15 Years</option>
+                      <option value="20">20 Years</option>
+                      <option value="25">25 Years</option>
+                      <option value="30">30 Years</option>
+                    </select>
+                  </F>
+                )}
+              </Row>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Insured" />
+                  <select data-lpignore="true" value={p.insured || ""} onChange={e => updLife(p.id, "insured", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
+                    <option value="">— Select —</option>
+                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Owner" />
+                  <select data-lpignore="true" value={p.owner || ""} onChange={e => updLife(p.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
+                    <option value="">— Select —</option>
+                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
+              </div>
+              <Row cols={4}>
+                <F><Lbl t="Death Benefit" /><input value={p.deathBenefit} onChange={e => updLife(p.id, "deathBenefit", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Cash Value" /><input value={p.cashValue} onChange={e => updLife(p.id, "cashValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
+                <F><Lbl t="Surrender Value" /><input value={p.surrender} onChange={e => updLife(p.id, "surrender", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="Premium Amount" /><input value={p.premiumAmount} onChange={e => updLife(p.id, "premiumAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F>
+                  <Lbl t="Premium Frequency" />
+                  <select value={p.premiumFrequency || "monthly"} onChange={e => updLife(p.id, "premiumFrequency", e.target.value)} style={IS}>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="semiannually">Semi-Annually</option>
+                    <option value="annually">Annually</option>
+                  </select>
+                </F>
+              </Row>
+              <Row cols={3}>
+                <F><Lbl t="Policy Number" /><input value={p.policyNumber} onChange={e => updLife(p.id, "policyNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                <F><DatePicker label="Issue Date" value={p.issueDate} onChange={v => updLife(p.id, "issueDate", v)} /></F>
+              </Row>
+            </div>
+          ))}
+          <button onClick={addLife} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
+            + Add Policy
+          </button>
+          <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
+        </Panel>
+
+        <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
+          <Sec t="Net Worth Summary" />
+          <Row cols={3}>
+            <F><Lbl t="Total Assets (Est.)" /><input value={nwState.totalAssets} onChange={e => setNwState(p => ({ ...p, totalAssets: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Total Liabilities (Est.)" /><input value={nwState.totalLiabilities} onChange={e => setNwState(p => ({ ...p, totalLiabilities: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F>
+              <Lbl t="Estimated Net Worth" />
+              <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center" }}>
+                {(() => {
+                  const a = parseInt((nwState.totalAssets || "").replace(/[^0-9]/g, "") || 0);
+                  const l = parseInt((nwState.totalLiabilities || "").replace(/[^0-9]/g, "") || 0);
+                  return a || l ? "$" + (a - l).toLocaleString() : "—";
+                })()}
+              </div>
+            </F>
+          </Row>
+          <Row cols={3}>
+            <F><Lbl t="Liquid Net Worth" /><input value={nwState.liquidNetWorth} onChange={e => setNwState(p => ({ ...p, liquidNetWorth: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Net Worth - Per Residence" /><input value={nwState.netWorthExHome} onChange={e => setNwState(p => ({ ...p, netWorthExHome: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Primary Residence Equity" /><input value={nwState.primaryEquity} onChange={e => setNwState(p => ({ ...p, primaryEquity: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+          </Row>
+
+          <Sec t="Portfolio Breakdown" />
+          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Break down total investable assets by category.</div>
+          <Row cols={2}>
+            {[
+              { key: "pbCash",       label: "Cash & Cash Equivalents (Checking, Savings, MM, CDs)" },
+              { key: "pbQualified",  label: "Qualified Retirement Plans (401k, IRA, Pension, etc.)" },
+              { key: "pbNonQual",    label: "Non-Qualified / Taxable Brokerage & Trust" },
+              { key: "pbAnnuities",  label: "Annuities (Fixed, Indexed, Variable, RILA)" },
+              { key: "pbCVLI",       label: "Cash Value Life Insurance" },
+              { key: "pbAlts",       label: "Alternative / Illiquid Investments" },
+              { key: "pbOther",      label: "Other / Unclassified" },
+            ].map(({ key, label }) => (
+              <F key={key}><Lbl t={label} /><input value={nwState[key] || ""} onChange={e => setNwState(p => ({ ...p, [key]: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            ))}
+          </Row>
+
+          <Sec t="Balance Sheet Notes" />
+          <Row cols={1}>
+            <F><Lbl t="Additional Notes / Observations" /><textarea value={nwState.notes || ""} onChange={e => setNwState(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any context, caveats, or observations about this client's balance sheet..." /></F>
+          </Row>
+        </Panel>
+
         {/* ── WILLS & TRUST ── */}
         <Panel title="Wills & Trust" id="section-wills">
           <Row cols={3}>
@@ -4769,148 +4912,6 @@ export default function App() {
             <button onClick={addPoa} style={{ background: "none", border: "1px dashed " + BORDER, borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, color: BRAND_NAVY, cursor: "pointer" }}>+ Add Another POA</button>
           </div>
           <FileUpload section="wills" files={uploads.wills || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
-        </Panel>
-
-        {/* ── LIFE INSURANCE ── */}
-        <Panel title="Life Insurance" id="section-life">
-          {lifePolicies.map((p, i) => (
-            <div key={p.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Policy {i + 1}</div>
-                <button onClick={() => showConfirm("Remove this policy?", () => delLife(p.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
-              </div>
-              <Row cols={4}>
-                <F>
-                  <Lbl t="Carrier" />
-                  <select value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={IS}>
-                    <option value="">— Select Carrier —</option>
-                    {LIFE_CARRIERS.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </F>
-                <F>
-                  <Lbl t="Policy Type" />
-                  <select value={p.policyType} onChange={e => updLife(p.id, "policyType", e.target.value)} style={IS}>
-                    <option value="">— Select —</option>
-                    <option value="Term">Term</option>
-                    <option value="Whole Life">Whole Life</option>
-                    <option value="Universal Life">Universal Life (UL)</option>
-                    <option value="Indexed Universal Life">Indexed Universal Life (IUL)</option>
-                    <option value="Variable Universal Life">Variable Universal Life (VUL)</option>
-                    <option value="Variable Life">Variable Life (VL)</option>
-                    <option value="Guaranteed UL">Guaranteed Universal Life (GUL)</option>
-                    <option value="Final Expense">Final Expense</option>
-                    <option value="Group Life">Group / Employer Life</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </F>
-                {p.policyType === "Term" && (
-                  <F>
-                    <Lbl t="Length of Term" />
-                    <select value={p.termLength || ""} onChange={e => updLife(p.id, "termLength", e.target.value)} style={IS}>
-                      <option value="">— Select —</option>
-                      <option value="5">5 Years</option>
-                      <option value="10">10 Years</option>
-                      <option value="15">15 Years</option>
-                      <option value="20">20 Years</option>
-                      <option value="25">25 Years</option>
-                      <option value="30">30 Years</option>
-                    </select>
-                  </F>
-                )}
-              </Row>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Insured" />
-                  <select data-lpignore="true" value={p.insured || ""} onChange={e => updLife(p.id, "insured", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
-                    <option value="">— Select —</option>
-                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && (
-                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    )}
-                  </select>
-                </div>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Owner" />
-                  <select data-lpignore="true" value={p.owner || ""} onChange={e => updLife(p.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
-                    <option value="">— Select —</option>
-                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && (
-                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    )}
-                  </select>
-                </div>
-              </div>
-              <Row cols={4}>
-                <F><Lbl t="Death Benefit" /><input value={p.deathBenefit} onChange={e => updLife(p.id, "deathBenefit", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Cash Value" /><input value={p.cashValue} onChange={e => updLife(p.id, "cashValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
-                <F><Lbl t="Surrender Value" /><input value={p.surrender} onChange={e => updLife(p.id, "surrender", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="If applicable" /></F>
-              </Row>
-              <Row cols={3}>
-                <F><Lbl t="Premium Amount" /><input value={p.premiumAmount} onChange={e => updLife(p.id, "premiumAmount", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
-                  <Lbl t="Premium Frequency" />
-                  <select value={p.premiumFrequency || "monthly"} onChange={e => updLife(p.id, "premiumFrequency", e.target.value)} style={IS}>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="semiannually">Semi-Annually</option>
-                    <option value="annually">Annually</option>
-                  </select>
-                </F>
-              </Row>
-              <Row cols={3}>
-                <F><Lbl t="Policy Number" /><input value={p.policyNumber} onChange={e => updLife(p.id, "policyNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><DatePicker label="Issue Date" value={p.issueDate} onChange={v => updLife(p.id, "issueDate", v)} /></F>
-              </Row>
-            </div>
-          ))}
-          <button onClick={addLife} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
-            + Add Policy
-          </button>
-          <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
-        </Panel>
-
-        <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
-          <Sec t="Net Worth Summary" />
-          <Row cols={3}>
-            <F><Lbl t="Total Assets (Est.)" /><input value={nwState.totalAssets} onChange={e => setNwState(p => ({ ...p, totalAssets: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F><Lbl t="Total Liabilities (Est.)" /><input value={nwState.totalLiabilities} onChange={e => setNwState(p => ({ ...p, totalLiabilities: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F>
-              <Lbl t="Estimated Net Worth" />
-              <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center" }}>
-                {(() => {
-                  const a = parseInt((nwState.totalAssets || "").replace(/[^0-9]/g, "") || 0);
-                  const l = parseInt((nwState.totalLiabilities || "").replace(/[^0-9]/g, "") || 0);
-                  return a || l ? "$" + (a - l).toLocaleString() : "—";
-                })()}
-              </div>
-            </F>
-          </Row>
-          <Row cols={3}>
-            <F><Lbl t="Liquid Net Worth" /><input value={nwState.liquidNetWorth} onChange={e => setNwState(p => ({ ...p, liquidNetWorth: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F><Lbl t="Net Worth - Per Residence" /><input value={nwState.netWorthExHome} onChange={e => setNwState(p => ({ ...p, netWorthExHome: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F><Lbl t="Primary Residence Equity" /><input value={nwState.primaryEquity} onChange={e => setNwState(p => ({ ...p, primaryEquity: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-          </Row>
-
-          <Sec t="Portfolio Breakdown" />
-          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Break down total investable assets by category.</div>
-          <Row cols={2}>
-            {[
-              { key: "pbCash",       label: "Cash & Cash Equivalents (Checking, Savings, MM, CDs)" },
-              { key: "pbQualified",  label: "Qualified Retirement Plans (401k, IRA, Pension, etc.)" },
-              { key: "pbNonQual",    label: "Non-Qualified / Taxable Brokerage & Trust" },
-              { key: "pbAnnuities",  label: "Annuities (Fixed, Indexed, Variable, RILA)" },
-              { key: "pbCVLI",       label: "Cash Value Life Insurance" },
-              { key: "pbAlts",       label: "Alternative / Illiquid Investments" },
-              { key: "pbOther",      label: "Other / Unclassified" },
-            ].map(({ key, label }) => (
-              <F key={key}><Lbl t={label} /><input value={nwState[key] || ""} onChange={e => setNwState(p => ({ ...p, [key]: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            ))}
-          </Row>
-
-          <Sec t="Balance Sheet Notes" />
-          <Row cols={1}>
-            <F><Lbl t="Additional Notes / Observations" /><textarea value={nwState.notes || ""} onChange={e => setNwState(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any context, caveats, or observations about this client's balance sheet..." /></F>
-          </Row>
         </Panel>
 
         <Panel title="Estate Planning" id="section-inheritance">
