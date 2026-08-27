@@ -2620,7 +2620,7 @@ export default function App() {
               <Lbl t="Nickname" />
               <input value={client.nickname || ""} onChange={setC("nickname")} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
             </div>
-            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact monthW={68} dayW={52} yearW={62} /></div>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact monthW={68} dayW={60} yearW={62} /></div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Social Security Number" />
               <input value={client.ssn} onChange={e => setClient(p => ({ ...p, ssn: fmtSSN(e.target.value) }))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
