@@ -4729,38 +4729,40 @@ export default function App() {
 
         <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
           <Sec t="Net Worth Summary" />
-          <Row cols={3}>
-            <F>
-              <Lbl t="Total Assets (Auto)" />
-              <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center", background: "#f2f4f7" }}>
-                {(() => {
-                  const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
-                  const acct = accounts.reduce((t, a) => t + pd(a.balance), 0);
-                  const re = realEstate.reduce((t, r) => t + pd(r.marketValue), 0);
-                  const auto = autos.reduce((t, a) => t + pd(a.value), 0);
-                  const total = acct + re + auto;
-                  return total ? "$" + total.toLocaleString() : "—";
-                })()}
-              </div>
-            </F>
-            <F><Lbl t="Total Liabilities (Est.)" /><input value={nwState.totalLiabilities} onChange={e => setNwState(p => ({ ...p, totalLiabilities: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F>
-              <Lbl t="Estimated Net Worth" />
-              <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center" }}>
-                {(() => {
-                  const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
-                  const a = accounts.reduce((t, x) => t + pd(x.balance), 0) + realEstate.reduce((t, r) => t + pd(r.marketValue), 0) + autos.reduce((t, x) => t + pd(x.value), 0);
-                  const l = pd(nwState.totalLiabilities);
-                  return a || l ? "$" + (a - l).toLocaleString() : "—";
-                })()}
-              </div>
-            </F>
-          </Row>
-          <Row cols={3}>
-            <F><Lbl t="Liquid Net Worth" /><input value={nwState.liquidNetWorth} onChange={e => setNwState(p => ({ ...p, liquidNetWorth: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F><Lbl t="Net Worth - Less Residence" /><input value={nwState.netWorthExHome} onChange={e => setNwState(p => ({ ...p, netWorthExHome: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F><Lbl t="Primary Residence Equity" /><input value={nwState.primaryEquity} onChange={e => setNwState(p => ({ ...p, primaryEquity: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-          </Row>
+          {(() => {
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const acctTotal = accounts.reduce((t, a) => t + pd(a.balance), 0);
+            const reTotal = realEstate.reduce((t, r) => t + pd(r.marketValue), 0);
+            const autoTotal = autos.reduce((t, a) => t + pd(a.value), 0);
+            const assets = acctTotal + reTotal + autoTotal;
+            const liabilities = pd(homeOwnership.mortgageBalance)
+              + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
+              + autos.reduce((t, a) => t + pd(a.loanBalance), 0);
+            const netWorth = assets - liabilities;
+            const liquid = acctTotal;
+            const primaryEquity = realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
+            const lessResidence = netWorth - primaryEquity;
+            const Box = ({ label, val, accent }) => (
+              <F>
+                <Lbl t={label} />
+                <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center", background: accent ? "#e8f0fb" : "#f2f4f7", color: INK }}>
+                  {val !== 0 || assets || liabilities ? "$" + val.toLocaleString() : "—"}
+                </div>
+              </F>
+            );
+            return (<>
+              <Row cols={3}>
+                <Box label="Total Assets" val={assets} />
+                <Box label="Total Liabilities" val={liabilities} />
+                <Box label="Estimated Net Worth" val={netWorth} accent />
+              </Row>
+              <Row cols={3}>
+                <Box label="Liquid Net Worth" val={liquid} />
+                <Box label="Net Worth - Less Residence" val={lessResidence} />
+                <Box label="Primary Residence Equity" val={primaryEquity} />
+              </Row>
+            </>);
+          })()}
 
           <Sec t="Portfolio Breakdown" />
           <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Break down total investable assets by category.</div>
