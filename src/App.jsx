@@ -4399,12 +4399,18 @@ export default function App() {
                       ? [client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"
                       : "—";
                 return (
-                  <div key={a.id} style={{ display: "flex", flexWrap: "wrap", gap: "4px 18px", alignItems: "center", fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
-                    <span style={{ fontWeight: 600, width: 78, flexShrink: 0 }}>Account {i + 1}</span>
-                    <span style={{ width: 170, flexShrink: 0 }}>{ownerName}</span>
-                    <span style={{ width: 200, flexShrink: 0 }}>{a.type || "—"}</span>
-                    <span style={{ width: 110, flexShrink: 0, textAlign: "right" }}>{a.balance || "—"}</span>
-                    <span style={{ color: MUTED }}>Opportunity: <strong style={{ color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>{a.hasOpt === "yes" ? "Yes" : a.hasOpt === "no" ? "No" : "—"}</strong></span>
+                  <div key={a.id} style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
+                    <span style={{ fontWeight: 600 }}>Account {i + 1}</span>
+                    <span>{ownerName}</span>
+                    <span>{a.type || "—"}</span>
+                    <span>{a.balance || "—"}</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 5, color: MUTED }}>OPP
+                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 6px", cursor: "pointer", background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
+                        <option value="">—</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </span>
                   </div>
                 );
               })}
