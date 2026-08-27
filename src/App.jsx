@@ -1941,13 +1941,25 @@ export default function App() {
   const sideRailRef = useRef(null);
   useEffect(() => {
     const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-toolbox","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
-    }, { threshold: 0, rootMargin: "-20% 0px -70% 0px" });
-    const timer = setTimeout(() => {
-      ids.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
-    }, 300);
-    return () => { clearTimeout(timer); observer.disconnect(); };
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const threshold = 140;
+      let current = null;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= threshold) current = id;
+      }
+      if (!current) current = ids.find(id => document.getElementById(id)) || null;
+      if (current) setActiveSection(current);
+    };
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const timer = setTimeout(update, 300);
+    return () => { clearTimeout(timer); window.removeEventListener("scroll", onScroll); };
   }, [view]);
 
   useEffect(() => {
