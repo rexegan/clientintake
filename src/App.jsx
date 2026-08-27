@@ -4147,16 +4147,35 @@ export default function App() {
                 )}
               </div>
               <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
+                <div style={{ flex: "0 0 220px" }}>
+                  <Lbl t="Property Type" />
+                  <SmartCombo
+                    value={r.description || ""}
+                    options={[...allPropertyTypes, "Land", "Acreage", "Rental Property"].filter((v, i, arr) => arr.indexOf(v) === i)}
+                    onChange={v => updRE(r.id, "description", v)}
+                    onBlur={v => addCustomPropertyType(v)}
+                    style={{ ...IS, width: 220 }}
+                    placeholder="Personal Residence"
+                  />
+                </div>
                 <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Type" />
-                  <select data-lpignore="true" value={r.description} onChange={e => updRE(r.id, "description", e.target.value)} style={{ ...IS, width: 200 }}>
+                  <Lbl t="Own or Rent?" />
+                  <select value={r.ownOrRent || ""} onChange={e => updRE(r.id, "ownOrRent", e.target.value || null)} style={{ ...IS, width: 90 }} data-lpignore="true">
                     <option value="">— Select —</option>
-                    <option>Personal Residence</option><option>Land</option><option>Acreage</option><option>Rental Property</option>
+                    <option value="own">Own</option>
+                    <option value="rent">Rent</option>
                   </select>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <Lbl t="Property Description" />
-                  <input value={r.descriptionNote || ""} onChange={e => updRE(r.id, "descriptionNote", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="Enter description…" />
+                <div style={{ flex: "1 1 240px" }}>
+                  <Lbl t="Description" />
+                  <SmartCombo
+                    value={r.descriptionNote || ""}
+                    options={customPropertyDescs}
+                    onChange={v => updRE(r.id, "descriptionNote", v)}
+                    onBlur={v => addCustomPropertyDesc(v)}
+                    style={IS}
+                    placeholder="e.g. 3 bed / 2 bath, homestead"
+                  />
                 </div>
               </div>
               <div style={{ marginTop: 8, marginBottom: 4 }}>
@@ -4221,7 +4240,16 @@ export default function App() {
                     </button>
                   </div>
                 )}
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Mortgage?" />
+                  <select value={r.hasMortgage || ""} onChange={e => updRE(r.id, "hasMortgage", e.target.value || null)} style={{ ...IS, width: 114 }} data-lpignore="true">
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
               </div>
+              {r.hasMortgage === "yes" && (<>
               <Row cols={2}>
                 <F>
                   <Lbl t="Mortgage Company" />
@@ -4239,9 +4267,18 @@ export default function App() {
               <Row cols={3}>
                 <F><Lbl t="Interest Rate (%)" /><input value={r.interestRate} onChange={e => updRE(r.id, "interestRate", e.target.value.replace(/[^0-9.]/g, ""))} style={IS} inputMode="decimal" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Monthly Payment" /><input value={r.monthlyPmt} onChange={e => updRE(r.id, "monthlyPmt", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Property Taxes (Annual)" /><input value={r.propertyTaxes} onChange={e => updRE(r.id, "propertyTaxes", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F><Lbl t="Loan Number" /><input value={r.loanNumber || ""} onChange={e => updRE(r.id, "loanNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
+              </>)}
+              {r.ownOrRent === "rent" && (
+                <Row cols={3}>
+                  <F><Lbl t="Monthly Rent" /><input value={r.monthlyRent || ""} onChange={e => updRE(r.id, "monthlyRent", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Landlord Name" /><input value={r.landlordName || ""} onChange={e => updRE(r.id, "landlordName", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
+                  <F><Lbl t="Landlord Phone" /><input value={r.landlordPhone || ""} onChange={e => updRE(r.id, "landlordPhone", fmtPhone(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                </Row>
+              )}
               <Row cols={3}>
+                <F><Lbl t="Property Taxes (Annual)" /><input value={r.propertyTaxes} onChange={e => updRE(r.id, "propertyTaxes", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Insurance (Annual)" /><input value={r.insurance} onChange={e => updRE(r.id, "insurance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Total Annual Taxes & Insurance" />
