@@ -4130,22 +4130,20 @@ export default function App() {
                 <F><Lbl t="City" /><input value={r.city || ""} onChange={e => updRE(r.id, "city", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="State" /><StateSelect value={r.state || ""} onChange={e => updRE(r.id, "state", e.target.value)} /></F>
               </Row>
-              <Row cols={3}>
-                <F><DatePicker label="Purchase Date" value={r.purchaseDate} onChange={v => updRE(r.id, "purchaseDate", v)} /></F>
-                <F><Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Market Value" /><input value={r.marketValue} onChange={e => updRE(r.id, "marketValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
-              <Row cols={2}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Purchase Date" value={r.purchaseDate} onChange={v => updRE(r.id, "purchaseDate", v)} compact /></div>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Purchase Price" /><input value={r.purchasePrice} onChange={e => updRE(r.id, "purchasePrice", fmtDollar(e.target.value))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Market Value" /><input value={r.marketValue} onChange={e => updRE(r.id, "marketValue", fmtDollar(e.target.value))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Zillow?" />
-                  <select value={r.hasZillow || ""} onChange={e => updRE(r.id, "hasZillow", e.target.value || null)} style={IS}>
+                  <select value={r.hasZillow || ""} onChange={e => updRE(r.id, "hasZillow", e.target.value || null)} style={{ ...IS, width: 114 }} data-lpignore="true">
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                   </select>
-                </F>
+                </div>
                 {r.hasZillow === "yes" && (
-                  <F>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t="Look Up on Zillow" />
                     <button
                       type="button"
@@ -4154,16 +4152,16 @@ export default function App() {
                         const q = encodeURIComponent(addr || "");
                         window.open("https://www.zillow.com/homes/" + q + "_rb/", "_blank");
                       }}
-                      style={{ ...IS, cursor: "pointer", textAlign: "center", background: "#006aff", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}
+                      style={{ ...IS, width: 150, cursor: "pointer", textAlign: "center", background: "#006aff", color: "#fff", fontWeight: "bold", border: "none", borderRadius: 6 }}
                     >
                       Open Zillow ↗
                     </button>
-                  </F>
+                  </div>
                 )}
-              </Row>
-              <Row cols={2}>
-                <F><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-                <F>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Mortgage Balance" /><input value={r.mortgageBalance} onChange={e => updRE(r.id, "mortgageBalance", fmtDollar(e.target.value))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 150px" }}>
                   <Lbl t="Net Equity" />
                   <input
                     value={(() => {
@@ -4172,14 +4170,14 @@ export default function App() {
                       return mv > 0 ? "$" + (mv - mb).toLocaleString() : r.netEquity || "";
                     })()}
                     onChange={e => updRE(r.id, "netEquity", fmtDollar(e.target.value))}
-                    style={IS}
+                    style={{ ...IS, width: 150 }}
                     inputMode="numeric"
                     autoComplete="new-password"
                     data-lpignore="true"
-                    placeholder="Auto-fills from above"
+                    placeholder="Auto"
                   />
                 </F>
-              </Row>
+              </div>
               <Row cols={2}>
                 <F>
                   <Lbl t="Mortgage Company" />
