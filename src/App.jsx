@@ -4758,7 +4758,7 @@ export default function App() {
           </Row>
           <Row cols={3}>
             <F><Lbl t="Liquid Net Worth" /><input value={nwState.liquidNetWorth} onChange={e => setNwState(p => ({ ...p, liquidNetWorth: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            <F><Lbl t="Net Worth - Per Residence" /><input value={nwState.netWorthExHome} onChange={e => setNwState(p => ({ ...p, netWorthExHome: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F><Lbl t="Net Worth - Less Residence" /><input value={nwState.netWorthExHome} onChange={e => setNwState(p => ({ ...p, netWorthExHome: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
             <F><Lbl t="Primary Residence Equity" /><input value={nwState.primaryEquity} onChange={e => setNwState(p => ({ ...p, primaryEquity: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
           </Row>
 
