@@ -576,6 +576,21 @@ function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfir
   );
 }
 
+const openDataFile = (dataUrl, name) => {
+  try {
+    const [meta, b64] = String(dataUrl).split(",");
+    const mime = (meta.match(/data:(.*?)[;,]/) || [])[1] || "application/octet-stream";
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([arr], { type: mime }));
+    window.open(url, "_blank");
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch {
+    window.open(dataUrl, "_blank");
+  }
+};
+
 function FileUpload({ section, files = [], onChange, hideLabel = false, onConfirm }) {
   const askConfirm = onConfirm || ((msg, cb) => { if (window.confirm(msg)) cb(); });
   const inputRef = useRef(null);
@@ -604,7 +619,8 @@ function FileUpload({ section, files = [], onChange, hideLabel = false, onConfir
         <div style={{ marginBottom: 10 }}>
           {files.map(f => (
             <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, background: "#f2f4f7", borderRadius: 6, padding: "6px 10px" }}>
-              <a href={f.data} download={f.name} style={{ color: INK, fontSize: 13, flex: 1, textDecoration: "none", wordBreak: "break-all" }}>📎 {f.name}</a>
+              <button onClick={() => openDataFile(f.data, f.name)} title="Click to view" style={{ background: "none", border: "none", padding: 0, color: "#2563eb", fontSize: 13, flex: 1, textAlign: "left", cursor: "pointer", wordBreak: "break-all", textDecoration: "underline" }}>📎 {f.name}</button>
+              <a href={f.data} download={f.name} title="Download" style={{ color: INK, fontSize: 14, textDecoration: "none", flexShrink: 0 }}>⬇</a>
               <span style={{ fontSize: 11, color: INK, flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
               <button onClick={() => askConfirm(`Remove "${f.name}"?`, () => onChange(section, files.filter(x => x.id !== f.id)))} style={{ background: "#faeaea", border: "none", color: DANGER, borderRadius: 4, padding: "2px 8px", cursor: "pointer", fontSize: 12, flexShrink: 0 }}>✕</button>
             </div>
@@ -2992,7 +3008,7 @@ export default function App() {
                   <Lbl t={meta.title + " Image"} />
                   {dlImage ? (
                     <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 4 }}>
-                      <img src={dlImage} alt={imageAlt} style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb" }} />
+                      <img src={dlImage} alt={imageAlt} title="Click to view full size" onClick={() => openDataFile(dlImage, imageAlt)} style={{ maxWidth: 280, maxHeight: 180, borderRadius: 8, border: "1px solid " + BORDER, objectFit: "contain", background: "#f8f9fb", cursor: "zoom-in" }} />
                       <button onClick={() => setDlImage(null)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 10px", fontSize: 12, color: DANGER, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>✕ Remove</button>
                     </div>
                   ) : (
