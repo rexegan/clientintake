@@ -2691,9 +2691,9 @@ export default function App() {
               <StateSelect value={client.tcState || ""} onChange={e => setClient(p => ({ ...p, tcState: e.target.value }))} style={{ width: 224 }} />
             </F>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={client.tcCountry || "USA"} onChange={e => setClient(p => ({ ...p, tcCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
-            <F style={{ flex: "0 0 104px" }}>
+            <F style={{ flex: "0 0 114px" }}>
               <Lbl t="PO Box Pref?" />
-              <select data-lpignore="true" value={client.mailPoPref || ""} onChange={setC("mailPoPref")} style={{ ...IS, width: 104 }}>
+              <select data-lpignore="true" value={client.mailPoPref || ""} onChange={setC("mailPoPref")} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -2819,9 +2819,9 @@ export default function App() {
               <StateSelect value={spouse.mailingState || ""} onChange={e => setSpouse(p => ({ ...p, mailingState: e.target.value }))} style={{ width: 224 }} />
             </F>
             <F style={{ flex: "0 0 160px" }}><Lbl t="Country" /><CountrySelect value={spouse.mailingCountry || "USA"} onChange={e => setSpouse(p => ({ ...p, mailingCountry: e.target.value }))} style={{ ...IS, width: 160 }} /></F>
-            <F style={{ flex: "0 0 104px" }}>
+            <F style={{ flex: "0 0 114px" }}>
               <Lbl t="PO Box Pref?" />
-              <select data-lpignore="true" value={spouse.mailPoPref || ""} onChange={setS("mailPoPref")} style={{ ...IS, width: 104 }}>
+              <select data-lpignore="true" value={spouse.mailPoPref || ""} onChange={setS("mailPoPref")} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -3073,7 +3073,6 @@ export default function App() {
               <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: INK }}>Spouse Details</div>
-                  <button onClick={() => { setSpouse(p => ({ ...p, ...(client.tcFirstName && { firstName: client.tcFirstName }), ...(client.tcLastName && { lastName: client.tcLastName }), ...(client.tcMiddleInitial && { middleName: client.tcMiddleInitial }), ...(client.tcCell && { cell: client.tcCell }), ...(client.tcHomePhone && { homePhone: client.tcHomePhone }) })); if (client.tcEmail) setSpouseEmails([{ address: client.tcEmail }]); }} style={{ fontSize: 12, background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}>Copy from Spouse Contact</button>
                 </div>
                 <Row cols={3}>
                   <F><Lbl t="First" /><input value={spouse.firstName} onChange={setSN("firstName")} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
