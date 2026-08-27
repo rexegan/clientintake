@@ -1812,6 +1812,7 @@ export default function App() {
   const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
   const [debts, setDebts] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
   const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", notes: "" };
   const [nwState, setNwState] = useState({ ...emptyNwState });
@@ -1930,7 +1931,7 @@ export default function App() {
     ["section-bene",       () => "Beneficiaries"],
     ["section-employment", () => "Employment"],
     ["section-income",     () => "Income"],
-    ["section-realestate", () => "Real Estate"],
+    ["section-realestate", () => "Real Estate - Business Assets"],
     ["section-accounts",   () => "Investment & Bank"],
     ["section-wills",      () => "Wills & Trust"],
     ["section-autos",      () => "Autos"],
@@ -2057,7 +2058,7 @@ export default function App() {
     clientEmails, spouseEmails,
     clientEmp, spouseEmp, extraEmps, incomes, autos, realEstate, accounts,
     beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates,
-  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, extraEmps, incomes, autos, debts, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
+  }), [client, spouse, hasSpouse, hasChildren, children, clientEmails, spouseEmails, clientEmp, spouseEmp, extraEmps, incomes, autos, debts, businesses, realEstate, accounts, beneficiaries, willsTrust, poas, uploads, homeOwnership, annualExpenses, lifePolicies, recordType, nwState, inheritances, vaults, suitability, followUps, importantDates]);
 
   const autoSave = useCallback(() => {
     const snap = buildSnapshot();
@@ -2105,6 +2106,7 @@ export default function App() {
     setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
     setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
     setDebts(record.debts || []);
+    setBusinesses(record.businesses || []);
     setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
     setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
     setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
@@ -2201,7 +2203,7 @@ export default function App() {
         savedAt: new Date().toISOString(),
         client, spouse, hasSpouse, hasChildren, children,
         clientEmails, spouseEmails,
-        clientEmp, spouseEmp, incomes, autos, debts, realEstate, accounts,
+        clientEmp, spouseEmp, incomes, autos, debts, businesses, realEstate, accounts,
         beneficiaries, willsTrust, poas,
         clientDlImage, spouseDlImage,
       };
@@ -2335,6 +2337,7 @@ export default function App() {
           setIncomes(record.incomes || [{ ...emptyIncome, id: 1 }]);
           setAutos(record.autos || [{ ...emptyAuto, id: 1 }]);
     setDebts(record.debts || []);
+    setBusinesses(record.businesses || []);
           setRealEstate(record.realEstate || [{ ...emptyRealEstate, id: 1 }]);
           setAccounts(record.accounts || [{ ...emptyAccount, id: 1 }]);
           setBeneficiaries(record.beneficiaries || [{ ...emptyBeneficiary, id: 1 }]);
@@ -2499,7 +2502,7 @@ export default function App() {
             ["section-bene",      "Beneficiaries"],
             ["section-employment","Employment"],
             ["section-income",    "Income"],
-            ["section-realestate","Real Estate"],
+            ["section-realestate","Real Estate - Business Assets"],
             ["section-accounts",  "Investment & Bank Acct"],
             ["section-autos",     "Automobiles"],
             ["section-debts",     "Debt / Liabilities"],
@@ -4026,7 +4029,7 @@ export default function App() {
         </Panel>
 
         {/* ── REAL ESTATE ── */}
-        <Panel title="Real Estate" id="section-realestate">
+        <Panel title="Real Estate - Business Assets" id="section-realestate">
           {/* ── OWN OR RENT ── */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13.5, fontWeight: 600, color: INK, borderBottom: "1px solid " + BORDER, paddingBottom: 7, marginTop: 24, marginBottom: 8 }}>
             <span>Personal Property</span>
@@ -4346,6 +4349,88 @@ export default function App() {
           ))}
           <button onClick={addRE} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Property
+          </button>
+          <Sec t="Business Assets" />
+          {businesses.map((b, i) => (
+            <div key={b.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Business {i + 1}</div>
+                <button onClick={() => showConfirm("Remove this business?", () => setBusinesses(p => p.filter(x => x.id !== b.id)), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <F style={{ flex: "0 0 220px" }}><Lbl t="Business Name" /><input value={b.name || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, name: e.target.value } : x))} style={{ ...IS, width: 220 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Entity Type" />
+                  <select data-lpignore="true" value={b.entityType || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, entityType: e.target.value } : x))} style={{ ...IS, width: 190 }}>
+                    <option value="">— Select —</option>
+                    <option>Sole Proprietorship</option>
+                    <option>LLC</option>
+                    <option>S-Corp</option>
+                    <option>C-Corp</option>
+                    <option>Partnership</option>
+                    <option>Limited Partnership (LP)</option>
+                    <option>Family Limited Partnership</option>
+                    <option>Farm / Ranch Operation</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Ownership %" />
+                  <select data-lpignore="true" value={b.ownershipPct || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, ownershipPct: e.target.value } : x))} style={{ ...IS, width: 100 }}>
+                    <option value="">— % —</option>
+                    {[5,10,15,20,25,30,33,40,50,60,66,70,75,80,90,100].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Industry" />
+                  <select data-lpignore="true" value={b.industry || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, industry: e.target.value } : x))} style={{ ...IS, width: 190 }}>
+                    <option value="">— Select —</option>
+                    <option>Agriculture / Ranching</option>
+                    <option>Construction / Trades</option>
+                    <option>Professional Services</option>
+                    <option>Medical / Dental</option>
+                    <option>Retail</option>
+                    <option>Restaurant / Hospitality</option>
+                    <option>Real Estate</option>
+                    <option>Manufacturing</option>
+                    <option>Transportation</option>
+                    <option>Technology</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Estimated Value" /><input value={b.estValue || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, estValue: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Annual Revenue" /><input value={b.annualRevenue || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, annualRevenue: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Buy-Sell Agreement?" />
+                  <select data-lpignore="true" value={b.buySell || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, buySell: e.target.value } : x))} style={{ ...IS, width: 114 }}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Succession Plan?" />
+                  <select data-lpignore="true" value={b.successionPlan || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, successionPlan: e.target.value } : x))} style={{ ...IS, width: 114 }}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Plan to Sell?" />
+                  <select data-lpignore="true" value={b.planToSell || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, planToSell: e.target.value } : x))} style={{ ...IS, width: 114 }}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          ))}
+          <button onClick={() => setBusinesses(p => [...p, { id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%", marginBottom: 12 }}>
+            + Add Business
           </button>
           <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
