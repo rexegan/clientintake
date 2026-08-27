@@ -962,7 +962,7 @@ function ClientReport({ data, onClose }) {
               <table style={s.table}>
                 <thead><tr><th style={s.th}>Annual Income &amp; Expenses</th><th style={{ ...s.th, textAlign: "right" }}>Amount</th><th style={{ ...s.th, textAlign: "right" }}>%</th></tr></thead>
                 <tbody>
-                  {activeIncomes.filter(i => i.type).map((inc, i) => {
+                  {activeIncomes.filter(i => i.type || i.source || i.amount).map((inc, i) => {
                     const ann = toAnnual(inc.amount, inc.frequency);
                     const pct = annualIncome > 0 ? (ann/annualIncome*100).toFixed(1) : "0.0";
                     return <tr key={i}><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>{inc.type + (inc.owner === "spouse" ? ` (${spouseName})` : inc.owner === "joint" ? " (Joint)" : "")}</td><td style={s.tdr}>{fmt(ann)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{pct}%</td></tr>;
@@ -1118,7 +1118,7 @@ function ClientReport({ data, onClose }) {
 
           {/* ── INCOME ── */}
           <div style={s.sectionHead}>Income Summary</div>
-          {activeIncomes.filter(i => i.type).length > 0 ? (
+          {activeIncomes.filter(i => i.type || i.source || i.amount).length > 0 ? (
             <table style={s.table}>
               <thead>
                 <tr>
@@ -1132,7 +1132,7 @@ function ClientReport({ data, onClose }) {
                 </tr>
               </thead>
               <tbody>
-                {activeIncomes.filter(i => i.type).map((inc, i) => {
+                {activeIncomes.filter(i => i.type || i.source || i.amount).map((inc, i) => {
                   const ann = toAnnual(inc.amount, inc.frequency);
                   const pct = annualIncome > 0 ? (ann / annualIncome * 100).toFixed(1) : "0.0";
                   return (
@@ -1564,7 +1564,7 @@ function SummaryReview({ data, onClose }) {
           {/* Income */}
           <SH title="Income" />
           <Tbl cols={["Source / Type", "Owner", "Amount", "Frequency", "Start Date"]}
-            rows={activeIncomes.filter(i => i.source || i.type).map(inc => [inc.source || inc.type, inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client"), inc.amount, inc.frequency, inc.startDate])}
+            rows={activeIncomes.filter(i => i.source || i.type || i.amount).map(inc => [inc.source || inc.type, inc.owner === "spouse" ? (spouse.firstName || "Spouse") : inc.owner === "joint" ? "Joint" : (client.firstName || "Client"), inc.amount, inc.frequency, inc.startDate])}
             emptyMsg="No income recorded." />
 
           {/* Real Estate */}
