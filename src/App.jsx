@@ -799,7 +799,7 @@ function ClientReport({ data, onClose }) {
   ].filter(r => r.val > 0);
 
   // ── INCOME ── (exclude future income from all calculations/reports)
-  const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
+  const activeIncomes = incomes;
   const annualIncome = activeIncomes.reduce((s, inc) => s + toAnnual(inc.amount, inc.frequency), 0);
   const annExpRaw = parseDollar(annualExpenses.amount) * ((annualExpenses.frequency === "monthly") ? 12 : 1);
   const surplusDeficit = annualIncome - annExpRaw;
@@ -1385,7 +1385,7 @@ function SummaryReview({ data, onClose }) {
     nwState = {}, annualExpenses = { amount: "", frequency: "monthly" },
     inheritances = [], vaults = [], recordType = "client",
   } = data;
-  const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
+  const activeIncomes = incomes;
 
   const P = "'DM Sans', 'Segoe UI', system-ui, sans-serif";
   const NAVY = "#414f62";
@@ -1809,7 +1809,7 @@ export default function App() {
   const [importantDates, setImportantDates] = useState({ anniversary:"", firstMeeting:"", portfolioReviews:[], rmdDates:[], renewalDates:[], familyNotes:"" });
   // rmdDates shape: { date:"", owner:"", linkedAcctId:"" }
   const [incomes, setIncomes] = useState([{ ...emptyIncome, id: 1 }]);
-  const activeIncomes = incomes.filter(i => i.futureIncome !== "yes");
+  const activeIncomes = incomes;
   const [autos, setAutos] = useState([{ ...emptyAuto, id: 1 }]);
   const [debts, setDebts] = useState([]);
   const [businesses, setBusinesses] = useState([]);
