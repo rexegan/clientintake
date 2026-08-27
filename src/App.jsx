@@ -4748,8 +4748,9 @@ export default function App() {
               <Lbl t="Estimated Net Worth" />
               <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center" }}>
                 {(() => {
-                  const a = parseInt((nwState.totalAssets || "").replace(/[^0-9]/g, "") || 0);
-                  const l = parseInt((nwState.totalLiabilities || "").replace(/[^0-9]/g, "") || 0);
+                  const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+                  const a = accounts.reduce((t, x) => t + pd(x.balance), 0) + realEstate.reduce((t, r) => t + pd(r.marketValue), 0) + autos.reduce((t, x) => t + pd(x.value), 0);
+                  const l = pd(nwState.totalLiabilities);
                   return a || l ? "$" + (a - l).toLocaleString() : "—";
                 })()}
               </div>
