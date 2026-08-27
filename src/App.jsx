@@ -2700,8 +2700,9 @@ export default function App() {
               </select>
             </F>
           </div>
+          {client.mailPoPref === "yes" && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            {client.mailPoPref === "yes" && (<>
+            <>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="PO Box #" />
                 <input value={client.mailPoBox || ""} onChange={setC("mailPoBox")} onBlur={e => setClient(p => ({ ...p, mailPoBox: fmtPOBox(e.target.value) }))} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
@@ -2718,11 +2719,10 @@ export default function App() {
                 <Lbl t="State" />
                 <StateSelect value={client.mailPoState || ""} onChange={setC("mailPoState")} style={{ width: 224 }} />
               </div>
-            </>)}
+            </>
           </div>
+          )}
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-          </div>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
             <div style={{ flex: "none" }}>
               <Lbl t="Email Addresses" />
@@ -2841,8 +2841,9 @@ export default function App() {
               </select>
             </F>
           </div>
+          {spouse.mailPoPref === "yes" && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            {spouse.mailPoPref === "yes" && (<>
+            <>
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="PO Box #" />
                 <input value={spouse.mailPoBox || ""} onChange={setS("mailPoBox")} onBlur={e => setSpouse(p => ({ ...p, mailPoBox: fmtPOBox(e.target.value) }))} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" />
@@ -2859,11 +2860,10 @@ export default function App() {
                 <Lbl t="State" />
                 <StateSelect value={spouse.mailPoState || ""} onChange={setS("mailPoState")} style={{ width: 224 }} />
               </div>
-            </>)}
+            </>
           </div>
+          )}
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-          </div>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
             <div style={{ flex: "none" }}>
               <Lbl t="Email Addresses" />
