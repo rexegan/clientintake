@@ -1898,6 +1898,21 @@ export default function App() {
     setCustomPropertyDescs(updated);
     localStorage.setItem("rwg_property_descs", JSON.stringify(updated));
   };
+  const DEFAULT_LENDERS = [
+    "American Express","Bank of America","Barclays","Capital One","Chase","Citi","Discover","Wells Fargo",
+    "Sallie Mae","Navient","Nelnet","Mohela",
+    "U.S. Bank","PNC Bank","Truist","TD Bank","Goldman Sachs","Fifth Third Bank","Regions Bank","Citizens Bank","Ally Bank","Synchrony Bank",
+    "Navy Federal Credit Union","USAA","SoFi","LendingClub","Rocket Loans",
+  ];
+  const [customLenders, setCustomLenders] = useState(() => JSON.parse(localStorage.getItem("rwg_lenders") || "[]").filter(c => c.trim().length > 0));
+  const allLenders = [...DEFAULT_LENDERS, ...customLenders.filter(c => !DEFAULT_LENDERS.includes(c))].sort((x, y) => x.localeCompare(y));
+  const addCustomLender = (val) => {
+    const trimmed = val.trim();
+    if (!trimmed || DEFAULT_LENDERS.includes(trimmed) || customLenders.includes(trimmed)) return;
+    const updated = [...customLenders, trimmed].sort((x, y) => x.localeCompare(y));
+    setCustomLenders(updated);
+    localStorage.setItem("rwg_lenders", JSON.stringify(updated));
+  };
   const DEFAULT_PROPERTY_TYPES = ["Personal Residence"];
   const [customPropertyTypes, setCustomPropertyTypes] = useState(() => JSON.parse(localStorage.getItem("rwg_property_types") || "[]").filter(c => DEFAULT_PROPERTY_TYPES.includes(c) ? false : c.trim().length > 0));
   const allPropertyTypes = [...DEFAULT_PROPERTY_TYPES, ...customPropertyTypes.filter(c => !DEFAULT_PROPERTY_TYPES.includes(c))];
@@ -4754,7 +4769,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Type of Debt" />
-                  <select data-lpignore="true" value={d.type || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, type: e.target.value } : x))} style={{ ...IS, width: 180 }}>
+                  <select data-lpignore="true" value={d.type || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, type: e.target.value } : x))} style={{ ...IS, width: 155 }}>
                     <option value="">— Select —</option>
                     <option>Credit Card</option>
                     <option>Home Equity Loan</option>
@@ -4764,7 +4779,17 @@ export default function App() {
                     <option>Other</option>
                   </select>
                 </div>
-                <F style={{ flex: "0 0 200px" }}><Lbl t="Lender / Description" /><input value={d.lender || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, lender: e.target.value } : x))} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <div style={{ flex: "0 0 220px" }}>
+                  <Lbl t="Lender / Description" />
+                  <SmartCombo
+                    value={d.lender || ""}
+                    options={allLenders}
+                    onChange={v => setDebts(p => p.map(x => x.id === d.id ? { ...x, lender: v } : x))}
+                    onBlur={v => addCustomLender(v)}
+                    style={{ ...IS, width: 220 }}
+                    placeholder="Type or select lender"
+                  />
+                </div>
                 <F style={{ flex: "0 0 140px" }}><Lbl t="Balance" /><input value={d.balance || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, balance: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                 <F style={{ flex: "0 0 140px" }}><Lbl t="Monthly Payment" /><input value={d.monthlyPayment || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, monthlyPayment: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
                 <F style={{ flex: "0 0 110px" }}><Lbl t="Interest Rate (%)" /><input value={d.interestRate || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, interestRate: e.target.value.replace(/[^0-9.]/g, "") } : x))} style={{ ...IS, width: 110 }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" /></F>
