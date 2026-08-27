@@ -4396,6 +4396,7 @@ export default function App() {
                     {[5,10,15,20,25,30,33,40,50,60,66,70,75,80,90,100].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                   </select>
                 </div>
+                <div style={{ flexShrink: 0 }}><DatePicker label="Date Started" value={b.dateStarted || ""} onChange={v => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, dateStarted: v } : x))} compact /></div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Industry" />
                   <select data-lpignore="true" value={b.industry || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, industry: e.target.value } : x))} style={{ ...IS, width: 215 }}>
@@ -4441,12 +4442,25 @@ export default function App() {
                     <option value="no">No</option>
                   </select>
                 </div>
+                {b.planToSell === "yes" && (<>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Opportunity?" />
+                    <select data-lpignore="true" value={b.hasOpt || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, hasOpt: e.target.value || null } : x))} style={{ ...IS, width: 114 }}>
+                      <option value="">— Select —</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                  <div style={{ flexShrink: 0 }}><DatePicker label="Expected Sale Date" value={b.expectedSaleDate || ""} onChange={v => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, expectedSaleDate: v } : x))} compact futureYears={15} /></div>
+                  <F style={{ flex: "0 0 150px" }}><Lbl t="Timeframe / Notes" /><input value={b.saleTimeframe || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, saleTimeframe: e.target.value } : x))} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Q3 2027" /></F>
+                </>)}
               </div>
             </div>
           ))}
           <button onClick={() => setBusinesses(p => [...p, { id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%", marginBottom: 12 }}>
             + Add Business
           </button>
+          <FileUpload section="businesses" files={uploads.businesses || []} onChange={handleUploadChange} onConfirm={showConfirm} />
           <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
