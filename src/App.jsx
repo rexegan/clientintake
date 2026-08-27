@@ -2652,6 +2652,19 @@ export default function App() {
                 <input value={client.knownSinceYear || ""} onChange={setC("knownSinceYear")} style={{ ...IS, width: 72 }} placeholder="Year" maxLength={4} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
               </div>
             </div>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Marital Status" />
+              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 165 }}>
+                <option value="">— Select —</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Separated">Separated</option>
+                <option value="Widowed">Widowed</option>
+                <option value="Widower">Widower</option>
+                <option value="Domestic Partner">Domestic Partner</option>
+              </select>
+            </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
             <F style={{ flex: "0 0 210px" }}><Lbl t="Physical Address" /><input value={client.tcAddress || ""} onChange={setC("tcAddress")} style={{ ...IS, width: 210 }} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2700,19 +2713,6 @@ export default function App() {
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Home Phone" />
               <input value={client.homePhone} onChange={e => setClient(p => ({ ...p, homePhone: fmtPhone(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" />
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Marital Status" />
-              <select data-lpignore="true" value={client.filingStatus || ""} onChange={setC("filingStatus")} style={{ ...IS, width: 165 }}>
-                <option value="">— Select —</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-                <option value="Divorced">Divorced</option>
-                <option value="Separated">Separated</option>
-                <option value="Widowed">Widowed</option>
-                <option value="Widower">Widower</option>
-                <option value="Domestic Partner">Domestic Partner</option>
-              </select>
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 12 }}>
