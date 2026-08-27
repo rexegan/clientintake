@@ -3751,6 +3751,15 @@ export default function App() {
                 <button onClick={() => removeExtraEmp(r.id)} style={{ background: "none", border: "1px solid " + BORDER, borderRadius: 6, padding: "4px 12px", fontSize: 12, fontWeight: 600, color: "#b3261e", cursor: "pointer" }}>✕ Delete</button>
               </div>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Employee" />
+                  <select value={r.owner || "client"} onChange={e => updExtraEmp(r.id, "owner", e.target.value)} style={{ ...IS, width: Math.max(150, Math.max([client.firstName, client.lastName].filter(Boolean).join(" ").length, [spouse.firstName, spouse.lastName].filter(Boolean).join(" ").length) * 10 + 56) }} data-lpignore="true">
+                    <option value="client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value="spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
                 <F style={{ flex: "0 0 240px" }}><Lbl t="Employer Name" /><input value={r.employer} onChange={e => updExtraEmp(r.id, "employer", e.target.value)} style={{ ...IS, width: 240 }} autoComplete="new-password" data-lpignore="true" /></F>
                 <F style={{ flex: "0 0 200px" }}><Lbl t="Occupation" /><input value={r.occupation} onChange={e => updExtraEmp(r.id, "occupation", e.target.value)} style={{ ...IS, width: 200 }} autoComplete="new-password" data-lpignore="true" /></F>
                 <div style={{ flexShrink: 0 }}><DatePicker label="Start Date" value={r.startDate} onChange={v => updExtraEmp(r.id, "startDate", v)} compact /></div>
@@ -3795,6 +3804,15 @@ export default function App() {
                           <option>457(b)</option><option>457(f)</option><option>TMRS</option><option>TRS</option>
                           <option>ORP</option><option>ESOP</option><option>SIMPLE IRA</option><option>SEP IRA</option>
                           <option>Pension / Defined Benefit</option><option>Stock Option / ESPP</option><option>Other</option>
+                        </select>
+                      </div>
+                      <div style={{ flexShrink: 0 }}><Lbl t="Monthly Employee Contribution" /><input value={r.contributionAmt || ""} onChange={e => updExtraEmp(r.id, "contributionAmt", fmtDollar(e.target.value))} style={{ ...IS, width: 240 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></div>
+                      <div style={{ flexShrink: 0 }}>
+                        <Lbl t="Employer Match %" />
+                        <select data-lpignore="true" value={r.matchPct || ""} onChange={e => updExtraEmp(r.id, "matchPct", e.target.value)} style={{ ...IS, width: 170 }}>
+                          <option value="">— Select —</option>
+                          <option value="No Match">No Match</option>
+                          {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n + "%"}>{n}%</option>)}
                         </select>
                       </div>
                       <div style={{ flex: "0 0 160px" }}><Lbl t="Current Balance" /><input value={r.retirementBalance} onChange={e => updExtraEmp(r.id, "retirementBalance", fmtDollar(e.target.value))} style={{ ...IS, width: 160 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></div>
