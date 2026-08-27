@@ -2811,6 +2811,19 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12, alignItems: "flex-end" }}>
+            <F style={{ flex: "0 0 114px" }}>
+              <Lbl t="Copy Client Address" />
+              <select data-lpignore="true" value={spouse.copyClientAddr || ""} onChange={e => {
+                const v = e.target.value;
+                setSpouse(p => v === "yes"
+                  ? { ...p, copyClientAddr: v, mailingAddress: client.tcAddress || "", mailingZip: client.tcZip || "", mailingCity: client.tcCity || "", mailingState: client.tcState || "", mailingCountry: client.tcCountry || "USA" }
+                  : { ...p, copyClientAddr: v });
+              }} style={{ ...IS, width: 114 }}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </F>
             <F style={{ flex: "0 0 178px" }}><Lbl t="Physical Address" /><input value={spouse.mailingAddress || ""} onChange={setS("mailingAddress")} style={{ ...IS, width: 178 }} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 99px" }}><Lbl t="ZIP" /><input value={spouse.mailingZip || ""} onChange={e => { const z = fmtZip(e.target.value); setSpouse(p => ({ ...p, mailingZip: z })); lookupZip(z, (city, state) => setSpouse(p => ({ ...p, mailingCity: city, mailingState: state }))); }} style={{ ...IS, width: 99 }} inputMode="numeric" maxLength={10} autoComplete="new-password" data-lpignore="true" /></F>
             <F style={{ flex: "0 0 140px" }}><Lbl t="City" /><input value={spouse.mailingCity || ""} onChange={setS("mailingCity")} style={{ ...IS, width: 140 }} autoComplete="new-password" data-lpignore="true" /></F>
@@ -2822,19 +2835,6 @@ export default function App() {
             <F style={{ flex: "0 0 114px" }}>
               <Lbl t="PO Box Pref?" />
               <select data-lpignore="true" value={spouse.mailPoPref || ""} onChange={setS("mailPoPref")} style={{ ...IS, width: 114 }}>
-                <option value="">— Select —</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </F>
-            <F style={{ flex: "0 0 114px" }}>
-              <Lbl t="Copy Client Address" />
-              <select data-lpignore="true" value={spouse.copyClientAddr || ""} onChange={e => {
-                const v = e.target.value;
-                setSpouse(p => v === "yes"
-                  ? { ...p, copyClientAddr: v, mailingAddress: client.tcAddress || "", mailingZip: client.tcZip || "", mailingCity: client.tcCity || "", mailingState: client.tcState || "", mailingCountry: client.tcCountry || "USA" }
-                  : { ...p, copyClientAddr: v });
-              }} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
