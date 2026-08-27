@@ -3588,8 +3588,8 @@ export default function App() {
                     )}
                   </div>
                   <div style={{ flexShrink: 0 }}>
-                    <Lbl t="In Service Transfer Available?" />
-                    <select value={clientEmp.inServiceTransfer || ""} onChange={e => setClientEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={{ ...IS, width: 76 }} data-lpignore="true">
+                    <Lbl t={<span>In Service<br/>Transfer Available</span>} />
+                    <select value={clientEmp.inServiceTransfer || ""} onChange={e => setClientEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={{ ...IS, width: 114 }} data-lpignore="true">
                       <option value="">— Select —</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -3713,8 +3713,8 @@ export default function App() {
                         )}
                       </div>
                       <div style={{ flexShrink: 0 }}>
-                        <Lbl t="In Service Transfer Available?" />
-                        <select value={spouseEmp.inServiceTransfer || ""} onChange={e => setSpouseEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={{ ...IS, width: 76 }} data-lpignore="true">
+                        <Lbl t={<span>In Service<br/>Transfer Available</span>} />
+                        <select value={spouseEmp.inServiceTransfer || ""} onChange={e => setSpouseEmp(p => ({ ...p, inServiceTransfer: e.target.value }))} style={{ ...IS, width: 114 }} data-lpignore="true">
                           <option value="">— Select —</option>
                           <option value="Yes">Yes</option>
                           <option value="No">No</option>
@@ -3793,8 +3793,8 @@ export default function App() {
                         </select>
                       </div>
                       <div style={{ flexShrink: 0 }}>
-                        <Lbl t="In Service Transfer Available?" />
-                        <select value={r.inServiceTransfer || ""} onChange={e => updExtraEmp(r.id, "inServiceTransfer", e.target.value)} style={{ ...IS, width: 76 }} data-lpignore="true">
+                        <Lbl t={<span>In Service<br/>Transfer Available</span>} />
+                        <select value={r.inServiceTransfer || ""} onChange={e => updExtraEmp(r.id, "inServiceTransfer", e.target.value)} style={{ ...IS, width: 114 }} data-lpignore="true">
                           <option value="">— Select —</option>
                           <option value="Yes">Yes</option>
                           <option value="No">No</option>
