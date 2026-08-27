@@ -2980,7 +2980,7 @@ export default function App() {
                   </div>
                   <F style={{ flex: "0 0 130px" }}><Lbl t={meta.numLbl} /><input value={idPerson.dlNumber || ""} onChange={setIdField("dlNumber")} style={{ ...IS, width: 130 }} autoComplete="new-password" data-lpignore="true" /></F>
                   {meta.locType === "state"
-                    ? <F style={{ flex: "0 0 196px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} /></F>
+                    ? <F style={{ flex: "0 0 224px" }}><Lbl t="Issuing State" /><StateSelect value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 224 }} /></F>
                     : meta.locType !== "none"
                       ? <F style={{ flex: "0 0 196px" }}><Lbl t={locLabel} /><input value={idPerson.dlState || ""} onChange={setIdField("dlState")} style={{ ...IS, width: 196 }} autoComplete="new-password" data-lpignore="true" /></F>
                       : null}
