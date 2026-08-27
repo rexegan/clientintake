@@ -1954,7 +1954,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-wills","section-autos","section-life","section-networth","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
+    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-wills","section-life","section-networth","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -2494,8 +2494,8 @@ export default function App() {
             ["section-income",    "Income"],
             ["section-realestate","Real Estate"],
             ["section-accounts",  "Investment & Bank Acct"],
-            ["section-wills",     "Wills & Trust"],
             ["section-autos",     "Automobiles"],
+            ["section-wills",     "Wills & Trust"],
             ["section-life",      "Life Insurance"],
             ["section-networth",  "Net Worth / Portfolio"],
             ["section-inheritance", "Estate Planning"],
