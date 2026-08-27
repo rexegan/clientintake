@@ -1962,7 +1962,7 @@ export default function App() {
     ["section-apps",       () => "Applications / Docs"],
   ];
   const [activeClientId, setActiveClientId] = useState(() => {
-    const sid = sessionStorage.getItem("rwg_activeClientId");
+    const sid = localStorage.getItem("rwg_activeClientId") || sessionStorage.getItem("rwg_activeClientId");
     return sid ? Number(sid) : null;
   });
 
@@ -2003,8 +2003,8 @@ export default function App() {
   }, [activeSection]);
 
   const setActiveClient = (id) => {
-    if (id == null) { sessionStorage.removeItem("rwg_activeClientId"); }
-    else { sessionStorage.setItem("rwg_activeClientId", String(id)); }
+    if (id == null) { localStorage.removeItem("rwg_activeClientId"); sessionStorage.removeItem("rwg_activeClientId"); }
+    else { localStorage.setItem("rwg_activeClientId", String(id)); sessionStorage.setItem("rwg_activeClientId", String(id)); }
     setActiveClientId(id);
   };
 
@@ -2020,9 +2020,12 @@ export default function App() {
   const setSE = f => e => setSpouseEmp(p => ({ ...p, [f]: e.target.value }));
 
   const saveClient = (record) => {
-    const updated = [record, ...savedClients];
-    localStorage.setItem("rwg_clients", JSON.stringify(updated));
-    setSavedClients(updated);
+    setSavedClients(prev => {
+      const exists = prev.some(r => r.id === record.id);
+      const updated = exists ? prev.map(r => r.id === record.id ? record : r) : [record, ...prev];
+      localStorage.setItem("rwg_clients", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const fmtZip = (raw) => {
@@ -2101,6 +2104,11 @@ export default function App() {
   useEffect(() => {
     const id = setInterval(autoSave, 15 * 1000);
     return () => clearInterval(id);
+  }, [autoSave]);
+
+  useEffect(() => {
+    const t = setTimeout(autoSave, 1200);
+    return () => clearTimeout(t);
   }, [autoSave]);
 
   useEffect(() => {
@@ -2205,6 +2213,7 @@ export default function App() {
     const ssnLast4 = (client.ssn || "").replace(/\D/g, "").slice(-4);
 
     const duplicate = savedClients.find(r => {
+      if (r.id === activeClientId) return false;
       const existingName = `${r.client?.firstName?.trim() || ""} ${r.client?.lastName?.trim() || ""}`.toLowerCase();
       const existingLast4 = (r.client?.ssn || "").replace(/\D/g, "").slice(-4);
       if (existingName === fullName) return true;
@@ -2214,12 +2223,9 @@ export default function App() {
 
     const doSave = () => {
       const record = {
-        id: Date.now(),
+        ...buildSnapshot(),
+        id: activeClientId || Date.now(),
         savedAt: new Date().toISOString(),
-        client, spouse, hasSpouse, hasChildren, children,
-        clientEmails, spouseEmails,
-        clientEmp, spouseEmp, incomes, autos, debts, businesses, realEstate, accounts,
-        beneficiaries, willsTrust, poas,
         clientDlImage, spouseDlImage,
       };
       saveClient(record);
