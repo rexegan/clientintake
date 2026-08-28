@@ -4843,11 +4843,25 @@ export default function App() {
                   <Lbl t="Type of Debt" />
                   <select data-lpignore="true" value={d.type || ""} onChange={e => setDebts(p => p.map(x => x.id === d.id ? { ...x, type: e.target.value } : x))} style={{ ...IS, width: 155 }}>
                     <option value="">— Select —</option>
-                    <option>Credit Card</option>
+                    <option>Mortgage</option>
                     <option>Home Equity Loan</option>
+                    <option>HELOC</option>
+                    <option>Credit Card</option>
+                    <option>Auto Loan</option>
                     <option>Student Loan</option>
                     <option>Business Loan</option>
                     <option>Personal Loan</option>
+                    <option>Line of Credit</option>
+                    <option>Medical Debt</option>
+                    <option>IRS / Tax Debt</option>
+                    <option>401(k) Loan</option>
+                    <option>Land / Ag Loan</option>
+                    <option>Equipment Loan</option>
+                    <option>RV / Boat Loan</option>
+                    <option>Timeshare Loan</option>
+                    <option>Solar Loan</option>
+                    <option>Buy Now Pay Later</option>
+                    <option>Family / Private Loan</option>
                     <option>Other</option>
                   </select>
                 </div>
