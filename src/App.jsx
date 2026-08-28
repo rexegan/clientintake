@@ -5094,20 +5094,47 @@ export default function App() {
           })()}
 
           <Sec t="Portfolio Breakdown" />
-          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Break down total investable assets by category.</div>
-          <Row cols={2}>
-            {[
-              { key: "pbCash",       label: "Cash & Cash Equivalents (Checking, Savings, MM, CDs)" },
-              { key: "pbQualified",  label: "Qualified Retirement Plans (401k, IRA, Pension, etc.)" },
-              { key: "pbNonQual",    label: "Non-Qualified / Taxable Brokerage & Trust" },
-              { key: "pbAnnuities",  label: "Annuities (Fixed, Indexed, Variable, RILA)" },
-              { key: "pbCVLI",       label: "Cash Value Life Insurance" },
-              { key: "pbAlts",       label: "Alternative / Illiquid Investments" },
-              { key: "pbOther",      label: "Other / Unclassified" },
-            ].map(({ key, label }) => (
-              <F key={key}><Lbl t={label} /><input value={nwState[key] || ""} onChange={e => setNwState(p => ({ ...p, [key]: fmtDollar(e.target.value) }))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-            ))}
-          </Row>
+          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Total investable assets by category.</div>
+          {(() => {
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const CASH = new Set(["Checking","Savings","Money Market","CD"]);
+            const QUAL = new Set(["Traditional IRA","Roth IRA","401(k)","Roth 401(k)","403(b)","457(b)","SEP IRA","SIMPLE IRA","HSA","529 / Education","Pension / Defined Benefit"]);
+            const CVLI = new Set(["Life Insurance (Cash Value)"]);
+            const ALTS = new Set(["Private Equity","REITs","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Personal Residence","Rental Property","Land / Lot","Vehicle","Collectibles","Jewelry"]);
+            const isAnnuity = t => (t || "").startsWith("Annuity");
+            const sums = { cash: 0, qual: 0, nonqual: 0, ann: 0, cvli: 0, alts: 0 };
+            accounts.forEach(a => {
+              const bal = pd(a.balance);
+              if (!bal) return;
+              const t = a.type || "";
+              if (CASH.has(t)) sums.cash += bal;
+              else if (isAnnuity(t)) sums.ann += bal;
+              else if (CVLI.has(t)) sums.cvli += bal;
+              else if (ALTS.has(t)) sums.alts += bal;
+              else if (QUAL.has(t) || a.qualified === "Qualified") sums.qual += bal;
+              else sums.nonqual += bal;
+            });
+            const cats = [
+              ["Cash & Cash Equivalents (Checking, Savings, MM, CDs)", sums.cash],
+              ["Qualified Retirement Plans (401k, IRA, Pension, etc.)", sums.qual],
+              ["Non-Qualified / Taxable Brokerage", sums.nonqual],
+              ["Annuities (Fixed, Indexed, Variable, RILA)", sums.ann],
+              ["Cash Value Life Insurance", sums.cvli],
+              ["Alternative / Illiquid Investments", sums.alts],
+            ];
+            return (
+              <Row cols={2}>
+                {cats.map(([label, val]) => (
+                  <F key={label}>
+                    <Lbl t={label} />
+                    <div style={{ ...IS, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center" }}>
+                      {val ? "$" + val.toLocaleString() : "—"}
+                    </div>
+                  </F>
+                ))}
+              </Row>
+            );
+          })()}
 
           <Sec t="Balance Sheet Notes" />
           <Row cols={1}>
