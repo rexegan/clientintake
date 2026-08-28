@@ -351,7 +351,7 @@ const AUTO_MODELS = {
 const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null, hasOpt:null, optEvent:"", optTimeframe:"", hasZillow:null };
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasOpt:null, optEvent:"", optTimeframe:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
-const DEFAULT_INSTITUTIONS = ["Allianz","Ally Bank","American Century","American Equity","American Funds","Ameriprise","Ameritas","Athene","AXA","Bank of America","Betterment","BlackRock","BNY Mellon","Brighthouse Financial","Capital One","Charles Schwab","Chase / JPMorgan","Citibank","Corebridge Financial","Delaware Life","E*TRADE","Edward Jones","Empower","Equitable","F&G","Fidelity","Fifth Third Bank","Franklin Templeton","Global Atlantic","Goldman Sachs","Great American","Guggenheim","Interactive Brokers","Invesco","Jackson Nat'l","Janus Henderson","John Hancock","Lincoln Financial","LPL Financial","MassMutual","Merrill Lynch","MetLife","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","Navy Federal","New York Life","North American","Northwestern Mutual","Oppenheimer","Osaic","Pacific Life","Pershing","PNC Bank","Principal","Protective Life","Prudential","Raymond James","Regions Bank","Robinhood","Sammons / Midland","Security Benefit","State Farm","Stifel","Symetra","T. Rowe Price","TD Ameritrade","Thrivent","TIAA","Transamerica","Truist","TSP (Thrift Savings Plan)","UBS","US Bank","USAA","Vanguard","Voya","Wealthfront","Wells Fargo","Western & Southern"];
+const DEFAULT_INSTITUTIONS = ["Allianz","Ally Bank","American Century","American Equity","American Funds","Ameriprise","Ameritas","Athene","AXA","Bank of America","Betterment","BlackRock","BNY Mellon","Brighthouse Financial","Capital One","Charles Schwab","Chase / JPMorgan","Citibank","Corebridge Financial","Delaware Life","E*TRADE","Edward Jones","Empower","Equitable","F&G","Fidelity","Fifth Third Bank","Franklin Templeton","Global Atlantic","Goldman Sachs","Great American","Guggenheim","Interactive Brokers","Invesco","Jackson Nat'l","Janus Henderson","John Hancock","Lincoln Financial","LPL Financial","MassMutual","Merrill Lynch","MetLife","Midland National","Minnesota Life","Morgan Stanley","Mutual of Omaha","Nationwide","Navy Federal","New York Life","North American","Northwestern Mutual","Oppenheimer","Osaic","Pacific Life","Pershing","PNC Bank","Principal","Protective Life","Prudential","Raymond James","Regions Bank","Robinhood","Sammons / Midland","Security Benefit","State Farm","Stifel","Symetra","T. Rowe Price","TD Ameritrade","Thrivent","TIAA","Transamerica","Truist","TSP (Thrift Savings Plan)","UBS","US Bank","USAA","Vanguard","Veritas","Voya","Wealthfront","Wells Fargo","Western & Southern","Shopoff","Millgreen"];
 
 const ACCOUNT_TYPE_GROUPS = [
   { group: "Cash & Cash Equivalents — Liquid Cash",      types: ["Checking","Savings","Money Market","CD"] },
@@ -369,6 +369,8 @@ const ACCOUNT_TYPE_GROUPS = [
   { group: "Other",                                      types: ["Other"] },
 ];
 const ACCOUNT_TYPES = ACCOUNT_TYPE_GROUPS.flatMap(g => g.types);
+const ACCOUNT_REG_TYPES = ["Traditional IRA","Roth IRA","Inherited IRA","SEP IRA","SIMPLE IRA","401(k)","Roth 401(k)","403(b)","457(b)","Pension / Defined Benefit","HSA","529 / Education","UTMA / UGMA","Non-Qualified (Individual)","Non-Qualified (Joint)","Trust Account","Checking","Savings","Other"];
+const INVESTMENT_TYPES = ["Stocks","Bonds","Mutual Funds","ETFs","CDs","Money Market","Cash","Fixed Annuity","Fixed Indexed Annuity","Variable Annuity","RILA Annuity","REITs","Alternative Investments","Private Equity","Oil & Gas","Other"];
 
 const INCOME_TYPES = [
   "Account Withdrawal",
@@ -4635,19 +4637,23 @@ export default function App() {
                   </F>
                 </Row>
               )}
-              <Row cols={2}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flex: "0 0 210px" }}>
                   <Lbl t="Account Type" />
-                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
+                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={{ ...IS, width: 210 }}>
                     <option value="">— Select —</option>
-                    {ACCOUNT_TYPE_GROUPS.map(g => (
-                      <optgroup key={g.group} label={g.group}>
-                        {g.types.map(t => <option key={t} value={t}>{t}</option>)}
-                      </optgroup>
-                    ))}
+                    {ACCOUNT_REG_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    {a.type && !ACCOUNT_REG_TYPES.includes(a.type) && <option value={a.type}>{a.type}</option>}
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flex: "0 0 200px" }}>
+                  <Lbl t="Investment Type" />
+                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 200 }}>
+                    <option value="">— Select —</option>
+                    {INVESTMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div style={{ flex: "1 1 240px" }}>
                   <Lbl t="Institution / Held At" />
                   <SmartCombo
                     value={a.institution}
@@ -4656,8 +4662,8 @@ export default function App() {
                     onBlur={v => addCustomInstitution(v)}
                     style={IS}
                   />
-                </F>
-              </Row>
+                </div>
+              </div>
               <Row cols={2}>
                 <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                 <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
@@ -5061,7 +5067,7 @@ export default function App() {
               + businesses.reduce((t, b) => t + pd(b.loanBalance), 0);
             const netWorth = assets - liabilities;
             const NONLIQUID = new Set(["Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)","Pension / Defined Benefit","Personal Residence","Rental Property","Land / Lot","Private Equity","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Life Insurance (Cash Value)","Vehicle","Collectibles","Jewelry"]);
-            const liquid = accounts.reduce((t, a) => t + (NONLIQUID.has(a.type) ? 0 : pd(a.balance)), 0);
+            const liquid = accounts.reduce((t, a) => t + ((NONLIQUID.has(a.type) || (a.investmentType || "").includes("Annuity") || ["Alternative Investments","Private Equity","Oil & Gas"].includes(a.investmentType)) ? 0 : pd(a.balance)), 0);
             const primaryEquity = (pd(homeOwnership.marketValue) ? pd(homeOwnership.marketValue) - pd(homeOwnership.mortgageBalance) : 0) + realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
             const lessResidence = netWorth - primaryEquity;
             const Box = ({ label, val, accent }) => (
@@ -5100,10 +5106,11 @@ export default function App() {
               const bal = pd(a.balance);
               if (!bal) return;
               const t = a.type || "";
-              if (CASH.has(t)) sums.cash += bal;
-              else if (isAnnuity(t)) sums.ann += bal;
+              const iv = a.investmentType || "";
+              if (CASH.has(t) || ["CDs","Money Market","Cash"].includes(iv)) sums.cash += bal;
+              else if (isAnnuity(t) || iv.includes("Annuity")) sums.ann += bal;
               else if (CVLI.has(t)) sums.cvli += bal;
-              else if (ALTS.has(t)) sums.alts += bal;
+              else if (ALTS.has(t) || ["REITs","Alternative Investments","Private Equity","Oil & Gas"].includes(iv)) sums.alts += bal;
               else if (QUAL.has(t) || a.qualified === "Qualified") sums.qual += bal;
               else sums.nonqual += bal;
             });
