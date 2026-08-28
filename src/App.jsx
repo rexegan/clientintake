@@ -1913,7 +1913,8 @@ export default function App() {
     setCustomLenders(updated);
     localStorage.setItem("rwg_lenders", JSON.stringify(updated));
   };
-  const DEFAULT_PROPERTY_TYPES = ["Personal Residence"];
+  const DEFAULT_PROPERTY_TYPES = ["Personal Residence","Vacation / Second Home","Farm","Ranch","Raw Land","Acreage","Rental Property","Commercial Property","Condo / Townhome","Duplex / Multi-Family","Mobile / Manufactured Home","Lake House","Investment / Flip","Timeshare","Mineral Rights"];
+  const DEFAULT_PROPERTY_DESCS = ["Homestead","2 bed / 1 bath","3 bed / 2 bath","4 bed / 2 bath","4 bed / 3 bath","5+ bed","Barndominium","With acreage","With shop / barn"];
   const [customPropertyTypes, setCustomPropertyTypes] = useState(() => JSON.parse(localStorage.getItem("rwg_property_types") || "[]").filter(c => DEFAULT_PROPERTY_TYPES.includes(c) ? false : c.trim().length > 0));
   const allPropertyTypes = [...DEFAULT_PROPERTY_TYPES, ...customPropertyTypes.filter(c => !DEFAULT_PROPERTY_TYPES.includes(c))];
   const addCustomPropertyType = (val) => {
@@ -4059,14 +4060,14 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
             <div style={{ flex: "0 0 220px" }}>
               <Lbl t="Property Type" />
-              <SmartCombo
-                value={homeOwnership.propertyType || ""}
-                options={allPropertyTypes}
-                onChange={v => setHomeOwnership(p => ({ ...p, propertyType: v }))}
-                onBlur={v => addCustomPropertyType(v)}
-                style={{ ...IS, width: 220 }}
-                placeholder="Personal Residence"
-              />
+              <select data-lpignore="true" value={allPropertyTypes.includes(homeOwnership.propertyType) ? homeOwnership.propertyType : homeOwnership.propertyType ? "__other__" : ""} onChange={e => setHomeOwnership(p => ({ ...p, propertyType: e.target.value === "__other__" ? "__other__" : e.target.value }))} style={{ ...IS, width: 220 }}>
+                <option value="">— Select —</option>
+                {allPropertyTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                <option value="__other__">Other (type below)</option>
+              </select>
+              {(!allPropertyTypes.includes(homeOwnership.propertyType) && homeOwnership.propertyType) && (
+                <input value={homeOwnership.propertyType === "__other__" ? "" : homeOwnership.propertyType} onChange={e => setHomeOwnership(p => ({ ...p, propertyType: e.target.value }))} onBlur={e => addCustomPropertyType(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter property type" autoComplete="new-password" data-lpignore="true" />
+              )}
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Own or Rent?" />
@@ -4078,14 +4079,19 @@ export default function App() {
             </div>
             <div style={{ flex: "0 0 280px" }}>
               <Lbl t="Description" />
-              <SmartCombo
-                value={homeOwnership.description || ""}
-                options={customPropertyDescs}
-                onChange={v => setHomeOwnership(p => ({ ...p, description: v }))}
-                onBlur={v => addCustomPropertyDesc(v)}
-                style={{ ...IS, width: 280 }}
-                placeholder="e.g. 3 bed / 2 bath, homestead"
-              />
+              {(() => {
+                const allDescs = [...DEFAULT_PROPERTY_DESCS, ...customPropertyDescs.filter(c => !DEFAULT_PROPERTY_DESCS.includes(c))];
+                return (<>
+                  <select data-lpignore="true" value={allDescs.includes(homeOwnership.description) ? homeOwnership.description : homeOwnership.description ? "__other__" : ""} onChange={e => setHomeOwnership(p => ({ ...p, description: e.target.value === "__other__" ? "__other__" : e.target.value }))} style={{ ...IS, width: 280 }}>
+                    <option value="">— Select —</option>
+                    {allDescs.map(t => <option key={t} value={t}>{t}</option>)}
+                    <option value="__other__">Other (type below)</option>
+                  </select>
+                  {(!allDescs.includes(homeOwnership.description) && homeOwnership.description) && (
+                    <input value={homeOwnership.description === "__other__" ? "" : homeOwnership.description} onChange={e => setHomeOwnership(p => ({ ...p, description: e.target.value }))} onBlur={e => addCustomPropertyDesc(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter description" autoComplete="new-password" data-lpignore="true" />
+                  )}
+                </>);
+              })()}
             </div>
           </div>
           <Row cols={2}>
@@ -4178,21 +4184,21 @@ export default function App() {
                   <button onClick={() => showConfirm("Remove this property?", () => delRE(r.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
               </div>
-              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 8 }}>
                 <div style={{ flex: "0 0 220px" }}>
                   <Lbl t="Property Type" />
-                  <SmartCombo
-                    value={r.description || ""}
-                    options={[...allPropertyTypes, "Land", "Acreage", "Rental Property"].filter((v, i, arr) => arr.indexOf(v) === i)}
-                    onChange={v => updRE(r.id, "description", v)}
-                    onBlur={v => addCustomPropertyType(v)}
-                    style={{ ...IS, width: 220 }}
-                    placeholder="Personal Residence"
-                  />
+                  <select data-lpignore="true" value={allPropertyTypes.includes(r.description) ? r.description : r.description ? "__other__" : ""} onChange={e => updRE(r.id, "description", e.target.value === "__other__" ? "__other__" : e.target.value)} style={{ ...IS, width: 220 }}>
+                    <option value="">— Select —</option>
+                    {allPropertyTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                    <option value="__other__">Other (type below)</option>
+                  </select>
+                  {(!allPropertyTypes.includes(r.description) && r.description) && (
+                    <input value={r.description === "__other__" ? "" : r.description} onChange={e => updRE(r.id, "description", e.target.value)} onBlur={e => addCustomPropertyType(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter property type" autoComplete="new-password" data-lpignore="true" />
+                  )}
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Own or Rent?" />
-                  <select value={r.ownOrRent || ""} onChange={e => updRE(r.id, "ownOrRent", e.target.value || null)} style={{ ...IS, width: 90 }} data-lpignore="true">
+                  <select value={r.ownOrRent || ""} onChange={e => updRE(r.id, "ownOrRent", e.target.value || null)} style={{ ...IS, width: 114 }} data-lpignore="true">
                     <option value="">— Select —</option>
                     <option value="own">Own</option>
                     <option value="rent">Rent</option>
@@ -4200,14 +4206,19 @@ export default function App() {
                 </div>
                 <div style={{ flex: "1 1 240px" }}>
                   <Lbl t="Description" />
-                  <SmartCombo
-                    value={r.descriptionNote || ""}
-                    options={customPropertyDescs}
-                    onChange={v => updRE(r.id, "descriptionNote", v)}
-                    onBlur={v => addCustomPropertyDesc(v)}
-                    style={IS}
-                    placeholder="e.g. 3 bed / 2 bath, homestead"
-                  />
+                  {(() => {
+                    const allDescs = [...DEFAULT_PROPERTY_DESCS, ...customPropertyDescs.filter(c => !DEFAULT_PROPERTY_DESCS.includes(c))];
+                    return (<>
+                      <select data-lpignore="true" value={allDescs.includes(r.descriptionNote) ? r.descriptionNote : r.descriptionNote ? "__other__" : ""} onChange={e => updRE(r.id, "descriptionNote", e.target.value === "__other__" ? "__other__" : e.target.value)} style={IS}>
+                        <option value="">— Select —</option>
+                        {allDescs.map(t => <option key={t} value={t}>{t}</option>)}
+                        <option value="__other__">Other (type below)</option>
+                      </select>
+                      {(!allDescs.includes(r.descriptionNote) && r.descriptionNote) && (
+                        <input value={r.descriptionNote === "__other__" ? "" : r.descriptionNote} onChange={e => updRE(r.id, "descriptionNote", e.target.value)} onBlur={e => addCustomPropertyDesc(e.target.value)} style={{ ...IS, marginTop: 6 }} placeholder="Enter description" autoComplete="new-password" data-lpignore="true" />
+                      )}
+                    </>);
+                  })()}
                 </div>
               </div>
               <div style={{ marginTop: 8, marginBottom: 4 }}>
