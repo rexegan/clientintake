@@ -369,7 +369,7 @@ const ACCOUNT_TYPE_GROUPS = [
   { group: "Other",                                      types: ["Other"] },
 ];
 const ACCOUNT_TYPES = ACCOUNT_TYPE_GROUPS.flatMap(g => g.types);
-const ACCOUNT_REG_TYPES = ["Traditional IRA","Roth IRA","Inherited IRA","SEP IRA","SIMPLE IRA","401(k)","Roth 401(k)","403(b)","457(b)","Pension / Defined Benefit","HSA","529 / Education","UTMA / UGMA","Non-Qualified (Individual)","Non-Qualified (Joint)","Trust Account","Checking","Savings","Other"];
+const ACCOUNT_REG_TYPES = ["N/A","Traditional IRA,"Roth IRA","Inherited IRA","SEP IRA","SIMPLE IRA","401(k)","Roth 401(k)","403(b)","457(b)","Pension / Defined Benefit","HSA","529 / Education","UTMA / UGMA","Non-Qualified (Individual)","Non-Qualified (Joint)","Trust Account","Checking","Savings","Other"];
 const INVESTMENT_TYPES = ["Stocks","Bonds","Mutual Funds","ETFs","CDs","Money Market","Cash","Fixed Annuity","Fixed Indexed Annuity","Variable Annuity","RILA Annuity","REITs","Alternative Investments","Private Equity","Oil & Gas","Other"];
 
 const INCOME_TYPES = [
