@@ -5100,6 +5100,7 @@ export default function App() {
               else if (QUAL.has(t) || a.qualified === "Qualified") sums.qual += bal;
               else sums.nonqual += bal;
             });
+            sums.cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
             const cats = [
               ["Cash & Cash Equivalents (Checking, Savings, MM, CDs)", sums.cash],
               ["Qualified Retirement Plans (401k, IRA, Pension, etc.)", sums.qual],
