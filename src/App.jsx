@@ -4939,20 +4939,6 @@ export default function App() {
           <button onClick={() => setDebts(p => [...p, { ...emptyDebt, id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
             + Add Debt
           </button>
-          {(() => {
-            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
-            const total = pd(homeOwnership.mortgageBalance)
-              + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
-              + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
-              + debts.reduce((t, d) => t + pd(d.balance), 0)
-              + businesses.reduce((t, b) => t + pd(b.loanBalance), 0);
-            return total > 0 ? (
-              <div style={{ background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Debt / Liabilities</span>
-                <span style={{ fontSize: 18, fontWeight: "bold", color: "#b3261e" }}>${total.toLocaleString()}</span>
-              </div>
-            ) : null;
-          })()}
         </Panel>
 
         {/* ── LIFE INSURANCE ── */}
