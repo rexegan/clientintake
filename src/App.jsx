@@ -4638,7 +4638,14 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Account Type" />
-                  <GroupedSelect value={a.type} onChange={v => updAcct(a.id, "type", v)} groups={ACCOUNT_TYPE_GROUPS} style={IS} />
+                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={IS}>
+                    <option value="">— Select —</option>
+                    {ACCOUNT_TYPE_GROUPS.map(g => (
+                      <optgroup key={g.group} label={g.group}>
+                        {g.types.map(t => <option key={t} value={t}>{t}</option>)}
+                      </optgroup>
+                    ))}
+                  </select>
                 </F>
                 <F>
                   <Lbl t="Institution / Held At" />
