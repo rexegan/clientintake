@@ -4620,7 +4620,7 @@ export default function App() {
                     <span style={{ width: 190, flexShrink: 0 }}>{a.type || "—"}</span>
                     <span style={{ width: 100, flexShrink: 0, textAlign: "right" }}>{a.balance || "—"}</span>
                     <span style={{ display: "flex", alignItems: "center", gap: 5, color: MUTED, marginLeft: "auto" }}>OPP
-                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 6px", cursor: "pointer", background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
+                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 2px", cursor: "pointer", width: 52, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
                         <option value="">—</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
