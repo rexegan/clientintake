@@ -4344,19 +4344,19 @@ export default function App() {
                   </select>
                 </F>
               </Row>
-              <Row cols={2}>
-                <F>
-                  <Lbl t="OPT?" />
-                  <select data-lpignore="true" value={r.hasOpt || ""} onChange={e => updRE(r.id, "hasOpt", e.target.value || null)} style={IS}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 8 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Opportunity?" />
+                  <select data-lpignore="true" value={r.hasOpt || ""} onChange={e => updRE(r.id, "hasOpt", e.target.value || null)} style={{ ...IS, width: 114 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                   </select>
-                </F>
-                {r.hasOpt === "yes" && (
-                  <F>
+                </div>
+                {r.hasOpt === "yes" && (<>
+                  <div style={{ flexShrink: 0 }}>
                     <Lbl t="Event?" />
-                    <select data-lpignore="true" value={r.optEvent || ""} onChange={e => updRE(r.id, "optEvent", e.target.value)} style={IS}>
+                    <select data-lpignore="true" value={r.optEvent || ""} onChange={e => updRE(r.id, "optEvent", e.target.value)} style={{ ...IS, width: 180 }}>
                       <option value="">— Select —</option>
                       <option value="Retire">Retire</option>
                       <option value="Sell Home">Sell Home</option>
@@ -4368,15 +4368,13 @@ export default function App() {
                       <option value="Death of Spouse">Death of Spouse</option>
                       <option value="Other">Other</option>
                     </select>
-                  </F>
-                )}
-              </Row>
-              {r.hasOpt === "yes" && (
-                <F>
-                  <Lbl t="Time Frame / Date" />
-                  <input value={r.optTimeframe || ""} onChange={e => updRE(r.id, "optTimeframe", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. 6 months, Jan 2026…" />
-                </F>
-              )}
+                  </div>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Time Frame / Date" />
+                    <input value={r.optTimeframe || ""} onChange={e => updRE(r.id, "optTimeframe", e.target.value)} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Jan 2026" />
+                  </div>
+                </>)}
+              </div>
             </div>
           ))}
           <button onClick={addRE} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
@@ -4477,7 +4475,6 @@ export default function App() {
           <button onClick={() => setBusinesses(p => [...p, { id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%", marginBottom: 12 }}>
             + Add Business
           </button>
-          <FileUpload section="businesses" files={uploads.businesses || []} onChange={handleUploadChange} onConfirm={showConfirm} />
           <FileUpload section="realestate" files={uploads.realestate || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
