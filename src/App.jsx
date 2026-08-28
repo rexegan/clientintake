@@ -4850,17 +4850,17 @@ export default function App() {
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Policy {i + 1}</div>
                 <button onClick={() => showConfirm("Remove this policy?", () => delLife(p.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
-              <Row cols={4}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flex: "0 0 260px" }}>
                   <Lbl t="Carrier" />
-                  <select value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={IS}>
+                  <select value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={{ ...IS, width: 260 }}>
                     <option value="">— Select Carrier —</option>
                     {LIFE_CARRIERS.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flex: "0 0 250px" }}>
                   <Lbl t="Policy Type" />
-                  <select value={p.policyType} onChange={e => updLife(p.id, "policyType", e.target.value)} style={IS}>
+                  <select value={p.policyType} onChange={e => updLife(p.id, "policyType", e.target.value)} style={{ ...IS, width: 250 }}>
                     <option value="">— Select —</option>
                     <option value="Term">Term</option>
                     <option value="Whole Life">Whole Life</option>
@@ -4875,9 +4875,9 @@ export default function App() {
                   </select>
                 </F>
                 {p.policyType === "Term" && (
-                  <F>
+                  <div style={{ flex: "0 0 130px" }}>
                     <Lbl t="Length of Term" />
-                    <select value={p.termLength || ""} onChange={e => updLife(p.id, "termLength", e.target.value)} style={IS}>
+                    <select value={p.termLength || ""} onChange={e => updLife(p.id, "termLength", e.target.value)} style={{ ...IS, width: 130 }}>
                       <option value="">— Select —</option>
                       <option value="5">5 Years</option>
                       <option value="10">10 Years</option>
@@ -4886,9 +4886,9 @@ export default function App() {
                       <option value="25">25 Years</option>
                       <option value="30">30 Years</option>
                     </select>
-                  </F>
+                  </div>
                 )}
-              </Row>
+              </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Insured" />
