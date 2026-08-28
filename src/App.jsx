@@ -4137,6 +4137,50 @@ export default function App() {
               </select>
             </div>
           </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}><DatePicker label="Purchase Date" value={homeOwnership.purchaseDate || ""} onChange={v => setHomeOwnership(p => ({ ...p, purchaseDate: v }))} compact /></div>
+            <F style={{ flex: "0 0 150px" }}><Lbl t="Purchase Price" /><input value={homeOwnership.purchasePrice || ""} onChange={e => setHomeOwnership(p => ({ ...p, purchasePrice: fmtDollar(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F style={{ flex: "0 0 150px" }}><Lbl t="Market Value" /><input value={homeOwnership.marketValue || ""} onChange={e => setHomeOwnership(p => ({ ...p, marketValue: fmtDollar(e.target.value) }))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+            <F style={{ flex: "0 0 150px" }}>
+              <Lbl t="Net Equity" />
+              <div style={{ ...IS, width: 150, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center" }}>
+                {(() => {
+                  const mv = parseInt((homeOwnership.marketValue || "").replace(/[^0-9]/g, "") || 0);
+                  const mb = parseInt((homeOwnership.mortgageBalance || "").replace(/[^0-9]/g, "") || 0);
+                  return mv > 0 ? "$" + (mv - mb).toLocaleString() : "—";
+                })()}
+              </div>
+            </F>
+            <div style={{ flexShrink: 0 }}>
+              <Lbl t="Opportunity?" />
+              <select data-lpignore="true" value={homeOwnership.hasOpt || ""} onChange={e => setHomeOwnership(p => ({ ...p, hasOpt: e.target.value || null }))} style={{ ...IS, width: 114 }}>
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            {homeOwnership.hasOpt === "yes" && (<>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="Event?" />
+                <select data-lpignore="true" value={homeOwnership.optEvent || ""} onChange={e => setHomeOwnership(p => ({ ...p, optEvent: e.target.value }))} style={{ ...IS, width: 180 }}>
+                  <option value="">— Select —</option>
+                  <option value="Retire">Retire</option>
+                  <option value="Sell Home">Sell Home</option>
+                  <option value="Sell Business">Sell Business</option>
+                  <option value="Sell Land">Sell Land</option>
+                  <option value="Inheritance">Inheritance</option>
+                  <option value="Settlement">Settlement</option>
+                  <option value="Divorce">Divorce</option>
+                  <option value="Death of Spouse">Death of Spouse</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="Time Frame / Date" />
+                <input value={homeOwnership.optTimeframe || ""} onChange={e => setHomeOwnership(p => ({ ...p, optTimeframe: e.target.value }))} style={{ ...IS, width: 180 }} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Jan 2026" />
+              </div>
+            </>)}
+          </div>
           {homeOwnership.ownOrRent === "own" && (<>
             {homeOwnership.hasMortgage === "yes" && (<>
             <Row cols={3}>
@@ -4945,7 +4989,7 @@ export default function App() {
           {(() => {
             const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
             const acctTotal = accounts.reduce((t, a) => t + pd(a.balance), 0);
-            const reTotal = realEstate.reduce((t, r) => t + pd(r.marketValue), 0);
+            const reTotal = realEstate.reduce((t, r) => t + pd(r.marketValue), 0) + pd(homeOwnership.marketValue);
             const autoTotal = autos.reduce((t, a) => t + pd(a.value), 0);
             const assets = acctTotal + reTotal + autoTotal;
             const liabilities = pd(homeOwnership.mortgageBalance)
@@ -4954,7 +4998,7 @@ export default function App() {
               + debts.reduce((t, d) => t + pd(d.balance), 0);
             const netWorth = assets - liabilities;
             const liquid = acctTotal;
-            const primaryEquity = realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
+            const primaryEquity = (pd(homeOwnership.marketValue) ? pd(homeOwnership.marketValue) - pd(homeOwnership.mortgageBalance) : 0) + realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
             const lessResidence = netWorth - primaryEquity;
             const Box = ({ label, val, accent }) => (
               <F>
