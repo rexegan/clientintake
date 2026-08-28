@@ -4686,6 +4686,9 @@ export default function App() {
               </div>
             </div>
           ))}
+          <button onClick={addAcct} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
+            + Add Account
+          </button>
           {accounts.some(a => a.balance || a.type || a.owner) && (
             <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 10 }}>
               {accounts.map((a, i) => {
@@ -4722,9 +4725,6 @@ export default function App() {
               </span>
             </div>
           )}
-          <button onClick={addAcct} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
-            + Add Account
-          </button>
           <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
