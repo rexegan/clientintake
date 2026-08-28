@@ -4856,17 +4856,31 @@ export default function App() {
             realEstate.forEach((r, i) => { if (pd(r.mortgageBalance)) rows.push([`Mortgage — Property ${i + 1}${r.description ? " (" + r.description + ")" : ""}`, r.mortgageCompany === "__other__" ? "—" : (r.mortgageCompany || "—"), r.mortgageBalance, r.monthlyPmt || "—"]); });
             autos.forEach((a, i) => { if (pd(a.loanBalance)) rows.push([`Auto Loan — ${[a.year, a.make, a.model].filter(Boolean).join(" ") || "Vehicle " + (i + 1)}`, a.lender || "—", a.loanBalance, a.monthlyPayment || "—"]); });
             businesses.forEach((b, i) => { if (pd(b.loanBalance)) rows.push([`${b.loanType || "Business Loan"} — ${b.name || "Business " + (i + 1)}`, b.loanLender || "—", b.loanBalance, b.loanPayment || "—"]); });
+            const monthlyTotal = rows.reduce((t, r) => t + pd(r[3]), 0) + debts.reduce((t, d) => t + pd(d.monthlyPayment), 0);
+            const loanTotal = rows.reduce((t, r) => t + pd(r[2]), 0) + debts.reduce((t, d) => t + pd(d.balance), 0);
             return rows.length > 0 ? (
               <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 14 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>Pulled from Real Estate, Automobiles & Business Assets</div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 14, fontSize: 11, fontWeight: 700, color: MUTED, padding: "2px 0 4px", borderBottom: "1px solid " + BORDER }}>
+                  <span style={{ flex: "1 1 240px" }}>Debt</span>
+                  <span style={{ flex: "1 1 160px" }}>Lender</span>
+                  <span style={{ width: 110, textAlign: "right", lineHeight: 1.2 }}>Monthly<br/>Obligation</span>
+                  <span style={{ width: 120, textAlign: "right", lineHeight: 1.2 }}>Total<br/>Loan Value</span>
+                </div>
                 {rows.map((r, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < rows.length - 1 ? "1px solid " + BORDER : "none" }}>
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 13, color: INK, padding: "4px 0", borderBottom: "1px solid " + BORDER }}>
                     <span style={{ flex: "1 1 240px", fontWeight: 600 }}>{r[0]}</span>
                     <span style={{ flex: "1 1 160px" }}>{r[1]}</span>
-                    <span style={{ width: 110, textAlign: "right" }}>{r[2]}</span>
-                    <span style={{ width: 110, textAlign: "right", color: MUTED }}>{r[3]}/mo</span>
+                    <span style={{ width: 110, textAlign: "right" }}>{pd(r[3]) ? r[3] : "—"}</span>
+                    <span style={{ width: 120, textAlign: "right" }}>{r[2]}</span>
                   </div>
                 ))}
+                <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 13.5, fontWeight: 700, color: INK, padding: "6px 0 2px" }}>
+                  <span style={{ flex: "1 1 240px" }}>Totals (incl. debts below)</span>
+                  <span style={{ flex: "1 1 160px" }} />
+                  <span style={{ width: 110, textAlign: "right" }}>${monthlyTotal.toLocaleString()}</span>
+                  <span style={{ width: 120, textAlign: "right", color: "#b3261e" }}>${loanTotal.toLocaleString()}</span>
+                </div>
               </div>
             ) : (
               <div style={{ fontSize: 13, color: MUTED, fontStyle: "italic", marginBottom: 12 }}>No mortgages or auto loans entered yet — they appear here automatically.</div>
