@@ -4855,9 +4855,10 @@ export default function App() {
             if (pd(homeOwnership.mortgageBalance)) rows.push(["Mortgage — Personal Residence", homeOwnership.mortgageCompany || "—", homeOwnership.mortgageBalance, homeOwnership.monthlyPayment || "—"]);
             realEstate.forEach((r, i) => { if (pd(r.mortgageBalance)) rows.push([`Mortgage — Property ${i + 1}${r.description ? " (" + r.description + ")" : ""}`, r.mortgageCompany === "__other__" ? "—" : (r.mortgageCompany || "—"), r.mortgageBalance, r.monthlyPmt || "—"]); });
             autos.forEach((a, i) => { if (pd(a.loanBalance)) rows.push([`Auto Loan — ${[a.year, a.make, a.model].filter(Boolean).join(" ") || "Vehicle " + (i + 1)}`, a.lender || "—", a.loanBalance, a.monthlyPayment || "—"]); });
+            businesses.forEach((b, i) => { if (pd(b.loanBalance)) rows.push([`${b.loanType || "Business Loan"} — ${b.name || "Business " + (i + 1)}`, b.loanLender || "—", b.loanBalance, b.loanPayment || "—"]); });
             return rows.length > 0 ? (
               <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 14 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>Pulled from Real Estate & Automobiles</div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>Pulled from Real Estate, Automobiles & Business Assets</div>
                 {rows.map((r, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < rows.length - 1 ? "1px solid " + BORDER : "none" }}>
                     <span style={{ flex: "1 1 240px", fontWeight: 600 }}>{r[0]}</span>
