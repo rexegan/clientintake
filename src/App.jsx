@@ -4997,7 +4997,8 @@ export default function App() {
               + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
               + debts.reduce((t, d) => t + pd(d.balance), 0);
             const netWorth = assets - liabilities;
-            const liquid = acctTotal;
+            const NONLIQUID = new Set(["Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)","Pension / Defined Benefit","Personal Residence","Rental Property","Land / Lot","Private Equity","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Life Insurance (Cash Value)","Vehicle","Collectibles","Jewelry"]);
+            const liquid = accounts.reduce((t, a) => t + (NONLIQUID.has(a.type) ? 0 : pd(a.balance)), 0);
             const primaryEquity = (pd(homeOwnership.marketValue) ? pd(homeOwnership.marketValue) - pd(homeOwnership.mortgageBalance) : 0) + realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
             const lessResidence = netWorth - primaryEquity;
             const Box = ({ label, val, accent }) => (
