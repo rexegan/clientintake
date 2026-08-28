@@ -4851,6 +4851,28 @@ export default function App() {
                 <button onClick={() => showConfirm("Remove this policy?", () => delLife(p.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Insured" />
+                  <select data-lpignore="true" value={p.insured || ""} onChange={e => updLife(p.id, "insured", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
+                    <option value="">— Select —</option>
+                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Owner" />
+                  <select data-lpignore="true" value={p.owner || ""} onChange={e => updLife(p.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
+                    <option value="">— Select —</option>
+                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
+                    {["married","domestic_partner"].includes(hasSpouse) && (
+                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
+                    )}
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flex: "0 0 260px" }}>
                   <Lbl t="Carrier" />
                   <select value={p.carrier} onChange={e => updLife(p.id, "carrier", e.target.value)} style={{ ...IS, width: 260 }}>
@@ -4873,7 +4895,7 @@ export default function App() {
                     <option value="Group Life">Group / Employer Life</option>
                     <option value="Other">Other</option>
                   </select>
-                </F>
+                </div>
                 {p.policyType === "Term" && (
                   <div style={{ flex: "0 0 130px" }}>
                     <Lbl t="Length of Term" />
@@ -4888,28 +4910,6 @@ export default function App() {
                     </select>
                   </div>
                 )}
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Insured" />
-                  <select data-lpignore="true" value={p.insured || ""} onChange={e => updLife(p.id, "insured", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
-                    <option value="">— Select —</option>
-                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && (
-                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    )}
-                  </select>
-                </div>
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Owner" />
-                  <select data-lpignore="true" value={p.owner || ""} onChange={e => updLife(p.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 170 }}>
-                    <option value="">— Select —</option>
-                    <option value={[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}>{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
-                    {["married","domestic_partner"].includes(hasSpouse) && (
-                      <option value={[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}>{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
-                    )}
-                  </select>
-                </div>
               </div>
               <Row cols={4}>
                 <F><Lbl t="Death Benefit" /><input value={p.deathBenefit} onChange={e => updLife(p.id, "deathBenefit", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
