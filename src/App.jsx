@@ -4621,6 +4621,15 @@ export default function App() {
                     </select>
                   </div>
                 )}
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Tax Filing" />
+                  <select data-lpignore="true" value={a.taxFiling || ""} onChange={e => updAcct(a.id, "taxFiling", e.target.value)} style={{ ...IS, width: 114 }}>
+                    <option value="">— Select —</option>
+                    <option value="K-1">K-1</option>
+                    <option value="1099">1099</option>
+                    <option value="None">None</option>
+                  </select>
+                </div>
               </div>
               {a.hasOpt === "yes" && (
                 <Row cols={2}>
@@ -4719,7 +4728,7 @@ export default function App() {
                     <span style={{ width: 190, flexShrink: 0 }}>{a.type || "—"}</span>
                     <span style={{ width: 100, flexShrink: 0, textAlign: "right" }}>{a.balance || "—"}</span>
                     <span style={{ display: "flex", alignItems: "center", gap: 5, color: MUTED, marginLeft: "auto" }}>OPP
-                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 2px", cursor: "pointer", width: 52, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
+                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 4px", cursor: "pointer", width: 64, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
                         <option value="">—</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
