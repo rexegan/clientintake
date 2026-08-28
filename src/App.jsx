@@ -4514,6 +4514,45 @@ export default function App() {
                   <F style={{ flex: "0 0 150px" }}><Lbl t="Timeframe / Notes" /><input value={b.saleTimeframe || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, saleTimeframe: e.target.value } : x))} style={{ ...IS, width: 150 }} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Q3 2027" /></F>
                 </>)}
               </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Loan Against Business?" />
+                  <select data-lpignore="true" value={b.hasLoan || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, hasLoan: e.target.value || null } : x))} style={{ ...IS, width: 114 }}>
+                    <option value="">— Select —</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                {b.hasLoan === "yes" && (<>
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Loan Type" />
+                    <select data-lpignore="true" value={b.loanType || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanType: e.target.value } : x))} style={{ ...IS, width: 170 }}>
+                      <option value="">— Select —</option>
+                      <option>Business Loan</option>
+                      <option>SBA Loan</option>
+                      <option>Commercial Mortgage</option>
+                      <option>Equipment Loan</option>
+                      <option>Line of Credit</option>
+                      <option>Owner Financing</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div style={{ flex: "0 0 200px" }}>
+                    <Lbl t="Lender" />
+                    <SmartCombo
+                      value={b.loanLender || ""}
+                      options={allLenders}
+                      onChange={v => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanLender: v } : x))}
+                      onBlur={v => addCustomLender(v)}
+                      style={{ ...IS, width: 200 }}
+                      placeholder="Type or select lender"
+                    />
+                  </div>
+                  <F style={{ flex: "0 0 140px" }}><Lbl t="Loan Balance" /><input value={b.loanBalance || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanBalance: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  <F style={{ flex: "0 0 140px" }}><Lbl t="Monthly Payment" /><input value={b.loanPayment || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanPayment: fmtDollar(e.target.value) } : x))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
+                  <F style={{ flex: "0 0 110px" }}><Lbl t="Interest Rate" /><input value={b.loanRate || ""} onChange={e => setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanRate: e.target.value.replace(/[^0-9.]/g, "") } : x))} onBlur={e => { const v = e.target.value.replace(/[^0-9.]/g, ""); setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanRate: v ? v + "%" : "" } : x)); }} onFocus={e => { const v = (e.target.value || "").replace("%", ""); setBusinesses(p => p.map(x => x.id === b.id ? { ...x, loanRate: v } : x)); }} style={{ ...IS, width: 110 }} inputMode="decimal" autoComplete="new-password" data-lpignore="true" /></F>
+                </>)}
+              </div>
             </div>
           ))}
           <button onClick={() => setBusinesses(p => [...p, { id: Date.now() }])} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%", marginBottom: 12 }}>
@@ -4890,7 +4929,8 @@ export default function App() {
             const total = pd(homeOwnership.mortgageBalance)
               + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
               + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
-              + debts.reduce((t, d) => t + pd(d.balance), 0);
+              + debts.reduce((t, d) => t + pd(d.balance), 0)
+              + businesses.reduce((t, b) => t + pd(b.loanBalance), 0);
             return total > 0 ? (
               <div style={{ background: NAV, border: "1px solid " + BORDER, borderRadius: 8, padding: "12px 18px", marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Total Debt / Liabilities</span>
