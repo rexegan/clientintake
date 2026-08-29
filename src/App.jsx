@@ -5358,7 +5358,7 @@ export default function App() {
                     <option value="other">Other</option>
                   </select>
                 </div>
-                <F style={{ flex: "1 1 240px" }}><Lbl t="Source Details / Name(s)" /><input value={inh.sourceDetails || ""} onChange={e => updInh(inh.id, "sourceDetails", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Mother's estate, John Smith Trust" /></F>
+                <F style={{ flex: "1 1 480px" }}><Lbl t="Source Details / Name(s)" /><input value={inh.sourceDetails || ""} onChange={e => updInh(inh.id, "sourceDetails", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Mother's estate, John Smith Trust" /></F>
               </div>
 
               <Sec t="Family Structure" />
