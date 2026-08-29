@@ -4672,8 +4672,8 @@ export default function App() {
                 </div>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <F style={{ flex: "0 0 170px" }}><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={{ ...IS, width: 170 }} autoComplete="new-password" data-lpignore="true" /></F>
-                <F style={{ flex: "0 0 140px" }}><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 144px" }}><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={{ ...IS, width: 144 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 119px" }}><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={{ ...IS, width: 119 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <F style={{ flex: "0 0 180px" }}>
