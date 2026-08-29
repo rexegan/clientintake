@@ -5333,10 +5333,10 @@ export default function App() {
                     <option value="unknown">Unknown</option>
                   </select>
                 </div>
-                <F style={{ flex: "0 0 150px" }}><Lbl t="Estimated Value" /><input value={inh.estValue} onChange={e => updInh(inh.id, "estValue", fmtDollar(e.target.value))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" className="dark-ph" /></F>
+                <F style={{ flex: "0 0 128px" }}><Lbl t="Estimated Value" /><input value={inh.estValue} onChange={e => updInh(inh.id, "estValue", fmtDollar(e.target.value))} style={{ ...IS, width: 128 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" className="dark-ph" /></F>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Anticipated Timeline" />
-                  <select value={inh.timeline} onChange={e => updInh(inh.id, "timeline", e.target.value)} style={{ ...IS, width: 114 }}>
+                  <select value={inh.timeline} onChange={e => updInh(inh.id, "timeline", e.target.value)} style={{ ...IS, width: 134 }}>
                     <option value="">— Select —</option>
                     <option value="0-2 years">0 – 2 Years</option>
                     <option value="3-5 years">3 – 5 Years</option>
@@ -5347,7 +5347,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Source of Inheritance" />
-                  <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={{ ...IS, width: 175 }}>
+                  <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={{ ...IS, width: 196 }}>
                     <option value="">— Select —</option>
                     <option value="parents_estate">Parents' Estate</option>
                     <option value="grandparents_estate">Grandparents' Estate</option>
