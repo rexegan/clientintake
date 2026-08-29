@@ -5365,7 +5365,7 @@ export default function App() {
               <Row cols={3}>
                 <F>
                   <Lbl t="Number of Siblings" />
-                  <select value={inh.numberOfSiblings} onChange={e => updInh(inh.id, "numberOfSiblings", e.target.value)} style={IS}>
+                  <select value={inh.numberOfSiblings} onChange={e => updInh(inh.id, "numberOfSiblings", e.target.value)} style={{ ...IS, width: 150 }}>
                     <option value="">— Select —</option>
                     <option value="0">0 — Only Child</option>
                     <option value="1">1</option>
@@ -5378,7 +5378,7 @@ export default function App() {
                 </F>
                 <F>
                   <Lbl t="Siblings Involved in Estate?" />
-                  <select value={inh.siblingsInvolved} onChange={e => updInh(inh.id, "siblingsInvolved", e.target.value)} style={IS}>
+                  <select value={inh.siblingsInvolved} onChange={e => updInh(inh.id, "siblingsInvolved", e.target.value)} style={{ ...IS, width: 225 }}>
                     <option value="">— Select —</option>
                     <option value="yes_equal">Yes — Equal Split</option>
                     <option value="yes_unequal">Yes — Unequal Split</option>
