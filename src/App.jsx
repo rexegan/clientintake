@@ -4578,7 +4578,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 10, marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid " + BORDER }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Owner" />
-                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, width: "auto", minWidth: 160 }}>
+                  <select data-lpignore="true" value={a.owner} onChange={e => updAcct(a.id, "owner", e.target.value)} style={{ ...IS, width: 160 }}>
                     <option value="">— Select —</option>
                     <option value="Client">{[client.firstName, client.lastName].filter(Boolean).join(" ") || "Client"}</option>
                     {["married","domestic_partner"].includes(hasSpouse) && (
@@ -4589,7 +4589,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="NQ or Q?" />
-                  <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, width: "auto", minWidth: 150 }}>
+                  <select data-lpignore="true" value={a.qualified || ""} onChange={e => updAcct(a.id, "qualified", e.target.value)} style={{ ...IS, width: 150 }}>
                     <option value="">— Select —</option>
                     <option value="Non-Qualified">Non-Qualified</option>
                     <option value="Qualified">Qualified</option>
@@ -4597,7 +4597,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Opportunity?" />
-                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, width: "auto", minWidth: 100 }}>
+                  <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ ...IS, width: 114 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
@@ -4615,7 +4615,7 @@ export default function App() {
                 {a.hasOpt === "yes" && (
                   <div style={{ flexShrink: 0 }}>
                     <Lbl t="Event" />
-                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, width: "auto", minWidth: 160 }}>
+                    <select data-lpignore="true" value={a.optEvent || ""} onChange={e => updAcct(a.id, "optEvent", e.target.value)} style={{ ...IS, width: 170 }}>
                       <option value="">— Select —</option>
                       <option value="Retire">Retire</option>
                       <option value="In Service Transfer">In Service Transfer</option>
