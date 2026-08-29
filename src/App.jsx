@@ -4603,6 +4603,15 @@ export default function App() {
                     <option value="no">No</option>
                   </select>
                 </div>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Tax Filing" />
+                  <select data-lpignore="true" value={a.taxFiling || ""} onChange={e => updAcct(a.id, "taxFiling", e.target.value)} style={{ ...IS, width: 114 }}>
+                    <option value="">— Select —</option>
+                    <option value="K-1">K-1</option>
+                    <option value="1099">1099</option>
+                    <option value="None">None</option>
+                  </select>
+                </div>
                 {a.hasOpt === "yes" && (
                   <div style={{ flexShrink: 0 }}>
                     <Lbl t="Event" />
@@ -4621,30 +4630,19 @@ export default function App() {
                     </select>
                   </div>
                 )}
-                <div style={{ flexShrink: 0 }}>
-                  <Lbl t="Tax Filing" />
-                  <select data-lpignore="true" value={a.taxFiling || ""} onChange={e => updAcct(a.id, "taxFiling", e.target.value)} style={{ ...IS, width: 114 }}>
-                    <option value="">— Select —</option>
-                    <option value="K-1">K-1</option>
-                    <option value="1099">1099</option>
-                    <option value="None">None</option>
-                  </select>
-                </div>
-              </div>
-              {a.hasOpt === "yes" && (
-                <div style={{ marginBottom: 12 }}>
-                  <Lbl t="Expected Date of Event" />
-                  <input
-                    value={a.optTimeframe || ""}
-                    onChange={e => updAcct(a.id, "optTimeframe", e.target.value)}
-                    style={{ ...IS, width: 200 }}
-                    autoComplete="new-password"
-                    data-lpignore="true"
-                    placeholder="e.g. Jan 2027, Q3 2026…"
-                  />
-                </div>
-              )}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                {a.hasOpt === "yes" && (
+                  <div style={{ flexShrink: 0 }}>
+                    <Lbl t="Expected Date of Event" />
+                    <input
+                      value={a.optTimeframe || ""}
+                      onChange={e => updAcct(a.id, "optTimeframe", e.target.value)}
+                      style={{ ...IS, width: 160 }}
+                      autoComplete="new-password"
+                      data-lpignore="true"
+                      placeholder="e.g. Jan 2027"
+                    />
+                  </div>
+                )}
                 <div style={{ flex: "0 0 220px" }}>
                   <Lbl t="Account Type" />
                   <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={{ ...IS, width: 220 }}>
@@ -4660,6 +4658,8 @@ export default function App() {
                     {INVESTMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flex: "0 0 200px" }}>
                   <Lbl t="Institution / Held At" />
                   <SmartCombo
