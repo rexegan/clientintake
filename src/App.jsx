@@ -5322,21 +5322,21 @@ export default function App() {
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Inheritance {i + 1}</div>
                 {inheritances.length > 1 && <button onClick={() => showConfirm("Remove this inheritance record?", () => delInh(inh.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>}
               </div>
-              <Row cols={3}>
-                <F>
-                  <Lbl t="Expecting an Inheritance?" />
-                  <select value={inh.expectsInheritance} onChange={e => updInh(inh.id, "expectsInheritance", e.target.value)} style={IS}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Inheritance?" />
+                  <select value={inh.expectsInheritance} onChange={e => updInh(inh.id, "expectsInheritance", e.target.value)} style={{ ...IS, width: 114 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                     <option value="possibly">Possibly</option>
                     <option value="unknown">Unknown</option>
                   </select>
-                </F>
-                <F><Lbl t="Estimated Value" /><input value={inh.estValue} onChange={e => updInh(inh.id, "estValue", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></F>
-                <F>
+                </div>
+                <F style={{ flex: "0 0 150px" }}><Lbl t="Estimated Value" /><input value={inh.estValue} onChange={e => updInh(inh.id, "estValue", fmtDollar(e.target.value))} style={{ ...IS, width: 150 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" className="dark-ph" /></F>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Anticipated Timeline" />
-                  <select value={inh.timeline} onChange={e => updInh(inh.id, "timeline", e.target.value)} style={IS}>
+                  <select value={inh.timeline} onChange={e => updInh(inh.id, "timeline", e.target.value)} style={{ ...IS, width: 114 }}>
                     <option value="">— Select —</option>
                     <option value="0-2 years">0 – 2 Years</option>
                     <option value="3-5 years">3 – 5 Years</option>
@@ -5344,12 +5344,10 @@ export default function App() {
                     <option value="10+ years">10+ Years</option>
                     <option value="unknown">Unknown</option>
                   </select>
-                </F>
-              </Row>
-              <Row cols={2}>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Source of Inheritance" />
-                  <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={IS}>
+                  <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={{ ...IS, width: 175 }}>
                     <option value="">— Select —</option>
                     <option value="parents_estate">Parents' Estate</option>
                     <option value="grandparents_estate">Grandparents' Estate</option>
@@ -5359,9 +5357,9 @@ export default function App() {
                     <option value="real_estate">Real Estate</option>
                     <option value="other">Other</option>
                   </select>
-                </F>
-                <F><Lbl t="Source Details / Name(s)" /><input value={inh.sourceDetails || ""} onChange={e => updInh(inh.id, "sourceDetails", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Mother's estate, John Smith Trust" /></F>
-              </Row>
+                </div>
+                <F style={{ flex: "1 1 220px" }}><Lbl t="Source Details / Name(s)" /><input value={inh.sourceDetails || ""} onChange={e => updInh(inh.id, "sourceDetails", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="e.g. Mother's estate, John Smith Trust" /></F>
+              </div>
 
               <Sec t="Family Structure" />
               <Row cols={3}>
@@ -6491,6 +6489,7 @@ export default function App() {
         input, select, textarea { caret-color: #151b28; transition: border-color 0.15s, box-shadow 0.15s; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: #2f3a4a !important; box-shadow: 0 0 0 3px rgba(47,58,74,0.15) !important; }
         input::placeholder, textarea::placeholder { color: #9aa3b0 !important; opacity: 1; }
+        input.dark-ph::placeholder { color: #151b28 !important; font-weight: 600; }
         select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23697180' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px !important; }
         select option { background: #ffffff !important; color: #151b28 !important; font-size: 14px; }
         select.sel-compact { padding-right: 24px !important; background-position: right 8px center !important; }
