@@ -4647,36 +4647,36 @@ export default function App() {
                 </Row>
               )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flex: "0 0 210px" }}>
+                <div style={{ flex: "0 0 240px" }}>
                   <Lbl t="Account Type" />
-                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={{ ...IS, width: 210 }}>
+                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={{ ...IS, width: 240 }}>
                     <option value="">— Select —</option>
                     {ACCOUNT_REG_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     {a.type && !ACCOUNT_REG_TYPES.includes(a.type) && <option value={a.type}>{a.type}</option>}
                   </select>
                 </div>
-                <div style={{ flex: "0 0 225px" }}>
+                <div style={{ flex: "0 0 248px" }}>
                   <Lbl t="Investment Type" />
-                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 225 }}>
+                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 248 }}>
                     <option value="">— Select —</option>
                     {INVESTMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
-                <div style={{ flex: "1 1 240px" }}>
+                <div style={{ flex: "0 0 200px" }}>
                   <Lbl t="Institution / Held At" />
                   <SmartCombo
                     value={a.institution}
                     options={allInstitutions}
                     onChange={v => syncAcctIncome(a, "institution", v)}
                     onBlur={v => addCustomInstitution(v)}
-                    style={IS}
+                    style={{ ...IS, width: 200 }}
                   />
                 </div>
               </div>
-              <Row cols={2}>
-                <F><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                <F><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
-              </Row>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <F style={{ flex: "0 0 170px" }}><Lbl t="Account Number" /><input value={a.accountNumber || ""} onChange={e => updAcct(a.id, "accountNumber", e.target.value)} style={{ ...IS, width: 170 }} autoComplete="new-password" data-lpignore="true" /></F>
+                <F style={{ flex: "0 0 140px" }}><Lbl t="Balance" /><input value={a.balance} onChange={e => updAcct(a.id, "balance", fmtDollar(e.target.value))} style={{ ...IS, width: 140 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
+              </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <F style={{ flex: "0 0 180px" }}>
                   <Lbl t="Transactions?" />
