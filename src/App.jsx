@@ -5123,7 +5123,7 @@ export default function App() {
             const cats = [
               ["Cash (Checking, Savings, Money Market, CDs)", sums.cash],
               ["Qualified Plans (401k, IRA, Roth, etc.)", sums.qual],
-              ["Non-Qualified / Taxable Brokerage", sums.nonqual],
+              ["Non-Qualified / Taxable", sums.nonqual],
               ["Annuities (Fixed, Indexed, Variable, RILA)", sums.ann],
               ["Cash Value Life Insurance", sums.cvli],
               ["Alternative / Illiquid Investments", sums.alts],
