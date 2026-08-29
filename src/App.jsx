@@ -5625,23 +5625,6 @@ export default function App() {
             </F>
           </Row>
 
-          {/* ── TARGET ALLOCATION ── */}
-          {/* ── BROAD ALLOCATION ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Target Allocation (%) — must total 100%</div>
-          <Row cols={5}>
-            <F><Lbl t="Equities %" /><input value={suitability.pctEquities} onChange={e => setSuitability(p => ({ ...p, pctEquities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Fixed Income %" /><input value={suitability.pctFixedIncome} onChange={e => setSuitability(p => ({ ...p, pctFixedIncome: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Cash %" /><input value={suitability.pctCash} onChange={e => setSuitability(p => ({ ...p, pctCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Alternatives %" /><input value={suitability.pctAlternatives} onChange={e => setSuitability(p => ({ ...p, pctAlternatives: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Annuities %" /><input value={suitability.pctAnnuities} onChange={e => setSuitability(p => ({ ...p, pctAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          {(() => {
-            const total = ["pctEquities","pctFixedIncome","pctCash","pctAlternatives","pctAnnuities"].reduce((s, k) => s + (parseFloat(suitability[k]) || 0), 0);
-            if (!total) return null;
-            const ok = Math.abs(total - 100) < 0.01;
-            return <div style={{ fontSize: 12, fontWeight: 600, color: ok ? SUCCESS : DANGER, marginTop: 4 }}>Total: {total.toFixed(1)}% {ok ? "✓" : "(must equal 100%)"}</div>;
-          })()}
-
           {/* ── DETAILED PORTFOLIO BREAKDOWN ── */}
           <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Portfolio Breakdown by Product Type (%)</div>
           <Row cols={2}>
@@ -5650,7 +5633,7 @@ export default function App() {
           </Row>
           <Row cols={2}>
             <F><Lbl t="Cash Value Life Insurance %" /><input value={suitability.pctCashValueLife} onChange={e => setSuitability(p => ({ ...p, pctCashValueLife: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Liquid Cash — Checking, Savings, Money Market, CD %" /><input value={suitability.pctLiquidCash} onChange={e => setSuitability(p => ({ ...p, pctLiquidCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
+            <F><Lbl t="Checking, Savings, Money Market, CD %" /><input value={suitability.pctLiquidCash} onChange={e => setSuitability(p => ({ ...p, pctLiquidCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
           </Row>
 
           {/* ── QUALIFIED vs NON-QUALIFIED ── */}
@@ -6784,15 +6767,10 @@ export default function App() {
             ["Primary Goal", suitability.primaryGoal], ["Secondary Goal", suitability.secondaryGoal],
             ["Income Need", suitability.incomeNeed], ["Growth Need", suitability.growthNeed],
           ].filter(([,v]) => v)} emptyMsg="No goals entered." />
-          <Sub t="Target Allocation %" />
-          <Tbl cols={["Category","%"]} rows={[
-            ["Equities", suitability.pctEquities], ["Fixed Income", suitability.pctFixedIncome],
-            ["Cash", suitability.pctCash], ["Alternatives", suitability.pctAlternatives], ["Annuities", suitability.pctAnnuities],
-          ].filter(([,v]) => v)} emptyMsg="No allocation entered." />
           <Sub t="Portfolio Breakdown by Product Type %" />
           <Tbl cols={["Product","%"]} rows={[
             ["Fixed Indexed Annuities", suitability.pctFixedIndexedAnnuities], ["Fixed Annuities", suitability.pctFixedAnnuities],
-            ["Cash Value Life Insurance", suitability.pctCashValueLife], ["Liquid Cash (Checking/Savings/MM/CD)", suitability.pctLiquidCash],
+            ["Cash Value Life Insurance", suitability.pctCashValueLife], ["Checking / Savings / Money Market / CD", suitability.pctLiquidCash],
           ].filter(([,v]) => v)} emptyMsg="No product breakdown entered." />
           <Sub t="Qualified vs Non-Qualified %" />
           <Tbl cols={["Category","%"]} rows={[
