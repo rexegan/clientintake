@@ -4655,9 +4655,9 @@ export default function App() {
                     {a.type && !ACCOUNT_REG_TYPES.includes(a.type) && <option value={a.type}>{a.type}</option>}
                   </select>
                 </div>
-                <div style={{ flex: "0 0 200px" }}>
+                <div style={{ flex: "0 0 225px" }}>
                   <Lbl t="Investment Type" />
-                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 200 }}>
+                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 225 }}>
                     <option value="">— Select —</option>
                     {INVESTMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
