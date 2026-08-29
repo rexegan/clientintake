@@ -5515,8 +5515,8 @@ export default function App() {
         <Panel title="Suitability" id="section-suitability">
           {/* ── INVESTMENT PROFILE ── */}
           <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Investment Profile</div>
-          <Row cols={3}>
-            <F>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Risk Tolerance" />
               <select value={suitability.riskTolerance} onChange={e => setSuitability(p => ({ ...p, riskTolerance: e.target.value }))} style={{ ...IS, width: 216 }} data-lpignore="true">
                 <option value="">— Select —</option>
@@ -5526,8 +5526,8 @@ export default function App() {
                 <option>Moderately Aggressive</option>
                 <option>Aggressive</option>
               </select>
-            </F>
-            <F>
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Investment Objective" />
               <select value={suitability.investmentObjective} onChange={e => setSuitability(p => ({ ...p, investmentObjective: e.target.value }))} style={{ ...IS, width: 200 }} data-lpignore="true">
                 <option value="">— Select —</option>
@@ -5537,8 +5537,8 @@ export default function App() {
                 <option>Growth</option>
                 <option>Aggressive Growth</option>
               </select>
-            </F>
-            <F>
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Time Horizon" />
               <select value={suitability.timeHorizon} onChange={e => setSuitability(p => ({ ...p, timeHorizon: e.target.value }))} style={{ ...IS, width: 234 }} data-lpignore="true">
                 <option value="">— Select —</option>
@@ -5547,8 +5547,8 @@ export default function App() {
                 <option>Long-Term (7–15 yrs)</option>
                 <option>Very Long-Term (15+ Years)</option>
               </select>
-            </F>
-          </Row>
+            </div>
+          </div>
           <Row cols={3}>
             <F>
               <Lbl t="Liquidity Needs" />
