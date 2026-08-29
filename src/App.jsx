@@ -5403,10 +5403,10 @@ export default function App() {
               )}
 
               <Sec t="Special Needs & Care Considerations" />
-              <Row cols={2}>
-                <F>
-                  <Lbl t="Any Family Members with Special Needs?" />
-                  <select value={inh.specialNeedsFamily} onChange={e => updInh(inh.id, "specialNeedsFamily", e.target.value)} style={IS}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Family Members / Special Needs" />
+                  <select value={inh.specialNeedsFamily} onChange={e => updInh(inh.id, "specialNeedsFamily", e.target.value)} style={{ ...IS, width: 185 }}>
                     <option value="">— Select —</option>
                     <option value="no">No</option>
                     <option value="yes_child">Yes — Child</option>
@@ -5414,27 +5414,27 @@ export default function App() {
                     <option value="yes_parent">Yes — Parent</option>
                     <option value="yes_other">Yes — Other Relative</option>
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Special Needs Trust in Place?" />
-                  <select value={inh.specialNeedsTrust || ""} onChange={e => updInh(inh.id, "specialNeedsTrust", e.target.value)} style={IS}>
+                  <select value={inh.specialNeedsTrust || ""} onChange={e => updInh(inh.id, "specialNeedsTrust", e.target.value)} style={{ ...IS, width: 170 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                     <option value="needed">No — But Needed</option>
                     <option value="na">N/A</option>
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
               {inh.specialNeedsFamily && inh.specialNeedsFamily !== "no" && (
                 <Row cols={1}>
                   <F><Lbl t="Special Needs Details" /><textarea value={inh.specialNeedsDetails} onChange={e => updInh(inh.id, "specialNeedsDetails", e.target.value)} style={{ ...IS, minHeight: 70, resize: "vertical" }} placeholder="Describe the situation, any government benefits at risk, care requirements, etc." /></F>
                 </Row>
               )}
-              <Row cols={2}>
-                <F>
-                  <Lbl t="Nursing Care / Long-Term Care Considerations?" />
-                  <select value={inh.nursingCare} onChange={e => updInh(inh.id, "nursingCare", e.target.value)} style={IS}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
+                  <Lbl t="Nursing Care / Long-Term Care?" />
+                  <select value={inh.nursingCare} onChange={e => updInh(inh.id, "nursingCare", e.target.value)} style={{ ...IS, width: 265 }}>
                     <option value="">— Select —</option>
                     <option value="no">No</option>
                     <option value="yes_parent">Yes — Parent(s) in or nearing care</option>
@@ -5443,18 +5443,18 @@ export default function App() {
                     <option value="yes_other">Yes — Other Family Member</option>
                     <option value="future_concern">Future Concern / Planning Needed</option>
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Long-Term Care Insurance in Place?" />
-                  <select value={inh.ltcInsurance || ""} onChange={e => updInh(inh.id, "ltcInsurance", e.target.value)} style={IS}>
+                  <select value={inh.ltcInsurance || ""} onChange={e => updInh(inh.id, "ltcInsurance", e.target.value)} style={{ ...IS, width: 210 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                     <option value="partial">Partial / Being Arranged</option>
                     <option value="self_fund">Self-Funding / No Insurance</option>
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
               {inh.nursingCare && inh.nursingCare !== "no" && (
                 <Row cols={1}>
                   <F><Lbl t="Care Details / Facility / Cost Concerns" /><textarea value={inh.nursingCareDetails} onChange={e => updInh(inh.id, "nursingCareDetails", e.target.value)} style={{ ...IS, minHeight: 70, resize: "vertical" }} placeholder="Describe care situation, estimated costs, facility name, Medicaid planning concerns, etc." /></F>
