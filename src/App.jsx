@@ -4647,17 +4647,17 @@ export default function App() {
                 </Row>
               )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-                <div style={{ flex: "0 0 222px" }}>
+                <div style={{ flex: "0 0 220px" }}>
                   <Lbl t="Account Type" />
-                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={{ ...IS, width: 222 }}>
+                  <select data-lpignore="true" value={a.type || ""} onChange={e => updAcct(a.id, "type", e.target.value)} style={{ ...IS, width: 220 }}>
                     <option value="">— Select —</option>
                     {ACCOUNT_REG_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     {a.type && !ACCOUNT_REG_TYPES.includes(a.type) && <option value={a.type}>{a.type}</option>}
                   </select>
                 </div>
-                <div style={{ flex: "0 0 234px" }}>
+                <div style={{ flex: "0 0 208px" }}>
                   <Lbl t="Investment Type" />
-                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 234 }}>
+                  <select data-lpignore="true" value={a.investmentType || ""} onChange={e => updAcct(a.id, "investmentType", e.target.value)} style={{ ...IS, width: 208 }}>
                     <option value="">— Select —</option>
                     {INVESTMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
