@@ -5518,7 +5518,7 @@ export default function App() {
           <Row cols={3}>
             <F>
               <Lbl t="Risk Tolerance" />
-              <select value={suitability.riskTolerance} onChange={e => setSuitability(p => ({ ...p, riskTolerance: e.target.value }))} style={{ ...IS, width: 210 }} data-lpignore="true">
+              <select value={suitability.riskTolerance} onChange={e => setSuitability(p => ({ ...p, riskTolerance: e.target.value }))} style={{ ...IS, width: 240 }} data-lpignore="true">
                 <option value="">— Select —</option>
                 <option>Conservative</option>
                 <option>Moderately Conservative</option>
@@ -5540,7 +5540,7 @@ export default function App() {
             </F>
             <F>
               <Lbl t="Time Horizon" />
-              <select value={suitability.timeHorizon} onChange={e => setSuitability(p => ({ ...p, timeHorizon: e.target.value }))} style={IS} data-lpignore="true">
+              <select value={suitability.timeHorizon} onChange={e => setSuitability(p => ({ ...p, timeHorizon: e.target.value }))} style={{ ...IS, width: 240 }} data-lpignore="true">
                 <option value="">— Select —</option>
                 <option>Short-Term (0–3 yrs)</option>
                 <option>Medium-Term (3–7 yrs)</option>
