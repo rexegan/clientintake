@@ -5170,7 +5170,7 @@ export default function App() {
             {willsTrust.hasTrustDoc === "yes" && (
               <div style={{ flexShrink: 0 }}>
                 <Lbl t="Type of Trust?" />
-                <select data-lpignore="true" value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value }))} style={{ ...IS, width: 260 }}>
+                <select data-lpignore="true" value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value }))} style={{ ...IS, width: 305 }}>
                   <option value="">— Select —</option>
                   <option>Revocable Living Trust</option>
                   <option>AB Trust</option>
