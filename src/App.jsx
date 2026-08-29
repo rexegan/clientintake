@@ -5649,21 +5649,6 @@ export default function App() {
             return <div style={{ fontSize: 12, fontWeight: 600, color: ok ? SUCCESS : DANGER, marginTop: 4 }}>Total: {total.toFixed(1)}% {ok ? "✓" : "(must equal 100%)"}</div>;
           })()}
 
-          {/* ── RISK / OTHER ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Risk &amp; Preferences</div>
-          <Row cols={2}>
-            <F>
-              <Lbl t="Comfort with Temporary Loss" />
-              <select value={suitability.lossComfort} onChange={e => setSuitability(p => ({ ...p, lossComfort: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Not comfortable with any loss</option>
-                <option>Up to 5% temporary loss</option>
-                <option>Up to 10% temporary loss</option>
-                <option>Up to 20% temporary loss</option>
-                <option>Up to 30% or more temporary loss</option>
-              </select>
-            </F>
-          </Row>
           <Row cols={1}>
             <F>
               <Lbl t="Suitability Notes" />
@@ -6776,10 +6761,6 @@ export default function App() {
           <Tbl cols={["Category","%"]} rows={[
             ["Qualified (IRA/401k/etc.)", suitability.pctQualified], ["Non-Qualified", suitability.pctNonQualified],
           ].filter(([,v]) => v)} emptyMsg="No qualified/non-qualified breakdown entered." />
-          <Sub t="Risk & Preferences" />
-          <Tbl cols={["Field","Value"]} rows={[
-            ["Loss Comfort", suitability.lossComfort],
-          ].filter(([,v]) => v)} emptyMsg="No risk preferences entered." />
           {suitability.notes && <><Sub t="Notes" /><div style={{ fontSize: 13, color: INK }}>{suitability.notes}</div></>}
         </>);
 
