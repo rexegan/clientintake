@@ -5467,7 +5467,7 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Documents in Place?" />
-                  <select value={inh.estatePlanning} onChange={e => updInh(inh.id, "estatePlanning", e.target.value)} style={{ ...IS, width: 195 }}>
+                  <select value={inh.estatePlanning} onChange={e => updInh(inh.id, "estatePlanning", e.target.value)} style={{ ...IS, width: 228 }}>
                     <option value="">— Select —</option>
                     <option value="yes_complete">Yes — Complete</option>
                     <option value="yes_partial">Yes — Partial / Outdated</option>
@@ -5477,7 +5477,7 @@ export default function App() {
                 </F>
                 <F>
                   <Lbl t="Trustee / Executor Arrangements" />
-                  <select value={inh.trusteeArrangements} onChange={e => updInh(inh.id, "trusteeArrangements", e.target.value)} style={{ ...IS, width: 250 }}>
+                  <select value={inh.trusteeArrangements} onChange={e => updInh(inh.id, "trusteeArrangements", e.target.value)} style={{ ...IS, width: 282 }}>
                     <option value="">— Select —</option>
                     <option value="client_is_executor">Client is Executor / Trustee</option>
                     <option value="professional">Professional / Corporate Trustee</option>
@@ -5490,7 +5490,7 @@ export default function App() {
               <Row cols={2}>
                 <F>
                   <Lbl t="Charitable Giving Intent?" />
-                  <select value={inh.charitableIntent} onChange={e => updInh(inh.id, "charitableIntent", e.target.value)} style={{ ...IS, width: 255 }}>
+                  <select value={inh.charitableIntent} onChange={e => updInh(inh.id, "charitableIntent", e.target.value)} style={{ ...IS, width: 288 }}>
                     <option value="">— Select —</option>
                     <option value="no">No</option>
                     <option value="yes_donor_advised">Yes — Donor Advised Fund</option>
