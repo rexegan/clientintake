@@ -5325,7 +5325,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Inheritance?" />
-                  <select value={inh.expectsInheritance} onChange={e => updInh(inh.id, "expectsInheritance", e.target.value)} style={{ ...IS, width: 114 }}>
+                  <select value={inh.expectsInheritance} onChange={e => updInh(inh.id, "expectsInheritance", e.target.value)} style={{ ...IS, width: 124 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
