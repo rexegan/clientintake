@@ -5436,7 +5436,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Nursing Care / Long-Term Care?" />
-                  <select value={inh.nursingCare} onChange={e => updInh(inh.id, "nursingCare", e.target.value)} style={{ ...IS, width: 265 }}>
+                  <select value={inh.nursingCare} onChange={e => updInh(inh.id, "nursingCare", e.target.value)} style={{ ...IS, width: 290 }}>
                     <option value="">— Select —</option>
                     <option value="no">No</option>
                     <option value="yes_parent">Yes — Parent(s) in or nearing care</option>
@@ -5448,7 +5448,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Long-Term Care Insurance in Place?" />
-                  <select value={inh.ltcInsurance || ""} onChange={e => updInh(inh.id, "ltcInsurance", e.target.value)} style={{ ...IS, width: 210 }}>
+                  <select value={inh.ltcInsurance || ""} onChange={e => updInh(inh.id, "ltcInsurance", e.target.value)} style={{ ...IS, width: 245 }}>
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
