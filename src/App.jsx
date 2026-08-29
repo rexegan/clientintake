@@ -5121,8 +5121,8 @@ export default function App() {
             });
             sums.cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
             const cats = [
-              ["Cash & Cash Equivalents (Checking, Savings, MM, CDs)", sums.cash],
-              ["Qualified Retirement Plans (401k, IRA, Pension, etc.)", sums.qual],
+              ["Cash (Checking, Savings, Money Market, CDs)", sums.cash],
+              ["Qualified Plans (401k, IRA, Roth, etc.)", sums.qual],
               ["Non-Qualified / Taxable Brokerage", sums.nonqual],
               ["Annuities (Fixed, Indexed, Variable, RILA)", sums.ann],
               ["Cash Value Life Insurance", sums.cvli],
