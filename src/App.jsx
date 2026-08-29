@@ -4632,19 +4632,17 @@ export default function App() {
                 </div>
               </div>
               {a.hasOpt === "yes" && (
-                <Row cols={2}>
-                  <F>
-                    <Lbl t="Expected Date of Event" />
-                    <input
-                      value={a.optTimeframe || ""}
-                      onChange={e => updAcct(a.id, "optTimeframe", e.target.value)}
-                      style={IS}
-                      autoComplete="new-password"
-                      data-lpignore="true"
-                      placeholder="e.g. Jan 2027, Q3 2026…"
-                    />
-                  </F>
-                </Row>
+                <div style={{ marginBottom: 12 }}>
+                  <Lbl t="Expected Date of Event" />
+                  <input
+                    value={a.optTimeframe || ""}
+                    onChange={e => updAcct(a.id, "optTimeframe", e.target.value)}
+                    style={{ ...IS, width: 200 }}
+                    autoComplete="new-password"
+                    data-lpignore="true"
+                    placeholder="e.g. Jan 2027, Q3 2026…"
+                  />
+                </div>
               )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flex: "0 0 220px" }}>
