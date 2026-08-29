@@ -5201,10 +5201,10 @@ export default function App() {
                     <F><DatePicker label="Date Will Was Executed" value={willsTrust.willDate} onChange={v => setWillsTrust(p => ({ ...p, willDate: v }))} /></F>
                     <F><Lbl t="Attorney / Firm" /><input value={willsTrust.willAttorney} onChange={e => setWillsTrust(p => ({ ...p, willAttorney: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
                   </Row>
-                  <Row cols={2}>
-                    <F><Lbl t="Executor" /><input value={willsTrust.executor} onChange={e => setWillsTrust(p => ({ ...p, executor: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                    <F><Lbl t="Alternate Executor" /><input value={willsTrust.altExecutor} onChange={e => setWillsTrust(p => ({ ...p, altExecutor: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" /></F>
-                  </Row>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                    <F style={{ flex: "0 0 280px" }}><Lbl t="Executor / Executrix" /><input value={willsTrust.executor} onChange={e => setWillsTrust(p => ({ ...p, executor: e.target.value }))} style={{ ...IS, width: 280 }} autoComplete="new-password" data-lpignore="true" /></F>
+                    <F style={{ flex: "0 0 280px" }}><Lbl t="Alternate Executor / Executrix" /><input value={willsTrust.altExecutor} onChange={e => setWillsTrust(p => ({ ...p, altExecutor: e.target.value }))} style={{ ...IS, width: 280 }} autoComplete="new-password" data-lpignore="true" /></F>
+                  </div>
                   <Lbl t="Location of Original Will" /><input value={willsTrust.willLocation} onChange={e => setWillsTrust(p => ({ ...p, willLocation: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" />
                   <Row cols={2}>
                     <F>
