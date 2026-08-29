@@ -3779,7 +3779,7 @@ export default function App() {
           )}
           <FileUpload section="employment" files={uploads.employment || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
 
-          {extraEmps.filter(r => r.owner === empView).map((r, i) => (
+          {extraEmps.map((r, i) => (
             <div key={r.id} style={{ marginTop: 16, border: "1px solid " + BORDER, borderRadius: 10, padding: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: INK }}>Additional Employment Record {i + 1}</div>
