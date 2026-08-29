@@ -5644,27 +5644,50 @@ export default function App() {
           </Row>
 
           {/* ── DETAILED PORTFOLIO BREAKDOWN ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Portfolio Breakdown by Product Type (%)</div>
-          <Row cols={2}>
-            <F><Lbl t="Fixed Indexed Annuities %" /><input value={suitability.pctFixedIndexedAnnuities} onChange={e => setSuitability(p => ({ ...p, pctFixedIndexedAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Fixed Annuities %" /><input value={suitability.pctFixedAnnuities} onChange={e => setSuitability(p => ({ ...p, pctFixedAnnuities: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-          <Row cols={2}>
-            <F><Lbl t="Cash Value Life Insurance %" /><input value={suitability.pctCashValueLife} onChange={e => setSuitability(p => ({ ...p, pctCashValueLife: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Checking, Savings, Money Market, CD %" /><input value={suitability.pctLiquidCash} onChange={e => setSuitability(p => ({ ...p, pctLiquidCash: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
-
-          {/* ── QUALIFIED vs NON-QUALIFIED ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Qualified vs. Non-Qualified (%)</div>
-          <Row cols={2}>
-            <F><Lbl t="Qualified Money (IRA / 401k / etc.) %" /><input value={suitability.pctQualified} onChange={e => setSuitability(p => ({ ...p, pctQualified: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-            <F><Lbl t="Non-Qualified Money %" /><input value={suitability.pctNonQualified} onChange={e => setSuitability(p => ({ ...p, pctNonQualified: e.target.value.replace(/[^0-9.]/g, "") }))} style={IS} inputMode="numeric" placeholder="0" autoComplete="new-password" data-lpignore="true" /></F>
-          </Row>
+          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Portfolio Breakdown by Product Type</div>
           {(() => {
-            const total = (parseFloat(suitability.pctQualified) || 0) + (parseFloat(suitability.pctNonQualified) || 0);
-            if (!total) return null;
-            const ok = Math.abs(total - 100) < 0.01;
-            return <div style={{ fontSize: 12, fontWeight: 600, color: ok ? SUCCESS : DANGER, marginTop: 4 }}>Total: {total.toFixed(1)}% {ok ? "✓" : "(must equal 100%)"}</div>;
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            let fia = 0, fixed = 0, cvli = 0, cash = 0, qual = 0, nonqual = 0;
+            const QUAL = new Set(["Traditional IRA","Roth IRA","Inherited IRA","401(k)","Roth 401(k)","403(b)","457(b)","SEP IRA","SIMPLE IRA","HSA","529 / Education","Pension / Defined Benefit"]);
+            accounts.forEach(a => {
+              const bal = pd(a.balance);
+              if (!bal) return;
+              const t = a.type || "", iv = a.investmentType || "";
+              if (t === "Annuity (Fixed Indexed)" || iv === "Fixed Indexed Annuity") fia += bal;
+              else if (t === "Annuity (Fixed)" || iv === "Fixed Annuity") fixed += bal;
+              else if (t === "Life Insurance (Cash Value)") cvli += bal;
+              else if (["Checking","Savings","Money Market","CD"].includes(t) || ["CDs","Money Market","Cash"].includes(iv)) cash += bal;
+              if (QUAL.has(t) || a.qualified === "Qualified") qual += bal;
+              else nonqual += bal;
+            });
+            cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
+            const four = fia + fixed + cvli + cash;
+            const qn = qual + nonqual;
+            const pct = (v, tot) => tot ? Math.round(v / tot * 1000) / 10 : 0;
+            const Box = ({ label, val, tot }) => (
+              <F>
+                <Lbl t={label} />
+                <div style={{ ...IS, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span>{val ? "$" + val.toLocaleString() : "—"}</span>
+                  <span style={{ color: "#2e3d66" }}>{val && tot ? pct(val, tot) + "%" : ""}</span>
+                </div>
+              </F>
+            );
+            return (<>
+              <Row cols={2}>
+                <Box label="Fixed Indexed Annuities" val={fia} tot={four} />
+                <Box label="Fixed Annuities" val={fixed} tot={four} />
+              </Row>
+              <Row cols={2}>
+                <Box label="Cash Value Life Insurance" val={cvli} tot={four} />
+                <Box label="Checking, Savings, Money Market, CD" val={cash} tot={four} />
+              </Row>
+              <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Qualified vs. Non-Qualified</div>
+              <Row cols={2}>
+                <Box label="Qualified Money (IRA / 401k / etc.)" val={qual} tot={qn} />
+                <Box label="Non-Qualified Money" val={nonqual} tot={qn} />
+              </Row>
+            </>);
           })()}
 
           <Row cols={1}>
