@@ -5347,7 +5347,7 @@ export default function App() {
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   <Lbl t="Source of Inheritance" />
-                  <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={{ ...IS, width: 196 }}>
+                  <select value={inh.source} onChange={e => updInh(inh.id, "source", e.target.value)} style={{ ...IS, width: 208 }}>
                     <option value="">— Select —</option>
                     <option value="parents_estate">Parents' Estate</option>
                     <option value="grandparents_estate">Grandparents' Estate</option>
@@ -5364,8 +5364,8 @@ export default function App() {
               </div>
 
               <Sec t="Family Structure" />
-              <Row cols={3}>
-                <F>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Number of Siblings" />
                   <select value={inh.numberOfSiblings} onChange={e => updInh(inh.id, "numberOfSiblings", e.target.value)} style={{ ...IS, width: 150 }}>
                     <option value="">— Select —</option>
@@ -5377,8 +5377,8 @@ export default function App() {
                     <option value="5">5</option>
                     <option value="6+">6 or More</option>
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Siblings Involved in Estate?" />
                   <select value={inh.siblingsInvolved} onChange={e => updInh(inh.id, "siblingsInvolved", e.target.value)} style={{ ...IS, width: 225 }}>
                     <option value="">— Select —</option>
@@ -5387,17 +5387,17 @@ export default function App() {
                     <option value="no">No — Client is Sole Heir</option>
                     <option value="unknown">Unknown</option>
                   </select>
-                </F>
-                <F>
+                </div>
+                <div style={{ flexShrink: 0 }}>
                   <Lbl t="Family Conflicts / Disputes?" />
-                  <select value={inh.familyConflicts} onChange={e => updInh(inh.id, "familyConflicts", e.target.value)} style={IS}>
+                  <select value={inh.familyConflicts} onChange={e => updInh(inh.id, "familyConflicts", e.target.value)} style={{ ...IS, width: 190 }}>
                     <option value="">— Select —</option>
                     <option value="no">No</option>
                     <option value="yes">Yes</option>
                     <option value="potential">Potential / Uncertain</option>
                   </select>
-                </F>
-              </Row>
+                </div>
+              </div>
               {(inh.familyConflicts === "yes" || inh.familyConflicts === "potential") && (
                 <Row cols={1}>
                   <F><Lbl t="Conflict Details" /><textarea value={inh.conflictDetails} onChange={e => updInh(inh.id, "conflictDetails", e.target.value)} style={{ ...IS, minHeight: 70, resize: "vertical" }} placeholder="Describe any known family disputes, contested wills, or relationship concerns..." /></F>
