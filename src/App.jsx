@@ -5150,24 +5150,48 @@ export default function App() {
 
         {/* ── WILLS & TRUST ── */}
         <Panel title="Wills & Trust" id="section-wills">
-          <Row cols={3}>
-            <F>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Will?" />
-              <select data-lpignore="true" value={willsTrust.hasWillDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWillDoc: e.target.value || null }))} style={IS}>
+              <select data-lpignore="true" value={willsTrust.hasWillDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasWillDoc: e.target.value || null }))} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
-            </F>
-            <F>
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Lbl t="Trust?" />
-              <select data-lpignore="true" value={willsTrust.hasTrustDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasTrustDoc: e.target.value || null }))} style={IS}>
+              <select data-lpignore="true" value={willsTrust.hasTrustDoc || ""} onChange={e => setWillsTrust(p => ({ ...p, hasTrustDoc: e.target.value || null }))} style={{ ...IS, width: 114 }}>
                 <option value="">— Select —</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
-            </F>
-          </Row>
+            </div>
+            {willsTrust.hasTrustDoc === "yes" && (
+              <div style={{ flexShrink: 0 }}>
+                <Lbl t="Type of Trust?" />
+                <select data-lpignore="true" value={willsTrust.trustType || ""} onChange={e => setWillsTrust(p => ({ ...p, trustType: e.target.value }))} style={{ ...IS, width: 260 }}>
+                  <option value="">— Select —</option>
+                  <option>Revocable Living Trust</option>
+                  <option>AB Trust</option>
+                  <option>Irrevocable Trust</option>
+                  <option>Irrevocable Life Insurance Trust (ILIT)</option>
+                  <option>Charitable Remainder Trust</option>
+                  <option>Charitable Lead Trust</option>
+                  <option>Special Needs Trust</option>
+                  <option>Spendthrift Trust</option>
+                  <option>Qualified Personal Residence Trust</option>
+                  <option>Grantor Retained Annuity Trust (GRAT)</option>
+                  <option>Dynasty Trust</option>
+                  <option>Testamentary Trust</option>
+                  <option>QTIP Trust</option>
+                  <option>Land Trust</option>
+                  <option>Family Trust</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            )}
+          </div>
           {(willsTrust.hasWillDoc === "yes" || willsTrust.hasTrustDoc === "yes") && (
             <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 16 }}>
               {willsTrust.hasWillDoc === "yes" && (
