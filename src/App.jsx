@@ -4603,7 +4603,7 @@ export default function App() {
                     {["married","domestic_partner"].includes(hasSpouse) && (
                       <option value="Spouse">{[spouse.firstName, spouse.lastName].filter(Boolean).join(" ") || "Spouse"}</option>
                     )}
-                    <option value="Joint">Joint (JNT)</option>
+                    <option value="Joint">Joint</option>
                   </select>
                 </div>
                 <div style={{ flexShrink: 0 }}>
