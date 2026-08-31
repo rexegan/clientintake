@@ -707,7 +707,7 @@ function fmt(n) {
 }
 
 function ClientReport({ data, onClose }) {
-  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], beneficiaries = [], children = [], willsTrust = {}, poas = [], annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, lifePolicies = [] } = data;
+  const { client = {}, spouse = {}, hasSpouse, accounts = [], realEstate = [], incomes = [], autos = [], debts = [], businesses = [], beneficiaries = [], children = [], willsTrust = {}, poas = [], annualExpenses = { amount: "", frequency: "monthly" }, homeOwnership = {}, lifePolicies = [] } = data;
 
   const clientFirst = client.firstName || "";
   const clientLast  = client.lastName  || "";
@@ -1115,6 +1115,32 @@ function ClientReport({ data, onClose }) {
               </tbody>
             </table>
           ) : <p style={{ color: "#8a94a3", fontStyle: "italic" }}>No real estate recorded.</p>}
+
+          {/* ── DEBT / LIABILITIES ── */}
+          <div style={s.sectionHead}>Debt &amp; Liabilities</div>
+          {(() => {
+            const pdv = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const rows = [];
+            if (pdv(homeOwnership.mortgageBalance)) rows.push(["Mortgage — Personal Residence", homeOwnership.mortgageCompany || "—", homeOwnership.monthlyPayment || "—", homeOwnership.mortgageBalance]);
+            realEstate.forEach((r, i) => { if (pdv(r.mortgageBalance)) rows.push([`Mortgage — Property ${i + 1}`, r.mortgageCompany === "__other__" ? "—" : (r.mortgageCompany || "—"), r.monthlyPmt || "—", r.mortgageBalance]); });
+            autos.forEach((a2, i) => { if (pdv(a2.loanBalance)) rows.push([`Auto Loan — ${[a2.year, a2.make, a2.model].filter(Boolean).join(" ") || "Vehicle " + (i + 1)}`, a2.lender || "—", a2.monthlyPayment || "—", a2.loanBalance]); });
+            businesses.forEach((b2, i) => { if (pdv(b2.loanBalance)) rows.push([`${b2.loanType || "Business Loan"} — ${b2.name || "Business " + (i + 1)}`, b2.loanLender || "—", b2.loanPayment || "—", b2.loanBalance]); });
+            debts.forEach(d => { if (pdv(d.balance) || d.type) rows.push([d.type || "Debt", d.lender || "—", d.monthlyPayment || "—", d.balance || "—"]); });
+            const total = rows.reduce((t, r) => t + pdv(r[3]), 0);
+            return rows.length > 0 ? (
+              <table style={s.table}>
+                <thead><tr><th style={s.th}>Debt</th><th style={s.th}>Lender</th><th style={{ ...s.th, textAlign: "right" }}>Monthly</th><th style={{ ...s.th, textAlign: "right" }}>Balance</th></tr></thead>
+                <tbody>
+                  {rows.map((r, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f4f6f9" }}>
+                      <td style={s.td}>{r[0]}</td><td style={s.td}>{r[1]}</td><td style={s.tdr}>{r[2]}</td><td style={s.tdr}>{r[3]}</td>
+                    </tr>
+                  ))}
+                  <tr><td style={{ ...s.td, fontWeight: 700 }}>Total</td><td style={s.td}></td><td style={s.tdr}></td><td style={{ ...s.tdr, fontWeight: 700 }}>{"$" + total.toLocaleString()}</td></tr>
+                </tbody>
+              </table>
+            ) : <p style={{ color: "#8a94a3", fontStyle: "italic" }}>No debts recorded.</p>;
+          })()}
 
           {/* ── INCOME ── */}
           <div style={s.sectionHead}>Income Summary</div>
@@ -6185,7 +6211,7 @@ export default function App() {
     {showSummaryReview && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poas, annualExpenses, homeOwnership, lifePolicies }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, debts, businesses, beneficiaries, children, willsTrust, poas, annualExpenses, homeOwnership, lifePolicies }}
           onClose={() => setShowSummaryReview(false)}
         />
       </div>
@@ -6193,7 +6219,7 @@ export default function App() {
     {showReport && (
       <div id="rwg-report-wrap">
         <ClientReport
-          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, beneficiaries, children, willsTrust, poas, annualExpenses, homeOwnership, lifePolicies }}
+          data={{ client, spouse, hasSpouse, accounts, realEstate, incomes, autos, debts, businesses, beneficiaries, children, willsTrust, poas, annualExpenses, homeOwnership, lifePolicies }}
           onClose={() => setShowReport(false)}
         />
       </div>
