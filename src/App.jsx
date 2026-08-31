@@ -4715,7 +4715,7 @@ export default function App() {
                 <span style={{ width: 150, flexShrink: 0 }}>Account Type</span>
                 <span style={{ width: 150, flexShrink: 0 }}>Investment Type</span>
                 <span style={{ width: 150, flexShrink: 0 }}>Institution / Held At</span>
-                <span style={{ marginLeft: "auto", flexShrink: 0 }}>OPP</span>
+                <span style={{ marginLeft: "auto", flexShrink: 0, width: 64 }}>OPP</span>
                 <span style={{ width: 100, flexShrink: 0, textAlign: "right" }}>Account Balance</span>
               </div>
               {accounts.map((a, i) => {
