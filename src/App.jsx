@@ -4728,15 +4728,15 @@ export default function App() {
           </button>
           {accounts.some(a => a.balance || a.type || a.owner) && (
             <div style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 8, padding: "10px 18px", marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: INK, marginBottom: 6 }}>Portfolio Summary</div>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 12, fontSize: 11, fontWeight: 700, color: MUTED, padding: "2px 0 4px", borderBottom: "1px solid " + BORDER }}>
-                <span style={{ width: 40, flexShrink: 0 }}>ACCT</span>
-                <span style={{ width: 120, flexShrink: 0 }}>Owner</span>
-                <span style={{ width: 145, flexShrink: 0 }}>Account Type</span>
-                <span style={{ width: 145, flexShrink: 0 }}>Investment Type</span>
-                <span style={{ width: 145, flexShrink: 0 }}>Institution Held At</span>
-                <span style={{ width: 64, flexShrink: 0 }}>OPP</span>
-                <span style={{ marginLeft: "auto", flexShrink: 0, textAlign: "right" }}>Account Balance</span>
+              <div style={{ fontSize: 16, fontWeight: 700, color: INK, marginBottom: 8, textAlign: "center" }}>Portfolio Summary</div>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, fontSize: 11, fontWeight: 700, color: MUTED, padding: "2px 0 4px", borderBottom: "1px solid " + BORDER }}>
+                <span style={{ width: 34, flexShrink: 0 }}>ACCT</span>
+                <span style={{ width: 110, flexShrink: 0 }}>Owner</span>
+                <span style={{ width: 135, flexShrink: 0 }}>Account Type</span>
+                <span style={{ width: 135, flexShrink: 0 }}>Investment Type</span>
+                <span style={{ width: 135, flexShrink: 0 }}>Institution Held At</span>
+                <span style={{ marginLeft: "auto", width: 48, flexShrink: 0 }}>OPP</span>
+                <span style={{ width: 100, flexShrink: 0, textAlign: "right" }}>Value</span>
               </div>
               {accounts.map((a, i) => {
                 const ownerName = a.owner === "Joint"
@@ -4748,19 +4748,19 @@ export default function App() {
                       : "—";
                 return (
                   <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
-                    <span style={{ fontWeight: 600, width: 40, flexShrink: 0 }}>{i + 1}</span>
-                    <span style={{ width: 120, flexShrink: 0 }}>{ownerName}</span>
-                    <span style={{ width: 145, flexShrink: 0 }}>{a.type || "—"}</span>
-                    <span style={{ width: 145, flexShrink: 0 }}>{a.investmentType || "—"}</span>
-                    <span style={{ width: 145, flexShrink: 0 }}>{a.institution || "—"}</span>
-                    <span style={{ width: 64, flexShrink: 0 }}>
-                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 4px", cursor: "pointer", width: 64, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
+                    <span style={{ fontWeight: 600, width: 34, flexShrink: 0 }}>{i + 1}</span>
+                    <span style={{ width: 110, flexShrink: 0 }}>{ownerName}</span>
+                    <span style={{ width: 135, flexShrink: 0 }}>{a.type || "—"}</span>
+                    <span style={{ width: 135, flexShrink: 0 }}>{a.investmentType || "—"}</span>
+                    <span style={{ width: 135, flexShrink: 0 }}>{a.institution || "—"}</span>
+                    <span style={{ marginLeft: "auto", width: 48, flexShrink: 0 }}>
+                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 4px", cursor: "pointer", width: 48, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
                         <option value="">—</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
                       </select>
                     </span>
-                    <span style={{ marginLeft: "auto", flexShrink: 0, textAlign: "right", fontWeight: 600 }}>{a.balance || "—"}</span>
+                    <span style={{ width: 100, flexShrink: 0, textAlign: "right", fontWeight: 600 }}>{a.balance || "—"}</span>
                   </div>
                 );
               })}
