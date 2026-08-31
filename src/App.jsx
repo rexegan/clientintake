@@ -658,12 +658,10 @@ const SECTION_META = {
   "section-life":       { color: "#06b6d4", bg: "#e5f7fa", icon: <IcSvg><path d="M12 3l7 3v5.5c0 4.6-3.2 7.6-7 9.5-3.8-1.9-7-4.9-7-9.5V6z"/></IcSvg> },
   "section-networth":   { color: "#8b5cf6", bg: "#f0edfe", icon: <IcSvg><path d="M3 17l4-8 4 5 3-3 4 6"/><path d="M3 21h18"/></IcSvg> },
   "section-inheritance":{ color: "#0ea5e9", bg: "#e8f5fd", icon: <IcSvg><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></IcSvg> },
-  "section-suitability":{ color: "#7c3aed", bg: "#f3effe", icon: <IcSvg><path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z"/><path d="M12 8v4l3 3"/></IcSvg> },
   "section-alerts":     { color: "#ef4444", bg: "#fef2f2", icon: <IcSvg><path d="M10.3 3.5L2.1 17A2 2 0 0 0 3.8 20h16.4a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><circle cx="12" cy="17" r="1"/></IcSvg> },
   "section-importantdates": { color: "#d97706", bg: "#fffbeb", icon: <IcSvg><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></IcSvg> },
   "section-apps":       { color: "#0d9488", bg: "#f0fdfa", icon: <IcSvg><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IcSvg> },
   "section-advisor":    { color: "#7c3aed", bg: "#f5f3ff", icon: <IcSvg><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></IcSvg> },
-  "section-followup":   { color: "#0891b2", bg: "#ecfeff", icon: <IcSvg><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></IcSvg> },
 };
 
 const IconChip = ({ id, size = 28 }) => {
@@ -1957,8 +1955,6 @@ export default function App() {
     ["section-networth",   () => "Net Worth / Portfolio"],
     ["section-wills",      () => "Wills & Trust"],
     ["section-inheritance",() => "Estate Planning"],
-    ["section-suitability",() => "Suitability"],
-    ["section-followup",   () => "Follow Up"],
     ["section-alerts",     () => "Alerts"],
     ["section-preferences",() => "Client Preferences"],
     ["section-importantdates",() => "Important Dates / Information"],
@@ -1977,7 +1973,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-debts","section-life","section-networth","section-wills","section-inheritance","section-suitability","section-followup","section-alerts","section-preferences","section-importantdates","section-apps"];
+    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-debts","section-life","section-networth","section-wills","section-inheritance","section-alerts","section-preferences","section-importantdates","section-apps"];
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -2071,7 +2067,6 @@ export default function App() {
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-life"); }, [lifePolicies]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-networth"); }, [nwState, annualExpenses]);
   useEffect(() => { if (!sectionMounted.current) return; markSection("section-inheritance"); }, [inheritances, vaults]);
-  useEffect(() => { if (!sectionMounted.current) return; markSection("section-suitability"); }, [suitability]);
   useEffect(() => { sectionMounted.current = true; }, []);
 
   const buildSnapshot = useCallback(() => ({
@@ -2534,8 +2529,6 @@ export default function App() {
             ["section-networth",  "Net Worth / Portfolio"],
             ["section-wills",     "Wills & Trust"],
             ["section-inheritance", "Estate Planning"],
-            ["section-suitability", "Suitability"],
-            ["section-followup",   "Follow Up"],
             ["section-alerts",     "Alerts"],
             ["section-preferences","Client Preferences"],
             ["section-importantdates","Important Dates / Information"],
@@ -5523,367 +5516,8 @@ export default function App() {
           </button>
         </Panel>
 
-        <Panel title="Suitability" id="section-suitability">
-          {/* ── INVESTMENT PROFILE ── */}
-          <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Investment Profile</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Risk Tolerance" />
-              <select value={suitability.riskTolerance} onChange={e => setSuitability(p => ({ ...p, riskTolerance: e.target.value }))} style={{ ...IS, width: 216 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Conservative</option>
-                <option>Moderately Conservative</option>
-                <option>Moderate</option>
-                <option>Moderately Aggressive</option>
-                <option>Aggressive</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Investment Objective" />
-              <select value={suitability.investmentObjective} onChange={e => setSuitability(p => ({ ...p, investmentObjective: e.target.value }))} style={{ ...IS, width: 200 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Capital Preservation</option>
-                <option>Income</option>
-                <option>Growth &amp; Income</option>
-                <option>Growth</option>
-                <option>Aggressive Growth</option>
-              </select>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Lbl t="Time Horizon" />
-              <select value={suitability.timeHorizon} onChange={e => setSuitability(p => ({ ...p, timeHorizon: e.target.value }))} style={{ ...IS, width: 234 }} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Short-Term (0–3 yrs)</option>
-                <option>Medium-Term (3–7 yrs)</option>
-                <option>Long-Term (7–15 yrs)</option>
-                <option>Very Long-Term (15+ Years)</option>
-              </select>
-            </div>
-          </div>
-          <Row cols={3}>
-            <F>
-              <Lbl t="Liquidity Needs" />
-              <select value={suitability.liquidityNeeds} onChange={e => setSuitability(p => ({ ...p, liquidityNeeds: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>None</option>
-                <option>Low</option>
-                <option>Moderate</option>
-                <option>High</option>
-                <option>Very High</option>
-              </select>
-            </F>
-            <F>
-              <Lbl t="Investment Experience" />
-              <select value={suitability.investmentExperience} onChange={e => setSuitability(p => ({ ...p, investmentExperience: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>None</option>
-                <option>Limited</option>
-                <option>Moderate</option>
-                <option>Good</option>
-                <option>Extensive</option>
-              </select>
-            </F>
-            <F>
-              <Lbl t="Federal Tax Bracket" />
-              <select value={suitability.taxBracket} onChange={e => setSuitability(p => ({ ...p, taxBracket: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>10%</option>
-                <option>12%</option>
-                <option>22%</option>
-                <option>24%</option>
-                <option>32%</option>
-                <option>35%</option>
-                <option>37%</option>
-              </select>
-            </F>
-          </Row>
-
-          {/* ── GOALS ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Goals & Priorities</div>
-          <Row cols={2}>
-            <F>
-              <Lbl t="Primary Goal" />
-              <select value={suitability.primaryGoal} onChange={e => setSuitability(p => ({ ...p, primaryGoal: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Retirement Income</option>
-                <option>Wealth Accumulation</option>
-                <option>Capital Preservation</option>
-                <option>Estate Transfer</option>
-                <option>Education Funding</option>
-                <option>Tax Reduction</option>
-                <option>Charitable Giving</option>
-                <option>Business Succession</option>
-                <option>Other</option>
-              </select>
-            </F>
-            <F>
-              <Lbl t="Secondary Goal" />
-              <select value={suitability.secondaryGoal} onChange={e => setSuitability(p => ({ ...p, secondaryGoal: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Retirement Income</option>
-                <option>Wealth Accumulation</option>
-                <option>Capital Preservation</option>
-                <option>Estate Transfer</option>
-                <option>Education Funding</option>
-                <option>Tax Reduction</option>
-                <option>Charitable Giving</option>
-                <option>Business Succession</option>
-                <option>Other</option>
-              </select>
-            </F>
-          </Row>
-          <Row cols={2}>
-            <F>
-              <Lbl t="Need for Income?" />
-              <select value={suitability.incomeNeed} onChange={e => setSuitability(p => ({ ...p, incomeNeed: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>No — reinvest all returns</option>
-                <option>Some — partial distributions</option>
-                <option>Yes — regular income required</option>
-              </select>
-            </F>
-            <F>
-              <Lbl t="Growth Requirement" />
-              <select value={suitability.growthNeed} onChange={e => setSuitability(p => ({ ...p, growthNeed: e.target.value }))} style={IS} data-lpignore="true">
-                <option value="">— Select —</option>
-                <option>Not important</option>
-                <option>Modest growth acceptable</option>
-                <option>Growth is important</option>
-                <option>Maximum growth desired</option>
-              </select>
-            </F>
-          </Row>
-
-          {/* ── DETAILED PORTFOLIO BREAKDOWN ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Portfolio Breakdown by Product Type</div>
-          {(() => {
-            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
-            let fia = 0, fixed = 0, cvli = 0, cash = 0, qual = 0, nonqual = 0;
-            const QUAL = new Set(["Traditional IRA","Roth IRA","Inherited IRA","401(k)","Roth 401(k)","403(b)","457(b)","SEP IRA","SIMPLE IRA","HSA","529 / Education","Pension / Defined Benefit"]);
-            accounts.forEach(a => {
-              const bal = pd(a.balance);
-              if (!bal) return;
-              const t = a.type || "", iv = a.investmentType || "";
-              if (t === "Annuity (Fixed Indexed)" || iv === "Fixed Indexed Annuity") fia += bal;
-              else if (t === "Annuity (Fixed)" || iv === "Fixed Annuity") fixed += bal;
-              else if (t === "Life Insurance (Cash Value)") cvli += bal;
-              else if (["Checking","Savings","Money Market","CD"].includes(t) || ["CDs","Money Market","Cash"].includes(iv)) cash += bal;
-              if (QUAL.has(t) || a.qualified === "Qualified") qual += bal;
-              else nonqual += bal;
-            });
-            cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
-            const four = fia + fixed + cvli + cash;
-            const qn = qual + nonqual;
-            const pct = (v, tot) => tot ? Math.round(v / tot * 1000) / 10 : 0;
-            const Box = ({ label, val, tot }) => (
-              <F>
-                <Lbl t={label} />
-                <div style={{ ...IS, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>{val ? "$" + val.toLocaleString() : "—"}</span>
-                  <span style={{ color: "#2e3d66" }}>{val && tot ? pct(val, tot) + "%" : ""}</span>
-                </div>
-              </F>
-            );
-            return (<>
-              <Row cols={2}>
-                <Box label="Fixed Indexed Annuities" val={fia} tot={four} />
-                <Box label="Fixed Annuities" val={fixed} tot={four} />
-              </Row>
-              <Row cols={2}>
-                <Box label="Cash Value Life Insurance" val={cvli} tot={four} />
-                <Box label="Checking, Savings, Money Market, CD" val={cash} tot={four} />
-              </Row>
-              <div style={{ marginTop: 18, borderTop: "1px solid " + BORDER, paddingTop: 14, fontSize: 13, fontWeight: 600, color: INK, marginBottom: 10 }}>Qualified vs. Non-Qualified</div>
-              <Row cols={2}>
-                <Box label="Qualified Money (IRA / 401k / etc.)" val={qual} tot={qn} />
-                <Box label="Non-Qualified Money" val={nonqual} tot={qn} />
-              </Row>
-            </>);
-          })()}
-
-          <Row cols={1}>
-            <F>
-              <Lbl t="Suitability Notes" />
-              <textarea value={suitability.notes} onChange={e => setSuitability(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 80, resize: "vertical" }} placeholder="Additional suitability notes, special circumstances, or advisor observations..." autoComplete="new-password" data-lpignore="true" />
-            </F>
-          </Row>
-        </Panel>
 
 
-        <Panel title="Follow Up" id="section-followup">
-          {followUps.map((fu, i) => (
-            <div key={fu.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Task / Action {i + 1}</div>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <select value={fu.status} onChange={e => updFollowUp(fu.id, "status", e.target.value)} style={{ ...IS, width: 120, fontSize: 12, padding: "4px 10px", background: fu.status === "completed" ? "#dcfce7" : fu.status === "pending" ? "#fef9c3" : "#fff", color: fu.status === "completed" ? "#166534" : fu.status === "pending" ? "#854d0e" : INK }}>
-                    <option value="open">Open</option>
-                    <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                  {followUps.length > 1 && <button onClick={() => showConfirm("Remove this follow-up?", () => delFollowUp(fu.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>}
-                </div>
-              </div>
-              <div style={{ marginBottom: 12 }}>
-                <Lbl t="Task / Action" />
-                <TaskDropdown
-                  value={fu.task}
-                  onChange={v => updFollowUp(fu.id, "task", v)}
-                  options={["Schedule Annual Review","Review Portfolio / Allocation","Send / Follow Up on Paperwork","Beneficiary Update","RMD / Distribution","Rollover / Transfer Funds","Insurance Review","Estate Planning Review","Tax Documents / 1099s","Social Security Planning","Medicare / Benefits Review","Update Contact Information","Account Opening / Setup","Wire / ACH Transfer","Call Sheet","Other"]}
-                  placeholder="— Select Task —"
-                />
-              </div>
-              {fu.task === "Call Sheet" && (() => {
-                const cs = fu.callSheet || emptyCallSheet;
-                const updCs = (f, v) => updFollowUp(fu.id, "callSheet", { ...cs, [f]: v });
-                const csInput = (field, placeholder, width) => (
-                  <input value={cs[field] || ""} onChange={e => updCs(field, e.target.value)} style={{ ...IS, width }} placeholder={placeholder} autoComplete="new-password" data-lpignore="true" />
-                );
-                const csIS = { ...IS, width: "100%" };
-                const SectionHdr = ({ label, color }) => (
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", background: color, borderRadius: 6, padding: "4px 10px", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 8 }}>{label}</div>
-                );
-                return (
-                  <div style={{ background: "#fff", border: "1.5px solid #2f3a4a", borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: INK, marginBottom: 12, letterSpacing: "0.02em" }}>Call Sheet</div>
-                    {/* Client Info — auto-filled from profile */}
-                    <SectionHdr label="Client" color="#2f3a4a" />
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
-                      <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Client Name" />
-                        <input value={[client.firstName, client.lastName].filter(Boolean).join(" ") || ""} readOnly style={{ ...IS, width: 200, background: "#f4f6f9", color: MUTED }} />
-                      </div>
-                      <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Social Security #" />
-                        <input value={client.ssn || ""} readOnly style={{ ...IS, width: 140, background: "#f4f6f9", color: MUTED }} placeholder="—" />
-                      </div>
-                      <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Date of Birth" />
-                        <input value={client.dob || ""} readOnly style={{ ...IS, width: 120, background: "#f4f6f9", color: MUTED }} placeholder="—" />
-                      </div>
-                      <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Cell Phone" />
-                        <input value={client.cell || ""} readOnly style={{ ...IS, width: 140, background: "#f4f6f9", color: MUTED }} placeholder="—" />
-                      </div>
-                    </div>
-                    {/* FROM */}
-                    <SectionHdr label="Money Coming From" color="#0e7490" />
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
-                      <div style={{ flexShrink: 0, flex: "1 1 180px" }}><Lbl t="Company Name" />{csInput("fromCompany", "e.g. Edward Jones", 200)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Company Phone" />{csInput("fromPhone", "(___) ___-____", 150)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Account Number" />{csInput("fromAccountNum", "", 160)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Name" />{csInput("fromRepName", "", 160)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Phone" />{csInput("fromRepPhone", "(___) ___-____", 150)}</div>
-                    </div>
-                    {/* TO */}
-                    <SectionHdr label="Money Going To" color="#166534" />
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
-                      <div style={{ flexShrink: 0, flex: "1 1 180px" }}><Lbl t="Company Name" />{csInput("toCompany", "e.g. Empower", 200)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Company Phone" />{csInput("toPhone", "(___) ___-____", 150)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Account Number" />{csInput("toAccountNum", "", 160)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Name" />{csInput("toRepName", "", 160)}</div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Rep / Agent Phone" />{csInput("toRepPhone", "(___) ___-____", 150)}</div>
-                    </div>
-                    {/* Transfer details */}
-                    <SectionHdr label="Transfer Details" color="#6d28d9" />
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
-                      <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Transfer Type" />
-                        <select value={cs.transferType || ""} onChange={e => updCs("transferType", e.target.value)} style={{ ...IS, width: 200 }} data-lpignore="true">
-                          <option value="">— Select —</option>
-                          <option>Full Transfer</option>
-                          <option>Partial Transfer</option>
-                          <option>Direct Rollover</option>
-                          <option>Indirect Rollover</option>
-                          <option>In-Kind Transfer</option>
-                          <option>Wire Transfer</option>
-                          <option>ACH Transfer</option>
-                        </select>
-                      </div>
-                      <div style={{ flexShrink: 0 }}><Lbl t="Amount (if partial)" />{csInput("transferAmount", "$0.00", 140)}</div>
-                      <div style={{ flex: "1 1 220px" }}>
-                        <Lbl t="Notes" />
-                        <input value={cs.additionalNotes || ""} onChange={e => updCs("additionalNotes", e.target.value)} style={{ ...IS, width: "100%" }} placeholder="Any additional call notes…" autoComplete="new-password" data-lpignore="true" />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-              <div style={{ marginBottom: 12 }}>
-                {(() => {
-                  const rawWho = fu.who;
-                  const whoList = Array.isArray(rawWho)
-                    ? (rawWho.length === 0 ? [{ ...emptyWho }] : rawWho.map(w => typeof w === "string" ? { name: w, when: fu.when || "", how: fu.how || "" } : w))
-                    : (rawWho ? [{ name: rawWho, when: fu.when || "", how: fu.how || "" }] : [{ ...emptyWho }]);
-                  const whoOptions = ["Advisor","Client","Spouse / Co-Client","Office Staff","Attorney","CPA / Accountant","Insurance Company","Broker Dealer","Custodian",
-                    ...savedClients.map(r => [r.client?.firstName, r.client?.lastName].filter(Boolean).join(" ")).filter(Boolean)];
-                  const updWho = (wi, field, val) => { const next = whoList.map((w, j) => j === wi ? { ...w, [field]: val } : w); updFollowUp(fu.id, "who", next); };
-                  return (
-                    <div style={{ paddingLeft: 12 }}>
-                      <div style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
-                        <div style={{ width: 200, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Who</div>
-                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Month</div>
-                        <div style={{ width: 72, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Day</div>
-                        <div style={{ width: 64, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Year</div>
-                        <div style={{ width: 172, fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>How / Follow-Up</div>
-                        <div style={{ width: 28 }} />
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        {whoList.map((w, wi) => {
-                          const wParts = (w.when || "").split("/");
-                          const wMm = wParts[0] || ""; const wDd = wParts[1] || ""; const wYy = wParts[2] || "";
-                          const setWhen = (mm, dd, yy) => updWho(wi, "when", (mm || dd || yy) ? `${mm}/${dd}/${yy}` : "");
-                          const daysInMo = wMm && wYy ? new Date(parseInt(wYy), parseInt(wMm), 0).getDate() : 31;
-                          return (
-                          <div key={wi} style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                            <select value={w.name || ""} onChange={e => updWho(wi, "name", e.target.value)} style={{ ...IS, width: 200, flexShrink: 0 }} data-lpignore="true">
-                              <option value="">— Select —</option>
-                              {whoOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                            </select>
-                            <select value={wMm} onChange={e => setWhen(e.target.value, wDd, wYy)} style={{ ...IS, width: 72, flexShrink: 0 }} data-lpignore="true">
-                              <option value="">Mo</option>
-                              {MONTHS.map((m, idx) => <option key={m} value={String(idx+1).padStart(2,"0")}>{m}</option>)}
-                            </select>
-                            <select value={wDd} onChange={e => setWhen(wMm, e.target.value, wYy)} style={{ ...IS, width: 72, flexShrink: 0 }} data-lpignore="true">
-                              <option value="">Day</option>
-                              {Array.from({ length: daysInMo }, (_, idx) => { const v = String(idx+1).padStart(2,"0"); return <option key={v} value={v}>{idx+1}</option>; })}
-                            </select>
-                            <input value={wYy} onChange={e => setWhen(wMm, wDd, e.target.value.replace(/\D/g,"").slice(0,4))} placeholder="Year" inputMode="numeric" maxLength={4} style={{ ...IS, width: 64, flexShrink: 0 }} autoComplete="new-password" data-lpignore="true" />
-                            <select value={w.how || ""} onChange={e => updWho(wi, "how", e.target.value)} style={{ ...IS, width: 172, flexShrink: 0 }} data-lpignore="true">
-                              <option value="">— Select —</option>
-                              <option>Phone Call</option>
-                              <option>Email</option>
-                              <option>In-Person Meeting</option>
-                              <option>Video Call</option>
-                              <option>Text Message</option>
-                              <option>Mail / Letter</option>
-                              <option>Client Portal</option>
-                              <option>Other</option>
-                            </select>
-                            {whoList.length > 1 && (
-                              <button onClick={() => updFollowUp(fu.id, "who", whoList.filter((_, j) => j !== wi))} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 13, flexShrink: 0 }}>✕</button>
-                            )}
-                          </div>
-                        ); })}
-                      </div>
-                      <button onClick={() => updFollowUp(fu.id, "who", [...whoList, { ...emptyWho }])} style={{ background: "transparent", border: "1px dashed #b8c0cb", color: INK, borderRadius: 6, padding: "4px 14px", fontSize: 12, cursor: "pointer", marginTop: 6 }}>+ Add Who</button>
-                    </div>
-                  );
-                })()}
-              </div>
-              <Row cols={1}>
-                <F><Lbl t="Why" /><textarea value={fu.why} onChange={e => updFollowUp(fu.id, "why", e.target.value)} style={{ ...IS, minHeight: 60, resize: "vertical" }} placeholder="Reason for this task or action…" /></F>
-              </Row>
-              <Row cols={1}>
-                <F><Lbl t="What" /><textarea value={fu.notes} onChange={e => updFollowUp(fu.id, "notes", e.target.value)} style={{ ...IS, minHeight: 72, resize: "vertical" }} placeholder="What needs to happen…" /></F>
-              </Row>
-            </div>
-          ))}
-          <button onClick={addFollowUp} style={{ background: "transparent", border: "1.5px dashed #b8c0cb", color: INK, borderRadius: 8, padding: "9px 18px", fontSize: 14, cursor: "pointer", width: "100%" }}>
-            + Add Follow Up
-          </button>
-        </Panel>
 
         <Panel title="Alerts" id="section-alerts">
           {(() => {
@@ -6564,7 +6198,7 @@ export default function App() {
       </div>
     )}
     {quickViewPanelOpen && quickViewSelected.length > 0 && (() => {
-      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning", "section-suitability": "Suitability" };
+      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning" };
       const QvTable = ({ rows, labelWidth = 150 }) => (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>{rows.map(([k, v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: labelWidth, verticalAlign: "top", fontSize: 12 }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{v}</td></tr>)}</tbody>
@@ -6793,29 +6427,6 @@ export default function App() {
           </>)}
         </>);
 
-        if (id === "section-suitability") return (<>
-          <Sub t="Investment Profile" />
-          <Tbl cols={["Field","Value"]} rows={[
-            ["Risk Tolerance", suitability.riskTolerance], ["Investment Objective", suitability.investmentObjective],
-            ["Time Horizon", suitability.timeHorizon], ["Liquidity Needs", suitability.liquidityNeeds],
-            ["Investment Experience", suitability.investmentExperience], ["Tax Bracket", suitability.taxBracket],
-          ].filter(([,v]) => v)} emptyMsg="No investment profile entered." />
-          <Sub t="Goals & Priorities" />
-          <Tbl cols={["Field","Value"]} rows={[
-            ["Primary Goal", suitability.primaryGoal], ["Secondary Goal", suitability.secondaryGoal],
-            ["Income Need", suitability.incomeNeed], ["Growth Need", suitability.growthNeed],
-          ].filter(([,v]) => v)} emptyMsg="No goals entered." />
-          <Sub t="Portfolio Breakdown by Product Type %" />
-          <Tbl cols={["Product","%"]} rows={[
-            ["Fixed Indexed Annuities", suitability.pctFixedIndexedAnnuities], ["Fixed Annuities", suitability.pctFixedAnnuities],
-            ["Cash Value Life Insurance", suitability.pctCashValueLife], ["Checking / Savings / Money Market / CD", suitability.pctLiquidCash],
-          ].filter(([,v]) => v)} emptyMsg="No product breakdown entered." />
-          <Sub t="Qualified vs Non-Qualified %" />
-          <Tbl cols={["Category","%"]} rows={[
-            ["Qualified (IRA/401k/etc.)", suitability.pctQualified], ["Non-Qualified", suitability.pctNonQualified],
-          ].filter(([,v]) => v)} emptyMsg="No qualified/non-qualified breakdown entered." />
-          {suitability.notes && <><Sub t="Notes" /><div style={{ fontSize: 13, color: INK }}>{suitability.notes}</div></>}
-        </>);
 
         return null;
       };
