@@ -733,8 +733,9 @@ function ClientReport({ data, onClose }) {
   // liabilities
   const reMortgages = realEstate.reduce((s, r) => s + parseDollar(r.mortgageBalance), 0);
   const homeMortgage = parseDollar(homeOwnership.mortgageBalance);
+  const debtTotal = debts.reduce((s, d) => s + parseDollar(d.balance), 0);
   const totalAssets = acctTotal + reTotal + autoTotal;
-  const totalLiabilities = reMortgages + homeMortgage;
+  const totalLiabilities = reMortgages + homeMortgage + debtTotal;
   const netWorth = totalAssets - totalLiabilities;
 
   // primary residence equity (for net worth ex-home)
@@ -928,6 +929,11 @@ function ClientReport({ data, onClose }) {
                     return <tr key={i}><td style={{ ...s.td, color: "#5a6575", width: "55%" }}>{r.descriptionNote || r.description || `Property ${i+1}`}</td><td style={s.tdr}>{fmt(mb)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalLiabilities > 0 ? (mb/totalLiabilities*100).toFixed(1) : "0.0"}%</td></tr>;
                   })}
                   {homeMortgage > 0 && <tr><td style={{ ...s.td, color: "#5a6575" }}>Personal Residence Mortgage</td><td style={s.tdr}>{fmt(homeMortgage)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalLiabilities > 0 ? (homeMortgage/totalLiabilities*100).toFixed(1) : "0.0"}%</td></tr>}
+                  {debts.map((d, i) => {
+                    const db = parseDollar(d.balance);
+                    if (!db) return null;
+                    return <tr key={"debt" + i}><td style={{ ...s.td, color: "#5a6575" }}>{(d.type || "Debt") + (d.lender ? " — " + d.lender : "")}</td><td style={s.tdr}>{fmt(db)}</td><td style={{ ...s.tdr, color: "#5a6575" }}>{totalLiabilities > 0 ? (db/totalLiabilities*100).toFixed(1) : "0.0"}%</td></tr>;
+                  })}
                   {totalLiabilities === 0 && <tr><td style={s.td} colSpan={3}><em style={{ color: "#8a94a3" }}>No liabilities recorded</em></td></tr>}
                   <tr><td style={s.tdTotal}>Total Liabilities</td><td style={s.tdTotalR}>{fmt(totalLiabilities)}</td><td style={s.tdTotalR}>{totalLiabilities > 0 ? "100.0%" : "—"}</td></tr>
                 </tbody>
@@ -4747,7 +4753,7 @@ export default function App() {
                       ? (client.firstName || "Client")
                       : "—";
                 return (
-                  <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
+                  <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: INK, padding: "4px 0", borderBottom: i < accounts.length - 1 ? "1px solid " + BORDER : "none" }}>
                     <span style={{ fontWeight: 600, width: 34, flexShrink: 0 }}>{i + 1}</span>
                     <span style={{ width: 110, flexShrink: 0 }}>{ownerName}</span>
                     <span style={{ width: 135, flexShrink: 0 }}>{a.type || "—"}</span>
