@@ -2439,8 +2439,12 @@ export default function App() {
         }}
         onImport={(text) => {
           try {
-            const imported = JSON.parse(text);
-            if (!Array.isArray(imported)) throw new Error("Invalid format");
+            const cleaned = String(text).replace(/^\uFEFF/, "").trim();
+            if (cleaned.startsWith("<")) { showToast("That file is a web page, not the backup — download the RAW .json file and try again.", DANGER); return; }
+            let imported = JSON.parse(cleaned);
+            if (!Array.isArray(imported)) imported = [imported];
+            imported = imported.filter(r => r && typeof r === "object" && (r.client || r.id));
+            if (imported.length === 0) throw new Error("No client records found");
             showConfirm(
               `Import ${imported.length} record(s)? Existing records with the same ID will be updated; new records will be added.`,
               () => {
