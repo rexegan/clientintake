@@ -528,6 +528,7 @@ function ClientRoster({ clients, onDelete, onOpen, onDuplicate, onBack, onConfir
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
             <input ref={importRef} type="file" accept=".json" style={{ display: "none" }} onChange={e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => { onImport(ev.target.result); }; r.readAsText(f); } e.target.value = ""; }} />
             <button onClick={() => importRef.current?.click()} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 8, padding: "10px 18px", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>⬆ Import Backup</button>
+            <button onClick={() => { fetch(import.meta.env.BASE_URL + "server-backup.json").then(r => r.text()).then(t => onImport(t)).catch(() => alert("Could not load server backup.")); }} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 8, padding: "10px 18px", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>☁ Load Server Backup</button>
             <button onClick={onExport} style={{ background: "#fff", border: "1px solid " + BORDER, color: INK, borderRadius: 8, padding: "10px 18px", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>⬇ Export Backup</button>
             <button onClick={onBack} style={{ background: ACCENT, color: "#fff", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>
               {currentName ? `← Return to ${currentName}` : "← New Intake"}
