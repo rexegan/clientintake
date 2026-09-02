@@ -1986,7 +1986,6 @@ export default function App() {
     ["section-autos",      () => "Autos"],
     ["section-life",       () => "Life Insurance"],
     ["section-networth",   () => "Net Worth / Portfolio"],
-    ["section-wills",      () => "Wills & Trust"],
     ["section-inheritance",() => "Estate Planning"],
     ["section-alerts",     () => "Alerts"],
     ["section-preferences",() => "Client Preferences"],
@@ -6256,6 +6255,7 @@ export default function App() {
       const fmtN = n => n ? "$" + Math.round(n).toLocaleString() : "";
       const ownerName = o => o === "spouse" ? (spouse.firstName || "Spouse") : o === "joint" ? "Joint" : (client.firstName || "Client");
       const yn = v => v === true ? "Yes" : v === false ? "No" : "—";
+      const hasSpouseRecord = ["married","domestic_partner"].includes(hasSpouse) || !!(spouse.firstName || spouse.lastName);
 
       const renderSection = id => {
 
