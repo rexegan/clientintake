@@ -4934,7 +4934,7 @@ export default function App() {
             const CVLI = new Set(["Life Insurance (Cash Value)"]);
             const ALTS = new Set(["Private Equity","REITs","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Personal Residence","Rental Property","Land / Lot","Vehicle","Collectibles","Jewelry"]);
             const isAnnuity = t => (t || "").startsWith("Annuity");
-            const sums = { cash: 0, qual: 0, nonqual: 0, ann: 0, cvli: 0, alts: 0 };
+            const sums = { cash: 0, qual: 0, nonqual: 0, ann: 0, cvli: 0, alts: 0, stocks: 0, bonds: 0, re: 0, other: 0 };
             accounts.forEach(a => {
               const bal = pd(a.balance);
               if (!bal) return;
@@ -4945,9 +4945,13 @@ export default function App() {
               else if (CVLI.has(t)) sums.cvli += bal;
               else if (ALTS.has(t) || ["REITs","Alternative Investments","Private Equity","Oil & Gas"].includes(iv)) sums.alts += bal;
               else if (QUAL.has(t) || a.qualified === "Qualified") sums.qual += bal;
+              else if (iv.includes("Stock")) sums.stocks += bal;
+              else if (iv.includes("Bond")) sums.bonds += bal;
+              else if (iv === "Other" || t === "Other") sums.other += bal;
               else sums.nonqual += bal;
             });
             sums.cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
+            sums.re = pd(homeOwnership.marketValue) + realEstate.reduce((t, r) => t + pd(r.marketValue), 0);
             const cats = [
               ["Cash (Checking, Savings, Money Market, CDs)", sums.cash],
               ["Qualified Plans (401k, IRA, Roth, etc.)", sums.qual],
@@ -4955,6 +4959,10 @@ export default function App() {
               ["Annuities (Fixed, Indexed, Variable, RILA)", sums.ann],
               ["Cash Value Life Insurance", sums.cvli],
               ["Alternative / Illiquid Investments", sums.alts],
+              ["Stocks", sums.stocks],
+              ["Bonds", sums.bonds],
+              ["Real Estate", sums.re],
+              ["Other", sums.other],
             ];
             return (
               <Row cols={2}>
@@ -4969,16 +4977,6 @@ export default function App() {
               </Row>
             );
           })()}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 12 }}>
-            <div style={{ flex: "0 0 220px" }}>
-              <Lbl t="Stocks, Bonds, Real Estate & Other" />
-              <input value={nwState.pbOther || ""} onChange={e => setNwState(p => ({ ...p, pbOther: fmtDollar(e.target.value) }))} style={{ ...IS, width: 220, fontWeight: 700 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
-            </div>
-            <div style={{ flex: "1 1 380px" }}>
-              <Lbl t="Explanation" />
-              <input value={nwState.pbOtherNote || ""} onChange={e => setNwState(p => ({ ...p, pbOtherNote: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="What makes up this amount…" />
-            </div>
-          </div>
 
           <Sec t="Balance Sheet Notes" />
           <Row cols={1}>
