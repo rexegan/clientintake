@@ -6263,7 +6263,7 @@ export default function App() {
         if (id === "section-profile") return (<>
           <Tbl cols={["Field","Value"]} rows={[
             ["Full Name", [client.firstName, client.middleName, client.lastName].filter(Boolean).join(" ")],
-            ["Date of Birth", client.dob], ["SSN", client.ssn], ["Gender", client.gender], ["Marital / Filing Status", client.filingStatus],
+            ["Date of Birth", client.dob], ["SSN", client.ssn], ["Gender", client.gender], ["Marital / Filing Status", client.filingStatus], ["Number of Dependents", client.numDependents],
             ["Cell Phone", client.cell], ["Home Phone", client.homePhone], ["Email", client.email ? <MailLink email={client.email} /> : ""],
             ["Address", [client.addressLine1, client.addressLine2, client.city, client.state, client.zip].filter(Boolean).join(", ")],
             ["PO Box", client.hasPOBox ? [client.poBox, client.poBoxCity, client.poBoxState, client.poBoxZip].filter(Boolean).join(", ") : ""],
