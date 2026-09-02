@@ -4886,7 +4886,21 @@ export default function App() {
           {autos.map((a, i) => (
             <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: INK }}>Vehicle {i + 1}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <select data-lpignore="true" value={a.assetKind || ""} onChange={e => updAuto(a.id, "assetKind", e.target.value)}
+                    style={{ ...IS, width: 175, fontWeight: 600 }}>
+                    <option value="">— Select —</option>
+                    <option value="Vehicle">Vehicle</option>
+                    <option value="Farm Equipment">Farm Equipment</option>
+                    <option value="Heavy Equipment">Heavy Equipment</option>
+                    <option value="Trailer">Trailer</option>
+                    <option value="Boat">Boat</option>
+                    <option value="RV / Motorhome">RV / Motorhome</option>
+                    <option value="Motorcycle">Motorcycle</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: MUTED }}>{i + 1}</span>
+                </div>
                 {autos.length > 1 && (
                   <button onClick={() => showConfirm("Remove this vehicle?", () => delAuto(a.id), "Remove")} style={{ background: "#fff", border: "1px solid #ecc8c8", color: DANGER, borderRadius: 6, padding: "2px 10px", cursor: "pointer", fontSize: 13 }}>Remove</button>
                 )}
