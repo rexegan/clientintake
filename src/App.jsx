@@ -6314,7 +6314,7 @@ export default function App() {
               ["Employer", emp.employer], ["Occupation", emp.occupation], ["Start Date", emp.startDate], ["Work Phone", emp.workPhone],
               ["Work Address", [emp.workAddress, emp.workCity, emp.workState, emp.workZip].filter(Boolean).join(", ")],
               ["Retirement Plan", emp.hasRetirement === false ? "None" : emp.retirementType],
-              ["Employer Match", emp.hasMatch === false ? "None" : emp.matchPct ? emp.matchPct + "%" : ""],
+              ["Employer Match", emp.hasMatch === false ? "None" : emp.matchPct ? String(emp.matchPct).replace(/%/g, "").trim() + "%" : ""],
               ["Monthly Employee Contribution", emp.contributionAmt], ["Retirement Balance", emp.retirementBalance], ["Custodian", emp.retirementCustodian],
             ].filter(([,v]) => v)} />
           </>);
