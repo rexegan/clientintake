@@ -6514,10 +6514,10 @@ export default function App() {
               <button onClick={() => setQuickViewPanelOpen(false)} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: MUTED, padding: "2px 6px" }}>✕</button>
             </div>
             <div id="qv-print-content" style={{ overflowY: "auto", padding: "4px 0 8px" }}>
-              {quickViewSelected.map((id, idx) => (
-                <div key={id} style={{ padding: "14px 22px 16px", borderBottom: idx < quickViewSelected.length - 1 ? "1px solid " + BORDER : "none" }}>
+              {quickViewSelected.map(id => [id, renderSection(id)]).filter(([, content]) => content).map(([id, content], idx, arr) => (
+                <div key={id} style={{ padding: "14px 22px 16px", borderBottom: idx < arr.length - 1 ? "1px solid " + BORDER : "none" }}>
                   <div className="sec-head" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: BRAND_NAVY, marginBottom: 10 }}>{QV_LABEL[id]}</div>
-                  {renderSection(id)}
+                  {content}
                 </div>
               ))}
             </div>
