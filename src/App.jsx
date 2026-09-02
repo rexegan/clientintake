@@ -348,6 +348,79 @@ const AUTO_MODELS = {
   "Toyota": ["4Runner","4Runner Limited","4Runner Nightshade","4Runner SR5","4Runner SR5 Premium","4Runner TRD Off-Road","4Runner TRD Off-Road Premium","4Runner TRD Pro","4Runner Trailhunter","4Runner Venture","Avalon","Avalon Hybrid","Avalon Hybrid Limited","Avalon Hybrid XLE","Avalon Limited","Avalon XLE","Avalon XSE","bZ4X","bZ4X XLE","bZ4X XLE Premium","Camry","Camry Hybrid","Camry Hybrid LE","Camry Hybrid SE","Camry Hybrid XLE","Camry Hybrid XSE","Camry LE","Camry SE","Camry SE Nightshade","Camry TRD","Camry XLE","Camry XSE","Corolla","Corolla Cross","Corolla Cross Hybrid","Corolla Cross L","Corolla Cross LE","Corolla Cross S","Corolla Cross XLE","Corolla Hatchback","Corolla Hybrid","Corolla LE","Corolla SE","Corolla XLE","Corolla XSE","GR86","GR86 Premium","GR Corolla","GR Corolla Circuit Edition","GR Corolla Core","GR Corolla Morizo Edition","GR Supra","GR Supra 2.0","GR Supra 3.0","GR Supra A91-CF Edition","GR Supra A91-MT Edition","Highlander","Highlander Hybrid","Highlander Hybrid Limited","Highlander Hybrid Platinum","Highlander Hybrid XLE","Highlander L","Highlander LE","Highlander Limited","Highlander Platinum","Highlander XLE","Land Cruiser","Land Cruiser 1958","Prius","Prius LE","Prius Limited","Prius Night Shade","Prius PHEV","Prius Prime","Prius Prime Premium","Prius Prime SE","Prius Prime XSE","Prius XLE","RAV4","RAV4 Adventure","RAV4 Hybrid","RAV4 Hybrid Limited","RAV4 Hybrid SE","RAV4 Hybrid XLE","RAV4 Hybrid XLE Premium","RAV4 Hybrid XSE","RAV4 LE","RAV4 Limited","RAV4 Prime","RAV4 Prime SE","RAV4 Prime XSE","RAV4 TRD Off-Road","RAV4 XLE","RAV4 XLE Premium","Sequoia","Sequoia Capstone","Sequoia Limited","Sequoia Platinum","Sequoia SR5","Sequoia TRD Pro","Sienna","Sienna LE","Sienna Limited","Sienna Platinum","Sienna SE","Sienna XLE","Sienna XSE","Tacoma","Tacoma Limited","Tacoma PreRunner","Tacoma SR","Tacoma SR5","Tacoma TRD Off-Road","Tacoma TRD Pro","Tacoma TRD Sport","Tacoma Trailhunter","Tacoma Tundra Trail","Tundra","Tundra 1794 Edition","Tundra Capstone","Tundra Limited","Tundra Platinum","Tundra SR","Tundra SR5","Tundra TRD Pro","Venza","Venza LE","Venza Limited","Venza XLE"],
   "Volkswagen": ["Arteon","Arteon R-Line","Arteon SE","Arteon SEL","Arteon SEL Premium","Atlas","Atlas Cross Sport","Atlas Cross Sport Peak Edition","Atlas Cross Sport SE","Atlas Cross Sport SEL","Atlas Cross Sport SEL Premium","Atlas Peak Edition","Atlas SE","Atlas SE Technology","Atlas SEL","Atlas SEL Premium","Golf","Golf GTI","Golf GTI Autobahn","Golf GTI S","Golf GTI SE","Golf R","ID.4","ID.4 AWD Pro","ID.4 AWD Pro S","ID.4 Pro","ID.4 Pro S","ID.4 S","ID.4 Standard Range","ID.Buzz","Jetta","Jetta GLI","Jetta GLI Autobahn","Jetta R-Line","Jetta S","Jetta SE","Jetta SEL","Passat","Taos","Taos S","Taos SE","Taos SEL","Tiguan","Tiguan S","Tiguan SE","Tiguan SE R-Line Black","Tiguan SEL","Tiguan SEL Premium","Tiguan SEL R-Line"],
 };
+const KIND_MODELS = {
+  "Farm Equipment": {
+    "John Deere": ["1025R","2038R","3038E","4066M","5075E","5090E","6110M","6120M","6155M","7R 250","8R 340","9R 540","S780 Combine","X9 1100 Combine","Gator","Round Baler","Planter","Sprayer"],
+    "Case IH": ["Farmall 75C","Farmall 100C","Maxxum 145","Puma 185","Magnum 250","Magnum 340","Steiger 420","Steiger 620","Axial-Flow 8250 Combine","Early Riser Planter","Patriot Sprayer"],
+    "Kubota": ["BX23S","BX2380","L2502","L3902","L4802","LX2610","M5-091","M5-111","M6-141","M7-172","M8-211","RTV-X1100C","SVL75-2 Track Loader"],
+    "New Holland": ["Workmaster 75","Workmaster 105","PowerStar 100","T4.75","T5.120","T6.180","T7.260","T8.410","T9.645","CR8.90 Combine","Roll-Belt Baler"],
+    "Massey Ferguson": ["1835M","2860M","4710","5711","6713","7S.180","8S.265","8700S","MF GC1725M"],
+    "Fendt": ["314 Vario","516 Vario","724 Vario","936 Vario","1050 Vario","IDEAL 8 Combine"],
+    "Mahindra": ["1626","2638","4540","5145","6075","eMax 20S","Max 26XLT"],
+    "Kioti": ["CS2210","CK2610","CK3510","DK4510","DK5310","NS4710","NX5510","RX7320"],
+    "Claas": ["Arion 550","Axion 850","Xerion 4500","Lexion 8600 Combine","Jaguar 970 Forage Harvester"],
+  },
+  "Heavy Equipment": {
+    "Caterpillar": ["D5 Dozer","D6 Dozer","D8 Dozer","320 Excavator","336 Excavator","950 Wheel Loader","966 Wheel Loader","140 Motor Grader","262D3 Skid Steer","299D3 Track Loader","CT660 Truck","Backhoe 420"],
+    "Komatsu": ["D61 Dozer","D65 Dozer","PC210 Excavator","PC360 Excavator","WA320 Loader","WA470 Loader","GD655 Grader","HM300 Haul Truck"],
+    "John Deere": ["333G Track Loader","324G Skid Steer","310SL Backhoe","644 Loader","850L Dozer","210G Excavator","350G Excavator","772G Grader"],
+    "Bobcat": ["S66 Skid Steer","S76 Skid Steer","T66 Track Loader","T76 Track Loader","T770 Track Loader","E35 Excavator","E85 Excavator","L28 Loader","Toolcat 5600"],
+    "Case": ["580 Super N Backhoe","590 Super N Backhoe","SV280B Skid Steer","TR340B Track Loader","CX210D Excavator","1150M Dozer","621G Loader"],
+    "Volvo": ["EC220 Excavator","EC350 Excavator","L90 Loader","L120 Loader","A40 Haul Truck","SD115 Roller"],
+    "JCB": ["3CX Backhoe","1CXT","508-66 Telehandler","525-60 Telehandler","220X Excavator","457 Loader","Teleskid"],
+    "Kubota": ["SVL65-2","SVL75-3","SVL97-2","KX040 Excavator","KX057 Excavator","U55 Excavator","R540 Loader","R640 Loader"],
+  },
+  "Trailer": {
+    "Big Tex": ["Utility","Dump","Gooseneck Flatbed","Equipment Hauler","Car Hauler","Tilt Deck"],
+    "PJ Trailers": ["Utility","Dump","Gooseneck Flatbed","Deckover","Car Hauler","Tilt"],
+    "Load Trail": ["Utility","Dump","Gooseneck Flatbed","Equipment","Car Hauler","Tilt Deck"],
+    "Featherlite": ["Horse","Livestock","Car Hauler","Enclosed Cargo","Flatbed"],
+    "Sundowner": ["Horse","Livestock","Toy Hauler","Enclosed Cargo","Utility"],
+    "Aluma": ["Utility","Car Hauler","Snowmobile/ATV","Tilt","Enclosed"],
+    "WW Trailer": ["Livestock","Horse","Utility","Equipment"],
+    "Gooseneck Brand": ["Livestock","Flatbed","Lowboy"],
+    "Other / Generic": ["Utility","Dump","Flatbed","Gooseneck","Lowboy","Enclosed Cargo","Car Hauler","Livestock","Horse","Boat Trailer"],
+  },
+  "Boat": {
+    "Sea Ray": ["Bowrider SPX 190","Bowrider SPX 230","SDX 250","SDX 270","Sundancer 265","Sundancer 320","SLX 260"],
+    "Boston Whaler": ["130 Super Sport","170 Montauk","210 Montauk","230 Vantage","250 Dauntless","280 Outrage","330 Outrage"],
+    "Tracker": ["Bass Tracker Classic XL","Pro Team 175","Pro Team 195","Grizzly 1648 Jon","Grizzly 1860","Targa V-18"],
+    "Ranger": ["Z518","Z520R","Z521R","RT188","RT198P","VS1782","620FS Pro"],
+    "Lund": ["1650 Rebel XL","1775 Adventure","1875 Pro-V","2075 Pro-V","1600 Fury","Impact XS 1775"],
+    "Bennington": ["S Series Pontoon","SV Series Pontoon","L Series Pontoon","M Series Pontoon","Q Series Pontoon"],
+    "Sun Tracker": ["Party Barge 18","Party Barge 20","Party Barge 22","Fishin' Barge 20","Fishin' Barge 22","Bass Buggy 16"],
+    "MasterCraft": ["NXT20","NXT22","NXT24","XT22","XT23","X24","ProStar"],
+    "Malibu": ["Wakesetter 21 LX","Wakesetter 23 LSV","Wakesetter 25 LSV","M240","Response TXi"],
+    "Grady-White": ["Fisherman 180","Fisherman 216","Freedom 235","Freedom 275","Canyon 271","Canyon 336"],
+    "Yamaha": ["AR190","AR195","AR220","AR250","SX195","242X","WaveRunner VX","WaveRunner FX"],
+    "Sea-Doo": ["Spark","GTI 130","GTX 170","GTX Limited 300","RXP-X 325","Switch Pontoon"],
+  },
+  "RV / Motorhome": {
+    "Winnebago": ["Class A Adventurer","Class A Forza","Class B Travato","Class B Solis","Class C Minnie Winnie","Class C View","Micro Minnie Travel Trailer"],
+    "Thor": ["Class A Ace","Class A Palazzo","Class B Sequence","Class C Four Winds","Class C Quantum"],
+    "Forest River": ["Travel Trailer Wildwood","Travel Trailer Salem","Fifth Wheel Sierra","Fifth Wheel Sandpiper","Class C Sunseeker","Toy Hauler XLR"],
+    "Jayco": ["Jay Flight Travel Trailer","Eagle Fifth Wheel","North Point Fifth Wheel","Redhawk Class C","Greyhawk Class C","Swift Class B"],
+    "Airstream": ["Bambi","Caravel","Flying Cloud","Globetrotter","Classic","Interstate Class B","Atlas Class B+"],
+    "Fleetwood": ["Bounder Class A","Pace Arrow Class A","Discovery Class A","Flair Class A"],
+    "Coachmen": ["Apex Travel Trailer","Catalina Travel Trailer","Chaparral Fifth Wheel","Leprechaun Class C","Beyond Class B"],
+    "Tiffin": ["Allegro Open Road","Allegro Bus","Phaeton","Wayfarer Class C","Cahaba Class B"],
+    "Newmar": ["Bay Star","Canyon Star","Ventana","Dutch Star","King Aire"],
+    "Keystone": ["Cougar Fifth Wheel","Montana Fifth Wheel","Raptor Toy Hauler","Passport Travel Trailer","Outback Travel Trailer"],
+    "Grand Design": ["Imagine Travel Trailer","Reflection Fifth Wheel","Solitude Fifth Wheel","Momentum Toy Hauler","Transcend Travel Trailer"],
+  },
+  "Motorcycle": {
+    "Harley-Davidson": ["Sportster S","Nightster","Softail Standard","Fat Boy","Heritage Classic","Street Glide","Road Glide","Road King","Ultra Limited","Electra Glide","Pan America","Breakout","Low Rider S"],
+    "Honda": ["Gold Wing","Gold Wing Tour","Rebel 300","Rebel 500","Rebel 1100","Shadow Phantom","Africa Twin","CBR600RR","CBR1000RR","CRF450","Grom"],
+    "Yamaha": ["V Star 250","Bolt R-Spec","MT-07","MT-09","YZF-R3","YZF-R7","YZF-R1","Tenere 700","Super Tenere","TW200"],
+    "Kawasaki": ["Vulcan S","Vulcan 900","Ninja 400","Ninja 650","Ninja ZX-6R","Ninja ZX-10R","Z650","Z900","Versys 650","KLR650"],
+    "Suzuki": ["Boulevard C50","Boulevard M109R","GSX-R600","GSX-R750","GSX-R1000","SV650","V-Strom 650","V-Strom 1050","Hayabusa"],
+    "BMW": ["R 1250 GS","R 1300 GS","R 18","S 1000 RR","S 1000 XR","F 850 GS","G 310 R","K 1600 GTL"],
+    "Ducati": ["Monster","Panigale V2","Panigale V4","Multistrada V4","Scrambler Icon","Diavel V4","Streetfighter V4"],
+    "Indian": ["Scout","Scout Bobber","Chief","Chieftain","Springfield","Roadmaster","Challenger","FTR 1200"],
+    "Triumph": ["Bonneville T100","Bonneville T120","Street Triple","Speed Triple","Tiger 900","Tiger 1200","Rocket 3","Scrambler 900"],
+    "Can-Am": ["Spyder F3","Spyder RT","Ryker 600","Ryker 900"],
+  },
+};
 const emptyRealEstate = { description:"", descriptionNote:"", purchaseDate:"", purchasePrice:"", marketValue:"", mortgageBalance:"", address:"", addressLine2:"", city:"", state:"", zip:"", mortgageCompany:"", originationDate:"", interestRate:"", monthlyPmt:"", propertyTaxes:"", insurance:"", pmtIncludesTaxIns:null, hasOpt:null, optEvent:"", optTimeframe:"", hasZillow:null };
 const emptyAccount = { type:"", institution:"", accountNumber:"", balance:"", owner:"", qualified:"", hasOpt:null, optEvent:"", optTimeframe:"", hasRmdOrContrib:null, rmdOrContrib:"", rmdContribAmount:"", rmdContribFrequency:"", linkedIncomeId:null, hasContributions:null, contribAmount:"", contribFrequency:"" };
 
@@ -1945,6 +2018,29 @@ export default function App() {
     const updated = [...customLenders, trimmed].sort((x, y) => x.localeCompare(y));
     setCustomLenders(updated);
     localStorage.setItem("rwg_lenders", JSON.stringify(updated));
+  };
+  const [customAutoCatalog, setCustomAutoCatalog] = useState(() => { try { return JSON.parse(localStorage.getItem("rwg_auto_catalog") || "{}"); } catch { return {}; } });
+  const autoCatalogFor = kind => (kind && KIND_MODELS[kind]) ? KIND_MODELS[kind] : AUTO_MODELS;
+  const autoMakesFor = kind => {
+    const base = Object.keys(autoCatalogFor(kind));
+    const extra = customAutoCatalog[(kind || "Vehicle") + "|makes"] || [];
+    return [...base, ...extra.filter(m => !base.includes(m))].sort((x, y) => x.localeCompare(y));
+  };
+  const autoModelsFor = (kind, make) => {
+    const base = autoCatalogFor(kind)[make] || [];
+    const extra = customAutoCatalog[(kind || "Vehicle") + "|" + make] || [];
+    return [...base, ...extra.filter(m => !base.includes(m))];
+  };
+  const addAutoCatalogEntry = (kind, key, val) => {
+    const trimmed = (val || "").trim();
+    if (!trimmed) return;
+    const base = key === "makes" ? Object.keys(autoCatalogFor(kind)) : (autoCatalogFor(kind)[key] || []);
+    const k = (kind || "Vehicle") + "|" + key;
+    const cur = customAutoCatalog[k] || [];
+    if (base.includes(trimmed) || cur.includes(trimmed)) return;
+    const updated = { ...customAutoCatalog, [k]: [...cur, trimmed].sort((x, y) => x.localeCompare(y)) };
+    setCustomAutoCatalog(updated);
+    localStorage.setItem("rwg_auto_catalog", JSON.stringify(updated));
   };
   const DEFAULT_PROPERTY_TYPES = ["Personal Residence","Vacation / Second Home","Farm","Ranch","Raw Land","Acreage","Rental Property","Commercial Property","Condo / Townhome","Duplex / Multi-Family","Mobile / Manufactured Home","Lake House","Investment / Flip","Timeshare","Mineral Rights"];
   const DEFAULT_PROPERTY_DESCS = ["Homestead","2 bed / 1 bath","3 bed / 2 bath","4 bed / 2 bath","4 bed / 3 bath","5+ bed","Barndominium","With acreage","With shop / barn"];
@@ -4909,23 +5005,25 @@ export default function App() {
                 <F><Lbl t="Year" /><input value={a.year} onChange={e => updAuto(a.id, "year", e.target.value)} maxLength={4} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
                 <F>
                   <Lbl t="Make" />
-                  <select value={a.make} onChange={e => { updAuto(a.id, "make", e.target.value); updAuto(a.id, "model", ""); }} style={IS}>
-                    <option value="">— Select Make —</option>
-                    {Object.keys(AUTO_MODELS).sort().map(m => <option key={m} value={m}>{m}</option>)}
-                    <option value="Other">Other</option>
-                  </select>
+                  <SmartCombo
+                    value={a.make}
+                    options={autoMakesFor(a.assetKind)}
+                    onChange={v => { updAuto(a.id, "make", v); updAuto(a.id, "model", ""); }}
+                    onBlur={v => { addAutoCatalogEntry(a.assetKind, "makes", v); if (v !== a.make) { updAuto(a.id, "make", v); updAuto(a.id, "model", ""); } }}
+                    placeholder="Type or pick make…"
+                    style={IS}
+                  />
                 </F>
                 <F>
                   <Lbl t="Model" />
-                  {a.make && AUTO_MODELS[a.make] ? (
-                    <select value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS}>
-                      <option value="">— Select Model —</option>
-                      {AUTO_MODELS[a.make].map(m => <option key={m} value={m}>{m}</option>)}
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : (
-                    <input value={a.model} onChange={e => updAuto(a.id, "model", e.target.value)} style={IS} autoComplete="off" data-lpignore="true" placeholder={a.make ? "Type model…" : "Select make first"} />
-                  )}
+                  <SmartCombo
+                    value={a.model}
+                    options={a.make ? autoModelsFor(a.assetKind, a.make) : []}
+                    onChange={v => updAuto(a.id, "model", v)}
+                    onBlur={v => { if (a.make) addAutoCatalogEntry(a.assetKind, a.make, v); updAuto(a.id, "model", v); }}
+                    placeholder={a.make ? "Type or pick model…" : "Select make first"}
+                    style={IS}
+                  />
                 </F>
                 <F><Lbl t="Est. Value" /><input value={a.value} onChange={e => updAuto(a.id, "value", fmtDollar(e.target.value))} style={IS} inputMode="numeric" autoComplete="new-password" data-lpignore="true" /></F>
               </Row>
