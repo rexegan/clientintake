@@ -6349,10 +6349,10 @@ export default function App() {
             ].filter(([,v]) => v)} />
           </>)}
           <Sub t="Additional Properties" />
-          <Tbl cols={["Description","Address","Market Value","Purchase Price","Purchase Date","Mortgage Bal.","Mortgage Co.","Rate","Monthly Pmt","Taxes","Insurance"]}
+          <Tbl cols={["Description","Address","Market Value","Purchase Price","Purchase Date","Mortgage Bal."]}
             rows={realEstate.filter(r => r.address || r.marketValue || r.description).map(r => [
               r.description, [r.address, r.city, r.state, r.zip].filter(Boolean).join(", "),
-              r.marketValue, r.purchasePrice, r.purchaseDate, r.mortgageBalance, r.mortgageCompany, r.interestRate, r.monthlyPmt, r.propertyTaxes, r.insurance,
+              r.marketValue, r.purchasePrice, r.purchaseDate, r.mortgageBalance,
             ])} emptyMsg="No additional properties recorded." />
         </>);
 
