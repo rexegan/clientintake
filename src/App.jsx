@@ -4708,6 +4708,7 @@ export default function App() {
                   <select data-lpignore="true" value={a.hasRmdOrContrib || ""} onChange={e => toggleAcctRmd(a, e.target.value)} style={{ ...IS, width: 180 }}>
                     <option value="">— Select —</option>
                     <option value="None">None</option>
+                    <option value="Interest">Interest</option>
                     <option value="Contributions">Contributions</option>
                     <option value="Withdrawals">Withdrawals</option>
                     <option value="RMDs">RMDs</option>
