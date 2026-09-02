@@ -4745,10 +4745,10 @@ export default function App() {
                 <span style={{ width: 34, flexShrink: 0 }}>ACCT</span>
                 <span style={{ width: 110, flexShrink: 0 }}>Owner</span>
                 <span style={{ width: 135, flexShrink: 0 }}>Account Type</span>
-                <span style={{ width: 135, flexShrink: 0 }}>Investment Type</span>
-                <span style={{ width: 135, flexShrink: 0 }}>Institution Held At</span>
-                <span style={{ marginLeft: "auto", width: 48, flexShrink: 0 }}>OPP</span>
-                <span style={{ width: 100, flexShrink: 0, textAlign: "right" }}>Value</span>
+                <span style={{ width: 120, flexShrink: 0 }}>Investment Type</span>
+                <span style={{ width: 130, flexShrink: 0 }}>Institution Held At</span>
+                <span style={{ width: 64, flexShrink: 0 }}>OPP</span>
+                <span style={{ width: 100, flexShrink: 0, textAlign: "right", paddingRight: 10 }}>Value</span>
               </div>
               {accounts.map((a, i) => {
                 const ownerName = a.owner === "Joint"
@@ -4763,16 +4763,16 @@ export default function App() {
                     <span style={{ fontWeight: 600, width: 34, flexShrink: 0 }}>{i + 1}</span>
                     <span style={{ width: 110, flexShrink: 0 }}>{ownerName}</span>
                     <span style={{ width: 135, flexShrink: 0 }}>{a.type || "—"}</span>
-                    <span style={{ width: 135, flexShrink: 0 }}>{a.investmentType || "—"}</span>
-                    <span style={{ width: 135, flexShrink: 0 }}>{a.institution || "—"}</span>
-                    <span style={{ marginLeft: "auto", width: 48, flexShrink: 0 }}>
-                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 4px", cursor: "pointer", width: 48, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
+                    <span style={{ width: 120, flexShrink: 0 }}>{a.investmentType || "—"}</span>
+                    <span style={{ width: 130, flexShrink: 0 }}>{a.institution || "—"}</span>
+                    <span style={{ width: 64, flexShrink: 0 }}>
+                      <select data-lpignore="true" value={a.hasOpt || ""} onChange={e => updAcct(a.id, "hasOpt", e.target.value || null)} style={{ fontSize: 12, fontWeight: 700, border: "1px solid " + BORDER, borderRadius: 5, padding: "2px 4px", cursor: "pointer", width: 64, background: "#fff", color: a.hasOpt === "yes" ? "#1a6a3a" : INK }}>
                         <option value="">—</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
                       </select>
                     </span>
-                    <span style={{ width: 100, flexShrink: 0, textAlign: "right", fontWeight: 600 }}>{a.balance || "—"}</span>
+                    <span style={{ width: 100, flexShrink: 0, textAlign: "right", fontWeight: 600, paddingRight: 10 }}>{a.balance || "—"}</span>
                   </div>
                 );
               })}
