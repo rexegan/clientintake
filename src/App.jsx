@@ -1984,7 +1984,7 @@ export default function App() {
     ["section-realestate", () => "Real Estate - Business Assets"],
     ["section-accounts",   () => "Investment & Bank"],
     ["section-networth",   () => "Net Worth / Portfolio"],
-    ["section-autos",      () => "Autos"],
+    ["section-autos",      () => "Autos / Equipment"],
     ["section-life",       () => "Life Insurance"],
     ["section-wills",      () => "Wills & Trust"],
     ["section-inheritance",() => "Estate Planning"],
@@ -2561,7 +2561,7 @@ export default function App() {
             ["section-realestate","Real Estate - Business Assets"],
             ["section-accounts",  "Investment & Bank Acct"],
             ["section-networth",  "Net Worth / Portfolio"],
-            ["section-autos",     "Automobiles"],
+            ["section-autos",     "Autos / Equipment"],
             ["section-debts",     "Debt / Liabilities"],
             ["section-life",      "Life Insurance"],
             ["section-wills",     "Wills & Trust"],
@@ -4882,7 +4882,7 @@ export default function App() {
 
 
         {/* ── AUTOMOBILES ── */}
-        <Panel title="Automobiles" id="section-autos">
+        <Panel title="Autos / Equipment" id="section-autos">
           {autos.map((a, i) => (
             <div key={a.id} style={{ background: "#f8f9fb", border: "1px solid " + BORDER, borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -6238,7 +6238,7 @@ export default function App() {
       </div>
     )}
     {quickViewPanelOpen && quickViewSelected.length > 0 && (() => {
-      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-expenses": "Annual Expenses", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning" };
+      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-expenses": "Annual Expenses", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos / Equipment", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning" };
       const QvTable = ({ rows, labelWidth = 150 }) => (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>{rows.map(([k, v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: labelWidth, verticalAlign: "top", fontSize: 12 }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{v}</td></tr>)}</tbody>
