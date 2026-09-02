@@ -4746,7 +4746,7 @@ export default function App() {
                 <span style={{ width: 110, flexShrink: 0 }}>Owner</span>
                 <span style={{ width: 135, flexShrink: 0 }}>Account Type</span>
                 <span style={{ width: 120, flexShrink: 0 }}>Investment Type</span>
-                <span style={{ width: 130, flexShrink: 0 }}>Institution Held At</span>
+                <span style={{ width: 130, flexShrink: 0 }}>Institution</span>
                 <span style={{ width: 64, flexShrink: 0 }}>OPP</span>
                 <span style={{ width: 100, flexShrink: 0, textAlign: "right", paddingRight: 10 }}>Value</span>
               </div>
