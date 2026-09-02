@@ -1983,10 +1983,10 @@ export default function App() {
     ["section-expenses",   () => "Annual Expenses"],
     ["section-realestate", () => "Real Estate - Business Assets"],
     ["section-accounts",   () => "Investment & Bank"],
-    ["section-wills",      () => "Wills & Trust"],
+    ["section-networth",   () => "Net Worth / Portfolio"],
     ["section-autos",      () => "Autos"],
     ["section-life",       () => "Life Insurance"],
-    ["section-networth",   () => "Net Worth / Portfolio"],
+    ["section-wills",      () => "Wills & Trust"],
     ["section-inheritance",() => "Estate Planning"],
     ["section-alerts",     () => "Alerts"],
     ["section-preferences",() => "Client Preferences"],
@@ -2006,7 +2006,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("section-profile");
   const sideRailRef = useRef(null);
   useEffect(() => {
-    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-autos","section-debts","section-life","section-networth","section-wills","section-inheritance","section-alerts","section-preferences","section-importantdates","section-apps"];
+    const ids = ["section-profile","section-citizenship","section-family","section-bene","section-employment","section-income","section-realestate","section-accounts","section-networth","section-autos","section-debts","section-life","section-wills","section-inheritance","section-alerts","section-preferences","section-importantdates","section-apps"];
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -2560,10 +2560,10 @@ export default function App() {
             ["section-income",    "Income"],
             ["section-realestate","Real Estate - Business Assets"],
             ["section-accounts",  "Investment & Bank Acct"],
+            ["section-networth",  "Net Worth / Portfolio"],
             ["section-autos",     "Automobiles"],
             ["section-debts",     "Debt / Liabilities"],
             ["section-life",      "Life Insurance"],
-            ["section-networth",  "Net Worth / Portfolio"],
             ["section-wills",     "Wills & Trust"],
             ["section-inheritance", "Estate Planning"],
             ["section-alerts",     "Alerts"],
@@ -4789,6 +4789,98 @@ export default function App() {
           <FileUpload section="accounts" files={uploads.accounts || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
         </Panel>
 
+        <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
+          <Sec t="Net Worth Summary" />
+          {(() => {
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const acctTotal = accounts.reduce((t, a) => t + pd(a.balance), 0);
+            const reTotal = realEstate.reduce((t, r) => t + pd(r.marketValue), 0) + pd(homeOwnership.marketValue);
+            const autoTotal = autos.reduce((t, a) => t + pd(a.value), 0);
+            const assets = acctTotal + reTotal + autoTotal;
+            const liabilities = pd(homeOwnership.mortgageBalance)
+              + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
+              + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
+              + debts.reduce((t, d) => t + pd(d.balance), 0)
+              + businesses.reduce((t, b) => t + pd(b.loanBalance), 0);
+            const netWorth = assets - liabilities;
+            const NONLIQUID = new Set(["Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)","Pension / Defined Benefit","Personal Residence","Rental Property","Land / Lot","Private Equity","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Life Insurance (Cash Value)","Vehicle","Collectibles","Jewelry"]);
+            const liquid = accounts.reduce((t, a) => t + ((NONLIQUID.has(a.type) || (a.investmentType || "").includes("Annuity") || ["Alternative Investments","Private Equity","Oil & Gas"].includes(a.investmentType)) ? 0 : pd(a.balance)), 0);
+            const primaryEquity = (pd(homeOwnership.marketValue) ? pd(homeOwnership.marketValue) - pd(homeOwnership.mortgageBalance) : 0) + realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
+            const lessResidence = netWorth - primaryEquity;
+            const Box = ({ label, val, accent }) => (
+              <F>
+                <Lbl t={label} />
+                <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center", background: accent ? "#e8f0fb" : "#f2f4f7", color: INK }}>
+                  {val !== 0 || assets || liabilities ? "$" + val.toLocaleString() : "—"}
+                </div>
+              </F>
+            );
+            return (<>
+              <Row cols={3}>
+                <Box label="Total Assets" val={assets} />
+                <Box label="Total Liabilities" val={liabilities} />
+                <Box label="Estimated Net Worth" val={netWorth} accent />
+              </Row>
+              <Row cols={3}>
+                <Box label="Liquid Net Worth" val={liquid} />
+                <Box label="Net Worth - Less Residence" val={lessResidence} />
+                <Box label="Primary Residence Equity" val={primaryEquity} />
+              </Row>
+            </>);
+          })()}
+
+          <Sec t="Portfolio Breakdown" />
+          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Total investable assets by category.</div>
+          {(() => {
+            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
+            const CASH = new Set(["Checking","Savings","Money Market","CD"]);
+            const QUAL = new Set(["Traditional IRA","Roth IRA","401(k)","Roth 401(k)","403(b)","457(b)","SEP IRA","SIMPLE IRA","HSA","529 / Education","Pension / Defined Benefit"]);
+            const CVLI = new Set(["Life Insurance (Cash Value)"]);
+            const ALTS = new Set(["Private Equity","REITs","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Personal Residence","Rental Property","Land / Lot","Vehicle","Collectibles","Jewelry"]);
+            const isAnnuity = t => (t || "").startsWith("Annuity");
+            const sums = { cash: 0, qual: 0, nonqual: 0, ann: 0, cvli: 0, alts: 0 };
+            accounts.forEach(a => {
+              const bal = pd(a.balance);
+              if (!bal) return;
+              const t = a.type || "";
+              const iv = a.investmentType || "";
+              if (CASH.has(t) || ["CDs","Money Market","Cash"].includes(iv)) sums.cash += bal;
+              else if (isAnnuity(t) || iv.includes("Annuity")) sums.ann += bal;
+              else if (CVLI.has(t)) sums.cvli += bal;
+              else if (ALTS.has(t) || ["REITs","Alternative Investments","Private Equity","Oil & Gas"].includes(iv)) sums.alts += bal;
+              else if (QUAL.has(t) || a.qualified === "Qualified") sums.qual += bal;
+              else sums.nonqual += bal;
+            });
+            sums.cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
+            const cats = [
+              ["Cash (Checking, Savings, Money Market, CDs)", sums.cash],
+              ["Qualified Plans (401k, IRA, Roth, etc.)", sums.qual],
+              ["Non-Qualified / Taxable", sums.nonqual],
+              ["Annuities (Fixed, Indexed, Variable, RILA)", sums.ann],
+              ["Cash Value Life Insurance", sums.cvli],
+              ["Alternative / Illiquid Investments", sums.alts],
+            ];
+            return (
+              <Row cols={2}>
+                {cats.map(([label, val]) => (
+                  <F key={label}>
+                    <Lbl t={label} />
+                    <div style={{ ...IS, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center" }}>
+                      {val ? "$" + val.toLocaleString() : "—"}
+                    </div>
+                  </F>
+                ))}
+              </Row>
+            );
+          })()}
+
+          <Sec t="Balance Sheet Notes" />
+          <Row cols={1}>
+            <F><Lbl t="Additional Notes / Observations" /><textarea value={nwState.notes || ""} onChange={e => setNwState(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any context, caveats, or observations about this client's balance sheet..." /></F>
+          </Row>
+        </Panel>
+
+
         {/* ── AUTOMOBILES ── */}
         <Panel title="Automobiles" id="section-autos">
           {autos.map((a, i) => (
@@ -5098,97 +5190,6 @@ export default function App() {
             + Add Policy
           </button>
           <FileUpload section="lifeInsurance" files={uploads.lifeInsurance || []} onChange={handleUploadChange}  onConfirm={showConfirm}/>
-        </Panel>
-
-        <Panel title="Net Worth, Portfolio Breakdown & Balance Sheet" id="section-networth">
-          <Sec t="Net Worth Summary" />
-          {(() => {
-            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
-            const acctTotal = accounts.reduce((t, a) => t + pd(a.balance), 0);
-            const reTotal = realEstate.reduce((t, r) => t + pd(r.marketValue), 0) + pd(homeOwnership.marketValue);
-            const autoTotal = autos.reduce((t, a) => t + pd(a.value), 0);
-            const assets = acctTotal + reTotal + autoTotal;
-            const liabilities = pd(homeOwnership.mortgageBalance)
-              + realEstate.reduce((t, r) => t + pd(r.mortgageBalance), 0)
-              + autos.reduce((t, a) => t + pd(a.loanBalance), 0)
-              + debts.reduce((t, d) => t + pd(d.balance), 0)
-              + businesses.reduce((t, b) => t + pd(b.loanBalance), 0);
-            const netWorth = assets - liabilities;
-            const NONLIQUID = new Set(["Annuity (Fixed)","Annuity (Fixed Indexed)","Annuity (Variable)","Annuity (RILA)","Pension / Defined Benefit","Personal Residence","Rental Property","Land / Lot","Private Equity","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Life Insurance (Cash Value)","Vehicle","Collectibles","Jewelry"]);
-            const liquid = accounts.reduce((t, a) => t + ((NONLIQUID.has(a.type) || (a.investmentType || "").includes("Annuity") || ["Alternative Investments","Private Equity","Oil & Gas"].includes(a.investmentType)) ? 0 : pd(a.balance)), 0);
-            const primaryEquity = (pd(homeOwnership.marketValue) ? pd(homeOwnership.marketValue) - pd(homeOwnership.mortgageBalance) : 0) + realEstate.filter(r => (r.description || "").toLowerCase().includes("personal residence")).reduce((t, r) => t + (pd(r.marketValue) - pd(r.mortgageBalance)), 0);
-            const lessResidence = netWorth - primaryEquity;
-            const Box = ({ label, val, accent }) => (
-              <F>
-                <Lbl t={label} />
-                <div style={{ ...IS, fontWeight: 700, display: "flex", alignItems: "center", background: accent ? "#e8f0fb" : "#f2f4f7", color: INK }}>
-                  {val !== 0 || assets || liabilities ? "$" + val.toLocaleString() : "—"}
-                </div>
-              </F>
-            );
-            return (<>
-              <Row cols={3}>
-                <Box label="Total Assets" val={assets} />
-                <Box label="Total Liabilities" val={liabilities} />
-                <Box label="Estimated Net Worth" val={netWorth} accent />
-              </Row>
-              <Row cols={3}>
-                <Box label="Liquid Net Worth" val={liquid} />
-                <Box label="Net Worth - Less Residence" val={lessResidence} />
-                <Box label="Primary Residence Equity" val={primaryEquity} />
-              </Row>
-            </>);
-          })()}
-
-          <Sec t="Portfolio Breakdown" />
-          <div style={{ fontSize: 13, color: MUTED, marginBottom: 8 }}>Total investable assets by category.</div>
-          {(() => {
-            const pd = v => parseInt((v || "").replace(/[^0-9]/g, "") || 0);
-            const CASH = new Set(["Checking","Savings","Money Market","CD"]);
-            const QUAL = new Set(["Traditional IRA","Roth IRA","401(k)","Roth 401(k)","403(b)","457(b)","SEP IRA","SIMPLE IRA","HSA","529 / Education","Pension / Defined Benefit"]);
-            const CVLI = new Set(["Life Insurance (Cash Value)"]);
-            const ALTS = new Set(["Private Equity","REITs","Oil & Gas","Storage Funds","LLC Interest","Partnership Interest","Corporate Shares","Personal Residence","Rental Property","Land / Lot","Vehicle","Collectibles","Jewelry"]);
-            const isAnnuity = t => (t || "").startsWith("Annuity");
-            const sums = { cash: 0, qual: 0, nonqual: 0, ann: 0, cvli: 0, alts: 0 };
-            accounts.forEach(a => {
-              const bal = pd(a.balance);
-              if (!bal) return;
-              const t = a.type || "";
-              const iv = a.investmentType || "";
-              if (CASH.has(t) || ["CDs","Money Market","Cash"].includes(iv)) sums.cash += bal;
-              else if (isAnnuity(t) || iv.includes("Annuity")) sums.ann += bal;
-              else if (CVLI.has(t)) sums.cvli += bal;
-              else if (ALTS.has(t) || ["REITs","Alternative Investments","Private Equity","Oil & Gas"].includes(iv)) sums.alts += bal;
-              else if (QUAL.has(t) || a.qualified === "Qualified") sums.qual += bal;
-              else sums.nonqual += bal;
-            });
-            sums.cvli += lifePolicies.reduce((t, lp) => t + pd(lp.cashValue), 0);
-            const cats = [
-              ["Cash (Checking, Savings, Money Market, CDs)", sums.cash],
-              ["Qualified Plans (401k, IRA, Roth, etc.)", sums.qual],
-              ["Non-Qualified / Taxable", sums.nonqual],
-              ["Annuities (Fixed, Indexed, Variable, RILA)", sums.ann],
-              ["Cash Value Life Insurance", sums.cvli],
-              ["Alternative / Illiquid Investments", sums.alts],
-            ];
-            return (
-              <Row cols={2}>
-                {cats.map(([label, val]) => (
-                  <F key={label}>
-                    <Lbl t={label} />
-                    <div style={{ ...IS, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center" }}>
-                      {val ? "$" + val.toLocaleString() : "—"}
-                    </div>
-                  </F>
-                ))}
-              </Row>
-            );
-          })()}
-
-          <Sec t="Balance Sheet Notes" />
-          <Row cols={1}>
-            <F><Lbl t="Additional Notes / Observations" /><textarea value={nwState.notes || ""} onChange={e => setNwState(p => ({ ...p, notes: e.target.value }))} style={{ ...IS, minHeight: 90, resize: "vertical" }} placeholder="Any context, caveats, or observations about this client's balance sheet..." /></F>
-          </Row>
         </Panel>
 
         {/* ── WILLS & TRUST ── */}
