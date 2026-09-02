@@ -1980,6 +1980,7 @@ export default function App() {
     ["section-bene",       () => "Beneficiaries"],
     ["section-employment", () => "Employment"],
     ["section-income",     () => "Income"],
+    ["section-expenses",   () => "Annual Expenses"],
     ["section-realestate", () => "Real Estate - Business Assets"],
     ["section-accounts",   () => "Investment & Bank"],
     ["section-wills",      () => "Wills & Trust"],
@@ -6236,7 +6237,7 @@ export default function App() {
       </div>
     )}
     {quickViewPanelOpen && quickViewSelected.length > 0 && (() => {
-      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning" };
+      const QV_LABEL = { "section-profile": recordType === "prospect" ? "Prospect Profile" : "Client Profile", "section-family": "Family", "section-bene": "Beneficiaries", "section-employment": "Employment", "section-income": "Income", "section-expenses": "Annual Expenses", "section-realestate": "Real Estate", "section-accounts": "Investment & Bank", "section-wills": "Wills & Trust", "section-autos": "Autos", "section-life": "Life Insurance", "section-networth": "Net Worth / Portfolio", "section-inheritance": "Estate Planning" };
       const QvTable = ({ rows, labelWidth = 150 }) => (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>{rows.map(([k, v]) => <tr key={k}><td style={{ padding: "4px 0", color: MUTED, width: labelWidth, verticalAlign: "top", fontSize: 12 }}>{k}</td><td style={{ padding: "4px 0", fontWeight: 500, fontSize: 13 }}>{v}</td></tr>)}</tbody>
@@ -6332,6 +6333,15 @@ export default function App() {
             ])}
             foot={["Total Annual Income", "", "", "", fmtN(totalAnnual)]}
             emptyMsg="No income recorded." />;
+        }
+
+        if (id === "section-expenses") {
+          const annual = toAnn(annualExpenses.amount, annualExpenses.frequency);
+          return <Tbl cols={["Field","Value"]} rows={[
+            ["Expenses", annualExpenses.amount],
+            ["Frequency", annualExpenses.frequency ? annualExpenses.frequency.charAt(0).toUpperCase() + annualExpenses.frequency.slice(1) : ""],
+            ["Annual Total", fmtN(annual)],
+          ].filter(([,v]) => v)} emptyMsg="No expenses recorded." />;
         }
 
         if (id === "section-realestate") return (<>
