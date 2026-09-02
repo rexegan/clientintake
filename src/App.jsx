@@ -3617,7 +3617,7 @@ export default function App() {
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
                   <div style={{ flexShrink: 0 }}><Lbl t="Monthly Employee Contribution" /><input value={clientEmp.contributionAmt} onChange={e => setClientEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={{ ...IS, width: 240 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></div>
                   <div style={{ flexShrink: 0 }}>
-                    <Lbl t="Employer Match %" />
+                    <Lbl t="Employer Match" />
                     <select data-lpignore="true" value={clientEmp.matchPct || ""} onChange={e => setClientEmp(p => ({ ...p, matchPct: e.target.value }))} style={{ ...IS, width: 170 }}>
                       <option value="">— Select —</option>
                       <option value="No Match">No Match</option>
@@ -3742,7 +3742,7 @@ export default function App() {
                     <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
                       <div style={{ flexShrink: 0 }}><Lbl t="Monthly Employee Contribution" /><input value={spouseEmp.contributionAmt} onChange={e => setSpouseEmp(p => ({ ...p, contributionAmt: fmtDollar(e.target.value) }))} style={{ ...IS, width: 240 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></div>
                       <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Employer Match %" />
+                        <Lbl t="Employer Match" />
                         <select data-lpignore="true" value={spouseEmp.matchPct || ""} onChange={e => setSpouseEmp(p => ({ ...p, matchPct: e.target.value }))} style={{ ...IS, width: 170 }}>
                           <option value="">— Select —</option>
                           <option value="No Match">No Match</option>
@@ -3872,7 +3872,7 @@ export default function App() {
                       </div>
                       <div style={{ flexShrink: 0 }}><Lbl t="Monthly Employee Contribution" /><input value={r.contributionAmt || ""} onChange={e => updExtraEmp(r.id, "contributionAmt", fmtDollar(e.target.value))} style={{ ...IS, width: 240 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" /></div>
                       <div style={{ flexShrink: 0 }}>
-                        <Lbl t="Employer Match %" />
+                        <Lbl t="Employer Match" />
                         <select data-lpignore="true" value={r.matchPct || ""} onChange={e => updExtraEmp(r.id, "matchPct", e.target.value)} style={{ ...IS, width: 170 }}>
                           <option value="">— Select —</option>
                           <option value="No Match">No Match</option>
