@@ -1920,7 +1920,7 @@ export default function App() {
   const [debts, setDebts] = useState([]);
   const [businesses, setBusinesses] = useState([]);
   const [lifePolicies, setLifePolicies] = useState([{ ...emptyLifePolicy, id: 1 }]);
-  const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", notes: "" };
+  const emptyNwState = { totalAssets: "", totalLiabilities: "", liquidNetWorth: "", netWorthExHome: "", primaryEquity: "", pbCash: "", pbQualified: "", pbNonQual: "", pbAnnuities: "", pbCVLI: "", pbAlts: "", pbOther: "", pbOtherNote: "", notes: "" };
   const [nwState, setNwState] = useState({ ...emptyNwState });
   const emptyInheritance = { expectsInheritance: "", estValue: "", timeline: "", source: "", sourceDetails: "", numberOfSiblings: "", siblingsInvolved: "", specialNeedsFamily: "", specialNeedsTrust: "", specialNeedsDetails: "", nursingCare: "", ltcInsurance: "", nursingCareDetails: "", estatePlanning: "", trusteeArrangements: "", familyConflicts: "", conflictDetails: "", charitableIntent: "", charitableDetails: "", additionalNotes: "" };
   const [inheritances, setInheritances] = useState([{ ...emptyInheritance, id: 1 }]);
@@ -4969,6 +4969,16 @@ export default function App() {
               </Row>
             );
           })()}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end", marginTop: 12 }}>
+            <div style={{ flex: "0 0 220px" }}>
+              <Lbl t="Stocks, Bonds, Real Estate & Other" />
+              <input value={nwState.pbOther || ""} onChange={e => setNwState(p => ({ ...p, pbOther: fmtDollar(e.target.value) }))} style={{ ...IS, width: 220, fontWeight: 700 }} inputMode="numeric" autoComplete="new-password" data-lpignore="true" placeholder="$0" />
+            </div>
+            <div style={{ flex: "1 1 380px" }}>
+              <Lbl t="Explanation" />
+              <input value={nwState.pbOtherNote || ""} onChange={e => setNwState(p => ({ ...p, pbOtherNote: e.target.value }))} style={IS} autoComplete="new-password" data-lpignore="true" placeholder="What makes up this amount…" />
+            </div>
+          </div>
 
           <Sec t="Balance Sheet Notes" />
           <Row cols={1}>
@@ -6561,7 +6571,7 @@ export default function App() {
             ["Annuities", nwState.pbAnnuities],
             ["Cash Value Life Insurance", nwState.pbCVLI],
             ["Alternative / Illiquid", nwState.pbAlts],
-            ["Other / Unclassified", nwState.pbOther],
+            ["Stocks, Bonds, Real Estate & Other", nwState.pbOther && nwState.pbOtherNote ? `${nwState.pbOther} — ${nwState.pbOtherNote}` : nwState.pbOther || nwState.pbOtherNote],
           ].filter(([,v]) => v)} emptyMsg="No portfolio breakdown entered." />
           {nwState.notes && <><Sub t="Notes" /><div style={{ fontSize: 13, color: INK }}>{nwState.notes}</div></>}
         </>);
