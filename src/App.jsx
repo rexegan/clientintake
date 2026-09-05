@@ -2816,7 +2816,7 @@ export default function App() {
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={client.dob} onChange={v => setClient(p => ({ ...p, dob: v }))} compact monthW={62} dayW={52} yearW={58} /></div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Age" />
-              <div style={{ ...IS, width: 52, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{calcAge(client.dob) || "—"}</div>
+              <div style={{ ...IS, width: 52, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{calcAge(client.dob) || "—"}</div>
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Social Security" />
@@ -2948,7 +2948,7 @@ export default function App() {
             <div style={{ flexShrink: 0 }}><DatePicker label="Date of Birth" value={spouse.dob} onChange={v => setSpouse(p => ({ ...p, dob: v }))} compact monthW={62} dayW={52} yearW={58} /></div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Age" />
-              <div style={{ ...IS, width: 52, background: "#f2f4f7", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{calcAge(spouse.dob) || "—"}</div>
+              <div style={{ ...IS, width: 52, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{calcAge(spouse.dob) || "—"}</div>
             </div>
             <div style={{ flexShrink: 0 }}>
               <Lbl t="Social Security" />
